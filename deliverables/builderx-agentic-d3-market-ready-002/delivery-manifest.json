@@ -1,0 +1,70 @@
+{
+  "workflow_id": "plutonix-agentic-d3-market-ready-002",
+  "delivered_at": "2026-07-24T18:06:37Z",
+  "status": "delivered",
+  "deliverables": [
+    {
+      "path": "apps/frontend/public/agentic-system/d3/agentic-system-d3.js",
+      "summary": "Task-oriented inspector tabs, verified workspace deep links, progressive rendering, hybrid Canvas relationships, and render telemetry."
+    },
+    {
+      "path": "apps/frontend/public/agentic-system/d3/agentic-system-model.js",
+      "summary": "Deterministic render-strategy policy for SVG, progressive SVG, hybrid Canvas, and progressive hybrid modes."
+    },
+    {
+      "path": "apps/frontend/src/App.jsx",
+      "summary": "Agent-focused Activity filtering and topology-backed agent inspection with global-memory enrichment."
+    },
+    {
+      "path": "apps/backend/src/globalAgentKnowledge.js",
+      "summary": "Bounded OpenAI vector-memory reads and in-memory global agent-index caching."
+    },
+    {
+      "path": "docs/agentic-system-d3-design-workshop.md",
+      "summary": "Updated living workshop, completed outcomes, scale evidence, and next priorities."
+    }
+  ],
+  "validation": {
+    "model_tests": {
+      "status": "passed",
+      "passed": 7,
+      "failed": 0
+    },
+    "production_build": {
+      "status": "passed",
+      "modules_transformed": 2164
+    },
+    "normal_browser_qa": {
+      "status": "passed",
+      "desktop": "1440x900",
+      "mobile": "390x844",
+      "default_visible_objects": 9,
+      "console_errors": 0,
+      "horizontal_overflow": false,
+      "deep_links_verified": true
+    },
+    "large_graph_browser_qa": {
+      "status": "passed",
+      "nodes": 160,
+      "relationships": 280,
+      "render_mode": "progressive-hybrid",
+      "svg_relationship_paths": 0,
+      "canvas_sampled_nontransparent_pixels": 7628,
+      "frame_ms": 19.5,
+      "console_errors": 0
+    },
+    "agent_memory_cache": {
+      "status": "passed",
+      "fresh_cache_http_seconds": 0.76,
+      "stale_while_refresh_ms": 2.8,
+      "stale_status": "stale-refreshing"
+    }
+  },
+  "data_handling": {
+    "existing_apis_preserved": true,
+    "new_database_or_api": "None",
+    "mock_or_demo_data_added": false,
+    "synthetic_data_usage": "Ephemeral browser performance test only; removed from the running container after validation.",
+    "hardcoded_production_business_data_added": false
+  }
+}

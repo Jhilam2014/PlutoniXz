@@ -1,0 +1,11 @@
+{
+  "workflow_id": "plutonix-container-restart-001",
+  "objective": "Route builder changes through MCP and restart the generated app container after code generation.",
+  "workflow_classification": [
+    "software_engineering",
+    "devops_cicd",
+    "api_system"
+  ],
+  "status": "complete",
+  "created_at": "2026-06-25T00:00:00+05:30"
+}

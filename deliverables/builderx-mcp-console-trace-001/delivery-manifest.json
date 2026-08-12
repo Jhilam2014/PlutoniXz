@@ -1,0 +1,19 @@
+{
+  "workflow_id": "plutonix-mcp-console-trace-001",
+  "delivered_at": "2026-06-25T10:08:26Z",
+  "status": "delivered",
+  "deliverables": [
+    {
+      "path": "apps/backend/src/mcp.js",
+      "summary": "MCP handler emits staged process logs and planned file-operation rows."
+    },
+    {
+      "path": "apps/backend/src/generator.js",
+      "summary": "Generator emits build start, workspace, per-file operation, and codegen completion rows."
+    },
+    {
+      "path": "apps/frontend/src/App.jsx",
+      "summary": "Runtime log rows now show stage, path, and build metadata."
+    }
+  ]
+}

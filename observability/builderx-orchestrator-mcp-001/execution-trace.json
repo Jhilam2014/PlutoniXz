@@ -1,0 +1,12 @@
+{
+  "workflow_id": "plutonix-orchestrator-mcp-001",
+  "started_at": "2026-06-25T00:00:00+05:30",
+  "completed_at": "2026-06-25T00:00:00+05:30",
+  "status": "complete",
+  "events": [
+    "Added orchestratorAgent.js for instruction restructuring.",
+    "Updated MCP generate_webpage handler to use orchestrator output only.",
+    "Updated frontend copy to explain orchestrator restructuring.",
+    "Verified MCP response contains structuredContent.orchestrated and restart.status=restarted."
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "workflow_id": "plutonix-agentic-d3-market-ready-002",
+  "started_at": "2026-07-24T17:25:00Z",
+  "completed_at": "2026-07-24T18:06:37Z",
+  "status": "completed",
+  "events": [
+    {
+      "type": "audit",
+      "message": "Confirmed graph drawer URLs were not consumed by the React workspace."
+    },
+    {
+      "type": "change",
+      "message": "Connected logs and agent-inspection actions to verified PlutoniX destinations."
+    },
+    {
+      "type": "change",
+      "message": "Added four task-oriented inspector tabs with keyboard tab navigation."
+    },
+    {
+      "type": "change",
+      "message": "Added progressive rendering, hybrid Canvas relationships, and frame-budget telemetry."
+    },
+    {
+      "type": "resilience",
+      "message": "Bound OpenAI agent-memory reads and cached the global agent-memory index."
+    }
+  ],
+  "validation": [
+    {
+      "command": "docker run --rm plutonix-frontend npm test",
+      "status": "success",
+      "passed": 7,
+      "failed": 0
+    },
+    {
+      "command": "docker run --rm plutonix-frontend npm run build",
+      "status": "success",
+      "modules_transformed": 2164,
+      "duration": "1m35s"
+    },
+    {
+      "command": "Desktop, mobile, inspector, and deep-link CDP QA",
+      "status": "success",
+      "browser_errors": 0
+    },
+    {
+      "command": "Synthetic 160-node and 280-relationship CDP scale QA",
+      "status": "success",
+      "render_mode": "progressive-hybrid",
+      "frame_ms": 19.5,
+      "canvas_pixels_sampled": 7628
+    },
+    {
+      "command": "Global agent-index fresh-cache and stale-while-refresh checks",
+      "status": "success",
+      "fresh_cache_http_seconds": 0.76,
+      "stale_while_refresh_ms": 2.8
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "generated_at": "2026-06-29T22:53:21+00:00",
+  "agents": [
+    "project-execution-agent",
+    "human-controller"
+  ],
+  "source_of_truth": "agents/"
+}

@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link id="plutonix-favicon" rel="icon" type="image/png" href="/branding/plutonix-icon.png" />
+    <title>PlutoniX</title>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script>
+      (() => {
+        const iconPath = "/branding/plutonix-icon.png";
+        const colorScheme = window.matchMedia("(prefers-color-scheme: dark)");
+        const renderFavicon = () => {
+          const image = new Image();
+          image.onload = () => {
+            const canvas = document.createElement("canvas");
+            canvas.width = 64;
+            canvas.height = 64;
+            const context = canvas.getContext("2d");
+            context.drawImage(image, 0, 0, canvas.width, canvas.height);
+            context.globalCompositeOperation = "source-in";
+            context.fillStyle = colorScheme.matches ? "#FFFFFF" : "#171321";
+            context.fillRect(0, 0, canvas.width, canvas.height);
+            const favicon = document.getElementById("plutonix-favicon");
+            if (favicon) favicon.href = canvas.toDataURL("image/png");
+          };
+          image.src = iconPath;
+        };
+        renderFavicon();
+        colorScheme.addEventListener?.("change", renderFavicon);
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

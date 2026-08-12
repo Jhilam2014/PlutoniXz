@@ -1,0 +1,19 @@
+Meet PlutoniX, the agentic product-building cockpit that turns clear instructions into working digital experiences.
+
+Start in Gotham Builder. Choose the project, task depth, and execution mode, then run the job against a live playground.
+
+When a build needs real data, integrations, or media, PlutoniX pauses and asks only for the missing source, so agents do not invent business facts.
+
+Every project is decomposed into a live functionality graph, from the first instruction through sub-functions, evidence, and the agents responsible for each node.
+
+The PlutoniX Graphical Model page opens on a project-first topology, so teams can scan every active build.
+
+In Explore, select a project to trace its orchestrator relationships and inspect live status, configuration, and activity.
+
+The Control Plane monitors health, review gates, and self-improvement activity.
+
+Global agent memory stays inspectable, searchable, and project-aware.
+
+Cloud Hosting turns generated projects into controlled deployments with runtime and provider choices.
+
+From instruction to evidence, review, and deployment, PlutoniX keeps the full build accountable.

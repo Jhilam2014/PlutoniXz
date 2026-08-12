@@ -1,0 +1,140 @@
+{
+  "generated_at": "2026-06-25T00:00:00+05:30",
+  "clusters": [
+    {
+      "cluster_id": "frontend_control_surface",
+      "cluster_name": "Frontend Control Surface",
+      "description": "Prompt composer, runtime status, activity feed, and live preview iframe.",
+      "files_owned": [
+        "apps/frontend/src/App.jsx",
+        "apps/frontend/src/App.css",
+        "apps/frontend/src/main.jsx"
+      ],
+      "entrypoints": [
+        "apps/frontend/src/App.jsx"
+      ],
+      "dependencies": [
+        "backend_generation_api",
+        "generated_site_runtime"
+      ],
+      "downstream_dependents": [],
+      "risk_level": "medium",
+      "complexity_score": 7,
+      "business_value_score": 9,
+      "reuse_potential_score": 8,
+      "maintenance_cost_score": 5,
+      "token_context_cost_score": 4,
+      "recommended_agent_owner": "plutonix-fullstack-agent",
+      "review_agent_required": false,
+      "human_approval_required": false
+    },
+    {
+      "cluster_id": "backend_generation_api",
+      "cluster_name": "Backend Generation API",
+      "description": "Express API, status endpoint, SSE stream, and deterministic page generation service.",
+      "files_owned": [
+        "apps/backend/src/server.js",
+        "apps/backend/src/generator.js"
+      ],
+      "entrypoints": [
+        "apps/backend/src/server.js"
+      ],
+      "dependencies": [
+        "generated_site_runtime"
+      ],
+      "downstream_dependents": [
+        "frontend_control_surface",
+        "mcp_generation_endpoint"
+      ],
+      "risk_level": "high",
+      "complexity_score": 8,
+      "business_value_score": 10,
+      "reuse_potential_score": 9,
+      "maintenance_cost_score": 6,
+      "token_context_cost_score": 5,
+      "recommended_agent_owner": "plutonix-fullstack-agent",
+      "review_agent_required": true,
+      "human_approval_required": false
+    },
+    {
+      "cluster_id": "mcp_generation_endpoint",
+      "cluster_name": "MCP Generation Endpoint",
+      "description": "JSON-RPC endpoint exposing tools/list and tools/call for webpage generation.",
+      "files_owned": [
+        "apps/backend/src/mcp.js"
+      ],
+      "entrypoints": [
+        "POST /mcp"
+      ],
+      "dependencies": [
+        "backend_generation_api"
+      ],
+      "downstream_dependents": [],
+      "risk_level": "high",
+      "complexity_score": 6,
+      "business_value_score": 8,
+      "reuse_potential_score": 8,
+      "maintenance_cost_score": 5,
+      "token_context_cost_score": 4,
+      "recommended_agent_owner": "plutonix-fullstack-agent",
+      "review_agent_required": true,
+      "human_approval_required": false
+    },
+    {
+      "cluster_id": "generated_site_runtime",
+      "cluster_name": "Generated Site Runtime",
+      "description": "Isolated Vite app that renders generated source and updates through hot reload.",
+      "files_owned": [
+        "apps/generated-site/src/App.jsx",
+        "apps/generated-site/src/generated/generatedPage.jsx",
+        "apps/generated-site/src/generated/generatedPage.css"
+      ],
+      "entrypoints": [
+        "apps/generated-site/src/App.jsx"
+      ],
+      "dependencies": [],
+      "downstream_dependents": [
+        "frontend_control_surface",
+        "backend_generation_api"
+      ],
+      "risk_level": "medium",
+      "complexity_score": 6,
+      "business_value_score": 9,
+      "reuse_potential_score": 8,
+      "maintenance_cost_score": 4,
+      "token_context_cost_score": 4,
+      "recommended_agent_owner": "plutonix-fullstack-agent",
+      "review_agent_required": false,
+      "human_approval_required": false
+    },
+    {
+      "cluster_id": "container_orchestration",
+      "cluster_name": "Container Orchestration",
+      "description": "Docker Compose topology and service Dockerfiles.",
+      "files_owned": [
+        "docker-compose.yml",
+        "apps/frontend/Dockerfile",
+        "apps/backend/Dockerfile",
+        "apps/generated-site/Dockerfile"
+      ],
+      "entrypoints": [
+        "docker-compose.yml"
+      ],
+      "dependencies": [
+        "frontend_control_surface",
+        "backend_generation_api",
+        "generated_site_runtime"
+      ],
+      "downstream_dependents": [],
+      "risk_level": "medium",
+      "complexity_score": 7,
+      "business_value_score": 9,
+      "reuse_potential_score": 7,
+      "maintenance_cost_score": 5,
+      "token_context_cost_score": 4,
+      "recommended_agent_owner": "plutonix-fullstack-agent",
+      "review_agent_required": true,
+      "human_approval_required": false
+    }
+  ]
+}

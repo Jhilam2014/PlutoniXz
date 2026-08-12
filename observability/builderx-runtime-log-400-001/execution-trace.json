@@ -1,0 +1,54 @@
+{
+  "workflow_id": "plutonix-runtime-log-400-001",
+  "started_at": "2026-06-25T07:03:20Z",
+  "completed_at": "2026-06-25T07:04:53Z",
+  "status": "completed",
+  "events": [
+    {
+      "type": "context",
+      "message": "Read targeted backend, frontend, and docs files only."
+    },
+    {
+      "type": "change",
+      "message": "Updated runtime log retention to 400 rows and added frontend polling merge."
+    }
+  ],
+  "validation": [
+    {
+      "command": "python3 scripts/validate_project.py",
+      "status": "success"
+    },
+    {
+      "command": "docker compose config",
+      "status": "success"
+    },
+    {
+      "command": "docker compose up -d --build",
+      "status": "success"
+    },
+    {
+      "command": "POST /mcp generate_webpage",
+      "status": "success",
+      "build_id": "build_vqRyL4pvmx"
+    },
+    {
+      "command": "GET /api/runtime-log",
+      "status": "success",
+      "observed_rows": 40,
+      "under_400": true,
+      "newest_first": true
+    },
+    {
+      "command": "docker compose exec -T backend node --check src/server.js && node --check src/mcp.js && node --check src/orchestratorAgent.js",
+      "status": "success"
+    },
+    {
+      "command": "docker compose exec -T frontend npm run build",
+      "status": "success"
+    },
+    {
+      "command": "docker compose exec -T generated-site npm run build",
+      "status": "success"
+    }
+  ]
+}

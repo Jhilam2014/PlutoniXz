@@ -1,0 +1,13 @@
+{
+  "workflow_id": "plutonix-mcp-runtime-log-001",
+  "started_at": "2026-06-25T00:00:00+05:30",
+  "completed_at": "2026-06-25T00:00:00+05:30",
+  "status": "complete",
+  "events": [
+    "Added backend runtime log store and /api/runtime-log endpoint.",
+    "Added file-backed MCP runtime log at runtime/mcp-runtime-log.jsonl.",
+    "Added frontend MCP runtime log panel.",
+    "Changed SSE client to reconnect automatically.",
+    "Verified generation writes log entries and restarts generated-site container."
+  ]
+}

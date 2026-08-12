@@ -1,0 +1,48 @@
+{
+  "workflow_id": "plutonix-large-001",
+  "checked_at": "2026-06-25T00:00:00+05:30",
+  "status": "success",
+  "checks": [
+    {
+      "command": "python3 scripts/validate_project.py",
+      "result": "success"
+    },
+    {
+      "command": "docker compose config",
+      "result": "success"
+    },
+    {
+      "command": "docker compose build",
+      "result": "success"
+    },
+    {
+      "command": "docker compose up -d",
+      "result": "success"
+    },
+    {
+      "command": "GET http://localhost:8080/api/status",
+      "result": "success"
+    },
+    {
+      "command": "GET http://localhost:5173",
+      "result": "success"
+    },
+    {
+      "command": "GET http://localhost:5174",
+      "result": "success"
+    },
+    {
+      "command": "POST http://localhost:8080/api/generate",
+      "result": "success"
+    },
+    {
+      "command": "POST http://localhost:8080/mcp tools/list and tools/call",
+      "result": "success"
+    }
+  ],
+  "runtime_urls": {
+    "frontend": "http://localhost:5173",
+    "backend": "http://localhost:8080",
+    "generated_site": "http://localhost:5174"
+  }
+}

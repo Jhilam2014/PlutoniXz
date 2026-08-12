@@ -1,0 +1,14 @@
+{
+  "provider": "chroma_local_generated",
+  "status": "pending_install",
+  "fallback_generated": true,
+  "resolved_at": "2026-06-29T22:53:21+00:00",
+  "collections": [
+    "agent_knowledge",
+    "agent_prompts",
+    "project_summaries",
+    "correction_patterns",
+    "upgrade_notes",
+    "functionality_map"
+  ]
+}

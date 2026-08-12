@@ -1,0 +1,161 @@
+{
+  "workflow_id": "plutonix-vector-sync-1784717818907",
+  "reason": "periodic",
+  "provider": "openai",
+  "started_at": "2026-07-22T10:56:58.892Z",
+  "completed_at": "2026-07-22T11:12:27.791Z",
+  "vector_store_id": "vs_6a38c…2300",
+  "config_source": ".env",
+  "scanned_roots": [
+    "/workspace/project",
+    "/workspace/money/apps/geofinderx",
+    "/workspace/money/orchestrator-agent-001"
+  ],
+  "local_files_scanned": 95,
+  "files_uploaded": 3,
+  "files_skipped": 90,
+  "files_failed": 2,
+  "pending_sync_count": 2,
+  "status": "partial",
+  "errors": [
+    {
+      "path": "agents/generated/researchanddevx-content-data-agent.agent.md",
+      "error": "fetch failed",
+      "project": "project"
+    },
+    {
+      "path": "agents/generated/researchanddevx-ui-composition-agent.agent.md",
+      "error": "fetch failed",
+      "project": "project"
+    }
+  ],
+  "roots": [
+    {
+      "project": "project",
+      "scanned": 62,
+      "uploaded": [
+        "agents/generated/researchanddevx-orchestrator-agent.agent.md",
+        "agents/generated/researchanddevx-qagent-controller.agent.md",
+        "agents/generated/researchanddevx-runtime-packaging-agent.agent.md"
+      ],
+      "skipped": [
+        "agents/generated/agenticongen-content-data-agent.agent.md",
+        "agents/generated/agenticongen-orchestrator-agent.agent.md",
+        "agents/generated/agenticongen-runtime-packaging-agent.agent.md",
+        "agents/generated/agenticongen-ui-composition-agent.agent.md",
+        "agents/generated/plutonix-fullstack-agent.agent.md",
+        "agents/generated/geofinderx-content-data-agent.agent.md",
+        "agents/generated/geofinderx-orchestrator-agent.agent.md",
+        "agents/generated/geofinderx-runtime-packaging-agent.agent.md",
+        "agents/generated/geofinderx-ui-composition-agent.agent.md",
+        "agents/generated/investmentfinderx-content-data-agent.agent.md",
+        "agents/generated/investmentfinderx-orchestrator-agent.agent.md",
+        "agents/generated/investmentfinderx-qagent-controller.agent.md",
+        "agents/generated/investmentfinderx-runtime-packaging-agent.agent.md",
+        "agents/generated/investmentfinderx-ui-composition-agent.agent.md",
+        "agents/generated/mapex-commerce-catalog-agent.agent.md",
+        "agents/generated/mapex-content-data-agent.agent.md",
+        "agents/generated/mapex-orchestrator-agent.agent.md",
+        "agents/generated/mapex-runtime-packaging-agent.agent.md",
+        "agents/generated/mapex-ui-composition-agent.agent.md",
+        "agents/generated/project-execution-agent.agent.md",
+        "agents/generated/spydash-analytics-dashboard-agent.agent.md",
+        "agents/generated/spydash-content-data-agent.agent.md",
+        "agents/generated/spydash-orchestrator-agent.agent.md",
+        "agents/generated/spydash-qagent-controller.agent.md",
+        "agents/generated/spydash-runtime-packaging-agent.agent.md",
+        "agents/generated/spydash-ui-composition-agent.agent.md",
+        "agents/generated/webforbusinesses-content-data-agent.agent.md",
+        "agents/generated/webforbusinesses-orchestrator-agent.agent.md",
+        "agents/generated/webforbusinesses-qagent-controller.agent.md",
+        "agents/generated/webforbusinesses-runtime-packaging-agent.agent.md",
+        "agents/generated/webforbusinesses-ui-composition-agent.agent.md",
+        "agents/generated/whatsappmediaanalyser-content-data-agent.agent.md",
+        "agents/generated/whatsappmediaanalyser-orchestrator-agent.agent.md",
+        "agents/generated/whatsappmediaanalyser-qagent-controller.agent.md",
+        "agents/generated/whatsappmediaanalyser-runtime-packaging-agent.agent.md",
+        "agents/generated/whatsappmediaanalyser-ui-composition-agent.agent.md",
+        "agents/human/human-controller.agent.md",
+        "memory/agent-knowledge/agents/plutonix-fullstack-agent.v1.0.0.md",
+        "memory/agent-knowledge/agents/project-execution-agent.v1.0.0.md",
+        "memory/agent-knowledge/projects/bootstrap-agent-memory.summary.md",
+        "memory/agent-knowledge/projects/plutonix-container-restart-001.summary.md",
+        "memory/agent-knowledge/projects/plutonix-generated-file-ops-001.summary.md",
+        "memory/agent-knowledge/projects/plutonix-hot-reload-stability-001.summary.md",
+        "memory/agent-knowledge/projects/plutonix-large-001.summary.md",
+        "memory/agent-knowledge/projects/plutonix-layout-agentic-d3-001.summary.md",
+        "memory/agent-knowledge/projects/plutonix-mcp-chat-001.summary.md",
+        "memory/agent-knowledge/projects/plutonix-mcp-console-trace-001.summary.md",
+        "memory/agent-knowledge/projects/plutonix-mcp-runtime-log-001.summary.md",
+        "memory/agent-knowledge/projects/plutonix-orchestrator-mcp-001.summary.md",
+        "memory/agent-knowledge/projects/plutonix-runtime-log-400-001.summary.md",
+        "memory/agent-knowledge/projects/interactive-cloud-hosting.sanitized.md",
+        "memory/agent-knowledge/prompts/bootstrap-orchestrator-001.project-execution-agent.correction-bootstrap-placeholder.prompt.md",
+        "memory/agent-knowledge/prompts/bootstrap-orchestrator-001.project-execution-agent.default-agent-instruction.prompt.md",
+        "memory/agent-knowledge/prompts/bootstrap-orchestrator-001.project-execution-agent.handoff-bootstrap.prompt.md",
+        "memory/agent-knowledge/prompts/bootstrap-orchestrator-001.project-execution-agent.orchestrator-bootstrap.prompt.md",
+        "memory/agent-knowledge/prompts/bootstrap-orchestrator-001.project-execution-agent.validation-bootstrap.prompt.md",
+        "memory/agent-knowledge/prompts/plutonix-large-001.plutonix-fullstack-agent.plutonix-large-task.prompt.md"
+      ],
+      "failed": [
+        {
+          "path": "agents/generated/researchanddevx-content-data-agent.agent.md",
+          "error": "fetch failed"
+        },
+        {
+          "path": "agents/generated/researchanddevx-ui-composition-agent.agent.md",
+          "error": "fetch failed"
+        }
+      ]
+    },
+    {
+      "project": "GeoFinderX",
+      "scanned": 24,
+      "uploaded": [],
+      "skipped": [
+        "agents/generated/geofinderx-local-execution-agent.agent.md",
+        "agents/generated/project-execution-agent.agent.md",
+        "agents/human/human-controller.agent.md",
+        "memory/agent-knowledge/agents/geofinderx-local-execution-agent.v1.0.0.md",
+        "memory/agent-knowledge/agents/project-execution-agent.v1.0.0.md",
+        "memory/agent-knowledge/corrections/wf-geofinderx-business-search-20260628.project-execution-agent.correction.md",
+        "memory/agent-knowledge/projects/wf-geofinderx-bootstrap-20260627.summary.md",
+        "memory/agent-knowledge/projects/wf-geofinderx-business-search-20260628.summary.md",
+        "memory/agent-knowledge/prompts/wf-geofinderx-bootstrap-20260627.geofinderx-local-execution-agent.handoff.prompt.md",
+        "memory/agent-knowledge/prompts/wf-geofinderx-bootstrap-20260627.geofinderx-local-execution-agent.summary.prompt.md",
+        "memory/agent-knowledge/prompts/wf-geofinderx-bootstrap-20260627.geofinderx-local-execution-agent.system.prompt.md",
+        "memory/agent-knowledge/prompts/wf-geofinderx-bootstrap-20260627.geofinderx-local-execution-agent.task.prompt.md",
+        "memory/agent-knowledge/prompts/wf-geofinderx-bootstrap-20260627.geofinderx-local-execution-agent.validation.prompt.md",
+        "memory/agent-knowledge/prompts/wf-geofinderx-bootstrap-20260627.human-controller.correction.prompt.md",
+        "memory/agent-knowledge/prompts/wf-geofinderx-business-search-20260628.project-execution-agent.actual-backend-correction.prompt.md",
+        "memory/agent-knowledge/prompts/wf-geofinderx-business-search-20260628.project-execution-agent.ai-categorical-search.prompt.md",
+        "memory/agent-knowledge/prompts/wf-geofinderx-business-search-20260628.project-execution-agent.all-results-correction.prompt.md",
+        "memory/agent-knowledge/prompts/wf-geofinderx-business-search-20260628.project-execution-agent.api-routing-correction.prompt.md",
+        "memory/agent-knowledge/prompts/wf-geofinderx-business-search-20260628.project-execution-agent.backend-unavailable-correction.prompt.md",
+        "memory/agent-knowledge/prompts/wf-geofinderx-business-search-20260628.project-execution-agent.correction.prompt.md",
+        "memory/agent-knowledge/prompts/wf-geofinderx-business-search-20260628.project-execution-agent.map-auth-fallback.prompt.md",
+        "memory/agent-knowledge/prompts/wf-geofinderx-business-search-20260628.project-execution-agent.rate-limit-pagination-map.prompt.md",
+        "memory/agent-knowledge/prompts/wf-geofinderx-business-search-20260628.project-execution-agent.scheduling-map-query-log.prompt.md",
+        "memory/agent-knowledge/prompts/wf-geofinderx-business-search-20260628.project-execution-agent.task.prompt.md"
+      ],
+      "failed": []
+    },
+    {
+      "project": "Orchestrator Agent",
+      "scanned": 9,
+      "uploaded": [],
+      "skipped": [
+        "agents/generated/project-execution-agent.agent.md",
+        "agents/human/human-controller.agent.md",
+        "memory/agent-knowledge/agents/project-execution-agent.v1.0.0.md",
+        "memory/agent-knowledge/projects/bootstrap-agent-memory.summary.md",
+        "memory/agent-knowledge/prompts/bootstrap-orchestrator-001.project-execution-agent.correction-bootstrap-placeholder.prompt.md",
+        "memory/agent-knowledge/prompts/bootstrap-orchestrator-001.project-execution-agent.default-agent-instruction.prompt.md",
+        "memory/agent-knowledge/prompts/bootstrap-orchestrator-001.project-execution-agent.handoff-bootstrap.prompt.md",
+        "memory/agent-knowledge/prompts/bootstrap-orchestrator-001.project-execution-agent.orchestrator-bootstrap.prompt.md",
+        "memory/agent-knowledge/prompts/bootstrap-orchestrator-001.project-execution-agent.validation-bootstrap.prompt.md"
+      ],
+      "failed": []
+    }
+  ]
+}

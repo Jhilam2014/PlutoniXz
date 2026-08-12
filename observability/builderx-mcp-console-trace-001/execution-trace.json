@@ -1,0 +1,51 @@
+{
+  "workflow_id": "plutonix-mcp-console-trace-001",
+  "started_at": "2026-06-25T10:08:26Z",
+  "completed_at": "2026-06-25T10:09:34Z",
+  "status": "completed",
+  "events": [
+    {
+      "type": "context",
+      "message": "Read targeted MCP, generator, restart, frontend, and documentation files."
+    },
+    {
+      "type": "change",
+      "message": "Added console-style process events and frontend metadata display."
+    }
+  ],
+  "validation": [
+    {
+      "command": "python3 scripts/validate_project.py",
+      "status": "success"
+    },
+    {
+      "command": "docker compose up -d --build",
+      "status": "success"
+    },
+    {
+      "command": "POST /mcp generate_webpage",
+      "status": "success",
+      "build_id": "build_xBDzvPj6vS"
+    },
+    {
+      "command": "GET /api/runtime-log",
+      "status": "success",
+      "observed_rows": 85,
+      "under_400": true,
+      "newest_first": true,
+      "missing_trace_types": []
+    },
+    {
+      "command": "docker compose exec -T backend node --check src/server.js && node --check src/mcp.js && node --check src/generator.js",
+      "status": "success"
+    },
+    {
+      "command": "docker compose exec -T frontend npm run build",
+      "status": "success"
+    },
+    {
+      "command": "GET /api/status, frontend /, generated-site /",
+      "status": "success"
+    }
+  ]
+}

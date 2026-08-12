@@ -1,0 +1,17 @@
+{
+  "workflow_id": "plutonix-run-script-001",
+  "tasks": [
+    {
+      "id": "create-runner-script",
+      "status": "complete"
+    },
+    {
+      "id": "document-runner",
+      "status": "complete"
+    },
+    {
+      "id": "validate-runner",
+      "status": "complete"
+    }
+  ]
+}

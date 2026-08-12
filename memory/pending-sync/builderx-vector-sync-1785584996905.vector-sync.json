@@ -1,0 +1,15 @@
+{
+  "workflow_id": "plutonix-vector-sync-1785584996905",
+  "reason": "periodic",
+  "status": "failed",
+  "started_at": "2026-08-01T11:49:56.905Z",
+  "completed_at": "2026-08-01T11:49:56.905Z",
+  "errors": [
+    "fetch failed"
+  ],
+  "local_files_scanned": 0,
+  "files_uploaded": 0,
+  "files_skipped": 0,
+  "files_failed": 1,
+  "pending_sync_count": 1
+}

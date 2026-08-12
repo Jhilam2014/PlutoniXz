@@ -1,0 +1,9 @@
+{
+  "status": "generated",
+  "source": "plutonix-additive-qagentic-support",
+  "base_framework": true,
+  "runtime_qagents": "generate_only_when_objective_gap_detected",
+  "project_generation": "new_projects_auto_include_qagentic_framework",
+  "existing_projects": "qagentic_support_only_when_explicitly_requested",
+  "topology": "qagent_controller_registered_as_system_support_agent"
+}

@@ -1,0 +1,262 @@
+services:
+  frontend:
+    image: plutonix-frontend:latest
+    build:
+      context: .
+      dockerfile: apps/frontend/Dockerfile
+    container_name: plutonix-frontend
+    ports:
+      - "${FRONTEND_PORT:-5173}:5173"
+    environment:
+      - VITE_BACKEND_URL=${VITE_BACKEND_URL:-http://localhost:8080}
+      - VITE_GENERATED_SITE_URL=${VITE_GENERATED_SITE_URL:-http://localhost:5174}
+      - VITE_GOOGLE_CLIENT_ID=${VITE_GOOGLE_CLIENT_ID:-}
+      - VITE_PLUTONIX_DEV_AUTH_ENABLED=${VITE_PLUTONIX_DEV_AUTH_ENABLED:-false}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID:-}
+    depends_on:
+      - backend
+      - generated-site
+    networks:
+      - plutonix
+
+  backend:
+    image: plutonix-backend:latest
+    build:
+      context: .
+      dockerfile: apps/backend/Dockerfile
+      args:
+        CODEX_VERSION: ${CODEX_VERSION:-0.147.0}
+    container_name: plutonix-backend
+    ports:
+      - "${BACKEND_PORT:-8080}:8080"
+    environment:
+      - PORT=8080
+      - GENERATED_SITE_DIR=/workspace/generated-site
+      - GENERATED_SITE_URL=${VITE_GENERATED_SITE_URL:-http://localhost:5174}
+      - GENERATED_SITE_INTERNAL_URL=http://generated-site:5174
+      - GENERATED_SITE_CONTAINER=plutonix-generated-site
+      - RESTART_GENERATED_CONTAINER=${RESTART_GENERATED_CONTAINER:-false}
+      - DOCKER_SOCKET_PATH=/var/run/docker.sock
+      - WORKFLOW_RUNTIME_LOG_PATH=/workspace/runtime/workflow-runtime-log.jsonl
+      - PROJECTS_ROOT=/workspace/money/apps
+      - PROJECTS_REGISTRY_PATH=/workspace/project/runtime/projects.json
+      - PROJECT_EXPORTS_ROOT=/workspace/project/runtime/exports
+      - PROJECTS_GITIGNORE_PATH=/workspace/money/.gitignore
+      - PROJECT_PORT_START=${PROJECT_PORT_START:-5300}
+      - PROJECT_PORT_END=${PROJECT_PORT_END:-5399}
+      - PROJECT_PREVIEW_PORT_RETRY_TIMEOUT_MS=${PROJECT_PREVIEW_PORT_RETRY_TIMEOUT_MS:-120000}
+      - PROJECT_SELECT_PREVIEW_TIMEOUT_MS=${PROJECT_SELECT_PREVIEW_TIMEOUT_MS:-15000}
+      - PROJECT_HOST_URL=${PROJECT_HOST_URL:-http://localhost}
+      - PROJECT_RUNTIME_MODE=${PROJECT_RUNTIME_MODE:-docker}
+      - PROJECT_RUNTIME_IMAGE=${PROJECT_RUNTIME_IMAGE:-}
+      - PROJECT_RUNTIME_NETWORK=${PROJECT_RUNTIME_NETWORK:-}
+      - PLUTONIX_PROJECT_ROOT=/workspace/project
+      - PLUTONIX_WORKSPACE_ROOT=/workspace/money
+      - PLUTONIX_BACKEND_CONTAINER=plutonix-backend
+      - CODEX_HOME=/workspace/codex-home
+      - CODEX_BIN=${CODEX_BIN:-/usr/local/bin/codex}
+      - CODEX_WORKFLOW_TIMEOUT_MS=${CODEX_WORKFLOW_TIMEOUT_MS:-600000}
+      - GOTHAM_RUNTIME_PROBE=true
+      - GOTHAM_FALLBACK_MODEL=${GOTHAM_FALLBACK_MODEL:-}
+      - ORCHESTRATOR_ARCHIVE_PATH=${ORCHESTRATOR_ARCHIVE_PATH:-/workspace/project/orchestrator-temp/orchestrator-agent-001-main.zip}
+      - ORCHESTRATOR_INSTALL_ENABLED=${ORCHESTRATOR_INSTALL_ENABLED:-true}
+      - ORCHESTRATOR_BOOTSTRAP_ENABLED=${ORCHESTRATOR_BOOTSTRAP_ENABLED:-true}
+      - ORCHESTRATOR_BOOTSTRAP_TIMEOUT_MS=${ORCHESTRATOR_BOOTSTRAP_TIMEOUT_MS:-900000}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID:-}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET:-}
+      - PLUTONIX_AUTH_MODE=${PLUTONIX_AUTH_MODE:-oidc}
+      - PLUTONIX_CORS_ORIGINS=${PLUTONIX_CORS_ORIGINS:-}
+      - OIDC_ISSUER=${OIDC_ISSUER:-}
+      - OIDC_AUDIENCE=${OIDC_AUDIENCE:-}
+      - OIDC_JWKS_URL=${OIDC_JWKS_URL:-}
+      - OIDC_ALLOWED_ALGORITHMS=${OIDC_ALLOWED_ALGORITHMS:-RS256,RS384,RS512,ES256,ES384,ES512}
+      - OIDC_ACCEPTED_TOKEN_TYPES=${OIDC_ACCEPTED_TOKEN_TYPES:-JWT,at+jwt}
+      - OIDC_JWKS_CACHE_MS=${OIDC_JWKS_CACHE_MS:-300000}
+      - OIDC_JWKS_STALE_GRACE_MS=${OIDC_JWKS_STALE_GRACE_MS:-300000}
+      - OIDC_CLOCK_SKEW_SECONDS=${OIDC_CLOCK_SKEW_SECONDS:-60}
+      - PLUTONIX_DEV_AUTH_ENABLED=${PLUTONIX_DEV_AUTH_ENABLED:-false}
+      - PLUTONIX_API_BODY_LIMIT=${PLUTONIX_API_BODY_LIMIT:-256kb}
+      - PLUTONIX_SECRETS_PROVIDER=${PLUTONIX_SECRETS_PROVIDER:-}
+      - PLUTONIX_ENCRYPTION_KEY_REF=${PLUTONIX_ENCRYPTION_KEY_REF:-}
+      - PLUTONIX_EGRESS_ALLOWLIST=${PLUTONIX_EGRESS_ALLOWLIST:-}
+      - APIFY_USER_ID=${APIFY_USER_ID:-}
+      - APIFY_API_KEY=${APIFY_API_KEY:-}
+      - APIFY_API_BASE_URL=${APIFY_API_BASE_URL:-https://api.apify.com}
+      - APIFY_LINKEDIN_INVESTOR_ACTOR_ID=${APIFY_LINKEDIN_INVESTOR_ACTOR_ID:-harvestapi/linkedin-profile-search}
+      - APIFY_LINKEDIN_INVESTOR_MAX_ITEMS=${APIFY_LINKEDIN_INVESTOR_MAX_ITEMS:-20}
+      - APIFY_LINKEDIN_INVESTOR_TAKE_PAGES=${APIFY_LINKEDIN_INVESTOR_TAKE_PAGES:-1}
+      - NODE_ENV=${NODE_ENV:-development}
+      - DECISION_CONTINUITY_ADAPTER=${DECISION_CONTINUITY_ADAPTER:-file}
+      - DECISION_CONTINUITY_DATABASE_URL=${DECISION_CONTINUITY_DATABASE_URL:-}
+      - DECISION_CONTINUITY_MAX_RECONSIDERATIONS_PER_TENANT_PER_DAY=${DECISION_CONTINUITY_MAX_RECONSIDERATIONS_PER_TENANT_PER_DAY:-25}
+      - QAGENT_DECISION_CONTINUITY_ENABLED=${QAGENT_DECISION_CONTINUITY_ENABLED:-false}
+      - QAGENT_DECISION_CONTINUITY_ENABLED_TENANTS=${QAGENT_DECISION_CONTINUITY_ENABLED_TENANTS:-}
+      - QAGENT_DECISION_CONTINUITY_READ_ONLY_TOOLS=${QAGENT_DECISION_CONTINUITY_READ_ONLY_TOOLS:-deterministic_fixture}
+      - QAGENT_DECISION_CONTINUITY_EVIDENCE_SOURCES=${QAGENT_DECISION_CONTINUITY_EVIDENCE_SOURCES:-deterministic_fixture,authorized_catalog}
+      - QAGENT_DECISION_CONTINUITY_MAX_ITERATIONS=${QAGENT_DECISION_CONTINUITY_MAX_ITERATIONS:-1}
+      - QAGENT_DECISION_CONTINUITY_MAX_FAN_OUT=${QAGENT_DECISION_CONTINUITY_MAX_FAN_OUT:-4}
+      - QAGENT_DECISION_CONTINUITY_MAX_TOKENS=${QAGENT_DECISION_CONTINUITY_MAX_TOKENS:-4000}
+      - QAGENT_DECISION_CONTINUITY_MAX_MODEL_CALLS=${QAGENT_DECISION_CONTINUITY_MAX_MODEL_CALLS:-1}
+      - QAGENT_DECISION_CONTINUITY_MAX_TOOL_CALLS=${QAGENT_DECISION_CONTINUITY_MAX_TOOL_CALLS:-1}
+      - QAGENT_DECISION_CONTINUITY_MAX_ELAPSED_MS=${QAGENT_DECISION_CONTINUITY_MAX_ELAPSED_MS:-60000}
+      - QAGENT_DECISION_CONTINUITY_MAX_COST_USD=${QAGENT_DECISION_CONTINUITY_MAX_COST_USD:-0.25}
+      - QAGENT_DECISION_CONTINUITY_MAX_COMPUTE_UNITS=${QAGENT_DECISION_CONTINUITY_MAX_COMPUTE_UNITS:-1}
+      - QAGENT_DECISION_CONTINUITY_MAX_EVIDENCE_BYTES=${QAGENT_DECISION_CONTINUITY_MAX_EVIDENCE_BYTES:-65536}
+      - BRAINX_ENABLED=${BRAINX_ENABLED:-false}
+      - BRAINX_ENABLED_TENANTS=${BRAINX_ENABLED_TENANTS:-}
+      - BRAINX_AVAILABLE_HARDWARE=${BRAINX_AVAILABLE_HARDWARE:-fixture}
+      - BRAINX_MAX_CONCURRENCY=${BRAINX_MAX_CONCURRENCY:-1}
+      - BRAINX_MAX_FALLBACKS=${BRAINX_MAX_FALLBACKS:-1}
+      - BRAINX_MAX_RETRIES=${BRAINX_MAX_RETRIES:-0}
+      - BRAINX_MAX_ELAPSED_MS=${BRAINX_MAX_ELAPSED_MS:-30000}
+      - BRAINX_MAX_INPUT_BYTES=${BRAINX_MAX_INPUT_BYTES:-32768}
+      - BRAINX_MAX_OUTPUT_BYTES=${BRAINX_MAX_OUTPUT_BYTES:-32768}
+      - BRAINX_MAX_COST_USD=${BRAINX_MAX_COST_USD:-0.25}
+      - BRAINX_CIRCUIT_FAILURE_THRESHOLD=${BRAINX_CIRCUIT_FAILURE_THRESHOLD:-2}
+      - BRAINX_LIVE_PROVIDER_ENABLED=${BRAINX_LIVE_PROVIDER_ENABLED:-false}
+      - BRAINX_LIVE_PROVIDER_MAX_COST_USD=${BRAINX_LIVE_PROVIDER_MAX_COST_USD:-0}
+      - DECISION_CONTINUITY_RECONSIDERATION_COOLDOWN_MS=${DECISION_CONTINUITY_RECONSIDERATION_COOLDOWN_MS:-1800000}
+      - DECISION_CONTINUITY_DURABLE_WORKFLOWS=${DECISION_CONTINUITY_DURABLE_WORKFLOWS:-false}
+      - DECISION_CONTINUITY_WORKER_CONCURRENCY=${DECISION_CONTINUITY_WORKER_CONCURRENCY:-8}
+      - DECISION_CONTINUITY_WORKER_TENANT_CONCURRENCY=${DECISION_CONTINUITY_WORKER_TENANT_CONCURRENCY:-2}
+      - DECISION_CONTINUITY_WORKER_TENANT_QUEUE_LIMIT=${DECISION_CONTINUITY_WORKER_TENANT_QUEUE_LIMIT:-100}
+      - DECISION_CONTINUITY_WORKER_LEASE_MS=${DECISION_CONTINUITY_WORKER_LEASE_MS:-30000}
+      - DECISION_CONTINUITY_WORKER_MAX_ATTEMPTS=${DECISION_CONTINUITY_WORKER_MAX_ATTEMPTS:-5}
+      - DECISION_CONTINUITY_WORKER_MAX_REDRIVES=${DECISION_CONTINUITY_WORKER_MAX_REDRIVES:-2}
+      - DECISION_CONTINUITY_WORKER_POLL_MS=${DECISION_CONTINUITY_WORKER_POLL_MS:-500}
+      - DECISION_CONTINUITY_WORKER_SHUTDOWN_GRACE_MS=${DECISION_CONTINUITY_WORKER_SHUTDOWN_GRACE_MS:-20000}
+      - DECISION_CONTINUITY_WORKER_PRINCIPAL_ID=${DECISION_CONTINUITY_WORKER_PRINCIPAL_ID:-}
+    volumes:
+      - .:/workspace/project
+      - ..:/workspace/money
+      - ./apps/generated-site:/workspace/generated-site
+      - ./runtime:/workspace/runtime
+      - ${HOME}/.codex:/workspace/codex-home
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - plutonix
+
+  generated-site:
+    image: plutonix-generated-site:latest
+    build:
+      context: .
+      dockerfile: apps/generated-site/Dockerfile
+    container_name: plutonix-generated-site
+    ports:
+      - "${GENERATED_SITE_PORT:-5174}:5174"
+    volumes:
+      - ./apps/generated-site:/workspace/generated-site
+      - generated_site_node_modules:/workspace/generated-site/node_modules
+    networks:
+      - plutonix
+
+  decision-continuity-worker:
+    image: plutonix-backend:latest
+    profiles: ["decision-continuity-worker", "decision-continuity-production"]
+    command: ["node", "scripts/decision-continuity-worker.mjs"]
+    user: "node"
+    read_only: true
+    cap_drop: ["ALL"]
+    security_opt: ["no-new-privileges:true"]
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=64m
+    restart: unless-stopped
+    stop_grace_period: ${DECISION_CONTINUITY_WORKER_STOP_GRACE_PERIOD:-30s}
+    environment:
+      - NODE_ENV=${NODE_ENV:-development}
+      - PLUTONIX_AUTH_MODE=${PLUTONIX_AUTH_MODE:-oidc}
+      - PLUTONIX_CORS_ORIGINS=${PLUTONIX_CORS_ORIGINS:-}
+      - OIDC_ISSUER=${OIDC_ISSUER:-}
+      - OIDC_AUDIENCE=${OIDC_AUDIENCE:-}
+      - OIDC_JWKS_URL=${OIDC_JWKS_URL:-}
+      - OIDC_ALLOWED_ALGORITHMS=${OIDC_ALLOWED_ALGORITHMS:-RS256,RS384,RS512,ES256,ES384,ES512}
+      - OIDC_ACCEPTED_TOKEN_TYPES=${OIDC_ACCEPTED_TOKEN_TYPES:-JWT,at+jwt}
+      - OIDC_JWKS_CACHE_MS=${OIDC_JWKS_CACHE_MS:-300000}
+      - OIDC_JWKS_STALE_GRACE_MS=${OIDC_JWKS_STALE_GRACE_MS:-300000}
+      - OIDC_CLOCK_SKEW_SECONDS=${OIDC_CLOCK_SKEW_SECONDS:-60}
+      - PLUTONIX_DEV_AUTH_ENABLED=${PLUTONIX_DEV_AUTH_ENABLED:-false}
+      - PLUTONIX_SECRETS_PROVIDER=${PLUTONIX_SECRETS_PROVIDER:-}
+      - PLUTONIX_ENCRYPTION_KEY_REF=${PLUTONIX_ENCRYPTION_KEY_REF:-}
+      - PLUTONIX_EGRESS_ALLOWLIST=${PLUTONIX_EGRESS_ALLOWLIST:-}
+      - DECISION_CONTINUITY_ADAPTER=postgres
+      # Compose interpolates inactive profiles too. The worker entry point
+      # validates this value before startup, so a normal development `up` does
+      # not require a production database URL while the worker still fails
+      # closed whenever its profile is explicitly enabled.
+      - DECISION_CONTINUITY_DATABASE_URL=${DECISION_CONTINUITY_DATABASE_URL:-}
+      - DECISION_CONTINUITY_DURABLE_WORKFLOWS=true
+      - DECISION_CONTINUITY_WORKER_CONCURRENCY=${DECISION_CONTINUITY_WORKER_CONCURRENCY:-8}
+      - DECISION_CONTINUITY_WORKER_TENANT_CONCURRENCY=${DECISION_CONTINUITY_WORKER_TENANT_CONCURRENCY:-2}
+      - DECISION_CONTINUITY_WORKER_TENANT_QUEUE_LIMIT=${DECISION_CONTINUITY_WORKER_TENANT_QUEUE_LIMIT:-100}
+      - DECISION_CONTINUITY_WORKER_LEASE_MS=${DECISION_CONTINUITY_WORKER_LEASE_MS:-30000}
+      - DECISION_CONTINUITY_WORKER_MAX_ATTEMPTS=${DECISION_CONTINUITY_WORKER_MAX_ATTEMPTS:-5}
+      - DECISION_CONTINUITY_WORKER_MAX_REDRIVES=${DECISION_CONTINUITY_WORKER_MAX_REDRIVES:-2}
+      - DECISION_CONTINUITY_WORKER_POLL_MS=${DECISION_CONTINUITY_WORKER_POLL_MS:-500}
+      - DECISION_CONTINUITY_WORKER_SHUTDOWN_GRACE_MS=${DECISION_CONTINUITY_WORKER_SHUTDOWN_GRACE_MS:-20000}
+      - DECISION_CONTINUITY_WORKER_HEALTH_PORT=8081
+      - DECISION_CONTINUITY_WORKER_PRINCIPAL_ID=${DECISION_CONTINUITY_WORKER_PRINCIPAL_ID:-}
+    volumes:
+      - .:/workspace/project:ro
+    networks:
+      - plutonix
+    healthcheck:
+      test: ["CMD-SHELL", "node -e \"fetch('http://127.0.0.1:8081/readyz').then((r) => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))\""]
+      interval: 10s
+      timeout: 3s
+      retries: 6
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 768M
+
+  # Run explicitly before the API/worker rollout. It takes a PostgreSQL
+  # advisory lock, records checksums, and exits; normal replicas never migrate.
+  decision-continuity-migrate:
+    image: plutonix-backend:latest
+    profiles: ["decision-continuity-production"]
+    command: ["node", "scripts/migrate-decision-continuity-postgres.mjs"]
+    user: "node"
+    read_only: true
+    cap_drop: ["ALL"]
+    security_opt: ["no-new-privileges:true"]
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=64m
+    restart: "no"
+    environment:
+      - NODE_ENV=production
+      - DECISION_CONTINUITY_ADAPTER=postgres
+      # The migration script independently refuses an empty database URL.
+      - DECISION_CONTINUITY_DATABASE_URL=${DECISION_CONTINUITY_DATABASE_URL:-}
+    volumes:
+      - .:/workspace/project:ro
+    networks:
+      - plutonix
+
+  # Local-only helper. Production must supply its managed PostgreSQL endpoint
+  # through DECISION_CONTINUITY_DATABASE_URL and run the migration explicitly.
+  decision-continuity-db:
+    image: postgres:16-alpine
+    profiles: ["decision-continuity-postgres"]
+    environment:
+      POSTGRES_DB: plutonix_decision_continuity
+      POSTGRES_USER: plutonix
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "${DECISION_CONTINUITY_POSTGRES_PORT:-5433}:5432"
+    volumes:
+      - decision_continuity_postgres:/var/lib/postgresql/data
+    networks:
+      - plutonix
+
+networks:
+  plutonix:
+    name: plutonix
+    driver: bridge
+
+volumes:
+  generated_site_node_modules:
+    name: plutonix-generated-site-node-modules
+  decision_continuity_postgres:
+    name: plutonix-decision-continuity-postgres

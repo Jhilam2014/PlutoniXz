@@ -1,0 +1,282 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PlutoniX Product Shape Decision",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "artifactType",
+    "secondaryArtifactTypes",
+    "productShape",
+    "interactionModel",
+    "generationDepth",
+    "surfaceStrategy",
+    "previewStrategy",
+    "presentation",
+    "complexity",
+    "requiredCapabilities",
+    "primaryOutputPaths",
+    "requiredSurfaces",
+    "optionalSurfaces",
+    "prohibitedDefaults",
+    "explicitInstruction",
+    "decisionReasons",
+    "whyNotSimpler",
+    "whyNotMoreComplex",
+    "review"
+  ],
+  "properties": {
+    "version": {
+      "const": "1.0"
+    },
+    "artifactType": {
+      "enum": [
+        "existing_project",
+        "web_application",
+        "website",
+        "mobile_application",
+        "api_service",
+        "automation",
+        "data_workflow",
+        "infrastructure",
+        "document",
+        "presentation",
+        "image",
+        "video",
+        "audio",
+        "unspecified_digital_output"
+      ]
+    },
+    "secondaryArtifactTypes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "productShape": {
+      "enum": [
+        "artifact_only",
+        "focused_task_tool",
+        "app_shaped_page",
+        "production_application",
+        "deep_complex_platform",
+        "service_or_automation",
+        "existing_product_change"
+      ]
+    },
+    "interactionModel": {
+      "enum": [
+        "artifact_canvas",
+        "media_artifact",
+        "automation_package",
+        "service_contract",
+        "focused_tool",
+        "record_workspace",
+        "monitoring_dashboard",
+        "transactional_flow",
+        "browse_detail_transaction",
+        "mobile_flow",
+        "content_site",
+        "multi_surface_platform",
+        "conversation_workspace",
+        "workflow_application",
+        "preserve_existing"
+      ]
+    },
+    "generationDepth": {
+      "enum": [
+        "artifact",
+        "focused",
+        "shaped",
+        "production",
+        "deep",
+        "scoped"
+      ]
+    },
+    "surfaceStrategy": {
+      "type": "string",
+      "minLength": 1
+    },
+    "previewStrategy": {
+      "enum": [
+        "browser",
+        "file",
+        "media",
+        "service_contract",
+        "execution"
+      ]
+    },
+    "presentation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "informationDensity",
+        "navigationModel",
+        "spatialModel",
+        "componentFamily"
+      ],
+      "properties": {
+        "informationDensity": {
+          "type": "string"
+        },
+        "navigationModel": {
+          "type": "string"
+        },
+        "spatialModel": {
+          "type": "string"
+        },
+        "componentFamily": {
+          "type": "string"
+        }
+      }
+    },
+    "complexity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "score",
+        "dimensions",
+        "capabilities"
+      ],
+      "properties": {
+        "score": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "dimensions": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "entities",
+            "roles",
+            "workflow",
+            "persistence",
+            "integrations",
+            "governance",
+            "background",
+            "scale",
+            "surface",
+            "risk"
+          ],
+          "properties": {
+            "entities": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "roles": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "workflow": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "persistence": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "integrations": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "governance": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "background": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "scale": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "surface": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "risk": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "capabilities": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "requiredCapabilities": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "primaryOutputPaths": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      }
+    },
+    "requiredSurfaces": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "optionalSurfaces": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "prohibitedDefaults": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "explicitInstruction": {
+      "type": "boolean"
+    },
+    "decisionReasons": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      }
+    },
+    "whyNotSimpler": {
+      "type": "string",
+      "minLength": 1
+    },
+    "whyNotMoreComplex": {
+      "type": "string",
+      "minLength": 1
+    },
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "semanticRequired",
+        "checks"
+      ],
+      "properties": {
+        "semanticRequired": {
+          "type": "boolean"
+        },
+        "checks": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

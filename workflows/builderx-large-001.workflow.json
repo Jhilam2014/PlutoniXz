@@ -1,0 +1,13 @@
+{
+  "workflow_id": "plutonix-large-001",
+  "objective": "Create PlutoniX, a professional containerized webpage builder with React frontend, Node backend, MCP endpoint, and separate generated-site runtime.",
+  "workflow_classification": [
+    "software_engineering",
+    "dashboard_ui",
+    "api_system",
+    "infrastructure_system",
+    "ai_agent_system"
+  ],
+  "status": "implemented",
+  "created_at": "2026-06-25T00:00:00+05:30"
+}

@@ -1,0 +1,53 @@
+name: decision-continuity
+
+on:
+  pull_request:
+    paths:
+      - 'apps/backend/**'
+      - 'database/migrations/**'
+      - 'docker-compose.yml'
+      - '.github/workflows/decision-continuity.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'apps/backend/**'
+      - 'database/migrations/**'
+      - 'docker-compose.yml'
+
+jobs:
+  durable-workflow:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: decision_continuity_ci
+          POSTGRES_USER: plutonix
+          POSTGRES_HOST_AUTH_METHOD: trust
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U plutonix -d decision_continuity_ci"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      DECISION_CONTINUITY_TEST_DATABASE_URL: postgres://plutonix@127.0.0.1:5432/decision_continuity_ci
+      DECISION_CONTINUITY_DATABASE_URL: postgres://plutonix@127.0.0.1:5432/decision_continuity_ci
+      DECISION_CONTINUITY_ADAPTER: postgres
+      DECISION_CONTINUITY_DURABLE_WORKFLOWS: 'true'
+      NODE_ENV: test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Apply preceding schema state (upgrade fixture)
+        run: npm --prefix apps/backend run decision-continuity:migrate -- --to 004_decision_continuity_workflow_controls.sql
+      - name: Upgrade to current schema and validate migration checksums
+        run: npm --prefix apps/backend run decision-continuity:migrate
+      - run: npm --prefix apps/backend run decision-continuity:migrate -- --check
+      - run: npm --prefix apps/backend test
+      - run: npm --prefix apps/backend run test:integration
+      - run: npm run compose:config
+      - run: git diff --check

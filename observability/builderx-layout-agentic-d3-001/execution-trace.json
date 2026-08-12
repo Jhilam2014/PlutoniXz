@@ -1,0 +1,69 @@
+{
+  "workflow_id": "plutonix-layout-agentic-d3-001",
+  "started_at": "2026-06-25T10:34:26Z",
+  "completed_at": "2026-06-25T10:36:50Z",
+  "status": "completed",
+  "events": [
+    {
+      "type": "change",
+      "message": "Moved PlutoniX panel to the right and widened MCP chat."
+    },
+    {
+      "type": "change",
+      "message": "Added center Playground preview with 16:9 default aspect ratio and fit-screen toggle."
+    },
+    {
+      "type": "change",
+      "message": "Added major event Activity and MCP runtime cards with current-session light-green highlight."
+    },
+    {
+      "type": "change",
+      "message": "Expanded Agentic System D3 graph with agent functionality child nodes."
+    }
+  ],
+  "validation": [
+    {
+      "command": "python3 scripts/validate_project.py",
+      "status": "success"
+    },
+    {
+      "command": "Validate D3 graph node/link references",
+      "status": "success",
+      "nodes": 16,
+      "links": 18
+    },
+    {
+      "command": "docker compose up -d --build",
+      "status": "success"
+    },
+    {
+      "command": "docker compose exec -T frontend npm run build",
+      "status": "success"
+    },
+    {
+      "command": "docker compose exec -T generated-site npm run build",
+      "status": "success"
+    },
+    {
+      "command": "docker compose exec -T backend node --check src/server.js && node --check src/mcp.js && node --check src/generator.js",
+      "status": "success"
+    },
+    {
+      "command": "GET frontend, backend, generated-site, D3 page, D3 graph JSON",
+      "status": "success"
+    },
+    {
+      "command": "POST /mcp generate_webpage",
+      "status": "success",
+      "build_id": "build_JavwJlsdMU"
+    },
+    {
+      "command": "GET /api/runtime-log",
+      "status": "success",
+      "observed_rows": 240,
+      "under_400": true,
+      "newest_first": true,
+      "top_20_times_ist": true
+    }
+  ]
+}

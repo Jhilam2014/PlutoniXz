@@ -1,0 +1,28 @@
+{
+  "name": "@plutonix/backend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node --env-file-if-exists=../../.env --watch src/server.js",
+    "start": "node --env-file-if-exists=../../.env src/server.js",
+    "test": "node --test --test-concurrency=1 test/*.test.js",
+    "test:integration": "node --test --test-concurrency=1 test/integration/*.test.js",
+    "test:decision-continuity": "npm run decision-continuity:migrate && npm run test:integration",
+    "decision-continuity:migrate": "node scripts/migrate-decision-continuity-postgres.mjs",
+    "decision-continuity:smoke": "node scripts/decision-continuity-smoke.mjs",
+    "decision-continuity:import": "node scripts/import-decision-continuity-jsonl.mjs",
+    "decision-continuity:worker": "node scripts/decision-continuity-worker.mjs"
+  },
+  "dependencies": {
+    "adm-zip": "^0.6.0",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "fast-xml-parser": "^5.10.1",
+    "fs-extra": "^11.2.0",
+    "multer": "^2.0.2",
+    "nanoid": "^5.0.9",
+    "pg": "^8.13.1",
+    "zod": "^3.25.76"
+  }
+}

@@ -1,0 +1,207 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "QAgent Next Instruction Packet",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "continue",
+    "completion_score",
+    "stop_reason",
+    "gap_summary",
+    "missing_items",
+    "next_agent_type",
+    "next_instruction",
+    "validation_required",
+    "memory_update",
+    "iteration_control"
+  ],
+  "properties": {
+    "continue": {
+      "type": "boolean"
+    },
+    "completion_score": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "stop_reason": {
+      "type": "string"
+    },
+    "gap_summary": {
+      "type": "string"
+    },
+    "missing_items": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "next_agent_type": {
+      "type": "string"
+    },
+    "next_instruction": {
+      "type": "string"
+    },
+    "validation_required": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "activity_validation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "shape_fit",
+        "depth_fit",
+        "interaction_model_fit",
+        "generic_template_check",
+        "real_data_contract",
+        "data_provenance",
+        "required_data_handling",
+        "input_consumption",
+        "no_explainer_copy",
+        "notes"
+      ],
+      "properties": {
+        "shape_fit": {
+          "type": "string",
+          "enum": [
+            "passed",
+            "failed",
+            "not_applicable",
+            "unknown"
+          ]
+        },
+        "depth_fit": {
+          "type": "string",
+          "enum": [
+            "passed",
+            "underbuilt",
+            "overbuilt",
+            "not_applicable",
+            "unknown"
+          ]
+        },
+        "interaction_model_fit": {
+          "type": "string",
+          "enum": [
+            "passed",
+            "failed",
+            "not_applicable",
+            "unknown"
+          ]
+        },
+        "generic_template_check": {
+          "type": "string",
+          "enum": [
+            "passed",
+            "failed",
+            "not_applicable",
+            "unknown"
+          ]
+        },
+        "real_data_contract": {
+          "type": "string",
+          "enum": [
+            "passed",
+            "failed",
+            "not_applicable",
+            "unknown"
+          ]
+        },
+        "required_data_handling": {
+          "type": "string",
+          "enum": [
+            "provided",
+            "requested",
+            "placeholder_state",
+            "not_applicable",
+            "failed"
+          ]
+        },
+        "data_provenance": {
+          "type": "string",
+          "enum": [
+            "verified",
+            "placeholder_only",
+            "not_applicable",
+            "failed",
+            "unknown"
+          ]
+        },
+        "input_consumption": {
+          "type": "string",
+          "enum": [
+            "verified",
+            "retained_for_clarification",
+            "not_applicable",
+            "failed",
+            "unknown"
+          ]
+        },
+        "no_explainer_copy": {
+          "type": "string",
+          "enum": [
+            "passed",
+            "failed",
+            "not_applicable",
+            "unknown"
+          ]
+        },
+        "notes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "memory_update": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "store",
+        "summary",
+        "tags"
+      ],
+      "properties": {
+        "store": {
+          "type": "boolean"
+        },
+        "summary": {
+          "type": "string"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "iteration_control": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "current_iteration",
+        "max_iterations",
+        "stop_if_next_validation_passes"
+      ],
+      "properties": {
+        "current_iteration": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "max_iterations": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 8
+        },
+        "stop_if_next_validation_passes": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}

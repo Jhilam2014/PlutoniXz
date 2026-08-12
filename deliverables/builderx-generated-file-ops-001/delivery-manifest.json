@@ -1,0 +1,13 @@
+{
+  "workflow_id": "plutonix-generated-file-ops-001",
+  "deliverables": [
+    "apps/backend/src/generator.js",
+    "apps/backend/src/orchestratorAgent.js",
+    "apps/generated-site/src/generated/generatedPage.jsx",
+    "apps/generated-site/src/generated/generatedPage.css",
+    "apps/generated-site/src/generated/catalogData.js",
+    "apps/generated-site/src/generated/metadata.json",
+    "apps/generated-site/src/generated/README.generated.md"
+  ],
+  "created_at": "2026-06-25T00:00:00+05:30"
+}

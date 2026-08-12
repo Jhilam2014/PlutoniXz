@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "selectedAgent": {
+      "type": "string"
+    },
+    "decisionType": {
+      "type": "string"
+    },
+    "reuseConfidenceScore": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "similarityScore": {
+      "type": "number"
+    },
+    "reason": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "decisionType",
+    "reason"
+  ]
+}

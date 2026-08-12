@@ -1,0 +1,15 @@
+{
+  "workflow_id": "plutonix-mcp-console-trace-001",
+  "mode": "single_agent",
+  "agent_id": "project-execution-agent",
+  "context_budget": "small_context",
+  "steps": [
+    "PlutoniX frontend sends instruction to /mcp.",
+    "MCP handler emits staged JSON-RPC, orchestration, and plan events.",
+    "Generator emits workspace, per-file operation, and codegen completion events.",
+    "Runtime restart emits Docker restart request and result events.",
+    "Frontend displays newest process rows with stage/path/build metadata."
+  ],
+  "approval_gates": [],
+  "risk_level": "low"
+}

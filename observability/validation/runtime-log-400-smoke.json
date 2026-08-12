@@ -1,0 +1,28 @@
+{
+  "workflow_id": "plutonix-runtime-log-400-001",
+  "checked_at": "2026-06-25T07:04:53Z",
+  "status": "success",
+  "checks": {
+    "project_validation": "success",
+    "compose_config": "success",
+    "compose_rebuild": "success",
+    "mcp_generate": "success",
+    "runtime_log_endpoint": "success",
+    "runtime_log_rows": 40,
+    "runtime_log_under_400": true,
+    "runtime_log_newest_first": true,
+    "backend_node_check": "success",
+    "frontend_build": "success",
+    "generated_site_build": "success",
+    "first_runtime_log_types": [
+      "generated",
+      "restarted",
+      "files-applied",
+      "generating",
+      "file-plan",
+      "orchestrated",
+      "request-received",
+      "generated"
+    ]
+  }
+}

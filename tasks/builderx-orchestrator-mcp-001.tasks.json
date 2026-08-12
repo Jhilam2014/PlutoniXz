@@ -1,0 +1,21 @@
+{
+  "workflow_id": "plutonix-orchestrator-mcp-001",
+  "tasks": [
+    {
+      "id": "add-orchestrator-restructuring-service",
+      "status": "complete"
+    },
+    {
+      "id": "route-mcp-through-orchestrator",
+      "status": "complete"
+    },
+    {
+      "id": "surface-orchestrated-response",
+      "status": "complete"
+    },
+    {
+      "id": "validate-mcp-generation",
+      "status": "complete"
+    }
+  ]
+}

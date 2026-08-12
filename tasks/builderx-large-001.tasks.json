@@ -1,0 +1,29 @@
+{
+  "workflow_id": "plutonix-large-001",
+  "tasks": [
+    {
+      "id": "frontend-control-surface",
+      "status": "complete"
+    },
+    {
+      "id": "backend-generation-api",
+      "status": "complete"
+    },
+    {
+      "id": "mcp-endpoint",
+      "status": "complete"
+    },
+    {
+      "id": "generated-site-runtime",
+      "status": "complete"
+    },
+    {
+      "id": "docker-compose-topology",
+      "status": "complete"
+    },
+    {
+      "id": "validation",
+      "status": "pending_runtime"
+    }
+  ]
+}

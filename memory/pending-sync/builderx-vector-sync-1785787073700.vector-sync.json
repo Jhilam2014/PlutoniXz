@@ -1,0 +1,15 @@
+{
+  "workflow_id": "plutonix-vector-sync-1785787073700",
+  "reason": "periodic",
+  "status": "failed",
+  "started_at": "2026-08-03T19:57:53.700Z",
+  "completed_at": "2026-08-03T19:57:53.700Z",
+  "errors": [
+    "OpenAI API 504: request failed"
+  ],
+  "local_files_scanned": 0,
+  "files_uploaded": 0,
+  "files_skipped": 0,
+  "files_failed": 1,
+  "pending_sync_count": 1
+}

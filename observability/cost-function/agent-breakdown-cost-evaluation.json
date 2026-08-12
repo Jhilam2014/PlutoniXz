@@ -1,0 +1,15 @@
+{
+  "generated_at": "2026-06-25T00:00:00+05:30",
+  "workflow_id": "plutonix-large-001",
+  "task_size": "large",
+  "decision": "single_fullstack_agent",
+  "reason": "The initial product build spans frontend, backend, generated runtime, and Docker, but the files are tightly coupled and early-stage. One fullstack agent minimizes coordination cost while preserving clear cluster ownership.",
+  "specialist_agents_created": 1,
+  "review_agents_created": 0,
+  "human_review_required": false,
+  "risk_controls": [
+    "No arbitrary shell execution from prompts",
+    "Generated writes constrained to generated-site source",
+    "External LLM integration requires future approval"
+  ]
+}

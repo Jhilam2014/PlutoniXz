@@ -1,0 +1,34 @@
+# Each service image only needs its own application source. The whitelist below
+# is the effective build-context boundary. These explicit
+# exclusions keep that boundary auditable if the whitelist changes later.
+node_modules/
+dist/
+.env
+.env.*
+.secrets/
+secrets/
+credentials/
+*.pem
+*.key
+*.p12
+*.pfx
+runtime/
+memory/
+observability/
+deliverables/
+*
+!apps/
+!apps/backend/
+!apps/backend/**
+!apps/frontend/
+!apps/frontend/**
+!apps/generated-site/
+!apps/generated-site/**
+!package.json
+!package-lock.json
+!.env.example
+
+# Dependencies are installed inside the service image.
+apps/*/node_modules/
+apps/frontend/dist/
+apps/generated-site/dist/

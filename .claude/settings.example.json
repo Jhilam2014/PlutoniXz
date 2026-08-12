@@ -1,0 +1,19 @@
+{
+  "instructions": [
+    "Read CLAUDE.md",
+    "Read AGENTS.md",
+    "Read ROOT_WORKSPACE_GENERATION_POLICY.md",
+    "Use .claude/prompts/bootstrap-orchestrator.md for bootstrap-only workflows",
+    "Use .claude/prompts/task-router.md for task type routing",
+    "Use .claude/prompts/task-qagentic.md for QAgentic continuation review when requested"
+  ],
+  "prompt_files": {
+    "bootstrap": ".claude/prompts/bootstrap-orchestrator.md",
+    "bootstrap_qagentic": ".claude/prompts/bootstrap-orchestrator-qagentic.md",
+    "task_router": ".claude/prompts/task-router.md",
+    "task_small": ".claude/prompts/task-small.md",
+    "task_medium": ".claude/prompts/task-medium.md",
+    "task_large": ".claude/prompts/task-large.md",
+    "task_qagentic": ".claude/prompts/task-qagentic.md"
+  }
+}

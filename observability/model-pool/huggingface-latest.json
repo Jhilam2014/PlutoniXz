@@ -1,0 +1,33 @@
+{
+  "status": "ok",
+  "poolRoot": "/workspace/project/runtime/model-pool/huggingface",
+  "modelsRoot": "/workspace/project/runtime/model-pool/huggingface/models",
+  "totalRecords": 7,
+  "downloads": 7,
+  "downloaded": 0,
+  "planned": 0,
+  "failed": 7,
+  "services": 0,
+  "latest": {
+    "id": "hf_e480a560f3d499a2",
+    "recordedAt": "2026-08-05T10:29:46.043Z",
+    "type": "download",
+    "status": "failed",
+    "repoId": "text/background",
+    "task": "image-to-video",
+    "localDir": "/workspace/project/runtime/model-pool/huggingface/models/text__background",
+    "readmePath": "",
+    "durationMs": 97,
+    "downloadMode": "full-repository-with-weights",
+    "sizeBytes": null,
+    "sizeGb": null,
+    "sizeLabel": "unknown size",
+    "sizeSource": "model_api_unavailable_401",
+    "error": "HF CLI is not installed. Install with: curl -LsSf https://hf.co/cli/install.sh | bash -s",
+    "sourceInstruction": "Local Hugging Face endpoint is unavailable: fetch failed. Set HF_MEDIA_EXECUTION_MODE=hosted with HUGGINGFACE_API_TOKEN to use hosted generation. Mode video Style Fashion motion Model Wan2.1-I2V-14B-720P Branding colours: Commerce Energy (#FF6A1C, #FFDA62, #FFAE56, #F5788B). Recommended for commerce, shop. Use these as brand direction while maintaining accessible text/background contrast."
+  },
+  "performance": {
+    "completedDownloads": 0,
+    "averageDownloadMs": 83
+  }
+}

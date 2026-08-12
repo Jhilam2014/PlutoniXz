@@ -1,0 +1,27 @@
+{
+  "project_name": "plutonix",
+  "generated_at": "2026-06-25T00:00:00+05:30",
+  "roots": [
+    {
+      "path": "apps/frontend",
+      "type": "frontend",
+      "framework": "React + Vite"
+    },
+    {
+      "path": "apps/backend",
+      "type": "backend",
+      "framework": "Node.js + Express"
+    },
+    {
+      "path": "apps/generated-site",
+      "type": "generated_runtime",
+      "framework": "React + Vite"
+    }
+  ],
+  "entrypoints": [
+    "apps/frontend/src/App.jsx",
+    "apps/backend/src/server.js",
+    "apps/generated-site/src/App.jsx",
+    "docker-compose.yml"
+  ]
+}

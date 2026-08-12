@@ -1,0 +1,17 @@
+{
+  "workflow_id": "plutonix-container-restart-001",
+  "tasks": [
+    {
+      "id": "route-frontend-through-mcp",
+      "status": "complete"
+    },
+    {
+      "id": "add-generated-container-restart",
+      "status": "complete"
+    },
+    {
+      "id": "validate-restart-flow",
+      "status": "complete"
+    }
+  ]
+}

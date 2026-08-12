@@ -1,0 +1,36 @@
+{
+  "schema_version": "08A1C-repository-facts-v1",
+  "source_manifest_run_id": "20260811T214249Z",
+  "reviewed_at": "2026-08-11T21:51:32Z",
+  "validator_version": "08A1C-repository-fact-discovery-v1",
+  "source_report_sanitation": "STRUCTURALLY_VERIFIED_SECRET_AND_MATCH_REDACTED",
+  "inspection_scope": "All logical items classified; only a fixed committed test-fixture proof family is eligible for Path A in this run. Local .env files are never opened by this discovery control.",
+  "totals": {
+    "logical_items_inspected": 14849,
+    "repository_terminal_facts": 1,
+    "path_classification_totals": {
+      "PATH_A_REPOSITORY_FACT": 1,
+      "PATH_B_EXTERNAL_AUTHORITY_OR_PROVIDER": 14848
+    },
+    "proof_family_totals": {
+      "DETERMINISTIC_COMMITTED_FIXTURE": 1
+    }
+  },
+  "repository_facts": [
+    {
+      "logical_item_id": "LI-0688064EDD3166F6BF2C",
+      "canonical_occurrence_id": "CAN-C72D312C425698BFD264",
+      "closure_path": "PATH_A_REPOSITORY_FACT",
+      "disposition": "VERIFIED_SYNTHETIC_FIXTURE",
+      "proof_family": "DETERMINISTIC_COMMITTED_FIXTURE",
+      "reason_code": "DETERMINISTIC_NON_PROVIDER_TEST_FIXTURE",
+      "safe_provenance": "Current-tree scanner location and line metadata point to the committed operational-security test; its local fake-token builder is deterministic and non-provider-shaped.",
+      "source_version": "operational-security-fixture-source-v1",
+      "validator_version": "08A1C-repository-fact-discovery-v1",
+      "proof_reference": "apps/backend/test/operationalSecurity.test.js; .gitleaks.toml custom fake-fixture control",
+      "generator_proof_reference": "apps/backend/test/operationalSecurity.test.js deterministic fake-token builder",
+      "regression_test_reference": "apps/backend/test/operationalSecurity.test.js; scripts/secret-scan.sh verify-fixture",
+      "repository_verification_timestamp": "2026-08-11T21:51:32Z"
+    }
+  ]
+}

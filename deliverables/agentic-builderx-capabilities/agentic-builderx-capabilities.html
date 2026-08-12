@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PlutoniX - From instruction to running application</title>
+  <style>
+    @page { size: A4 landscape; margin: 0; }
+    * { box-sizing: border-box; }
+    :root {
+      --ink: #101827;
+      --muted: #5c687c;
+      --paper: #f7f9fc;
+      --line: #dbe2ec;
+      --blue: #2463eb;
+      --cyan: #27b6d4;
+      --mint: #2fc99d;
+      --lime: #c8ff4d;
+      --navy: #0e1930;
+    }
+    html, body { margin: 0; padding: 0; background: #d9dee7; color: var(--ink); font-family: Inter, Arial, Helvetica, sans-serif; }
+    body { counter-reset: page; }
+    .page {
+      width: 297mm;
+      height: 210mm;
+      padding: 15mm 17mm 13mm;
+      position: relative;
+      overflow: hidden;
+      background: var(--paper);
+      page-break-after: always;
+      counter-increment: page;
+    }
+    .page:last-child { page-break-after: auto; }
+    .page::after {
+      content: counter(page, decimal-leading-zero);
+      position: absolute;
+      right: 17mm;
+      bottom: 7mm;
+      font-size: 9px;
+      font-weight: 800;
+      color: #7a8799;
+    }
+    .footer {
+      position: absolute;
+      left: 17mm;
+      bottom: 7mm;
+      color: #7a8799;
+      font-size: 8px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .brand { display: flex; align-items: center; gap: 9px; font-weight: 800; }
+    .brand-mark { width: 31px; height: 31px; border-radius: 7px; display: grid; place-items: center; color: white; background: linear-gradient(145deg, var(--cyan), var(--blue)); font-size: 18px; }
+    .eyebrow { color: var(--blue); font-size: 10px; line-height: 1; font-weight: 900; text-transform: uppercase; margin-bottom: 10px; }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 { font-size: 39px; line-height: 1.02; margin-bottom: 13px; letter-spacing: 0; }
+    h2 { font-size: 27px; line-height: 1.06; margin-bottom: 8px; letter-spacing: 0; }
+    h3 { font-size: 13px; line-height: 1.2; margin-bottom: 6px; }
+    p { font-size: 12px; line-height: 1.45; color: var(--muted); }
+    .lede { font-size: 16px; max-width: 610px; line-height: 1.4; color: #354157; }
+    .topline { display: flex; justify-content: space-between; align-items: center; margin-bottom: 11mm; }
+    .tag { border: 1px solid var(--line); padding: 6px 9px; border-radius: 4px; font-size: 9px; font-weight: 800; color: var(--muted); background: white; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 13mm; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6mm; }
+    .card { background: white; border: 1px solid var(--line); border-radius: 6px; padding: 6mm; }
+    .metric { border-top: 3px solid var(--cyan); padding-top: 4mm; }
+    .metric strong { display: block; font-size: 23px; margin-bottom: 3px; }
+    .metric span { color: var(--muted); font-size: 10px; line-height: 1.35; }
+    .cover { background: var(--navy); color: white; padding: 15mm 17mm; }
+    .cover::before { content: ""; position: absolute; inset: auto -20mm -45mm auto; width: 160mm; height: 160mm; border-radius: 50%; border: 1px solid #284464; box-shadow: 0 0 0 27mm #142744, 0 0 0 54mm #112038; }
+    .cover .brand, .cover h1 { color: white; }
+    .cover .eyebrow { color: #63daf1; }
+    .cover .lede { color: #b8c6da; }
+    .cover .footer, .cover::after { color: #8092aa; }
+    .cover-copy { position: relative; z-index: 2; width: 53%; margin-top: 17mm; }
+    .cover h1 { font-size: 47px; max-width: 610px; }
+    .cover-shot { position: absolute; z-index: 2; width: 47%; right: -12mm; top: 35mm; border: 1px solid #3a5576; border-radius: 7px; overflow: hidden; box-shadow: 0 20px 60px #050a1480; transform: rotate(-1deg); }
+    .cover-shot img { display: block; width: 100%; }
+    .pill-row { display: flex; gap: 7px; margin-top: 20px; }
+    .pill { border: 1px solid #3a5475; color: #d8e3f1; border-radius: 4px; padding: 6px 9px; font-size: 9px; font-weight: 800; }
+    .capability { min-height: 38mm; }
+    .capability .num { color: var(--blue); font-weight: 900; font-size: 10px; margin-bottom: 7px; }
+    .capability p { font-size: 10px; margin-bottom: 0; }
+    .flow { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5mm; margin-top: 12mm; }
+    .flow-step { position: relative; padding: 6mm 5mm; min-height: 48mm; background: white; border: 1px solid var(--line); border-radius: 6px; }
+    .flow-step:not(:last-child)::after { content: "\2192"; position: absolute; right: -4.5mm; top: 21mm; z-index: 2; width: 4mm; text-align: center; color: var(--blue); font-weight: 900; }
+    .flow-step b { display: grid; place-items: center; width: 23px; height: 23px; margin-bottom: 12px; border-radius: 4px; color: white; background: var(--blue); font-size: 10px; }
+    .flow-step p { font-size: 9.5px; margin: 0; }
+    .callout { margin-top: 8mm; padding: 5mm 6mm; border-left: 4px solid var(--mint); background: #eaf8f4; color: #17483b; font-size: 11px; font-weight: 700; }
+    .screenshot-frame { background: white; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; box-shadow: 0 8px 25px #1c2a4018; }
+    .screenshot-frame img { display: block; width: 100%; }
+    .control-shot { height: 132mm; }
+    .control-shot img { height: 100%; object-fit: cover; object-position: right top; }
+    .number-list { display: grid; gap: 8mm; padding-top: 5mm; }
+    .number-item { display: grid; grid-template-columns: 28px 1fr; gap: 9px; }
+    .number-item b { width: 26px; height: 26px; display: grid; place-items: center; border-radius: 4px; color: white; background: var(--blue); font-size: 11px; }
+    .number-item p { font-size: 10px; margin: 2px 0 0; }
+    .app-page { background: #f4f6f9; }
+    .app-layout { display: grid; grid-template-columns: 2.1fr 0.9fr; gap: 9mm; align-items: start; }
+    .app-shot { height: 135mm; }
+    .app-shot img { width: 100%; height: 100%; object-fit: cover; object-position: top left; }
+    .fact { padding: 5mm 0; border-bottom: 1px solid var(--line); }
+    .fact:last-child { border-bottom: 0; }
+    .fact small { display: block; color: var(--blue); font-size: 8px; font-weight: 900; text-transform: uppercase; margin-bottom: 4px; }
+    .fact strong { font-size: 13px; line-height: 1.25; display: block; }
+    .fact p { font-size: 9.5px; margin: 4px 0 0; }
+    .architecture { display: grid; grid-template-columns: 0.8fr 1.5fr 0.8fr; gap: 9mm; align-items: center; margin-top: 12mm; }
+    .arch-stack { display: grid; gap: 5mm; }
+    .arch-box { padding: 5mm; background: white; border: 1px solid var(--line); border-radius: 6px; }
+    .arch-box p { font-size: 9px; margin: 3px 0 0; }
+    .arch-center { padding: 10mm; border-radius: 7px; background: var(--navy); color: white; text-align: center; }
+    .arch-center p { color: #b7c4d7; font-size: 10px; }
+    .agent-row { display: flex; justify-content: center; gap: 5px; margin-top: 7mm; }
+    .agent-chip { width: 22mm; min-height: 19mm; padding: 4mm 2mm; display: grid; place-items: center; background: #1c3151; border: 1px solid #3c5578; border-radius: 5px; font-size: 8px; line-height: 1.2; }
+    .export-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 13mm; margin-top: 11mm; }
+    .package { background: var(--navy); color: white; padding: 8mm; border-radius: 7px; }
+    .package p { color: #b9c7d8; }
+    .file-list { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; margin-top: 7mm; }
+    .file { background: #192b47; border: 1px solid #304865; border-radius: 4px; padding: 4mm; font-size: 9px; font-weight: 800; }
+    .checklist { display: grid; gap: 5mm; }
+    .check { display: grid; grid-template-columns: 22px 1fr; gap: 9px; padding-bottom: 5mm; border-bottom: 1px solid var(--line); }
+    .check i { width: 21px; height: 21px; border-radius: 50%; display: grid; place-items: center; color: #0d513f; background: #d9f6ed; font-style: normal; font-weight: 900; }
+    .check p { font-size: 9.5px; margin: 2px 0 0; }
+    .closing { padding: 18mm; background: #e9f8f4; border: 1px solid #c9ece2; border-radius: 7px; margin-top: 10mm; display: grid; grid-template-columns: 1.6fr 0.7fr; gap: 15mm; align-items: center; }
+    .closing h2 { font-size: 31px; }
+    .closing-stat { border-left: 1px solid #a8dacc; padding-left: 10mm; }
+    .closing-stat strong { font-size: 33px; display: block; color: #116650; }
+    .closing-stat span { font-size: 10px; line-height: 1.4; color: #427264; }
+    .export-page .export-grid { margin-top: 7mm; }
+    .export-page .package { padding: 6mm; }
+    .export-page .file-list { margin-top: 4mm; gap: 3mm; }
+    .export-page .file { padding: 3mm; }
+    .export-page .checklist { gap: 3mm; }
+    .export-page .check { padding-bottom: 3mm; }
+    .export-page .closing { margin-top: 6mm; padding: 10mm 12mm; }
+    .export-page .closing h2 { font-size: 25px; margin-bottom: 5px; }
+    .export-page .closing p { font-size: 10px; }
+    .export-page .closing-stat strong { font-size: 27px; }
+  </style>
+</head>
+<body>
+  <section class="page cover">
+    <div class="topline">
+      <div class="brand"><span class="brand-mark">+</span> PlutoniX</div>
+      <div class="tag">CAPABILITY BRIEF / 2026</div>
+    </div>
+    <div class="cover-copy">
+      <div class="eyebrow">From instruction to running application</div>
+      <h1>Describe the product. PlutoniX creates the working app.</h1>
+      <p class="lede">A Codex-powered application builder that turns a plain-language brief into a project-scoped team of agents, an isolated workspace, a live preview, and an exportable full-stack package.</p>
+      <div class="pill-row">
+        <span class="pill">Prompt driven</span>
+        <span class="pill">Project isolated</span>
+        <span class="pill">Live playground</span>
+        <span class="pill">Docker ready</span>
+      </div>
+    </div>
+    <div class="cover-shot"><img src="assets/mapex.png" alt="Mapex generated application"></div>
+    <div class="footer">PlutoniX / Product overview</div>
+  </section>
+
+  <section class="page">
+    <div class="topline">
+      <div class="brand"><span class="brand-mark">+</span> PlutoniX</div>
+      <div class="tag">WHAT IT CAN DO</div>
+    </div>
+    <div class="eyebrow">One control surface, complete delivery path</div>
+    <h2>More than a page generator</h2>
+    <p class="lede">PlutoniX manages the work around generation too: project boundaries, specialist coordination, live execution, iteration, media context, existing-project import, and deployment handoff.</p>
+    <div class="grid-3" style="margin-top: 10mm;">
+      <div class="card capability"><div class="num">01 / INTERPRET</div><h3>Turn a brief into a build plan</h3><p>The orchestrator reads the instruction, identifies the product type and sections, and prepares a structured request.</p></div>
+      <div class="card capability"><div class="num">02 / STAFF</div><h3>Create project-specific agents</h3><p>Each project receives a distinguishable orchestrator plus relevant UI, content, data, commerce, media, or packaging specialists.</p></div>
+      <div class="card capability"><div class="num">03 / ISOLATE</div><h3>Give every project its own home</h3><p>Generated apps live as detachable sibling folders under the root workspace, with a dedicated runtime port and project identity.</p></div>
+      <div class="card capability"><div class="num">04 / BUILD</div><h3>Use the current Codex workflow</h3><p>The Run workflow action sends the selected project's instruction and media context to Codex and reports progress in the runtime log.</p></div>
+      <div class="card capability"><div class="num">05 / REVIEW</div><h3>Preview and switch instantly</h3><p>The project dropdown selects the active app; the Playground follows its assigned localhost address without mixing project state.</p></div>
+      <div class="card capability"><div class="num">06 / DELIVER</div><h3>Export a runnable full-stack package</h3><p>Download source with frontend, backend, PostgreSQL service, environment configuration, Dockerfiles, and Compose orchestration.</p></div>
+    </div>
+    <div class="footer">Capability overview</div>
+  </section>
+
+  <section class="page">
+    <div class="topline">
+      <div class="brand"><span class="brand-mark">+</span> PlutoniX</div>
+      <div class="tag">HOW EASY IS IT?</div>
+    </div>
+    <div class="eyebrow">A five-step workflow</div>
+    <h2>From idea to preview without setup ceremony</h2>
+    <div class="flow">
+      <div class="flow-step"><b>1</b><h3>Name the project</h3><p>PlutoniX creates a clearly named folder and reserves an exclusive port.</p></div>
+      <div class="flow-step"><b>2</b><h3>Describe the outcome</h3><p>Write the product, audience, sections, tone, data needs, and interactions in normal language.</p></div>
+      <div class="flow-step"><b>3</b><h3>Add context</h3><p>Attach images or media, or import an existing zipped project that needs enhancement.</p></div>
+      <div class="flow-step"><b>4</b><h3>Run workflow</h3><p>The project orchestrator assigns specialists and Codex edits the selected workspace.</p></div>
+      <div class="flow-step"><b>5</b><h3>Review and export</h3><p>Use the live Playground, iterate with another instruction, then export the complete app.</p></div>
+    </div>
+    <div class="callout">The key interaction is intentionally simple: select a project, describe the change, and run. PlutoniX handles where the code belongs, which runtime serves it, and which agents own the work.</div>
+    <div class="grid-3" style="margin-top: 9mm;">
+      <div class="metric"><strong>1 prompt</strong><span>Starts a complete project generation workflow.</span></div>
+      <div class="metric"><strong>1 live view</strong><span>Keeps the selected project's output visible while you iterate.</span></div>
+      <div class="metric"><strong>1 export</strong><span>Packages the source and supporting services for handoff.</span></div>
+    </div>
+    <div class="footer">Generation workflow</div>
+  </section>
+
+  <section class="page">
+    <div class="topline">
+      <div class="brand"><span class="brand-mark">+</span> PlutoniX</div>
+      <div class="tag">THE CONTROL SURFACE</div>
+    </div>
+    <div class="grid-2" style="grid-template-columns: 1.55fr 0.7fr; gap: 9mm;">
+      <div class="screenshot-frame control-shot"><img src="assets/plutonix.png" alt="PlutoniX control surface"></div>
+      <div>
+        <div class="eyebrow">Everything stays in context</div>
+        <h2>Build, observe, and switch projects in one place</h2>
+        <div class="number-list">
+          <div class="number-item"><b>1</b><div><h3>Project-aware Playground</h3><p>The selected project controls the preview URL and port.</p></div></div>
+          <div class="number-item"><b>2</b><div><h3>Instruction and workflow</h3><p>Send a new build or a focused revision directly to Codex.</p></div></div>
+          <div class="number-item"><b>3</b><div><h3>Media and project import</h3><p>Add visual references or bring an existing application into the same managed workflow.</p></div></div>
+          <div class="number-item"><b>4</b><div><h3>Visible runtime progress</h3><p>See connection state, build progress, file changes, and runtime refresh events.</p></div></div>
+          <div class="number-item"><b>5</b><div><h3>One-click export</h3><p>Package the selected project instead of exporting an unrelated global build.</p></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="footer">Builder workspace / Static documentation capture</div>
+  </section>
+
+  <section class="page app-page">
+    <div class="topline">
+      <div class="brand"><span class="brand-mark">+</span> PlutoniX</div>
+      <div class="tag">GENERATED EXAMPLE 01</div>
+    </div>
+    <div class="app-layout">
+      <div class="screenshot-frame app-shot"><img src="assets/map-business.png" alt="LedgerIQ generated application"></div>
+      <div>
+        <div class="eyebrow">LedgerIQ / Finance SaaS</div>
+        <h2>A confident homepage for an AI finance analyst</h2>
+        <p>Generated from a concise brief requesting a premium SaaS homepage with a hero, KPI strip, workflow, pricing teaser, and polished call to action.</p>
+        <div class="fact"><small>Visual direction</small><strong>High-trust enterprise product</strong><p>Dark analytical canvas, bright data accents, dense financial UI, and clear navigation.</p></div>
+        <div class="fact"><small>Product storytelling</small><strong>Outcome first, evidence close behind</strong><p>Strong headline paired with forecast confidence, variance review, and operational metrics.</p></div>
+        <div class="fact"><small>Implementation result</small><strong>Responsive React + Vite app</strong><p>Generated as its own named workspace with source that can be iterated independently.</p></div>
+      </div>
+    </div>
+    <div class="footer">Real generated application / LedgerIQ</div>
+  </section>
+
+  <section class="page app-page">
+    <div class="topline">
+      <div class="brand"><span class="brand-mark">+</span> PlutoniX</div>
+      <div class="tag">GENERATED EXAMPLE 02</div>
+    </div>
+    <div class="app-layout">
+      <div class="screenshot-frame app-shot"><img src="assets/mapex.png" alt="Mapex generated application"></div>
+      <div>
+        <div class="eyebrow">Mapex / Location intelligence</div>
+        <h2>A distinct product experience from the same workflow</h2>
+        <p>Mapex demonstrates range: a location-based business research product with an expressive search-radius visual, clear data promise, and export-focused positioning.</p>
+        <div class="fact"><small>Visual direction</small><strong>Editorial geospatial interface</strong><p>Grid structure, radar rings, local markers, and a precise high-contrast action system.</p></div>
+        <div class="fact"><small>Product storytelling</small><strong>Every business within 100 km</strong><p>The value proposition, coverage, captured fields, and CSV output are understandable immediately.</p></div>
+        <div class="fact"><small>Proof of flexibility</small><strong>Not a reused finance template</strong><p>Brand language, information architecture, typography, and interaction cues adapt to the product domain.</p></div>
+      </div>
+    </div>
+    <div class="footer">Real generated application / Mapex</div>
+  </section>
+
+  <section class="page">
+    <div class="topline">
+      <div class="brand"><span class="brand-mark">+</span> PlutoniX</div>
+      <div class="tag">PROJECT-SCOPED INTELLIGENCE</div>
+    </div>
+    <div class="eyebrow">How PlutoniX stays organized</div>
+    <h2>Every app gets boundaries, ownership, and an explainable agent team</h2>
+    <p class="lede">The orchestrator does not treat every instruction as the same job. It creates a project relationship model, assigns relevant specialists, and keeps that topology available to the D3/Neo4j system view.</p>
+    <div class="architecture">
+      <div class="arch-stack">
+        <div class="arch-box"><h3>Named workspace</h3><p>A detachable project folder under the root workspace.</p></div>
+        <div class="arch-box"><h3>Exclusive port</h3><p>A preview address that belongs only to that project.</p></div>
+        <div class="arch-box"><h3>Selected context</h3><p>Instructions and uploaded media target the active app.</p></div>
+      </div>
+      <div class="arch-center">
+        <div class="eyebrow" style="color:#64d9ef;">Project orchestrator</div>
+        <h2 style="font-size:23px;">Reads the brief, forms the team, coordinates Codex</h2>
+        <p>Relationships are stored as project ownership and delegation links, making each project's agent graph distinguishable.</p>
+        <div class="agent-row">
+          <span class="agent-chip">UI composition</span>
+          <span class="agent-chip">Content + data</span>
+          <span class="agent-chip">Domain specialist</span>
+          <span class="agent-chip">Runtime packaging</span>
+        </div>
+      </div>
+      <div class="arch-stack">
+        <div class="arch-box"><h3>Codex execution</h3><p>Edits real files in the selected project workspace.</p></div>
+        <div class="arch-box"><h3>Runtime events</h3><p>Shows progress, changes, refresh, and completion.</p></div>
+        <div class="arch-box"><h3>Graph visibility</h3><p>D3 presents project-to-agent relationships for review.</p></div>
+      </div>
+    </div>
+    <div class="footer">Project architecture / Agent ownership</div>
+  </section>
+
+  <section class="page export-page">
+    <div class="topline">
+      <div class="brand"><span class="brand-mark">+</span> PlutoniX</div>
+      <div class="tag">HANDOFF READY</div>
+    </div>
+    <div class="eyebrow">The generated work remains yours</div>
+    <h2>Preview in PlutoniX. Export as an independent application.</h2>
+    <div class="export-grid">
+      <div class="package">
+        <h3 style="font-size:16px;">Exported application package</h3>
+        <p>The selected app is packaged with the components needed for local development and containerized deployment.</p>
+        <div class="file-list">
+          <div class="file">Frontend source</div>
+          <div class="file">Backend service</div>
+          <div class="file">package.json</div>
+          <div class="file">.env</div>
+          <div class="file">Dockerfiles</div>
+          <div class="file">docker-compose.yml</div>
+          <div class="file">PostgreSQL service</div>
+          <div class="file">Project assets</div>
+        </div>
+      </div>
+      <div class="checklist">
+        <div class="check"><i>+</i><div><h3>Independent by design</h3><p>Each project lives outside the PlutoniX app folder and is added to the root gitignore, so it can be detached or moved when needed.</p></div></div>
+        <div class="check"><i>+</i><div><h3>Safe to continue</h3><p>Source files, environment placeholders, dependency manifests, and container definitions support future development rather than a screenshot-only handoff.</p></div></div>
+        <div class="check"><i>+</i><div><h3>Easy to revisit</h3><p>Import an existing zipped app, assign it a managed workspace and port, then use the same instruction-and-preview loop for enhancements.</p></div></div>
+      </div>
+    </div>
+    <div class="closing">
+      <div><div class="eyebrow">The practical promise</div><h2>Ideas become inspectable, editable, runnable software.</h2><p style="margin-bottom:0;">PlutoniX compresses the distance between describing a product and having a real codebase in front of you, while preserving the project boundaries and deployment artifacts serious work needs.</p></div>
+      <div class="closing-stat"><strong>Prompt to app</strong><span>with live preview, project-specific agents, isolated runtime, and full-stack export.</span></div>
+    </div>
+    <div class="footer">PlutoniX / Capability brief</div>
+  </section>
+</body>
+</html>

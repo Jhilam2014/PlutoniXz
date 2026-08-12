@@ -1,0 +1,25 @@
+{
+  "workflow_id": "plutonix-layout-agentic-d3-001",
+  "tasks": [
+    {
+      "task_id": "layout-restructure",
+      "description": "Create a three-zone workspace with wide chat, center Playground, and right-side PlutoniX panel.",
+      "status": "completed"
+    },
+    {
+      "task_id": "logs-and-ist",
+      "description": "Ensure visible times render in IST and major current-session events are shown with light-green highlighting.",
+      "status": "completed"
+    },
+    {
+      "task_id": "agentic-d3",
+      "description": "Generate/update D3 graph data and page for agents, functionalities, child nodes, services, memory, graph, and human review.",
+      "status": "completed"
+    },
+    {
+      "task_id": "validation",
+      "description": "Validate builds, endpoints, runtime logs, and D3 page availability.",
+      "status": "completed"
+    }
+  ]
+}

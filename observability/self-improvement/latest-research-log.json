@@ -1,0 +1,66 @@
+{
+  "id": "si_research_9de5ca74-0a1e-4d2b-8be8-3d62677d6112",
+  "schemaVersion": "1.0.0",
+  "timestamp": "2026-08-12T17:11:45.544Z",
+  "orchestratorAgent": "self-improvement-orchestrator",
+  "agents": [
+    {
+      "agentId": "plutonix-competitive-tools-research-agent",
+      "role": "competitive-tool-scout",
+      "scope": "Compare agentic app builders, coding agents, orchestration dashboards, and deployment products against the PlutoniX market vision: verified delivery, cross-project learning, controlled evolution, customer-owned execution, Gotham Chat clarity and design proof."
+    },
+    {
+      "agentId": "plutonix-literature-research-agent",
+      "role": "research-paper-scout",
+      "scope": "Track relevant papers and technical writeups on agent reliability, evaluation, cost control, self-improvement safety, evidence reports, rollback, outcome-based agent scoring and Project Intelligence Passport design."
+    },
+    {
+      "agentId": "plutonix-marketplace-research-agent",
+      "role": "marketplace-signal-scout",
+      "scope": "Look for marketplace/blog/documentation signals that suggest practical UX, Gotham Chat, buyer-proof, demo, paid-beta, design and workflow improvements aligned with the PlutoniX market differentiation report."
+    },
+    {
+      "agentId": "plutonix-design-workshop-research-agent",
+      "role": "periodic-design-workshop-scout",
+      "scope": "Periodically review PlutoniX UI growth, Gotham Chat ergonomics, command placement, frontend workflow clarity, accessibility, responsive behavior, visual hierarchy, and professional aesthetic quality. Recommend user-friendly design improvements that preserve existing functionality and reduce control/log/panel friction."
+    }
+  ],
+  "topic": "Orchestrator health audit critical: 7 issues found",
+  "reason": "investigator-agent-random-audit",
+  "status": "skipped_disabled",
+  "enabled": false,
+  "allowNetwork": false,
+  "budget": {
+    "dailyMaxCalls": 2,
+    "dailyMaxTokens": 8000,
+    "dailyMaxCostUsd": 0.5,
+    "usedToday": {
+      "calls": 2,
+      "tokens": 6000,
+      "cost": 0.24
+    },
+    "estimatedUsage": {
+      "modelCalls": 0,
+      "tokens": 2000,
+      "estimatedUsd": 0.12
+    },
+    "remainingAfterEstimate": {
+      "calls": 0,
+      "tokens": 0,
+      "cost": 0.14
+    }
+  },
+  "sources": [],
+  "outputContract": {
+    "required": [
+      "problemStatement",
+      "evidenceReferences",
+      "competitiveInsight",
+      "expectedPlutoniXBenefit",
+      "risk",
+      "validationPlan",
+      "budgetUsed"
+    ],
+    "note": "Research findings can propose improvements only through the same proposal, isolation, validation, review, and rollback pipeline."
+  }
+}

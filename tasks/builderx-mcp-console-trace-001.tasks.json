@@ -1,0 +1,20 @@
+{
+  "workflow_id": "plutonix-mcp-console-trace-001",
+  "tasks": [
+    {
+      "task_id": "backend-detailed-mcp-events",
+      "description": "Emit detailed MCP process events for instruction receipt, orchestration, file planning, file operations, codegen, and container restart.",
+      "status": "completed"
+    },
+    {
+      "task_id": "frontend-console-metadata",
+      "description": "Show stage, file path, and build metadata in the MCP runtime log panel.",
+      "status": "completed"
+    },
+    {
+      "task_id": "trace-validation",
+      "description": "Rebuild containers and verify detailed MCP process rows appear in /api/runtime-log.",
+      "status": "completed"
+    }
+  ]
+}

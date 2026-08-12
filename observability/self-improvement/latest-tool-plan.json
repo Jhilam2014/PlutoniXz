@@ -1,0 +1,79 @@
+{
+  "id": "si_tool_plan_f27118a2-6f95-486b-9f40-f6ab2b83e769",
+  "schemaVersion": "1.0.0",
+  "timestamp": "2026-08-12T17:22:23.257Z",
+  "checked": true,
+  "required": true,
+  "status": "duplicate_suppressed",
+  "normalizedKey": "8a75391c2d33ae9958a15272",
+  "source": "self-improvement-tool-capability-agent",
+  "agentId": "plutonix-tool-capability-agent",
+  "agentRole": "capability-gap-and-operational-optimization-agent",
+  "eventId": "1786555341740-77d9393799ccd",
+  "eventType": "vector-sync-deferred",
+  "investigationId": "si_investigation_178a57c4-d6af-40ba-830d-653f82204f82",
+  "component": "plutonix-runtime",
+  "severity": "low",
+  "solutionKind": "platform_optimization",
+  "need": {
+    "toolGap": false,
+    "sluggishness": true,
+    "complexity": false,
+    "paid": false
+  },
+  "problemStatement": "A sluggishness or resource-efficiency issue was detected. Affected component: plutonix-runtime. Evidence: Vector memory sync deferred until at least 5 files are pending.",
+  "affectedComponents": [
+    "plutonix-runtime"
+  ],
+  "proposedTool": {
+    "name": "PlutoniX Sluggishness Profiler",
+    "slug": "plutonix-sluggishness-profiler",
+    "capability": "Analyze bounded PlutoniX evidence and return a deterministic improvement recommendation.",
+    "interface": "runtime/self-improvement generated-tool manifest",
+    "inputs": [
+      "bounded runtime event",
+      "investigation summary",
+      "feature inventory references"
+    ],
+    "outputs": [
+      "problem statement",
+      "recommended solution target",
+      "validation plan",
+      "cost posture"
+    ]
+  },
+  "buildPlan": [
+    "Create an isolated generated-tool manifest under runtime/self-improvement/tools.",
+    "Do not modify live source, generated projects, credentials, or deployment configuration.",
+    "Run the tool only on bounded, redacted evidence.",
+    "Feed tool output back into ImprovementProposal, validation, review, and rollback gates before platform code changes."
+  ],
+  "usePlan": [
+    "Use the generated tool to classify whether the solution belongs in the app, agent instruction/routing, or platform runtime.",
+    "Prefer no-cost internal automation before paid external tooling.",
+    "Require user approval before paid usage, subscription, GPU, cloud service, marketplace tool, or licensed dependency."
+  ],
+  "costEstimate": {
+    "requiresMonetaryValue": false,
+    "estimatedUsd": 0,
+    "billingPeriod": "none",
+    "paidResource": "",
+    "approvalRequired": false,
+    "approvalStatus": "not_required"
+  },
+  "monetaryApprovalRequired": false,
+  "approvalPrompt": "",
+  "cheaperAlternatives": [
+    "Build a local deterministic analysis tool from existing logs and metrics.",
+    "Reuse existing PlutoniX agents or route to a smaller model profile.",
+    "Add instrumentation and caching before paying for an external service.",
+    "Simplify the UI/workflow or split the agent task into smaller bounded steps."
+  ],
+  "shouldTriggerImprovement": false,
+  "safetyGates": [
+    "Root AGENTS.md remains authoritative.",
+    "No paid resource is used without monetary approval.",
+    "No live source mutation occurs outside the proposal/candidate/validation/review/promotion pipeline.",
+    "Generated-project workspaces are not modified by platform tool planning."
+  ]
+}

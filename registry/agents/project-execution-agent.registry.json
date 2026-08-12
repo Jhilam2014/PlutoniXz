@@ -1,0 +1,26 @@
+{
+  "agent_id": "project-execution-agent",
+  "agent_name": "Project Execution Agent",
+  "version": "1.0.0",
+  "status": "active",
+  "domain": "orchestration",
+  "workflow_id": "bootstrap-orchestrator-001",
+  "capability_score": {
+    "capabilityScore": 60,
+    "deliverableAccuracyScore": 50,
+    "reliabilityScore": 50,
+    "adaptabilityScore": 70,
+    "reuseConfidenceScore": 40,
+    "successCount": 0,
+    "failureCount": 0,
+    "repeatedCorrectionCount": 0,
+    "lastCalculatedAt": "2026-06-29T22:53:21+00:00"
+  },
+  "reuse_decision": {
+    "decisionType": "create_new_agent",
+    "reuseConfidenceScore": 40,
+    "similarityScore": 0.0,
+    "reason": "Bootstrap required a default local memory-bearing execution agent and no local agent existed.",
+    "createdAt": "2026-06-29T22:53:21+00:00"
+  }
+}

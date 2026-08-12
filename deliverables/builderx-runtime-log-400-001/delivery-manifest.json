@@ -1,0 +1,23 @@
+{
+  "workflow_id": "plutonix-runtime-log-400-001",
+  "delivered_at": "2026-06-25T07:03:20Z",
+  "status": "delivered",
+  "deliverables": [
+    {
+      "path": "apps/backend/src/server.js",
+      "summary": "Backend runtime log retention and endpoint ordering updated to 400 latest rows."
+    },
+    {
+      "path": "apps/frontend/src/App.jsx",
+      "summary": "Frontend runtime log now merges SSE with polling and keeps 400 newest rows."
+    },
+    {
+      "path": "README.md",
+      "summary": "Runtime-log display behavior documented."
+    },
+    {
+      "path": "docs/architecture.md",
+      "summary": "Runtime observability architecture updated."
+    }
+  ]
+}

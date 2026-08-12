@@ -1,0 +1,26 @@
+{
+  "workflow_id": "plutonix-agentic-d3-market-ready-001",
+  "task_size": "large",
+  "context_budget": "large_context",
+  "model_provider": "openai",
+  "model_name": "codex",
+  "agent_id": "plutonix-fullstack-agent",
+  "phase": "final_response",
+  "input_tokens": 0,
+  "output_tokens": 0,
+  "cached_input_tokens": 0,
+  "reasoning_tokens": 0,
+  "tool_calls_count": 0,
+  "files_read_count": 10,
+  "files_modified_count": 9,
+  "memory_queries_count": 1,
+  "graph_queries_count": 1,
+  "estimated_cost": 0,
+  "currency": "USD",
+  "published_at": "2026-07-24T15:50:00Z",
+  "source": "unavailable",
+  "token_saving_decisions": [
+    "Exact provider token usage was unavailable, so no token or cost values were estimated.",
+    "Reused the existing implementation and agent ownership."
+  ]
+}

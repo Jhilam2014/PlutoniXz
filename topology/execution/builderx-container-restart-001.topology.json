@@ -1,0 +1,17 @@
+{
+  "workflow_id": "plutonix-container-restart-001",
+  "mode": "single_agent",
+  "agents": [
+    "plutonix-fullstack-agent"
+  ],
+  "changed_files": [
+    "docker-compose.yml",
+    "apps/backend/src/runtimeRestart.js",
+    "apps/backend/src/server.js",
+    "apps/backend/src/mcp.js",
+    "apps/frontend/src/App.jsx",
+    "README.md",
+    "docs/architecture.md"
+  ],
+  "created_at": "2026-06-25T00:00:00+05:30"
+}

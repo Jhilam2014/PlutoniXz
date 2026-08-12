@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "capabilityScore": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "deliverableAccuracyScore": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "reliabilityScore": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "adaptabilityScore": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "reuseConfidenceScore": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "successCount": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "failureCount": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "repeatedCorrectionCount": {
+      "type": "integer",
+      "minimum": 0
+    }
+  },
+  "required": [
+    "capabilityScore",
+    "deliverableAccuracyScore",
+    "reliabilityScore",
+    "adaptabilityScore",
+    "reuseConfidenceScore"
+  ]
+}

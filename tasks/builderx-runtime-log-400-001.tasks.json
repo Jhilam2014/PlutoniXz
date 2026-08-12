@@ -1,0 +1,20 @@
+{
+  "workflow_id": "plutonix-runtime-log-400-001",
+  "tasks": [
+    {
+      "task_id": "runtime-log-backend-retention",
+      "description": "Increase MCP runtime log retention from 80 to 400 rows and return newest rows first.",
+      "status": "completed"
+    },
+    {
+      "task_id": "runtime-log-frontend-polling",
+      "description": "Merge SSE events with periodic backend runtime-log polling so display logs continue updating after Generate.",
+      "status": "completed"
+    },
+    {
+      "task_id": "runtime-log-validation",
+      "description": "Validate project structure, rebuild containers, and smoke-test MCP generation plus runtime-log ordering.",
+      "status": "completed"
+    }
+  ]
+}

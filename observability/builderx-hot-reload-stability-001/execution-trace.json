@@ -1,0 +1,63 @@
+{
+  "workflow_id": "plutonix-hot-reload-stability-001",
+  "started_at": "2026-06-25T10:16:11Z",
+  "completed_at": "2026-06-25T10:17:25Z",
+  "status": "completed",
+  "events": [
+    {
+      "type": "diagnosis",
+      "message": "Observed Vite HMR updates immediately followed by generated-site container restart, causing iframe WebSocket and resource connection resets."
+    },
+    {
+      "type": "change",
+      "message": "Changed generated-site refresh default to Vite hot reload and made hard Docker restart opt-in."
+    },
+    {
+      "type": "change",
+      "message": "Sorted generated file operations so support files are written before generatedPage.jsx."
+    }
+  ],
+  "validation": [
+    {
+      "command": "python3 scripts/validate_project.py",
+      "status": "success"
+    },
+    {
+      "command": "docker compose config",
+      "status": "success",
+      "observed": "RESTART_GENERATED_CONTAINER=false"
+    },
+    {
+      "command": "docker compose up -d --build",
+      "status": "success"
+    },
+    {
+      "command": "GET /api/status",
+      "status": "success",
+      "restart_mode": "vite-hot-reload"
+    },
+    {
+      "command": "POST /mcp generate_webpage",
+      "status": "success",
+      "build_id": "build_RznPXumcCK",
+      "restart_status": "hot-reload"
+    },
+    {
+      "command": "docker compose logs --tail=60 generated-site",
+      "status": "success",
+      "observed": "Vite HMR updates occurred without generated-site container restart."
+    },
+    {
+      "command": "docker compose exec -T backend node --check src/server.js && node --check src/mcp.js && node --check src/generator.js && node --check src/runtimeRestart.js",
+      "status": "success"
+    },
+    {
+      "command": "docker compose exec -T frontend npm run build",
+      "status": "success"
+    },
+    {
+      "command": "docker compose exec -T generated-site npm run build",
+      "status": "success"
+    }
+  ]
+}

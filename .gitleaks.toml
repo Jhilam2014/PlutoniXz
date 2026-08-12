@@ -1,0 +1,14 @@
+title = "PlutoniX secret scanning"
+
+# Keep the maintained detector's default rules. This additive rule exists only
+# to prove the local/CI control fails closed on an unmistakably fake fixture.
+[extend]
+useDefault = true
+
+[[rules]]
+id = "plutonix-fake-secret"
+description = "PlutoniX fake-secret regression fixture"
+regex = '''plutonix_fake_secret_[A-Za-z0-9]{24}'''
+secretGroup = 0
+entropy = 0
+keywords = ["plutonix_fake_secret"]

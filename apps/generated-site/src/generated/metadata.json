@@ -1,0 +1,80 @@
+{
+  "buildId": "build_vogue_elegance_checkout_20260626_e413c726",
+  "instructionHash": "e413c726c6b2fdb43422c467a6a678fe19d8eb1026faeea435e2255d7fc0865a",
+  "generatedAt": "2026-06-26T00:00:00.000Z",
+  "title": "Vogue Elegance",
+  "orchestrator": "plutonix-fullstack-agent",
+  "objective": "Generate a professional landing page for digital product.",
+  "orchestrated": {
+    "pageType": "professional_landing_page",
+    "topic": "digital product",
+    "audience": [
+      "professional users"
+    ],
+    "tone": [
+      "professional",
+      "premium"
+    ],
+    "sections": [
+      "hero",
+      "proof",
+      "workflow",
+      "cta",
+      "cart_checkout",
+      "payment_options",
+      "gst_invoice_view"
+    ]
+  },
+  "admin": {
+    "allowedEmail": "jhilam.astro@gmail.com",
+    "behavior": "A visible self-contained Google-style login button accepts Gmail addresses without external auth scripts. Admin inventory lists render only when vogueEleganceUserEmail exactly matches the allowed email."
+  },
+  "dataNotes": {
+    "shopBrand": "The public storefront is branded as Vogue Elegance.",
+    "productSource": "New-arrival product names, INR prices, compare-at prices, and sale or sold-out labels were checked from public Magnolia Bags new-arrivals pages on June 25, 2026.",
+    "cart": "Available products include Add+ buttons, quantity controls, cart totals, and a checkout popup.",
+    "payments": "The checkout popup lists standard payment choices including UPI, credit/debit card, net banking, wallets, EMI, and cash on pickup without collecting credentials.",
+    "invoice": "The invoice view shows item totals, subtotal, GST at 18%, shipping or pickup fee, and payable total.",
+    "imagery": "Product photos are stored locally under src/generated/assets so the app does not request remote images at runtime.",
+    "map": "The contact section links to the requested real Google Maps location and uses a local themed map illustration instead of a tracking iframe.",
+    "navigation": "The Location link was removed from the navigation bar; map access remains inside the contact section.",
+    "security": "No credentials, tracking scripts, or backend calls are embedded."
+  },
+  "fileOperations": [
+    {
+      "action": "modify",
+      "path": "src/generated/generatedPage.jsx",
+      "reason": "Render the Vogue Elegance storefront with Add+ product buttons, local cart state, checkout popup, payment options, GST calculation, invoice view, and existing admin inventory controls."
+    },
+    {
+      "action": "modify",
+      "path": "src/generated/generatedPage.css",
+      "reason": "Apply responsive premium storefront styling for catalog cards, cart panel, checkout modal, payment options, invoice view, and themed map/card layouts."
+    },
+    {
+      "action": "add",
+      "path": "src/generated/catalogData.js",
+      "reason": "Store brand, contact, product, GST, payment method, material, and source data separately from the React page."
+    },
+    {
+      "action": "add",
+      "path": "src/generated/assets/*.jpg",
+      "reason": "Store local product photos for self-contained rendering."
+    },
+    {
+      "action": "add",
+      "path": "src/generated/README.generated.md",
+      "reason": "Document the generated app handoff and current orchestrator plan."
+    },
+    {
+      "action": "modify",
+      "path": "src/generated/metadata.json",
+      "reason": "Record build metadata and orchestrator handoff details."
+    },
+    {
+      "action": "delete",
+      "path": "src/generated/deprecatedGeneratedPage.jsx",
+      "reason": "Remove obsolete generated page modules if present."
+    }
+  ]
+}

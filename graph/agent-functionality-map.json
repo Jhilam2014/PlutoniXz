@@ -1,0 +1,29 @@
+{
+  "workflow_id": "bootstrap-orchestrator-001",
+  "generated_at": "2026-06-29T22:53:21+00:00",
+  "agents": [
+    {
+      "agent_id": "plutonix-fullstack-agent",
+      "owns": [
+        "plutonix-control-surface",
+        "backend-generation-api",
+        "project-creation-handoff"
+      ],
+      "validates": [
+        "project-local-agent-routing"
+      ]
+    },
+    {
+      "agent_id": "project-execution-agent",
+      "owns": [
+        "agent-memory",
+        "neo4j-graph",
+        "vector-memory",
+        "agentic-system-d3"
+      ],
+      "validates": [
+        "bootstrap-artifacts"
+      ]
+    }
+  ]
+}

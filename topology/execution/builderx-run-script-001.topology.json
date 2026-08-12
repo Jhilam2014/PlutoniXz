@@ -1,0 +1,13 @@
+{
+  "workflow_id": "plutonix-run-script-001",
+  "mode": "single_agent",
+  "agents": [
+    "plutonix-fullstack-agent"
+  ],
+  "changed_files": [
+    "run.sh",
+    "README.md",
+    "scripts/validate_project.py"
+  ],
+  "created_at": "2026-06-25T00:00:00+05:30"
+}

@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "plutonix-hosting-conversation.schema.json",
+  "title": "PlutoniX Hosting Conversation Contracts",
+  "type": "object",
+  "definitions": {
+    "HostingDeploymentStage": {
+      "type": "string",
+      "enum": [
+        "project_selection",
+        "deployment_goal",
+        "provider_selection",
+        "stack_selection",
+        "region_selection",
+        "credential_method_selection",
+        "permission_preview",
+        "secure_credential_onboarding",
+        "deployment_plan_preview",
+        "user_approval",
+        "build_image",
+        "push_image",
+        "provision_runtime",
+        "inject_secrets",
+        "deploy_service",
+        "health_check",
+        "deployment_result",
+        "rollback_or_finalize"
+      ]
+    },
+    "HostingConversationMessage": {
+      "type": "object",
+      "required": ["id", "role", "stage", "content", "created_at"],
+      "properties": {
+        "id": { "type": "string" },
+        "role": { "enum": ["assistant", "user", "system"] },
+        "stage": { "$ref": "#/definitions/HostingDeploymentStage" },
+        "content": { "type": "string" },
+        "created_at": { "type": "string" }
+      }
+    },
+    "HostingCredentialMetadata": {
+      "type": "object",
+      "required": ["credential_id", "status", "encrypted_reference"],
+      "properties": {
+        "credential_id": { "type": "string" },
+        "status": { "enum": ["connected", "expired", "revoked", "missing", "deleted"] },
+        "encrypted_reference": { "type": "string" },
+        "fingerprint": { "type": "string" }
+      }
+    },
+    "HostingConversationSession": {
+      "type": "object",
+      "required": ["session_id", "current_stage", "credential_status", "approval_status", "deployment_status", "created_at", "updated_at"],
+      "properties": {
+        "session_id": { "type": "string" },
+        "user_id": { "type": ["string", "null"] },
+        "project_id": { "type": ["string", "null"] },
+        "current_stage": { "$ref": "#/definitions/HostingDeploymentStage" },
+        "selected_provider": { "type": ["string", "null"] },
+        "selected_stack": { "type": ["object", "null"] },
+        "selected_region": { "type": ["string", "null"] },
+        "credential_method": { "type": ["string", "null"] },
+        "credential_status": { "type": "string" },
+        "permission_preview": { "type": ["object", "null"] },
+        "deployment_plan": { "type": ["object", "null"] },
+        "approval_status": { "type": "string" },
+        "deployment_status": { "type": "string" },
+        "deployment_url": { "type": ["string", "null"] },
+        "rollback_available": { "type": "boolean" },
+        "created_at": { "type": "string" },
+        "updated_at": { "type": "string" }
+      }
+    }
+  }
+}

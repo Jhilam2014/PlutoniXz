@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "agent_id": {
+      "type": "string"
+    },
+    "agent_name": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "domain": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string"
+    },
+    "knowledge_summary_path": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "agent_id",
+    "agent_name",
+    "version",
+    "domain",
+    "status"
+  ]
+}

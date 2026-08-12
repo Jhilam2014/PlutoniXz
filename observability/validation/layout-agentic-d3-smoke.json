@@ -1,0 +1,27 @@
+{
+  "workflow_id": "plutonix-layout-agentic-d3-001",
+  "checked_at": "2026-06-25T10:36:50Z",
+  "status": "success",
+  "checks": {
+    "project_validation": "success",
+    "d3_graph_nodes": 16,
+    "d3_graph_links": 18,
+    "d3_graph_references": "success",
+    "compose_rebuild": "success",
+    "frontend_build": "success",
+    "generated_site_build": "success",
+    "backend_node_check": "success",
+    "backend_status": 200,
+    "frontend_status": 200,
+    "generated_status": 200,
+    "d3_page_status": 200,
+    "d3_graph_status": 200,
+    "mcp_generate": "success",
+    "build_id": "build_JavwJlsdMU",
+    "runtime_log_rows": 240,
+    "runtime_log_under_400": true,
+    "runtime_log_newest_first": true,
+    "top_20_runtime_times_ist": true,
+    "major_event_present": true
+  }
+}

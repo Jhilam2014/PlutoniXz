@@ -1,0 +1,35 @@
+{
+  "workflow_id": "plutonix-agentic-d3-market-ready-002",
+  "tasks": [
+    {
+      "task_id": "route-audit",
+      "description": "Audit Open Logs and Inspect Agent destinations and identify unhandled query parameters.",
+      "status": "completed"
+    },
+    {
+      "task_id": "verified-deep-links",
+      "description": "Connect graph actions to agent-focused Activity and Agents workspace destinations.",
+      "status": "completed"
+    },
+    {
+      "task_id": "inspector-information-architecture",
+      "description": "Add Overview, Relationships, Activity, and Configuration inspector tabs.",
+      "status": "completed"
+    },
+    {
+      "task_id": "large-graph-rendering",
+      "description": "Add progressive node rendering, hybrid Canvas relationships, frame telemetry, and a strategy contract.",
+      "status": "completed"
+    },
+    {
+      "task_id": "openai-read-resilience",
+      "description": "Bound OpenAI agent-memory reads and cache the global agent index.",
+      "status": "completed"
+    },
+    {
+      "task_id": "production-validation",
+      "description": "Run seven model tests, production build, normal desktop/mobile QA, route QA, and synthetic large-graph Canvas QA.",
+      "status": "completed"
+    }
+  ]
+}

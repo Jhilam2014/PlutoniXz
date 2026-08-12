@@ -1,0 +1,1088 @@
+{
+  "project-execution-agent": {
+    "agent_id": "project-execution-agent",
+    "local_agent_path": "agents/generated/project-execution-agent.agent.md",
+    "knowledge_summary_path": "memory/agent-knowledge/agents/project-execution-agent.v1.0.0.md",
+    "content_hash": "bc1f3081f6abafbeaf8c852ffa97b6cbb5c0a111997d75038f4e345aee7ee13c",
+    "openai_file_id": "",
+    "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+    "last_synced_at": "",
+    "sync_status": "pending"
+  },
+  "provider": "openai",
+  "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+  "files": {
+    "memory/agent-knowledge/agents/plutonix-fullstack-agent.v1.0.0.md": {
+      "content_sha256": "66f3afab5cd50299f999673c7a96a8ed605ff1285db5c1b8c4b4f86c9dbf2f1f",
+      "file_id": "file-C5bFepNgU7tjaeRwKQgkZD",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-08T04:19:51.952Z"
+    },
+    "memory/agent-knowledge/agents/project-execution-agent.v1.0.0.md": {
+      "content_sha256": "bc1f3081f6abafbeaf8c852ffa97b6cbb5c0a111997d75038f4e345aee7ee13c",
+      "file_id": "file-4C6SfKfgNjMHX8GyL3hRiM",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-06-29T22:54:18.817Z"
+    },
+    "memory/agent-knowledge/projects/bootstrap-agent-memory.summary.md": {
+      "content_sha256": "aacaab053913cea4ce6df653c53367f3ce413538a4a3cca367319131eeeee38d",
+      "file_id": "file-42APajDnDXdhKQJuKqmwUq",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-06-29T22:54:21.188Z"
+    },
+    "memory/agent-knowledge/projects/plutonix-container-restart-001.summary.md": {
+      "content_sha256": "e9a1eeddf2559f14c9f5fcab208ec1afebaa2e4338d6ce0c098b5abaec264c4c",
+      "file_id": "file-3kUJ5YYdawMYfVqKxMwFWf",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-06-29T22:54:21.194Z"
+    },
+    "memory/agent-knowledge/projects/plutonix-generated-file-ops-001.summary.md": {
+      "content_sha256": "991883edd9e3a36c54848e6d2f1668fae733fb19b75971020e8599bd520cb7dc",
+      "file_id": "file-TBV6vaksqt39ZqFaSJ2uzN",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-06-29T22:54:21.195Z"
+    },
+    "memory/agent-knowledge/projects/plutonix-hot-reload-stability-001.summary.md": {
+      "content_sha256": "7f4ea1fee6a11920d65a7ebb42947559bcd548a4934c1283bbce4ad10de22524",
+      "file_id": "file-VZ5T1mEWEBJZiUAXqhkegc",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-06-29T22:54:21.196Z"
+    },
+    "memory/agent-knowledge/projects/plutonix-large-001.summary.md": {
+      "content_sha256": "7eaa709f495314dabe8390291a74f2fa6d000952ec8cf0b037a17ce21a1457be",
+      "file_id": "file-2cDmkXmzx7dJycCkpr52ud",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-06-29T22:54:21.197Z"
+    },
+    "memory/agent-knowledge/projects/plutonix-layout-agentic-d3-001.summary.md": {
+      "content_sha256": "ceea1ba97362701dc7657ffb9a861e59d548663a1f4cc069935c115bbd789200",
+      "file_id": "file-LSVSdaspktdSTJ8Xr4jiUB",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-06-29T22:54:21.198Z"
+    },
+    "memory/agent-knowledge/projects/plutonix-mcp-chat-001.summary.md": {
+      "content_sha256": "d890fb56c289b78522a21e5b2cd4502a8466a7a6b7faaddcabf0609c678458c7",
+      "file_id": "file-VCixrZe3RgU23UKQS2CvTN",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-06-29T22:54:21.199Z"
+    },
+    "memory/agent-knowledge/projects/plutonix-mcp-console-trace-001.summary.md": {
+      "content_sha256": "1f04c37fec1e3dbdcbc1970d35fecd728049ad8c8af3f5538f5222c9580c3fe8",
+      "file_id": "file-VbXWvndEB23jNvZ53Anbth",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-06-29T22:54:21.200Z"
+    },
+    "memory/agent-knowledge/projects/plutonix-mcp-runtime-log-001.summary.md": {
+      "content_sha256": "d0f78351780dc5a219fb5d9b94f7b45622bfdd158bd72f19f7535b03c18ac5cc",
+      "file_id": "file-GYzKZvNHyC4AJUvBMsNJ2X",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-06-29T22:54:21.201Z"
+    },
+    "memory/agent-knowledge/projects/plutonix-orchestrator-mcp-001.summary.md": {
+      "content_sha256": "d2f230fbdb2971c64412c9739beb120a4b64cdc45352076be0df27070fdd043c",
+      "file_id": "file-2aqvQeNnVYWmyu6m7KBCen",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-06-29T22:54:21.211Z"
+    },
+    "memory/agent-knowledge/projects/plutonix-runtime-log-400-001.summary.md": {
+      "content_sha256": "642cf4f181b9cf6fe6d9c60d0121555027dd5256a62a3d94a91d94995eb82cee",
+      "file_id": "file-YXXtCdeSH7YC9zRD6FM9zm",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-06-29T22:54:21.212Z"
+    },
+    "memory/agent-knowledge/prompts/bootstrap-orchestrator-001.project-execution-agent.correction-bootstrap-placeholder.prompt.md": {
+      "content_sha256": "da26a0614a74fe9e5fec4604d234f0f54eb77ae464eb876fd29bf686bd3785c9",
+      "file_id": "file-NHF8nuUZN1RsEg3aL8tXYG",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-06-29T22:54:21.213Z"
+    },
+    "memory/agent-knowledge/prompts/bootstrap-orchestrator-001.project-execution-agent.default-agent-instruction.prompt.md": {
+      "content_sha256": "4bdbec36ed00cc8bb464ef3c6eb2e1e42ef477688ed22b8dacdbbbfb761cdebd",
+      "file_id": "file-ALuhLY7Jh1RUwwGtT5Styx",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-06-29T22:54:21.214Z"
+    },
+    "memory/agent-knowledge/prompts/bootstrap-orchestrator-001.project-execution-agent.handoff-bootstrap.prompt.md": {
+      "content_sha256": "4fafc08ef4051421dae93aa856065e1c2a05baaa1c34dba6e9ce7898fc50aa1a",
+      "file_id": "file-WpbZQGGJ5qg2KU6HahbLYe",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-06-29T22:54:21.215Z"
+    },
+    "memory/agent-knowledge/prompts/bootstrap-orchestrator-001.project-execution-agent.orchestrator-bootstrap.prompt.md": {
+      "content_sha256": "faf44011be94674885f615477d24247f46d5ba28f2c208f82a8e1237379f5ebb",
+      "file_id": "file-4XrQgFq578iDLemUbvhZgF",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-06-29T22:54:21.217Z"
+    },
+    "memory/agent-knowledge/prompts/bootstrap-orchestrator-001.project-execution-agent.validation-bootstrap.prompt.md": {
+      "content_sha256": "a89ffb07ddcd33e014e18721b6c7d7c3f310f0c798db78c6c374b9e6c8bcce65",
+      "file_id": "file-HZKmWCP67e9PjuTDU6NFFv",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-06-29T22:54:21.218Z"
+    },
+    "memory/agent-knowledge/prompts/plutonix-large-001.plutonix-fullstack-agent.plutonix-large-task.prompt.md": {
+      "content_sha256": "c29ef0976fad72f3bb2b0ac50ffc6d6db25b0e589d82eb12372b89b73e996b8b",
+      "file_id": "file-TqfTGojmqJnGZvmXGxqSbv",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-06-29T22:54:21.219Z"
+    },
+    "agents/generated/plutonix-fullstack-agent.agent.md": {
+      "content_sha256": "3f4ca077faffda9762595dd398fb4b82053a0548250076b635f327c57a2b92e9",
+      "file_id": "file-4fdmxjcs774p2uDjVQuWXp",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-08T04:19:49.734Z"
+    },
+    "agents/generated/geofinderx-content-data-agent.agent.md": {
+      "content_sha256": "b61d4db51d54d562448a8f79be9a6c085ec55a9c7a56c7025831726bba8088a0",
+      "file_id": "file-8rFfWJZjSsuXzdWr9q66SZ",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-06-29T23:26:28.348Z"
+    },
+    "agents/generated/geofinderx-orchestrator-agent.agent.md": {
+      "content_sha256": "9915788692e24ce52f4b0651ca9b93c1ae7d89abab8f87dc84b25c7db6c7e3ee",
+      "file_id": "file-7oXKTP4J5C4hGeeGdjumCn",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-06-29T23:26:29.935Z"
+    },
+    "agents/generated/geofinderx-runtime-packaging-agent.agent.md": {
+      "content_sha256": "61e4df0d088d4da6844730131892855d0e93cc27c1446bd887fe32f9ce489fd7",
+      "file_id": "file-LcJyV9eqrcyzsD7HFxAWMN",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-06-29T23:26:31.906Z"
+    },
+    "agents/generated/geofinderx-ui-composition-agent.agent.md": {
+      "content_sha256": "b9d105eecad2ab8cae90049834ddb57acbab0ad63cce7d0addb408a1632c2939",
+      "file_id": "file-GXi9ay3JLuxfqNdf67uTXU",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-06-29T23:26:33.383Z"
+    },
+    "agents/generated/mapex-commerce-catalog-agent.agent.md": {
+      "content_sha256": "5731300f8059cfa446434bd49cdf3207a43fc70046779e8d9c29de1fe1c691fd",
+      "file_id": "file-JoW2JUvkcwES5fth1KD9ZJ",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-06-29T23:26:35.393Z"
+    },
+    "agents/generated/mapex-content-data-agent.agent.md": {
+      "content_sha256": "c93f158889a75f3cd149288fc342c7fec9bb4971a849b1a9db34f00680c6ad3a",
+      "file_id": "file-Pxb6pwycojajrP8LQ3gqXv",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-06-29T23:26:36.900Z"
+    },
+    "agents/generated/mapex-orchestrator-agent.agent.md": {
+      "content_sha256": "a2f682888b82ea089b0708b77999b4607f6fc46cdcc110d44162869e92046a3f",
+      "file_id": "file-7H9PEPwQ8emSd77HskKSko",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-06-29T23:26:38.481Z"
+    },
+    "agents/generated/mapex-runtime-packaging-agent.agent.md": {
+      "content_sha256": "515472c87b573d90ed2b578036d7ac504d8360262d09f7924d1ea3494e75d0bc",
+      "file_id": "file-1WgadzuuTBRKRR9CD63a85",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-06-29T23:26:40.104Z"
+    },
+    "agents/generated/mapex-ui-composition-agent.agent.md": {
+      "content_sha256": "ed6064ce6894871739fc9e447f9e4431a913d7a592a49d7ef34976d9d591366e",
+      "file_id": "file-EKAuApX27Ng8dc3hgy4Qdc",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-06-29T23:26:41.653Z"
+    },
+    "agents/generated/project-execution-agent.agent.md": {
+      "content_sha256": "b6cc51efcccc1be4d7ababbc75477db7aa37d4f830c417ee9627fa59a62988a1",
+      "file_id": "file-TFBKznrC1zyexxxt1RJwnS",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-08T05:25:43.128Z"
+    },
+    "agents/human/human-controller.agent.md": {
+      "content_sha256": "5b983cf10f33f80341e880a7218a1fbec95ea7d34268ec89e1216e08ac4663fe",
+      "file_id": "file-L6XTgUtssVqisaxG4RvLur",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-06-29T23:26:44.425Z"
+    },
+    "agents/generated/agenticongen-content-data-agent.agent.md": {
+      "content_sha256": "80edac758d7053db86fad1c6ece6105dfee6b9edeb16d3f419417267b5a9b1e2",
+      "file_id": "file-6G5f8WCbZJPpLfuLAn9kcT",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-06-30T23:51:57.905Z"
+    },
+    "agents/generated/agenticongen-orchestrator-agent.agent.md": {
+      "content_sha256": "787fa99465fe56a0566364eb42e5ddd7c4d4938f6342eff9234d20473b0947d0",
+      "file_id": "file-RVW7H3GFurU2xMojgfuNPB",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-06-30T23:52:00.120Z"
+    },
+    "agents/generated/agenticongen-runtime-packaging-agent.agent.md": {
+      "content_sha256": "e6d9c2df05cfb36e0110f2d25cf4596ad315c175b75b9bf5efa5ffe9ca431545",
+      "file_id": "file-WpJo2Q1ezUZUyarf4PPttE",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-06-30T23:52:03.410Z"
+    },
+    "agents/generated/agenticongen-ui-composition-agent.agent.md": {
+      "content_sha256": "442a96d9d10d0e50da0068d3c7d582d6a108bea1bf537ae291eaa571424c2305",
+      "file_id": "file-6H31JDv7m52auT8mtwZvJ7",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-06-30T23:52:05.630Z"
+    },
+    "memory/agent-knowledge/projects/interactive-cloud-hosting.sanitized.md": {
+      "content_sha256": "f2fae18fc610a56eb34c50ef351f0ab0848772433fcff4d6d984bc858440329f",
+      "file_id": "file-FxiGbSMe17gzG1rpU5Z1zW",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-07-01T00:06:53.732Z"
+    },
+    "agents/generated/investmentfinderx-content-data-agent.agent.md": {
+      "content_sha256": "0367be3d3dfd13ee3237c2f76eb9f38cd87754b2b9fd376859479c6877fd0789",
+      "file_id": "file-9AvY9EfyyKZMh6pL9eMpLF",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-07-03T00:28:43.508Z"
+    },
+    "agents/generated/investmentfinderx-orchestrator-agent.agent.md": {
+      "content_sha256": "ab2d6766babc66bfe436d46be6b5df40f53a24bf5edb0af06e3c92a663fd2436",
+      "file_id": "file-VZ1TSmNduZ8LBz3dMa9ZBP",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-07-03T00:28:45.336Z"
+    },
+    "agents/generated/investmentfinderx-runtime-packaging-agent.agent.md": {
+      "content_sha256": "149de20ea89073b313575520189d74863552fe90b43f0caa1bcb115e0d9e3101",
+      "file_id": "file-J4WqPNyGxEk44EjTXPmH5e",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-07-03T00:28:48.952Z"
+    },
+    "agents/generated/investmentfinderx-ui-composition-agent.agent.md": {
+      "content_sha256": "fb203afd8f492e30f9ec777b6952c83cbfdc8f2296051e416f9a2eefe37e9275",
+      "file_id": "file-4oLcAo7A1hey14Rm7FmFpT",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-07-03T00:28:50.293Z"
+    },
+    "agents/generated/investmentfinderx-qagent-controller.agent.md": {
+      "content_sha256": "1968c81bc24b44a9cbbcc599251e830ecfb548260c7aae30570e4be28030a8be",
+      "file_id": "file-MzGMcZTJnBBgJZrnTw6Bjs",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-07-03T00:28:47.297Z"
+    },
+    "agents/generated/mediaanalyser-content-data-agent.agent.md": {
+      "content_sha256": "01e16910536b5c12b3067615fb33a304105740cb081001439d59fc892b937326",
+      "file_id": "file-8ek1WeDMjYtg6P9xxbq75k",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-07-03T19:08:04.425Z"
+    },
+    "agents/generated/mediaanalyser-orchestrator-agent.agent.md": {
+      "content_sha256": "3302c2dc43e65ac95651551a13e46b800e50c20619120756b252319e470f07bf",
+      "file_id": "file-E9istZpLnGanS32PuJc8Lg",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-07-03T19:08:06.869Z"
+    },
+    "agents/generated/mediaanalyser-qagent-controller.agent.md": {
+      "content_sha256": "229ac6cad506c28e2b1932e15297fedc39e41e249a5e5de0f7371d0d7c302182",
+      "file_id": "file-9eW6EYQ9YXXTgpmhbwbrtG",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-07-03T19:08:08.363Z"
+    },
+    "agents/generated/mediaanalyser-runtime-packaging-agent.agent.md": {
+      "content_sha256": "4b30363f400c85ce3b3e1aaf01d1010974042f97806a76e87918503a73c91de4",
+      "file_id": "file-82mjNmzCAfbnsbqYLhgadZ",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-07-03T19:08:10.005Z"
+    },
+    "agents/generated/mediaanalyser-ui-composition-agent.agent.md": {
+      "content_sha256": "e9fc3d6a2aa566aab92543015b0e23f4efe9ec75c969f0553091a2801f9bf0b1",
+      "file_id": "file-C6uC28c2JdfXNQvnzvF6QM",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-07-03T19:08:11.662Z"
+    },
+    "agents/generated/whatsappmediaanalyser-content-data-agent.agent.md": {
+      "content_sha256": "e4f90d209950847aa90ac6360220032578e388226812f666ea7a4efcc3e03f99",
+      "file_id": "file-C6FVU1ZNM5eZSV5VANeXsQ",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-07-04T19:20:27.274Z"
+    },
+    "agents/generated/whatsappmediaanalyser-orchestrator-agent.agent.md": {
+      "content_sha256": "445d8a6ed8896d3eb01926287ca01c145e0b3d1c448748f9d48cdc6851a074ee",
+      "file_id": "file-KM1BcauTpPXY9vKdi4vVpm",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-07-04T19:20:28.872Z"
+    },
+    "agents/generated/whatsappmediaanalyser-qagent-controller.agent.md": {
+      "content_sha256": "e7fadbf825fe265e294c1226f24f0d369422ae95b6d938395a45d0f71f8ec6ef",
+      "file_id": "file-DRdXkpv4LCBnmj8imFbgNC",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-07-04T19:20:30.358Z"
+    },
+    "agents/generated/whatsappmediaanalyser-runtime-packaging-agent.agent.md": {
+      "content_sha256": "2544a43e4f33d0cd6af39bb9deba4539b6aad6866d5c1bdc30228a5be7d51c12",
+      "file_id": "file-VknJpkajE64Mf8DanqScB8",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-07-04T19:20:32.312Z"
+    },
+    "agents/generated/whatsappmediaanalyser-ui-composition-agent.agent.md": {
+      "content_sha256": "ebe84ad70417e56513a59099d9f6164c878e24034718ec8d9e65c44c7c3c8948",
+      "file_id": "file-2wSPUPSFVkKtoCLGoT2Cqo",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-07-04T19:20:34.053Z"
+    },
+    "agents/generated/spydash-content-data-agent.agent.md": {
+      "content_sha256": "7bdb595422471b680c58d3ef1479220781d94ddfaa6480c8a520952e19128e80",
+      "file_id": "file-RfgF6hiKhw6grdHn5Ft5L6",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-07-18T10:42:23.262Z"
+    },
+    "agents/generated/spydash-orchestrator-agent.agent.md": {
+      "content_sha256": "0eb4c16f38d857d61b3b20f644420f38cb262aa61224e53b9298fd41cbfd8132",
+      "file_id": "file-K3aZHCVbQYDbARJ6Qk2PeX",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-07-18T10:42:25.118Z"
+    },
+    "agents/generated/spydash-qagent-controller.agent.md": {
+      "content_sha256": "bf526c0c0b99edb61431522a3e3a78338b3e498ca2dca25c7a7340489d8bfefa",
+      "file_id": "file-ETJzWNnfwEKTyDypABWNgs",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-07-18T10:42:27.893Z"
+    },
+    "agents/generated/spydash-runtime-packaging-agent.agent.md": {
+      "content_sha256": "9dc9013b80b4054561a3db95431b0f8d6ceeb20928c98666bdf8ffae0115796c",
+      "file_id": "file-381yGwqU1w3YaRoYX5iGh7",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-07-18T10:42:29.984Z"
+    },
+    "agents/generated/spydash-ui-composition-agent.agent.md": {
+      "content_sha256": "8c59c0bf4376d737ba72e07087040a3449e681eba3208773d67338d8a4669864",
+      "file_id": "file-7Qm3XtqhoiWNq4bKW7hhkJ",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-07-18T10:42:31.466Z"
+    },
+    "agents/generated/spydash-analytics-dashboard-agent.agent.md": {
+      "content_sha256": "0e7ebab98e1f8d699c026322cff4c45a73c37ecbfbff8439e3cffea99c525093",
+      "file_id": "file-6TbQuc2XvM91WWqsZYrhyX",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-07-18T10:42:21.018Z"
+    },
+    "agents/generated/webforbusinesses-content-data-agent.agent.md": {
+      "content_sha256": "29324dcf6079a2b76dccf855fd087917f79106bce26b42f44666683adcdf60ef",
+      "file_id": "file-HDKdGdZBcAHpog4qgJGEcN",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-07-21T20:49:23.035Z"
+    },
+    "agents/generated/webforbusinesses-orchestrator-agent.agent.md": {
+      "content_sha256": "6182e0c7f50b6bac9511e5cb3b975ff126e7bab0009f2fe291b2a1bb3767db32",
+      "file_id": "file-Fu2PPCNuoDQnU2fZiXYu4z",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-07-21T20:49:24.475Z"
+    },
+    "agents/generated/webforbusinesses-qagent-controller.agent.md": {
+      "content_sha256": "de597e8487baa098facb3e258d9be952d3254f742d6d0bf133364a7aa8bf2573",
+      "file_id": "file-DkrgcZbcrsbWiMTjSoNJ1A",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-07-21T20:49:26.125Z"
+    },
+    "agents/generated/webforbusinesses-runtime-packaging-agent.agent.md": {
+      "content_sha256": "6c0b37f7b5da066000fe86ea73a58d7a757ef4b7029d367d96fa06938398862b",
+      "file_id": "file-MHdvNirrTKtJVTeZf2ozQT",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-07-21T20:49:27.547Z"
+    },
+    "agents/generated/webforbusinesses-ui-composition-agent.agent.md": {
+      "content_sha256": "24bf092d5aba47c3c4e4e533ae4f1fdcd84dc252772eaf3b2e49ba28b933f1b8",
+      "file_id": "file-SXJMuCMjxahproznDZkGCy",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-07-21T20:49:38.170Z"
+    },
+    "agents/generated/researchanddevx-content-data-agent.agent.md": {
+      "content_sha256": "be434e68ccab90667c73ef5a2ee86509c5f5b3de100f6f238721a0679ef8fc30",
+      "file_id": "file-C6XgSvoGKcv16X3PUWmVQR",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-07-22T11:13:31.102Z"
+    },
+    "agents/generated/researchanddevx-orchestrator-agent.agent.md": {
+      "content_sha256": "9ad0dea72206603daa1614e4b91cb1ced820b4a62246b5dc1ed9dcab92c88161",
+      "file_id": "file-RuDzPkfFss5uyDX4xMsypx",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-07-22T11:02:10.227Z"
+    },
+    "agents/generated/researchanddevx-qagent-controller.agent.md": {
+      "content_sha256": "a98132529bada2d7b30b91aebe51f7e0543b72ad49053314b15bbf38209ba6a7",
+      "file_id": "file-VGmf7ARqxHcBhdrabJMrCv",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-07-22T11:03:26.143Z"
+    },
+    "agents/generated/researchanddevx-runtime-packaging-agent.agent.md": {
+      "content_sha256": "a37d3460cc61d25c1bd9f3b6556a74c2e38afc2dcc31f2fc5a608bc777710f32",
+      "file_id": "file-TjRV1FRq3RwZDzKPmA6M3H",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-07-22T11:06:08.774Z"
+    },
+    "agents/generated/researchanddevx-ui-composition-agent.agent.md": {
+      "content_sha256": "7615a653f669e193f2c5ae80f12cd4c0028ed25683ca65eaa898e905101e5d56",
+      "file_id": "file-GqhKRTB8oYaXAmUUXysRmf",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-07-22T11:13:32.642Z"
+    },
+    "memory/agent-knowledge/prompts/plutonix-agentic-d3-market-ready-001.plutonix-fullstack-agent.task.prompt.md": {
+      "content_sha256": "a290d3001378559cd4285ce1f0e2e83ab29d17824b70626adee8c58871f6f543",
+      "file_id": "file-9DjDu7bsPtWSJ6xeNptpqR",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-07-24T15:43:07.308Z"
+    },
+    "memory/agent-knowledge/prompts/plutonix-agentic-d3-market-ready-001.plutonix-fullstack-agent.validation.prompt.md": {
+      "content_sha256": "857284556af01520d016cf5fa3fb0a7bd361bdbf026391b17b3ed53025caf36c",
+      "file_id": "file-B9222cSrCMjQXyRMGai2iU",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-07-24T15:43:12.430Z"
+    },
+    "memory/agent-knowledge/prompts/plutonix-agentic-d3-market-ready-001.design-team.workshop.prompt.md": {
+      "content_sha256": "62680c35f92b6df4d8ef51fc489b865eb8ae3f3a59802c82fefc1bfffc4d8d06",
+      "file_id": "file-C63dZ6QnXLA6h2krJHcKZu",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-07-24T15:43:15.878Z"
+    },
+    "memory/agent-knowledge/projects/plutonix-agentic-d3-market-ready-001.summary.md": {
+      "content_sha256": "17ece849d8e6964b2672ae0d275a208d6491f9704647ddb7bf0af91b619be85e",
+      "file_id": "file-QAGqCWpKi9ZK4NnqTaiXaa",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-07-24T17:20:00.728Z"
+    },
+    "memory/agent-knowledge/projects/plutonix-agentic-d3-market-ready-002.summary.md": {
+      "content_sha256": "b94bc13d46bb30625a791001e628c4e2247f5ced2e2487877e11013ec6a9339b",
+      "file_id": "file-ANZsRubj4RR9Wqaph7MVJE",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-07-24T18:15:29.620Z"
+    },
+    "agents/generated/bag-commerce-studio-content-data-agent.agent.md": {
+      "content_sha256": "5c89b3e4638831f8de22685bfa77a9c090761491f9549aa1177332aaeccad086",
+      "file_id": "file-SQ2YuBxrELeE3stoL7JVUH",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-07-24T20:24:42.012Z"
+    },
+    "agents/generated/bag-commerce-studio-orchestrator-agent.agent.md": {
+      "content_sha256": "ae45a015ae54b3d6cd591807462bf96cf70f4775fa4b4df918cce814b9ebbfad",
+      "file_id": "file-3Yt6oqtxu1aUJ9c4RKzYLg",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-02T11:50:28.229Z"
+    },
+    "agents/generated/bag-commerce-studio-qagent-controller.agent.md": {
+      "content_sha256": "969fad75f933028ed4ae0a5a7a947aa83c1654e4171c70fe0500cb3b9e3bdb4f",
+      "file_id": "file-AXwqdzfZUuu45V51CqSmxA",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-02T11:50:29.756Z"
+    },
+    "agents/generated/bag-commerce-studio-runtime-packaging-agent.agent.md": {
+      "content_sha256": "53462d95cd7f689ea27b5b86792a29166131a92ccc2aae8dadcaa93e00e60b59",
+      "file_id": "file-H8y2xkDrHEhFD7vvejM3b6",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-02T11:50:31.652Z"
+    },
+    "agents/generated/bag-commerce-studio-ui-composition-agent.agent.md": {
+      "content_sha256": "2ff1806492f7c2a51abf8b3d9b73ab7edba0ffac9eea1f6975d03bfd1b113a1a",
+      "file_id": "file-SJUgDLMYDpQ5v7tSEzESY1",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-07-24T20:24:49.647Z"
+    },
+    "agents/generated/virtux-content-data-agent.agent.md": {
+      "content_sha256": "3227d205280ea7ed2e4d1065d99e567704c8c882477f80ef871f9c49784b7687",
+      "file_id": "file-RQ3SVWqF19yTcRfrtkrTQk",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-07-26T14:41:05.415Z"
+    },
+    "agents/generated/virtux-orchestrator-agent.agent.md": {
+      "content_sha256": "de57cff6113e1555b0fbb5cb3df486e5354aba7d4d9ee5f6dd0fbea54ac5f8bc",
+      "file_id": "file-KK1QLg4BjcaePDx7v2nG6r",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-07-26T14:41:08.094Z"
+    },
+    "agents/generated/virtux-qagent-controller.agent.md": {
+      "content_sha256": "b6f501d40d379fa75847678e073ddde9b0b79f4edcb208c42316b8dd4cdc5a54",
+      "file_id": "file-1AkaELTWLSWBaS4rhkEeWF",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-07-26T14:41:12.876Z"
+    },
+    "agents/generated/virtux-runtime-packaging-agent.agent.md": {
+      "content_sha256": "48aec93232fea7acb25f41ae4c4dc06febe0918446ee8a2f2bf3966584930cc9",
+      "file_id": "file-F74wZKtjz2r6APxHueKfDU",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-07-26T14:41:17.337Z"
+    },
+    "agents/generated/virtux-ui-composition-agent.agent.md": {
+      "content_sha256": "aea0b517b3592bac93fca93332453a824ab834d8709c163d56d0f24013aeb2d2",
+      "file_id": "file-H2HHBwjzzWLD8yXSKuGReQ",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-07-26T14:41:21.419Z"
+    },
+    "agents/generated/mentalheathcounselor-content-data-agent.agent.md": {
+      "content_sha256": "9845efa222b17624085e65a4ee8bd400f5ab68afd89524fa786b2a5f0d3b01b9",
+      "file_id": "file-8dvyx45UCbTYq5SncA2k1e",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-07-26T17:47:32.604Z"
+    },
+    "agents/generated/mentalheathcounselor-orchestrator-agent.agent.md": {
+      "content_sha256": "54459925766b6ab0074128beda8a6660ed905938cbb0de57c26243bea248e72d",
+      "file_id": "file-KUzsWKAkxwVSS6iLTpBzan",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-07-26T17:47:55.672Z"
+    },
+    "agents/generated/mentalheathcounselor-qagent-controller.agent.md": {
+      "content_sha256": "56df75d6bb11458330eec520b0a2af7f731415d8d54c1b7ed1b83d2c8fbdbd54",
+      "file_id": "file-4svcdUG8ucZubvzEsE76wF",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-07-26T17:48:42.084Z"
+    },
+    "agents/generated/mentalheathcounselor-runtime-packaging-agent.agent.md": {
+      "content_sha256": "e65e33bf121805172fd1c704c0fb6d7a1eb9319571b17b079618fbec41b5f9e7",
+      "file_id": "file-143YwNFjde7mUtgS5hLxTu",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-07-26T17:49:19.472Z"
+    },
+    "agents/generated/mentalheathcounselor-ui-composition-agent.agent.md": {
+      "content_sha256": "4407eeb116a8d58229319496022a0d65cf849c8b1700af739cc75fe4a6c839f7",
+      "file_id": "file-YG46HzZ3SLWigVBbnvThgM",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-07-26T17:49:43.926Z"
+    },
+    "agents/generated/videopresentationforproductx-content-data-agent.agent.md": {
+      "content_sha256": "18b128ea7e965174902e7f44494ab7e6493a34ceb1ad89e4d62c868191b3bc05",
+      "file_id": "file-S412qkgXKZS3NfKxQtkeNo",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-07-27T14:23:02.278Z"
+    },
+    "agents/generated/videopresentationforproductx-orchestrator-agent.agent.md": {
+      "content_sha256": "cd9a95792f35f3061a9317c333a4a237f39f3e6a360379cd7d93074d57d33aeb",
+      "file_id": "file-PK7eqSkkvrVdp6dxRyaJKF",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-07-27T14:23:25.284Z"
+    },
+    "agents/generated/videopresentationforproductx-qagent-controller.agent.md": {
+      "content_sha256": "2019d32e9b6804676ef8d0556c15f473aa10a0ddca5053e409413103bf41f19c",
+      "file_id": "file-MuUgYQJGzEmKRkXiBgXrr8",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-07-27T14:24:02.451Z"
+    },
+    "agents/generated/videopresentationforproductx-runtime-packaging-agent.agent.md": {
+      "content_sha256": "f684fab06fd85676e2aa1bf9b76ab7747884c6cf2daa889bdbdf540634a2558d",
+      "file_id": "file-5GCZ45gNzPZuWFvRWTT5nA",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-07-27T14:24:11.094Z"
+    },
+    "agents/generated/videopresentationforproductx-ui-composition-agent.agent.md": {
+      "content_sha256": "028a66b6da14c3161a6fa9cd3de52595259aca9cce71cf9b3dbd7ef6ef44c271",
+      "file_id": "file-CfRoZbV1PtBTCD6exurJn7",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-07-27T14:24:14.598Z"
+    },
+    "agents/generated/videopresentationforproductx-analytics-dashboard-agent.agent.md": {
+      "content_sha256": "12ca4f4998cd4ef3bc987fac52091ee03b682475ba4d6a5bc9c6f86e21e8fee8",
+      "file_id": "file-37qwVYTUbbQcKfNPirLgQC",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-07-27T14:22:59.961Z"
+    },
+    "agents/generated/burushx-content-data-agent.agent.md": {
+      "content_sha256": "bc5e9ceff2619072a2948b63e4d2e9f288bd91dafbd7980590449d4526decd1f",
+      "file_id": "file-P8tEnXRsafSsh2F5cuo4Kz",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-07-28T22:44:47.892Z"
+    },
+    "agents/generated/burushx-orchestrator-agent.agent.md": {
+      "content_sha256": "4fb9cf37092c87dc5c483c66f267512e0c558a14899ff0cf913e8b71c0356725",
+      "file_id": "file-3qGiyPHdGG4VXB4YbDbpg3",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-07-28T22:44:51.438Z"
+    },
+    "agents/generated/burushx-qagent-controller.agent.md": {
+      "content_sha256": "caaa64a1ef38b3d7c4faf1dd0b504bf6f45ca7bee8c09fa191cab690c419eec3",
+      "file_id": "file-9P5mGRtpT8d4QtroChyPnL",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-07-28T22:44:52.951Z"
+    },
+    "agents/generated/burushx-runtime-packaging-agent.agent.md": {
+      "content_sha256": "09ddc50fd18cde5023540ac337a9173912a2bdff32cd45a0a62bd61bb7ca5d7f",
+      "file_id": "file-CwYpZ9ZTZqV8RWZ4bARN6B",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-07-28T22:44:55.665Z"
+    },
+    "agents/generated/burushx-ui-composition-agent.agent.md": {
+      "content_sha256": "7a0509b794c00512d2de8c30730470eec8643f57fe2ed7d3ffefcc97b7666f76",
+      "file_id": "file-8XMp1bnjzAvrPrkZHJuiiq",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-07-28T22:44:57.260Z"
+    },
+    "agents/generated/burushx-media-asset-agent.agent.md": {
+      "content_sha256": "755477e99d320a58655d3090f56a5a2fbc0df36841ef13155538df1c0a9b0de8",
+      "file_id": "file-NsKMUSvuAVGGQndRf7n947",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-07-28T22:44:49.457Z"
+    },
+    "agents/generated/brushx-data-contract-agent.agent.md": {
+      "content_sha256": "12d1466707b6c900d713fd1c88e1a9484b7417c2433f721398d5bc63faff1a64",
+      "file_id": "file-QD17hqQZhXNhjvb4gbsnZ6",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-07-29T22:31:49.059Z"
+    },
+    "agents/generated/brushx-experience-composition-agent.agent.md": {
+      "content_sha256": "0de66fd299c9ead3ef9e2fad777f3503628fa9df77fb31f7cb46e401be42bd6b",
+      "file_id": "file-UG4JCKewxyH4CpfUQ6kAUC",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-07-29T22:31:51.369Z"
+    },
+    "agents/generated/brushx-orchestrator-agent.agent.md": {
+      "content_sha256": "64793753d21335fd2bd547edcbe59d467b36785024e5a94a5d6adbbae6ea8786",
+      "file_id": "file-MvsqvEwkdPgRCzUwNYQ6AA",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-07-29T22:31:53.595Z"
+    },
+    "agents/generated/brushx-qagent-controller.agent.md": {
+      "content_sha256": "d784ecc5ee076a2f5946134565834a13b06409bf254e32ce0bbc75bbf8aa66b6",
+      "file_id": "file-WvnReHLpZtqqwnzFN7k3wd",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-07-29T22:31:58.478Z"
+    },
+    "agents/generated/brushx-runtime-packaging-agent.agent.md": {
+      "content_sha256": "c39faff6f39c904e73200bd35226166ed9524fb8dc14cb91060426bbbbeaf323",
+      "file_id": "file-51zSU2PnTfVFjP3nxj6fJS",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-07-29T22:32:00.026Z"
+    },
+    "agents/generated/brushx-media-asset-agent.agent.md": {
+      "content_sha256": "e826a7c6bc1290f929fc62df1ff8492c5d1dc236be544af389631690759f8034",
+      "file_id": "file-51o51EC7vdxPimkFKd2YT1",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-07-29T22:41:59.654Z"
+    },
+    "agents/generated/voicex-data-contract-agent.agent.md": {
+      "content_sha256": "1e25ec6979b2caeeede3a456ac066e79cdc87c28be31704a917c3e974c551646",
+      "file_id": "file-K89H37VkpAGeHMagmzAfaw",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-02T08:08:38.022Z"
+    },
+    "agents/generated/voicex-experience-composition-agent.agent.md": {
+      "content_sha256": "349cd872c10817a9694c84379820f86de2157e3973e50d98f638ff507bfbe07f",
+      "file_id": "file-ExEYome1K94yC9QBC81Mgh",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-02T08:08:40.390Z"
+    },
+    "agents/generated/voicex-orchestrator-agent.agent.md": {
+      "content_sha256": "86d868c48feb3189c4f82ff076437772911a45670a82236c47a7e6207ed66e01",
+      "file_id": "file-TmXVGrvY1nqG7kGrAhmjjF",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-02T08:08:42.629Z"
+    },
+    "agents/generated/voicex-qagent-controller.agent.md": {
+      "content_sha256": "99058bd0a95b864b1ba2afd9db1e6760063b3a98923ea83234e7b140b9661e9c",
+      "file_id": "file-HM6RXhnKSdDHJ8CCk4Xq6g",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-02T08:08:44.384Z"
+    },
+    "agents/generated/voicex-runtime-packaging-agent.agent.md": {
+      "content_sha256": "cf29fa2839eecdc8f5b77a9e79cce0360e1cf9e380f82e4668858e759e894020",
+      "file_id": "file-X3N7ZKXWy4gpnA2ZDJrQzQ",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-02T08:08:45.849Z"
+    },
+    "agents/generated/gymx-application-architecture-agent.agent.md": {
+      "content_sha256": "8f803a000d6dd06d3f5ca826dbed0df3eb19c98645dcd2502883ea53d080bf21",
+      "file_id": "file-KGMoF8dfMVdNCq3xp2nFGz",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-02T10:35:58.650Z"
+    },
+    "agents/generated/gymx-data-contract-agent.agent.md": {
+      "content_sha256": "2039b07384fc9a9a15744d506dc2a0df4a603ba9cf89d137f388814c73556369",
+      "file_id": "file-Mf6YeYFShHFX7qKxsBdNWD",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-02T10:36:00.666Z"
+    },
+    "agents/generated/gymx-experience-composition-agent.agent.md": {
+      "content_sha256": "7ac1561a932b8ec2d107cb98cecd163a468eaf32f4ae1e019f8be95fa7f895a4",
+      "file_id": "file-QRg9h3psegyC71iztWYJhm",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-02T10:36:02.846Z"
+    },
+    "agents/generated/gymx-governance-security-agent.agent.md": {
+      "content_sha256": "84e00ae49a9d9b6c671927694753ced05046cefaa44b5ad407b1a4ee7f380092",
+      "file_id": "file-BJ56mymE8N7iNpLbU5cZoW",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-02T10:36:04.393Z"
+    },
+    "agents/generated/gymx-orchestrator-agent.agent.md": {
+      "content_sha256": "d2d642f9cd5e2847b3f93c63b02bf19bc6540d4c365be4fd9ec5bb231155f1dc",
+      "file_id": "file-VyV8rUJKvZmkvCmWzGbRQn",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-02T10:36:06.153Z"
+    },
+    "agents/generated/gymx-qagent-controller.agent.md": {
+      "content_sha256": "ea8b89f4e016d790b4a14004c11238714fd17b57bbefa91b2f17cbe5334fba44",
+      "file_id": "file-APUHzQbcgQZDjEvDB7PmNZ",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-02T10:36:08.512Z"
+    },
+    "agents/generated/gymx-runtime-packaging-agent.agent.md": {
+      "content_sha256": "1586e11b81445c680a089c9ac89f5da8d492a9867191263362e4588e257b240a",
+      "file_id": "file-C7dvEsUYqnsqzRjsPQ3Edd",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-02T10:36:10.467Z"
+    },
+    "agents/generated/gymx-media-asset-agent.agent.md": {
+      "content_sha256": "dd6333f4b3e68d0d4d7fec7e2d22f429cae81aa7f856f831bca3f6b2ebb4138e",
+      "file_id": "file-HMnrg76fUNoyeGzPf4AwoQ",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-02T10:45:11.863Z"
+    },
+    "agents/generated/bag-commerce-studio-commerce-catalog-agent.agent.md": {
+      "content_sha256": "7668a38201872817ccc62a862759172e3f834544b13c99da0c6844f44ae01c6b",
+      "file_id": "file-AJP3FbRgiNnRi3uh1j4LiH",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-02T11:50:23.233Z"
+    },
+    "agents/generated/bag-commerce-studio-data-contract-agent.agent.md": {
+      "content_sha256": "3f3d76a8860f31e89e177002b92456de1561e48030fcc966b79c2bb57f269978",
+      "file_id": "file-GWLnTFTtVpvQRFpi5EHGCp",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-02T11:50:25.344Z"
+    },
+    "agents/generated/bag-commerce-studio-experience-composition-agent.agent.md": {
+      "content_sha256": "2a1251c1955c2febeefc7176f76ee6e88687c0e481ec669899b2c1b2fb2b985a",
+      "file_id": "file-G6REnhe7Ft4afbkHLjw4Cr",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-02T11:50:26.772Z"
+    },
+    "agents/generated/bag-commerce-studio-media-asset-agent.agent.md": {
+      "content_sha256": "b5dbb70b0a879e5cab0b4287be8a83b71eeee1b12d4d4f97d8de5c558bec07c3",
+      "file_id": "file-EbPtSJuVK5G1hUgYmjBLRF",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-02T11:55:31.513Z"
+    },
+    "agents/generated/adx-data-contract-agent.agent.md": {
+      "content_sha256": "726af7a17e60a32a5046a4ed0517f6bdea40a0719382b489932b131daadfc11d",
+      "file_id": "file-V1hun9wacG4opQgJm8kDuK",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-02T12:25:20.764Z"
+    },
+    "agents/generated/adx-experience-composition-agent.agent.md": {
+      "content_sha256": "3a4c1a6bff4808741db7a214c5ea2c2b1f39bb855122d0340b1eeb9fcf1e5264",
+      "file_id": "file-UsyuGXKTFoDqKXv3Jm6FR7",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-02T12:25:23.005Z"
+    },
+    "agents/generated/adx-media-asset-agent.agent.md": {
+      "content_sha256": "b6816c6b7620d62a200aeb417ed296f2c5276b58cec80f57fbbd1bed21d2673d",
+      "file_id": "file-Na1R4mHt1oLezsVYhFgkee",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-02T12:25:24.441Z"
+    },
+    "agents/generated/adx-orchestrator-agent.agent.md": {
+      "content_sha256": "a14984a1802789da0bd7485b96b227a84af06662685a66f691eab35880123960",
+      "file_id": "file-JcEWLVuWASQGe3qn5weuXR",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-02T12:25:27.077Z"
+    },
+    "agents/generated/adx-qagent-controller.agent.md": {
+      "content_sha256": "23cdb183eebca1f0d0d5e07481c9121fec26ad9f6efcca6f5d2812a861f46892",
+      "file_id": "file-S2aRSRNcAvr7bEVDXw2ygU",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-02T12:25:28.774Z"
+    },
+    "agents/generated/adx-runtime-packaging-agent.agent.md": {
+      "content_sha256": "beb87fbe1864b4b3f7cf43b31f5e1eb178d979662a4254082fc3026a45e5a7c9",
+      "file_id": "file-MNP3uSp5isPsxkmifFgtUk",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-02T12:25:31.440Z"
+    },
+    "agents/generated/databricksx-data-contract-agent.agent.md": {
+      "content_sha256": "ba1312e79378d29831e8a9e23e736c60c6375df41a15af35f676256491ed7bff",
+      "file_id": "file-6U3hADFShBBNtn2r6Bz6aK",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-07T06:59:32.164Z"
+    },
+    "agents/generated/databricksx-experience-composition-agent.agent.md": {
+      "content_sha256": "5b7382419da51cea8ea8067e3d0cc5f739ca580cc1ed2d5f1d519923b85bf308",
+      "file_id": "file-Q4Q441vSqAQgK7u7UZREJg",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-07T06:59:34.020Z"
+    },
+    "agents/generated/databricksx-orchestrator-agent.agent.md": {
+      "content_sha256": "37c055f3691bbec0314ee5102ff9d6875609ae77db45069903c3369d5245dba7",
+      "file_id": "file-NDrf4bFsVnKZCFCitrJphw",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-07T06:59:36.789Z"
+    },
+    "agents/generated/databricksx-qagent-controller.agent.md": {
+      "content_sha256": "a562f0b8be323cd120687f24a3d3f8a55467d30f4de775ce7a38b846859610de",
+      "file_id": "file-2w8nBSTvBoxWPZufCVUg9f",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-07T07:02:07.913Z"
+    },
+    "agents/generated/databricksx-runtime-packaging-agent.agent.md": {
+      "content_sha256": "a84e4cd0c7b299c132e3c2258c7008b992cfb0729b0c5f8d69199adea9fcc93c",
+      "file_id": "file-RAdGHgN7zQqS4Sjk9WGxfK",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-07T06:59:40.298Z"
+    },
+    "memory/agent-knowledge/projects/builderx-agentic-d3-market-ready-001.summary.md": {
+      "content_sha256": "3742fc0535f8ee765abaf227ce8fa9b0a45af5a8fb2115564da0a15260f3635e",
+      "file_id": "file-G5JmoqvHzeCif3g6agyTGV",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-08T04:19:53.797Z"
+    },
+    "memory/agent-knowledge/projects/builderx-agentic-d3-market-ready-002.summary.md": {
+      "content_sha256": "29088356c4f28587e8fab8d69becdd98402c654d73e18fc9031e0caa2d9f4b94",
+      "file_id": "file-SuPGwKUiCveQ2i6v3odFQ3",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-08T04:19:57.103Z"
+    },
+    "memory/agent-knowledge/projects/builderx-container-restart-001.summary.md": {
+      "content_sha256": "a1800f563188afa651b112d0ca7e8490c1c86ec945b107b740ecd6f82674581c",
+      "file_id": "file-MNJs15pwkmrPqz3XBjihUB",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-08T04:19:58.801Z"
+    },
+    "memory/agent-knowledge/projects/builderx-generated-file-ops-001.summary.md": {
+      "content_sha256": "d1d7e192935c917c73a4f72216066fd84c9a6e509c142213465b2a42ae6353e2",
+      "file_id": "file-JaUXc5AP6EcGucXEhjeBWc",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-08T04:20:00.418Z"
+    },
+    "memory/agent-knowledge/projects/builderx-hot-reload-stability-001.summary.md": {
+      "content_sha256": "a4fbd473308a58f6cbca17aaf8a99277345b5f7d095550dce0c18f4690c9ce0c",
+      "file_id": "file-23sgHaMJzbjA4jVGAogzc4",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-08T04:20:02.820Z"
+    },
+    "memory/agent-knowledge/projects/builderx-large-001.summary.md": {
+      "content_sha256": "289ba54b4a334d9aef3e8735684200b80aa73497612fb6bc2a099efc8e3bdde6",
+      "file_id": "file-E3LDEqiJbdLbRRTPLV4rzc",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-08T04:20:04.926Z"
+    },
+    "memory/agent-knowledge/projects/builderx-layout-agentic-d3-001.summary.md": {
+      "content_sha256": "8c1938e6a00f9999aa49ba87e324680d678f316b0b43506366a1ae7f11df589b",
+      "file_id": "file-AKpBKiJpvE9ei9s1dG7z4u",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-08T04:20:08.806Z"
+    },
+    "memory/agent-knowledge/projects/builderx-mcp-chat-001.summary.md": {
+      "content_sha256": "42334b1f1d93e0be5e594e0c306b5dbc1ca3b91b4e86a2a82195a75801ff5938",
+      "file_id": "file-U5PUr115edUL6DZRx3gCoh",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-08T04:20:11.672Z"
+    },
+    "memory/agent-knowledge/projects/builderx-mcp-console-trace-001.summary.md": {
+      "content_sha256": "05fff423bb07d3991d866aac49fa088235beb3a9eab5e78c0a65503efd821c25",
+      "file_id": "file-CtJHpZpUdZQzSeJnCqk3Ea",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-08T04:20:13.311Z"
+    },
+    "memory/agent-knowledge/projects/builderx-mcp-runtime-log-001.summary.md": {
+      "content_sha256": "062d095029f9a8508ec8e527af638cb29984566598163e2c5bfe676cc13a6a00",
+      "file_id": "file-FHpvZNRvpyphVj1Jhtx7ZF",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-08T04:20:14.931Z"
+    },
+    "memory/agent-knowledge/projects/builderx-orchestrator-mcp-001.summary.md": {
+      "content_sha256": "cb4b88a2fc897dfb830000ccce3e2cb3cd81ef20b2c6745e4dd9daa0b914f94d",
+      "file_id": "file-Kao7BF6pVsEQaQ2dAPnCu3",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-08T04:20:16.634Z"
+    },
+    "memory/agent-knowledge/projects/builderx-runtime-log-400-001.summary.md": {
+      "content_sha256": "c73b364a578db5551067a405e8f5fedf0ebf8350ec52ab1cfa640918214b3038",
+      "file_id": "file-F8TQjkTq6rb8dD5dy2WFYj",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-08T04:20:18.219Z"
+    },
+    "memory/agent-knowledge/prompts/builderx-agentic-d3-market-ready-001.builderx-fullstack-agent.task.prompt.md": {
+      "content_sha256": "90d8a1c564a91fe7c5b123d05d9b0edb5d298ba9f08484bd5122c39e8020dae4",
+      "file_id": "file-Sq7MgDedHs5tTbBFQVTyve",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-08T04:20:19.974Z"
+    },
+    "memory/agent-knowledge/prompts/builderx-agentic-d3-market-ready-001.builderx-fullstack-agent.validation.prompt.md": {
+      "content_sha256": "1e41675b56770b37196c9abd53782d2c3388fc3b65a380b8f934d1f4c8c45c5e",
+      "file_id": "file-9w9cwC8zuKa3SftcQ2Cr56",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-08T04:20:21.698Z"
+    },
+    "memory/agent-knowledge/prompts/builderx-agentic-d3-market-ready-001.design-team.workshop.prompt.md": {
+      "content_sha256": "f75aed1cda810bfa0391ab273651d9e7aba82b6de68150e94aa3dbaa8ddb2ffb",
+      "file_id": "file-674b3eDnXnRJ7zmmud5nHd",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-08T04:20:23.795Z"
+    },
+    "memory/agent-knowledge/prompts/builderx-large-001.builderx-fullstack-agent.builderx-large-task.prompt.md": {
+      "content_sha256": "46bcccd816ab920a3a1e56c58ab3752537897d592570ecdde54c7a586c123fe4",
+      "file_id": "file-D1FEh58BYPbH5rCMDPNQ3K",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-08T04:20:26.156Z"
+    },
+    "agents/generated/cvmakerx-artifact-production-agent.agent.md": {
+      "content_sha256": "b10f2ca114c9316d65b11cb5d5944453ac745415a62d00f28631122d752ce414",
+      "file_id": "file-Q97g1V5VfDePKSG1E1PZVK",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-08T15:58:51.790Z"
+    },
+    "agents/generated/cvmakerx-orchestrator-agent.agent.md": {
+      "content_sha256": "7a1c416b55541dde16cf2725e1c2d71981a3ec42fbe40b5ed641570195f9045a",
+      "file_id": "file-S3JeVyRPdrQ5Nag997rzaV",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-08T15:58:54.197Z"
+    },
+    "agents/generated/cvmakerx-qagent-controller.agent.md": {
+      "content_sha256": "e6fb55284d11d364008339582f71e82fd9ab064bd503bd27497bceefcf676590",
+      "file_id": "file-AjG7VPhhUio6ccLFJ5XHY8",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-08T15:58:57.093Z"
+    },
+    "agents/generated/cvmakerx-runtime-packaging-agent.agent.md": {
+      "content_sha256": "dc60ff33638e510c8bfc4f82880929310d27d14303922994ed2e8382c134ddea",
+      "file_id": "file-Q7Gp9ybUAAEUq6pz7FBjbm",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-08T15:58:58.696Z"
+    }
+  },
+  "last_sync_at": "2026-08-09T11:09:39.118Z"
+}

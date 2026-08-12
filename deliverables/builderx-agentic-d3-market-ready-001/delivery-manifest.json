@@ -1,0 +1,74 @@
+{
+  "workflow_id": "plutonix-agentic-d3-market-ready-001",
+  "delivered_at": "2026-07-24T15:57:17Z",
+  "status": "delivered",
+  "deliverables": [
+    {
+      "path": "apps/frontend/public/agentic-system/d3/index.html",
+      "summary": "Production graph workspace with four view modes, compact command surface, accessible navigator, minimap, legend, and selection-driven inspector."
+    },
+    {
+      "path": "apps/frontend/public/agentic-system/d3/agentic-system.css",
+      "summary": "Responsive graphite visual system with stable desktop layout and mobile bottom-sheet details."
+    },
+    {
+      "path": "apps/frontend/public/agentic-system/d3/agentic-system-d3.js",
+      "summary": "D3 rendering, semantic zoom, search-to-focus, keyboard navigation, bounded data loading, progressive view behavior, and layout persistence."
+    },
+    {
+      "path": "apps/frontend/public/agentic-system/d3/agentic-system-model.js",
+      "summary": "Project-first grouping, focus-depth traversal, runtime semantics, relationship styling, filtering, and stable layouts."
+    },
+    {
+      "path": "docs/agentic-system-d3-design-workshop.md",
+      "summary": "Living market-readiness workshop with design principles, release outcomes, measures, and prioritized follow-up work."
+    },
+    {
+      "path": "memory/project-intelligence/agentic-system-d3-improvement-plan.json",
+      "summary": "Machine-readable ongoing improvement plan and evidence ledger."
+    }
+  ],
+  "validation": {
+    "model_tests": {
+      "status": "passed",
+      "passed": 6,
+      "failed": 0
+    },
+    "production_build": {
+      "status": "passed",
+      "modules_transformed": 2164
+    },
+    "browser_qa": {
+      "status": "passed",
+      "viewports": [
+        "1440x900",
+        "390x844"
+      ],
+      "default_visible_objects": 9,
+      "horizontal_overflow": false,
+      "console_errors": 0,
+      "search_focus_verified": true
+    },
+    "topology": {
+      "status": "passed",
+      "nodes": 82,
+      "relationships": 106,
+      "copies_identical": true
+    },
+    "review": {
+      "completed_specialist_reviews": 3,
+      "final_delegated_review": "unavailable_service_usage_limit",
+      "replacement_gate": "local_release_audit_passed"
+    }
+  },
+  "data_handling": {
+    "real_data_sources": [
+      "Existing Agentic System graph API",
+      "Repository topology fallback"
+    ],
+    "new_database_or_api": "None",
+    "mock_or_demo_data_added": false,
+    "empty_loading_error_states": true,
+    "hardcoded_production_business_data_added": false
+  }
+}

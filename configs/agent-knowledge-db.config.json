@@ -1,0 +1,6 @@
+{
+  "provider": "firebase_data_connect",
+  "status": "pending_credentials",
+  "url_env": "AGENT_KNOWLEDGE_DB_URL",
+  "api_key_env": "AGENT_KNOWLEDGE_DB_API_KEY"
+}

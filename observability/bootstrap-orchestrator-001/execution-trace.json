@@ -1,0 +1,14 @@
+{
+  "workflow_id": "bootstrap-orchestrator-001",
+  "started_at": "2026-06-29T22:53:21+00:00",
+  "completed_at": "2026-06-29T22:53:21+00:00",
+  "status": "complete_with_pending_external_sync",
+  "events": [
+    "Read bootstrap prompt.",
+    "Created root artifact folders.",
+    "Created default project execution agent.",
+    "Generated Neo4j artifacts.",
+    "Generated Agentic System D3 page.",
+    "Resolved vector provider: chroma_local_generated."
+  ]
+}

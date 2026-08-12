@@ -1,0 +1,39 @@
+type Agent @table {
+  id: UUID! @default(expr: "uuidV4()")
+  name: String!
+  description: String
+  objective: String!
+  systemPrompt: String!
+  domain: String!
+  level: Int
+  status: String!
+  currentVersion: String!
+  lifecycleStatus: String!
+  humanReviewStatus: String
+  createdAt: Timestamp! @default(expr: "request.time")
+  updatedAt: Timestamp
+}
+
+type AgentCapabilityScore @table {
+  id: UUID! @default(expr: "uuidV4()")
+  agent: Agent!
+  capabilityScore: Int!
+  deliverableAccuracyScore: Int!
+  reliabilityScore: Int!
+  adaptabilityScore: Int!
+  reuseConfidenceScore: Int!
+  repeatedCorrectionCount: Int!
+  failureCount: Int!
+  successCount: Int!
+  lastCalculatedAt: Timestamp
+}
+
+type AgentReuseDecision @table {
+  id: UUID! @default(expr: "uuidV4()")
+  selectedAgent: Agent
+  decisionType: String!
+  reuseConfidenceScore: Int
+  similarityScore: Float
+  reason: String!
+  createdAt: Timestamp! @default(expr: "request.time")
+}

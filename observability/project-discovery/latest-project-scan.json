@@ -1,0 +1,33 @@
+{
+  "project_name": "plutonix",
+  "generated_at": "2026-06-25T00:00:00+05:30",
+  "project_type": "containerized_fullstack_react_node_builder",
+  "detected_elements": {
+    "frontend": [
+      "apps/frontend"
+    ],
+    "backend": [
+      "apps/backend"
+    ],
+    "generated_runtime": [
+      "apps/generated-site"
+    ],
+    "deployment": [
+      "docker-compose.yml",
+      "apps/frontend/Dockerfile",
+      "apps/backend/Dockerfile",
+      "apps/generated-site/Dockerfile"
+    ],
+    "documentation": [
+      "README.md",
+      "docs/architecture.md"
+    ],
+    "testing": [
+      "scripts/validate_project.py"
+    ]
+  },
+  "runtime_status": {
+    "node_available_locally": false,
+    "docker_available_locally": true
+  }
+}

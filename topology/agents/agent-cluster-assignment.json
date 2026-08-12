@@ -1,0 +1,37 @@
+{
+  "generated_at": "2026-06-25T00:00:00+05:30",
+  "assignments": [
+    {
+      "agent_id": "plutonix-fullstack-agent",
+      "agent_name": "PlutoniX Fullstack Agent",
+      "agent_level": "1",
+      "domain": "fullstack",
+      "assigned_clusters": [
+        "frontend_control_surface",
+        "backend_generation_api",
+        "mcp_generation_endpoint",
+        "generated_site_runtime",
+        "container_orchestration"
+      ],
+      "owned_files": [
+        "apps/frontend",
+        "apps/backend",
+        "apps/generated-site",
+        "docker-compose.yml"
+      ],
+      "read_only_files": [],
+      "dependencies": [],
+      "handoff_targets": [],
+      "tools_allowed": [
+        "filesystem_write",
+        "local_validation",
+        "docker_compose_config"
+      ],
+      "risk_level": "high",
+      "human_review_required": false,
+      "cost_function_reason": "Single specialist owner is cheaper and clearer than splitting five tightly coupled bootstrap clusters.",
+      "reuse_decision": "create_new_agent",
+      "memory_sync_required": true
+    }
+  ]
+}

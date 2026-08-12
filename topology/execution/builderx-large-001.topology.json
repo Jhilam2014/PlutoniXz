@@ -1,0 +1,18 @@
+{
+  "workflow_id": "plutonix-large-001",
+  "mode": "single_agent_with_runtime_services",
+  "agents": [
+    "plutonix-fullstack-agent"
+  ],
+  "services": [
+    "frontend",
+    "backend",
+    "generated-site"
+  ],
+  "approval_gates": [
+    "external_llm_api_connection",
+    "arbitrary_code_execution",
+    "public_deployment"
+  ],
+  "created_at": "2026-06-25T00:00:00+05:30"
+}

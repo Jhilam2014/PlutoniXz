@@ -1,0 +1,37 @@
+{
+  "name": "plutonix",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Autonomous multi-artifact creation system for applications, tools, documents, PDFs, workbooks, visual assets, media, APIs, and automations.",
+  "scripts": {
+    "dev:frontend": "npm --prefix apps/frontend run dev",
+    "dev:backend": "npm --prefix apps/backend run dev",
+    "dev:generated": "npm --prefix apps/generated-site run dev",
+    "validate": "python3 scripts/validate_project.py",
+    "compose:config": "docker compose config",
+    "secret:scan": "sh scripts/secret-scan.sh scan",
+    "secret:scan:verify-fixture": "sh scripts/secret-scan.sh verify-fixture",
+    "secret:reconcile:08a": "node scripts/reconcile-secret-findings.mjs --source-report runtime/secret-scan/08a-manual-20260810/reachable-git-history.gitleaks.json --output-json runtime/secret-scan/08a1-local/finding-reconciliation.sanitized.json --output-markdown docs/production-readiness/evidence/08a-finding-reconciliation.md --run-id 08a1-local",
+    "secret:reconcile:08a:verify": "node scripts/verify-08a-reconciliation.mjs --source-report runtime/secret-scan/08a-manual-20260810/reachable-git-history.gitleaks.json --manifest runtime/secret-scan/08a1-local/finding-reconciliation.sanitized.json",
+    "secret:artifacts:08a": "node scripts/inventory-08a-artifacts.mjs --output-json runtime/secret-scan/08a1-local/artifact-inventory.sanitized.json --output-markdown docs/production-readiness/evidence/08a-artifact-inventory.md --run-id 08a1-local",
+    "secret:artifacts:08a:verify": "node scripts/verify-08a-artifact-inventory.mjs --inventory runtime/secret-scan/08a1-local/artifact-inventory.sanitized.json",
+    "secret:verify:08a1a": "node scripts/verify-08a1a-owner-evidence.mjs",
+    "secret:reconcile:08a1b": "sh scripts/reconcile-08a1b.sh",
+    "secret:reconcile:08a1b:test": "node scripts/test-08a1b-reconciliation.mjs",
+    "secret:reconcile:08a1c": "sh scripts/reconcile-08a1c.sh",
+    "secret:reconcile:08a1c:test": "node scripts/test-08a1c-owner-dispositions.mjs",
+    "secret:reconcile:08a1c:artifact-consistency:test": "node scripts/test-08a1c-artifact-consistency.mjs",
+    "secret:artifacts:08a1d": "node scripts/scan-08a1d-artifacts.mjs --run-id 20260811T214249Z --manifest runtime/secret-scan/20260811T214249Z/canonical-inventory.08a1b.sanitized.json --scan-summary runtime/secret-scan/20260811T214249Z/summary.jsonl --report-dir runtime/secret-scan/20260811T214249Z/artifact-coverage-08a1d --output-json runtime/secret-scan/20260811T214249Z/artifact-coverage.08a1d.sanitized.json",
+    "secret:artifacts:08a1d:verify": "node scripts/verify-08a1d-artifact-coverage.mjs --inventory runtime/secret-scan/20260811T214249Z/artifact-coverage.08a1d.sanitized.json --manifest runtime/secret-scan/20260811T214249Z/canonical-inventory.08a1b.sanitized.json --resolution docs/production-readiness/evidence/08a-owner-dispositions.sanitized.json --require-coverage",
+    "secret:artifacts:08a1d:test": "node scripts/test-08a1d-artifact-coverage.mjs",
+    "hf:models:add": "node scripts/huggingface-models.mjs add",
+    "hf:models:download": "node scripts/huggingface-models.mjs download",
+    "hf:models:build": "node scripts/huggingface-models.mjs build",
+    "hf:models:status": "node scripts/huggingface-models.mjs status"
+  },
+  "workspaces": [
+    "apps/frontend",
+    "apps/backend",
+    "apps/generated-site"
+  ]
+}

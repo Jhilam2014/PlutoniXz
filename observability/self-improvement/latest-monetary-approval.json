@@ -1,0 +1,32 @@
+{
+  "id": "si_money_c3bc60fa-8ece-455f-a5d8-66f660a133de",
+  "schemaVersion": "1.0.0",
+  "timestamp": "2026-08-09T09:35:29.488Z",
+  "status": "pending",
+  "source": "self-improvement-monetary-approval-gate",
+  "actor": "self-improvement-orchestrator",
+  "toolPlanId": "si_tool_plan_aa624a33-8c24-4951-aa90-7ddf54b292a7",
+  "eventId": "1786267738388-1c6f07427353f",
+  "component": "authentication",
+  "solutionKind": "external_paid_tool",
+  "problemStatement": "A workflow complexity issue was detected. The likely solution may require a monetary resource. Affected component: authentication. Evidence: Task type: Medium Gotham mode: executor Mode contract: Execution mode. Implement the requested coding change, update required files, validate, and report evidence. task : Continue the existing DatabricksX implementation.",
+  "approvalPrompt": "Approve estimated monthly_or_usage_based spend of about $25.00, or ask PlutoniX to pursue a cheaper internal solution.",
+  "costEstimate": {
+    "requiresMonetaryValue": true,
+    "estimatedUsd": 25,
+    "billingPeriod": "monthly_or_usage_based",
+    "paidResource": "external marketplace, SaaS, cloud, GPU, or paid API tool",
+    "approvalRequired": true,
+    "approvalStatus": "pending_user_approval"
+  },
+  "cheaperAlternatives": [
+    "Build a local deterministic analysis tool from existing logs and metrics.",
+    "Reuse existing PlutoniX agents or route to a smaller model profile.",
+    "Add instrumentation and caching before paying for an external service.",
+    "Simplify the UI/workflow or split the agent task into smaller bounded steps."
+  ],
+  "decision": "pending",
+  "decidedAt": "",
+  "decidedBy": "",
+  "note": ""
+}

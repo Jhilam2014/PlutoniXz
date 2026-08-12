@@ -1,0 +1,6 @@
+{
+  "provider": "openai",
+  "status": "pending_credentials",
+  "vector_store_id_env": "OPENAI_AGENT_VECTOR_STORE_ID",
+  "api_key_env": "OPENAI_API_KEY"
+}

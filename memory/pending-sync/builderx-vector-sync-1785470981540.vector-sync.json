@@ -1,0 +1,15 @@
+{
+  "workflow_id": "plutonix-vector-sync-1785470981540",
+  "reason": "periodic",
+  "status": "failed",
+  "started_at": "2026-07-31T04:09:41.540Z",
+  "completed_at": "2026-07-31T04:09:41.540Z",
+  "errors": [
+    "OpenAI API 503: System is overloaded. Please retry in a few minutes."
+  ],
+  "local_files_scanned": 0,
+  "files_uploaded": 0,
+  "files_skipped": 0,
+  "files_failed": 1,
+  "pending_sync_count": 1
+}

@@ -1,0 +1,36 @@
+{
+  "workflow_id": "plutonix-agentic-d3-market-ready-001",
+  "tasks": [
+    {
+      "task_id": "design-workshop",
+      "description": "Audit visual hierarchy, observability workflows, responsive behavior, and accessibility with independent read-only reviewers.",
+      "status": "completed"
+    },
+    {
+      "task_id": "project-first-navigation",
+      "description": "Replace the inventory-like default with stable project-first clusters and progressive capability drill-down.",
+      "status": "completed"
+    },
+    {
+      "task_id": "command-and-inspector",
+      "description": "Implement the compact command surface, search-to-focus workflow, accessible navigator, and selection-driven inspector.",
+      "status": "completed"
+    },
+    {
+      "task_id": "runtime-resilience",
+      "description": "Add bounded API loading, fallback provenance, freshness, empty/error recovery, local browser dependencies, and responsive resizing.",
+      "status": "completed"
+    },
+    {
+      "task_id": "living-improvement-plan",
+      "description": "Record design principles, completed release blockers, measurable outcomes, and prioritized follow-up work.",
+      "status": "completed"
+    },
+    {
+      "task_id": "production-validation",
+      "description": "Run model tests, production build, browser screenshots, interaction checks, and independent regression review.",
+      "status": "completed",
+      "note": "All executable gates passed. Three independent specialist reviews informed the work; the final delegated regression review was unavailable due to its service usage limit and was replaced by a documented local release audit."
+    }
+  ]
+}

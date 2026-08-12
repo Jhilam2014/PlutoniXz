@@ -1,0 +1,181 @@
+{
+  "metadata": {
+    "project_name": "plutonix",
+    "generated_at": "2026-06-29T22:53:21+00:00",
+    "workflow_id": "bootstrap-orchestrator-001",
+    "source": "orchestrator",
+    "graph_version": "1.0.0",
+    "neo4j_status": "ready",
+    "vector_provider": "chroma_local_generated",
+    "vector_status": "pending_install"
+  },
+  "nodes": [
+    {
+      "id": "project:orchestrator-agent-001",
+      "type": "project",
+      "label": "plutonix",
+      "group": "project",
+      "risk_level": "low",
+      "status": "active",
+      "metadata": {}
+    },
+    {
+      "id": "workflow:bootstrap-orchestrator-001",
+      "type": "workflow",
+      "label": "Bootstrap Orchestrator",
+      "group": "workflow",
+      "risk_level": "low",
+      "status": "complete",
+      "metadata": {}
+    },
+    {
+      "id": "agent:plutonix-fullstack-agent",
+      "type": "agent",
+      "label": "PlutoniX Fullstack Agent",
+      "group": "global-agent",
+      "risk_level": "medium",
+      "status": "active",
+      "agent_id": "plutonix-fullstack-agent",
+      "cluster_id": "plutonix-fullstack",
+      "metadata": {
+        "capabilityScore": 60,
+        "role": "global-plutonix-orchestrator",
+        "domain": "fullstack"
+      }
+    },
+    {
+      "id": "agent:project-execution-agent",
+      "type": "agent",
+      "label": "Project Execution Agent",
+      "group": "agent",
+      "risk_level": "medium",
+      "status": "active",
+      "agent_id": "project-execution-agent",
+      "metadata": {
+        "capabilityScore": 60
+      }
+    },
+    {
+      "id": "functionality:agent-memory",
+      "type": "cluster",
+      "label": "Agent Memory",
+      "group": "memory",
+      "risk_level": "medium",
+      "status": "bootstrapped",
+      "cluster_id": "agent-memory",
+      "metadata": {}
+    },
+    {
+      "id": "functionality:neo4j-graph",
+      "type": "graph_store",
+      "label": "Neo4j Graph Artifacts",
+      "group": "graph",
+      "risk_level": "medium",
+      "status": "ready",
+      "metadata": {}
+    },
+    {
+      "id": "functionality:vector-memory",
+      "type": "vector_store",
+      "label": "Vector Memory",
+      "group": "vector",
+      "risk_level": "medium",
+      "status": "pending_install",
+      "metadata": {
+        "provider": "chroma_local_generated"
+      }
+    },
+    {
+      "id": "page:agentic-system-d3",
+      "type": "page",
+      "label": "PlutoniX Graphical Model Page",
+      "group": "d3",
+      "risk_level": "low",
+      "status": "ready",
+      "metadata": {
+        "path": "agentic-system/d3/index.html"
+      }
+    },
+    {
+      "id": "validation:bootstrap-artifacts",
+      "type": "validation",
+      "label": "Bootstrap Artifact Validation",
+      "group": "validation",
+      "risk_level": "low",
+      "status": "pending",
+      "metadata": {}
+    }
+  ],
+  "links": [
+    {
+      "source": "project:orchestrator-agent-001",
+      "target": "workflow:bootstrap-orchestrator-001",
+      "type": "contains",
+      "weight": 1,
+      "metadata": {}
+    },
+    {
+      "source": "project:orchestrator-agent-001",
+      "target": "agent:plutonix-fullstack-agent",
+      "type": "has_agent",
+      "weight": 2,
+      "metadata": {}
+    },
+    {
+      "source": "agent:plutonix-fullstack-agent",
+      "target": "agent:project-execution-agent",
+      "type": "delegates_to",
+      "weight": 1,
+      "metadata": {}
+    },
+    {
+      "source": "workflow:bootstrap-orchestrator-001",
+      "target": "agent:project-execution-agent",
+      "type": "assigned_to",
+      "weight": 1,
+      "metadata": {}
+    },
+    {
+      "source": "agent:project-execution-agent",
+      "target": "functionality:agent-memory",
+      "type": "owns",
+      "weight": 1,
+      "metadata": {}
+    },
+    {
+      "source": "agent:project-execution-agent",
+      "target": "functionality:neo4j-graph",
+      "type": "owns",
+      "weight": 1,
+      "metadata": {}
+    },
+    {
+      "source": "agent:project-execution-agent",
+      "target": "functionality:vector-memory",
+      "type": "owns",
+      "weight": 1,
+      "metadata": {}
+    },
+    {
+      "source": "functionality:neo4j-graph",
+      "target": "page:agentic-system-d3",
+      "type": "visualized_by",
+      "weight": 1,
+      "metadata": {}
+    },
+    {
+      "source": "functionality:vector-memory",
+      "target": "page:agentic-system-d3",
+      "type": "visualized_by",
+      "weight": 1,
+      "metadata": {}
+    },
+    {
+      "source": "workflow:bootstrap-orchestrator-001",
+      "target": "validation:bootstrap-artifacts",
+      "type": "validates",
+      "weight": 1,
+      "metadata": {}
+    }
+  ]
+}

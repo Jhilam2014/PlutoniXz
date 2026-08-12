@@ -1,0 +1,16 @@
+{
+  "status": "ingested",
+  "sourcePath": "docs/quotes/PlutoniX_Market_Differentiation_Investor_Quotation.pdf",
+  "supplementalConversationUrl": "https://chatgpt.com/share/6a65599b-b9b8-83e8-8520-7805ab8981ed",
+  "knowledgePath": "runtime/self-improvement/market-vision/plutonix-market-differentiation.json",
+  "gothamWorkflowModesPath": "runtime/self-improvement/market-vision/gotham-chat-workflow-modes.json",
+  "ingestedAt": "2026-07-26T00:00:00.000Z",
+  "summary": "Market readiness vision ingested for self-improvement R&D: lead with persistent AI engineering organisation, verified delivery, cross-project learning, controlled evolution, Project Intelligence Passport, outcome-based agent scoring, and customer-owned execution.",
+  "agentOwners": [
+    "plutonix-marketplace-research-agent",
+    "plutonix-competitive-tools-research-agent",
+    "plutonix-literature-research-agent",
+    "plutonix-self-improvement-investigator-agent",
+    "self-improvement-planner"
+  ]
+}

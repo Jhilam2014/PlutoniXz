@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "provider": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string"
+    },
+    "content_hash": {
+      "type": "string"
+    },
+    "vector_store_id": {
+      "type": "string"
+    },
+    "file_id": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "provider",
+    "status",
+    "content_hash"
+  ]
+}

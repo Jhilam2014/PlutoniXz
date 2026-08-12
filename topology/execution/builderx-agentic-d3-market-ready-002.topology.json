@@ -1,0 +1,63 @@
+{
+  "workflow_id": "plutonix-agentic-d3-market-ready-002",
+  "status": "completed",
+  "nodes": [
+    {
+      "id": "route-audit",
+      "type": "task",
+      "status": "completed"
+    },
+    {
+      "id": "verified-deep-links",
+      "type": "task",
+      "status": "completed"
+    },
+    {
+      "id": "inspector-information-architecture",
+      "type": "task",
+      "status": "completed"
+    },
+    {
+      "id": "large-graph-rendering",
+      "type": "task",
+      "status": "completed"
+    },
+    {
+      "id": "openai-read-resilience",
+      "type": "task",
+      "status": "completed"
+    },
+    {
+      "id": "production-validation",
+      "type": "task",
+      "status": "completed"
+    }
+  ],
+  "links": [
+    {
+      "source": "route-audit",
+      "target": "verified-deep-links",
+      "type": "unblocks"
+    },
+    {
+      "source": "verified-deep-links",
+      "target": "inspector-information-architecture",
+      "type": "informs"
+    },
+    {
+      "source": "inspector-information-architecture",
+      "target": "large-graph-rendering",
+      "type": "precedes"
+    },
+    {
+      "source": "large-graph-rendering",
+      "target": "openai-read-resilience",
+      "type": "reveals"
+    },
+    {
+      "source": "openai-read-resilience",
+      "target": "production-validation",
+      "type": "precedes"
+    }
+  ]
+}

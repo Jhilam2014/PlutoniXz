@@ -1,0 +1,23 @@
+{
+  "workflow_id": "plutonix-hot-reload-stability-001",
+  "delivered_at": "2026-06-25T10:17:25Z",
+  "status": "delivered",
+  "deliverables": [
+    {
+      "path": "apps/backend/src/runtimeRestart.js",
+      "summary": "Hard generated-site restarts are now opt-in; default refresh uses Vite hot reload."
+    },
+    {
+      "path": "apps/backend/src/generator.js",
+      "summary": "Generated file operations now apply in dependency-safe order."
+    },
+    {
+      "path": "docker-compose.yml",
+      "summary": "Added RESTART_GENERATED_CONTAINER environment control."
+    },
+    {
+      "path": "README.md",
+      "summary": "Documented hot-reload default and optional hard restart mode."
+    }
+  ]
+}

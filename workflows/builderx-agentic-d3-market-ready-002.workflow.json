@@ -1,0 +1,20 @@
+{
+  "workflow_id": "plutonix-agentic-d3-market-ready-002",
+  "name": "PlutoniX Graphical Model investigation and scale iteration",
+  "workflow_class": [
+    "software_engineering",
+    "dashboard_ui",
+    "observability",
+    "ai_agent_system",
+    "performance",
+    "testing_quality"
+  ],
+  "task_size": "large",
+  "objective": "Improve investigation navigation, inspector information architecture, OpenAI read resilience, and measurable large-graph rendering behavior.",
+  "status": "completed",
+  "created_at": "2026-07-24T17:25:00Z",
+  "updated_at": "2026-07-24T18:06:37Z",
+  "agent_id": "plutonix-fullstack-agent",
+  "reuse_decision": "exact_reuse",
+  "review_mode": "local_evidence_driven_iteration"
+}

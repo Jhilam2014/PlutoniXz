@@ -1,0 +1,9 @@
+{
+  "status": "ready",
+  "checked_at": "2026-06-29T22:53:21+00:00",
+  "neo4j_uri_configured": true,
+  "neo4j_username_configured": true,
+  "neo4j_password_configured": true,
+  "live_sync_performed": false,
+  "reason": "Credentials available; scripts can be run with approval."
+}

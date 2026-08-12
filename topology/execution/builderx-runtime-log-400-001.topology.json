@@ -1,0 +1,14 @@
+{
+  "workflow_id": "plutonix-runtime-log-400-001",
+  "mode": "single_agent",
+  "agent_id": "project-execution-agent",
+  "context_budget": "small_context",
+  "steps": [
+    "Frontend posts Generate instruction to /mcp.",
+    "Backend emits MCP runtime events and appends them to runtime/mcp-runtime-log.jsonl.",
+    "Frontend receives live SSE events and polls /api/runtime-log every 1500ms.",
+    "Runtime log panel merges, deduplicates, sorts latest first, and caps display at 400 rows."
+  ],
+  "approval_gates": [],
+  "risk_level": "low"
+}

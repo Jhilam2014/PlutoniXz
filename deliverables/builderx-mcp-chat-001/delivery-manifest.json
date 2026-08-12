@@ -1,0 +1,19 @@
+{
+  "workflow_id": "plutonix-mcp-chat-001",
+  "delivered_at": "2026-06-25T10:20:59Z",
+  "status": "delivered",
+  "deliverables": [
+    {
+      "path": "apps/frontend/src/App.jsx",
+      "summary": "MCP chat thread now combines user instructions and runtime process messages."
+    },
+    {
+      "path": "apps/frontend/src/App.css",
+      "summary": "Added VS Code-like chat message layout and compact process bubbles."
+    },
+    {
+      "path": "apps/backend/src/server.js",
+      "summary": "Backend event timestamps now emit IST-formatted time strings."
+    }
+  ]
+}

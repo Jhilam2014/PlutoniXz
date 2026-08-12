@@ -1,0 +1,23 @@
+{
+  "workflow_id": "plutonix-layout-agentic-d3-001",
+  "delivered_at": "2026-06-25T10:34:26Z",
+  "status": "delivered",
+  "deliverables": [
+    {
+      "path": "apps/frontend/src/App.jsx",
+      "summary": "Three-zone layout, right-side control panel, major log cards, current-session highlighting, Playground fit toggle."
+    },
+    {
+      "path": "apps/frontend/src/App.css",
+      "summary": "Responsive layout, aspect-ratio preview, fit-screen mode, and light-green current-session log styling."
+    },
+    {
+      "path": "topology/d3/agentic-system-graph.json",
+      "summary": "Agent-to-functionality graph with child feature nodes."
+    },
+    {
+      "path": "agentic-system/d3/index.html",
+      "summary": "Standalone D3 Agentic System page."
+    }
+  ]
+}

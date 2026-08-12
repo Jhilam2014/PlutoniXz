@@ -1,0 +1,19 @@
+{
+  "workflow_id": "plutonix-hot-reload-stability-001",
+  "checked_at": "2026-06-25T10:17:25Z",
+  "status": "success",
+  "checks": {
+    "project_validation": "success",
+    "compose_config": "success",
+    "compose_rebuild": "success",
+    "backend_status_restart_mode": "vite-hot-reload",
+    "mcp_generate": "success",
+    "build_id": "build_RznPXumcCK",
+    "restart_status": "hot-reload",
+    "hard_restart_seen_in_latest_logs": false,
+    "generated_site_hmr_seen": true,
+    "backend_node_check": "success",
+    "frontend_build": "success",
+    "generated_site_build": "success"
+  }
+}

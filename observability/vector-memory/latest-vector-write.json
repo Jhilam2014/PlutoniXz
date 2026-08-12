@@ -1,0 +1,14 @@
+{
+  "workflow_id": "plutonix-vector-sync-1786555341548",
+  "reason": "periodic",
+  "started_at": "2026-08-12T17:22:21.548Z",
+  "completed_at": "2026-08-12T17:22:21.737Z",
+  "status": "deferred",
+  "deferred_reason": "below_pending_threshold",
+  "min_pending_files": 5,
+  "local_files_scanned": 0,
+  "files_uploaded": 0,
+  "files_skipped": 0,
+  "files_failed": 0,
+  "pending_sync_count": 0
+}

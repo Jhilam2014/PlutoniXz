@@ -1,0 +1,8 @@
+{
+  "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+  "checked_at": "2026-06-29T22:53:21+00:00",
+  "attached_file_count": 0,
+  "uploaded_files": [],
+  "status": "skipped",
+  "reason": "OpenAI Vector Store was not selected; ChromaDB fallback artifacts were generated."
+}

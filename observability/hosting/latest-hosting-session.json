@@ -1,0 +1,4 @@
+{
+  "status": "not_started",
+  "note": "Sanitized hosting session snapshots are written here at runtime. No plaintext credentials are stored."
+}

@@ -1,0 +1,47 @@
+{
+  "version": "qagent-deterministic-fixtures/v1",
+  "fixtures": [
+    {
+      "id": "material-route-failure-uncertainty",
+      "description": "Two materially different recovery branches need one authorized, fresh route-failure measurement before ordinary evaluation can proceed.",
+      "modes": {
+        "no_qagent": {
+          "quality": 0.5,
+          "accepted": false,
+          "humanCorrectionProxy": 1,
+          "latencyMs": 20,
+          "tokens": 0,
+          "costUsd": 0,
+          "modelCalls": 0,
+          "toolCalls": 0,
+          "regressions": 0,
+          "decisionImpact": "none"
+        },
+        "single_agent_reflection": {
+          "quality": 0.5,
+          "accepted": false,
+          "humanCorrectionProxy": 1,
+          "latencyMs": 35,
+          "tokens": 120,
+          "costUsd": 0.002,
+          "modelCalls": 1,
+          "toolCalls": 0,
+          "regressions": 0,
+          "decisionImpact": "none"
+        },
+        "qagent_assisted": {
+          "quality": 0.75,
+          "accepted": true,
+          "humanCorrectionProxy": 0,
+          "latencyMs": 45,
+          "tokens": 150,
+          "costUsd": 0.004,
+          "modelCalls": 1,
+          "toolCalls": 1,
+          "regressions": 0,
+          "decisionImpact": "provisional_branch_evaluation_changed"
+        }
+      }
+    }
+  ]
+}

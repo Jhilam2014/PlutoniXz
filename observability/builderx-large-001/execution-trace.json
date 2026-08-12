@@ -1,0 +1,13 @@
+{
+  "workflow_id": "plutonix-large-001",
+  "started_at": "2026-06-25T00:00:00+05:30",
+  "completed_at": "2026-06-25T00:00:00+05:30",
+  "status": "implemented_pending_runtime_validation",
+  "events": [
+    "Created React frontend control surface.",
+    "Created Express backend generation API and MCP endpoint.",
+    "Created isolated generated-site runtime.",
+    "Created Docker Compose topology.",
+    "Created graph, memory, D3, and observability artifacts."
+  ]
+}

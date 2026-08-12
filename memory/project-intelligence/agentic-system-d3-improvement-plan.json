@@ -1,0 +1,104 @@
+{
+  "plan_id": "agentic-system-d3-market-readiness",
+  "version": "1.1.0",
+  "status": "active",
+  "last_reviewed_at": "2026-07-24T18:06:37Z",
+  "product_position": "Agent operations workbench for system health, navigation, dependency investigation, and diagnosis.",
+  "success_outcomes": [
+    "Operators can find and focus an agent without exposing the entire graph.",
+    "Project health is understandable from the first viewport.",
+    "Runtime and lifecycle states are not conflated.",
+    "Desktop, mobile, keyboard, and assistive-technology workflows retain equivalent functionality.",
+    "Topology remains available when the runtime API is slow or unavailable."
+  ],
+  "completed": [
+    "project_first_overview",
+    "persistent_view_tabs",
+    "compact_command_surface",
+    "selection_driven_inspector",
+    "mobile_bottom_sheet",
+    "search_to_focus",
+    "bounded_runtime_fetch",
+    "static_fallback_provenance",
+    "responsive_graph_geometry",
+    "keyboard_directional_navigation",
+    "accessible_entity_list",
+    "local_vendor_dependencies",
+    "empty_error_and_no_live_signal_states",
+    "verified_logs_deep_link",
+    "verified_agent_inspection_deep_link",
+    "task_oriented_inspector_tabs",
+    "progressive_large_graph_rendering",
+    "hybrid_canvas_relationship_rendering",
+    "render_engine_and_frame_telemetry",
+    "bounded_openai_agent_memory_reads",
+    "global_agent_index_cache"
+  ],
+  "next_release": [
+    {
+      "id": "runtime-contract",
+      "priority": "P0",
+      "outcome": "Backend topology exposes lifecycle_status, runtime_status, health_status, health_reason, last_seen_at, and current_execution_id."
+    },
+    {
+      "id": "mobile-command-menu",
+      "priority": "P1",
+      "outcome": "All graph commands remain available from a compact mobile overflow menu."
+    },
+    {
+      "id": "live-controls",
+      "priority": "P1",
+      "outcome": "Live execution exposes refresh cadence, pause, freshness threshold, and reconnect state."
+    }
+  ],
+  "production_polish": [
+    "interactive_minimap_viewport",
+    "collision_aware_cluster_expansion",
+    "saved_views_and_filter_chips",
+    "execution_trace_timeline",
+    "clickable_health_metrics"
+  ],
+  "scale_checks": [
+    "svg_100_entities",
+    "svg_500_entities",
+    "canvas_1000_entities",
+    "progressive_rendering",
+    "viewport_culling"
+  ],
+  "validated_scale_evidence": {
+    "synthetic_graph": {
+      "nodes": 160,
+      "relationships": 280,
+      "render_mode": "progressive-hybrid",
+      "svg_relationship_paths": 0,
+      "canvas_sampled_nontransparent_pixels": 7628,
+      "measured_frame_ms": 19.5,
+      "browser_errors": 0
+    },
+    "default_graph": {
+      "visible_objects": 9,
+      "desktop_frame_ms": 47.6,
+      "mobile_frame_ms": 29.6,
+      "browser_errors": 0
+    }
+  },
+  "measurement_plan": [
+    "search_to_focus_time",
+    "first_click_success",
+    "dependency_identification_time",
+    "stale_data_recognition",
+    "keyboard_task_completion",
+    "mobile_drill_down_completion",
+    "inspector_action_success"
+  ],
+  "evidence_required_for_next_review": [
+    "desktop_default_screenshot",
+    "desktop_selected_screenshot",
+    "mobile_default_screenshot",
+    "mobile_selected_screenshot",
+    "model_test_result",
+    "production_build_result",
+    "runtime_smoke_result",
+    "independent_review_result"
+  ]
+}

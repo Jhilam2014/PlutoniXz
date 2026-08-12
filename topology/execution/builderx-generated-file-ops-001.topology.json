@@ -1,0 +1,18 @@
+{
+  "workflow_id": "plutonix-generated-file-ops-001",
+  "mode": "single_agent",
+  "agents": [
+    "plutonix-fullstack-agent"
+  ],
+  "changed_files": [
+    "apps/backend/src/orchestratorAgent.js",
+    "apps/backend/src/generator.js",
+    "apps/backend/src/mcp.js",
+    "apps/backend/src/server.js",
+    "apps/frontend/src/App.jsx",
+    "apps/generated-site/src/generated/catalogData.js",
+    "README.md",
+    "docs/architecture.md"
+  ],
+  "created_at": "2026-06-25T00:00:00+05:30"
+}

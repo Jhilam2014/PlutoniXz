@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark light" />
+    <title>PlutoniX Graphical Model</title>
+    <link rel="stylesheet" href="./agentic-system.css" />
+  </head>
+  <body>
+    <main class="graph-page">
+      <header class="product-bar">
+        <div class="product-identity">
+          <a class="back-link" href="/" aria-label="Back to PlutoniX" title="Back to PlutoniX">
+            <i data-lucide="arrow-left" aria-hidden="true"></i>
+          </a>
+          <img class="product-mark" src="/branding/plutonix-icon.png" alt="" />
+          <div class="product-copy">
+            <div class="title-line">
+              <h1>PlutoniX</h1>
+              <span class="environment-badge">Graphical model</span>
+            </div>
+            <p id="status" role="status" aria-live="polite">
+              <i class="connection-dot" aria-hidden="true"></i>
+              <span>Loading topology...</span>
+            </p>
+          </div>
+        </div>
+        <div class="product-health">
+          <div id="result-counts" class="result-counts" aria-label="Topology result counts"></div>
+          <button id="refresh-graph" class="icon-button" type="button" aria-label="Refresh graph data" title="Refresh graph data">
+            <i data-lucide="refresh-cw" aria-hidden="true"></i>
+          </button>
+        </div>
+      </header>
+
+      <section class="command-surface" aria-label="Graph navigation and filters">
+        <div class="view-tabs" role="tablist" aria-label="Graph view">
+          <button type="button" role="tab" data-view-mode="overview" aria-selected="true">
+            <i data-lucide="layout-dashboard" aria-hidden="true"></i><span>Overview</span>
+          </button>
+          <button type="button" role="tab" data-view-mode="dependency" aria-selected="false">
+            <i data-lucide="git-fork" aria-hidden="true"></i><span>Dependencies</span>
+          </button>
+          <button type="button" role="tab" data-view-mode="live" aria-selected="false">
+            <i data-lucide="activity" aria-hidden="true"></i><span>Live execution</span>
+          </button>
+          <button type="button" role="tab" data-view-mode="explore" aria-selected="false">
+            <i data-lucide="compass" aria-hidden="true"></i><span>Explore</span>
+          </button>
+        </div>
+
+        <div class="primary-toolbar">
+          <div class="search-control">
+            <i data-lucide="search" aria-hidden="true"></i>
+            <label class="visually-hidden" for="agent-search">Find an agent or system entity</label>
+            <input
+              id="agent-search"
+              type="search"
+              placeholder="Find agent, project, capability..."
+              autocomplete="off"
+              aria-autocomplete="list"
+              aria-controls="search-results"
+              aria-expanded="false"
+            />
+            <kbd aria-hidden="true">/</kbd>
+            <div id="search-results" class="search-results" role="listbox" hidden></div>
+          </div>
+
+          <label class="compact-select">
+            <span>Project</span>
+            <select id="project-filter"></select>
+          </label>
+          <label class="compact-select status-select">
+            <span>Status</span>
+            <select id="status-filter"></select>
+          </label>
+
+          <button id="filter-toggle" class="toolbar-button" type="button" aria-expanded="false" aria-controls="advanced-filters">
+            <i data-lucide="sliders-horizontal" aria-hidden="true"></i><span>Filters</span>
+            <b id="filter-count" hidden>0</b>
+          </button>
+
+          <div class="toolbar-separator" aria-hidden="true"></div>
+          <div class="toolbar-actions" role="group" aria-label="Graph actions">
+            <button id="collapse-all" class="icon-button" type="button" aria-label="Collapse all clusters" title="Collapse all clusters">
+              <i data-lucide="fold-vertical" aria-hidden="true"></i>
+            </button>
+            <button id="fit-selection" class="icon-button" type="button" aria-label="Fit selection" title="Fit selection">
+              <i data-lucide="focus" aria-hidden="true"></i>
+            </button>
+            <button id="reset-view" class="icon-button" type="button" aria-label="Reset graph view" title="Reset graph view">
+              <i data-lucide="rotate-ccw" aria-hidden="true"></i>
+            </button>
+            <button id="list-view" class="icon-button" type="button" aria-label="Show accessible entity list" title="Show entity list" aria-expanded="false">
+              <i data-lucide="list-tree" aria-hidden="true"></i>
+            </button>
+            <button id="product-video-view" class="icon-button attention-button" type="button" aria-label="Open product video" title="Product video" aria-haspopup="dialog" aria-controls="product-video-dialog">
+              <i data-lucide="play-circle" aria-hidden="true"></i>
+            </button>
+            <button id="fullscreen-view" class="icon-button" type="button" aria-label="Enter fullscreen" title="Fullscreen" aria-pressed="false">
+              <i data-lucide="maximize-2" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+
+        <div id="advanced-filters" class="advanced-filters" hidden>
+          <label>
+            <span>Agent type</span>
+            <select id="type-filter"></select>
+          </label>
+          <label>
+            <span>Relationship</span>
+            <select id="relationship-filter"></select>
+          </label>
+          <label>
+            <span>Focus depth</span>
+            <select id="depth-filter">
+              <option value="1">1 hop</option>
+              <option value="2">2 hops</option>
+            </select>
+          </label>
+          <button id="clear-filters" class="text-button" type="button">
+            <i data-lucide="x" aria-hidden="true"></i><span>Clear filters</span>
+          </button>
+        </div>
+      </section>
+
+      <div class="context-bar">
+        <nav id="breadcrumb" class="breadcrumb" aria-label="Current graph context"></nav>
+        <div class="context-meta">
+          <span id="data-freshness">Waiting for data</span>
+          <span id="render-summary">0 visible</span>
+        </div>
+      </div>
+
+      <section class="graph-workspace">
+        <div class="graph-main">
+          <div
+            id="graph"
+            role="group"
+            aria-label="Interactive PlutoniX graphical model"
+            aria-describedby="graph-instructions"
+            tabindex="0"
+          >
+            <div class="graph-watermark" aria-hidden="true">
+              <span class="graph-watermark-mark"><i data-lucide="brain-circuit"></i></span>
+              <strong>PlutoniX</strong>
+            </div>
+            <p id="graph-instructions" class="visually-hidden">
+              Use arrow keys to move between graph entities, Enter to select, Escape to close details, and F to fit the current selection.
+            </p>
+            <div id="graph-state" class="graph-state" role="status" aria-live="polite">
+              <div class="loading-spinner" aria-hidden="true"></div>
+              <strong>Loading system topology</strong>
+              <span>Connecting to the runtime graph...</span>
+            </div>
+
+            <div class="zoom-controls" role="group" aria-label="Zoom controls">
+              <button id="zoom-in" class="icon-button" type="button" aria-label="Zoom in" title="Zoom in">
+                <i data-lucide="plus" aria-hidden="true"></i>
+              </button>
+              <button id="zoom-out" class="icon-button" type="button" aria-label="Zoom out" title="Zoom out">
+                <i data-lucide="minus" aria-hidden="true"></i>
+              </button>
+            </div>
+
+            <section id="legend" class="graph-legend" aria-label="Graph legend"></section>
+            <section id="entity-list-panel" class="entity-list-panel" aria-label="Visible entities" hidden>
+              <header>
+                <div><span>Navigator</span><strong>Visible entities</strong></div>
+                <button id="close-entity-list" class="icon-button" type="button" aria-label="Close entity list">
+                  <i data-lucide="x" aria-hidden="true"></i>
+                </button>
+              </header>
+              <div id="graph-entity-list" class="graph-entity-list"></div>
+            </section>
+            <div id="node-tooltip" class="node-tooltip" role="tooltip" hidden></div>
+            <div id="minimap" class="minimap" aria-label="Graph minimap"></div>
+          </div>
+        </div>
+
+        <aside id="insight" class="insight-panel" aria-label="Agent details" aria-hidden="true">
+          <header class="insight-shell-header">
+            <button id="sheet-toggle" class="sheet-handle" type="button" aria-label="Expand agent details" aria-expanded="false">
+              <span aria-hidden="true"></span>
+            </button>
+            <div>
+              <span>Inspector</span>
+              <strong>Agent details</strong>
+            </div>
+            <button id="close-insight" class="icon-button" type="button" aria-label="Close agent details">
+              <i data-lucide="x" aria-hidden="true"></i>
+            </button>
+          </header>
+          <div id="insight-content" class="insight-content"></div>
+        </aside>
+      </section>
+      <div id="selection-announcement" class="visually-hidden" aria-live="polite"></div>
+    </main>
+
+    <div id="product-video-dialog" class="product-video-dialog" role="dialog" aria-modal="true" aria-labelledby="product-video-title" hidden>
+      <div class="dialog-backdrop" data-close-product-video></div>
+      <section class="product-video-shell" tabindex="-1">
+        <header>
+          <div>
+            <span>Product Video</span>
+            <h2 id="product-video-title">PlutoniX</h2>
+          </div>
+          <button id="close-product-video" class="icon-button" type="button" aria-label="Close product video">
+            <i data-lucide="x" aria-hidden="true"></i>
+          </button>
+        </header>
+        <video
+          id="product-video-player"
+          controls
+          preload="metadata"
+          poster="/media/product-video/plutonix-product-video-poster.png"
+        >
+          <source src="/media/product-video/plutonix-product-video.mp4" type="video/mp4" />
+        </video>
+      </section>
+    </div>
+
+    <script src="./vendor/d3-7.9.0.min.js"></script>
+    <script src="./vendor/dagre-0.8.5.min.js"></script>
+    <script src="./vendor/lucide-0.468.0.min.js"></script>
+    <script type="module" src="./agentic-system-d3.js"></script>
+  </body>
+</html>

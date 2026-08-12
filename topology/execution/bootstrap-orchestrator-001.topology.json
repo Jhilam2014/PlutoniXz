@@ -1,0 +1,13 @@
+{
+  "workflow_id": "bootstrap-orchestrator-001",
+  "mode": "single_agent",
+  "agents": [
+    "project-execution-agent"
+  ],
+  "approval_gates": [
+    "live_neo4j_sync",
+    "production_deploy",
+    "credential_changes"
+  ],
+  "created_at": "2026-06-29T22:53:21+00:00"
+}

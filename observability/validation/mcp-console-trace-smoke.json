@@ -1,0 +1,33 @@
+{
+  "workflow_id": "plutonix-mcp-console-trace-001",
+  "checked_at": "2026-06-25T10:09:34Z",
+  "status": "success",
+  "checks": {
+    "project_validation": "success",
+    "compose_rebuild": "success",
+    "mcp_generate": "success",
+    "build_id": "build_xBDzvPj6vS",
+    "runtime_log_endpoint": "success",
+    "runtime_log_rows": 85,
+    "runtime_log_under_400": true,
+    "runtime_log_newest_first": true,
+    "expected_trace_types_present": [
+      "build-start",
+      "codegen-complete",
+      "file-operation-done",
+      "file-operation-start",
+      "file-plan-item",
+      "generated",
+      "instruction-received",
+      "orchestrated",
+      "request-received",
+      "restart-requested",
+      "restarted",
+      "workspace-resolved"
+    ],
+    "missing_trace_types": [],
+    "backend_node_check": "success",
+    "frontend_build": "success",
+    "service_status": "success"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "agent_id": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "systemPrompt": {
+      "type": "string"
+    },
+    "changeReason": {
+      "type": "string"
+    },
+    "previousVersion": {
+      "type": "string"
+    },
+    "isActive": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "agent_id",
+    "version",
+    "systemPrompt",
+    "isActive"
+  ]
+}

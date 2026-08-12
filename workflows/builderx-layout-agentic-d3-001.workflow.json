@@ -1,0 +1,21 @@
+{
+  "workflow_id": "plutonix-layout-agentic-d3-001",
+  "name": "PlutoniX layout, IST logs, playground, and Agentic D3",
+  "workflow_class": ["software_engineering", "dashboard_ui", "observability", "ai_agent_system"],
+  "task_size": "medium",
+  "objective": "Move PlutoniX controls to the right, widen MCP chat, add playground aspect controls, show major current-session logs, enforce IST time display, and generate the PlutoniX Graphical Model page.",
+  "status": "completed",
+  "created_at": "2026-06-25T10:34:26Z",
+  "updated_at": "2026-06-25T10:34:26Z",
+  "agent_id": "project-execution-agent",
+  "outputs": [
+    "apps/frontend/src/App.jsx",
+    "apps/frontend/src/App.css",
+    "agentic-system/d3/index.html",
+    "agentic-system/d3/agentic-system-d3.js",
+    "agentic-system/d3/agentic-system.css",
+    "topology/d3/agentic-system-graph.json",
+    "apps/frontend/public/agentic-system/d3/index.html",
+    "apps/frontend/public/topology/d3/agentic-system-graph.json"
+  ]
+}

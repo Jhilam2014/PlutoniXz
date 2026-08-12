@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "plutonix/intel-task-graph/1.0",
+  "title": "PlutoniX Intel Task Graph",
+  "type": "object",
+  "required": ["schemaVersion", "workflowId", "profileId", "objective", "projectId", "projectRoot", "nodes", "edges", "limits"],
+  "properties": {
+    "schemaVersion": { "const": "1.0" },
+    "nodes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "role", "dependencies", "permissions", "status"],
+        "properties": {
+          "permissions": { "enum": ["read-only", "workspace-write"] },
+          "status": { "enum": ["planned", "queued", "running", "completed", "failed", "skipped", "cancelled"] }
+        }
+      }
+    }
+  }
+}

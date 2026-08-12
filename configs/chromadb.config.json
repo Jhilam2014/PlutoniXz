@@ -1,0 +1,13 @@
+{
+  "host": "localhost",
+  "port": 8000,
+  "persistDirectory": ".chroma/agent-memory",
+  "collections": [
+    "agent_knowledge",
+    "agent_prompts",
+    "project_summaries",
+    "correction_patterns",
+    "upgrade_notes",
+    "functionality_map"
+  ]
+}

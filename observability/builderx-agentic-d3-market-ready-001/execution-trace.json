@@ -1,0 +1,84 @@
+{
+  "workflow_id": "plutonix-agentic-d3-market-ready-001",
+  "started_at": "2026-07-24T15:00:00Z",
+  "completed_at": "2026-07-24T15:57:17Z",
+  "status": "completed",
+  "events": [
+    {
+      "type": "workshop",
+      "message": "Completed independent product-design, observability-UX, and accessibility-interaction reviews."
+    },
+    {
+      "type": "change",
+      "message": "Replaced the inventory-first graph with a stable project-first overview and progressive capability drill-down."
+    },
+    {
+      "type": "change",
+      "message": "Added four view modes, compact command controls, semantic zoom, focus depth, relationship direction, minimap, legend, and result counts."
+    },
+    {
+      "type": "change",
+      "message": "Added selection-driven details, mobile bottom-sheet behavior, keyboard navigation, bounded API loading, explicit fallback provenance, and local browser dependencies."
+    },
+    {
+      "type": "memory",
+      "message": "Updated synchronized D3 topology, prompt ledger, OpenAI vector-memory records, living workshop, and improvement plan."
+    }
+  ],
+  "validation": [
+    {
+      "command": "docker run --rm plutonix-frontend npm test",
+      "status": "success",
+      "passed": 6,
+      "failed": 0
+    },
+    {
+      "command": "docker run --rm plutonix-frontend npm run build",
+      "status": "success",
+      "modules_transformed": 2164,
+      "duration": "1m56s"
+    },
+    {
+      "command": "Browser QA at 1440x900 and 390x844",
+      "status": "success",
+      "visible_objects": 9,
+      "horizontal_overflow": false,
+      "console_errors": 0,
+      "search_to_focus": "success"
+    },
+    {
+      "command": "JavaScript syntax checks",
+      "status": "success"
+    },
+    {
+      "command": "Workflow, topology, memory, and token-observability JSON checks",
+      "status": "success"
+    },
+    {
+      "command": "Compare repository and frontend topology copies",
+      "status": "success",
+      "nodes": 82,
+      "links": 106
+    },
+    {
+      "command": "GET /agentic-system/d3/index.html",
+      "status": "success",
+      "http_status": 200
+    }
+  ],
+  "review": {
+    "specialist_reviews_completed": [
+      "product design",
+      "observability UX",
+      "accessibility and interaction"
+    ],
+    "final_delegated_regression_review": "unavailable because the delegated service reached its usage limit",
+    "release_decision": "passed by local release audit"
+  },
+  "memory_sync": {
+    "openai_vector_status": "success",
+    "failed_records": 0,
+    "neo4j_artifact_status": "ready",
+    "neo4j_live_write_performed": false
+  }
+}

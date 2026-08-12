@@ -1,0 +1,21 @@
+{
+  "workflow_id": "plutonix-mcp-runtime-log-001",
+  "tasks": [
+    {
+      "id": "add-backend-runtime-log",
+      "status": "complete"
+    },
+    {
+      "id": "add-frontend-log-panel",
+      "status": "complete"
+    },
+    {
+      "id": "persist-runtime-log",
+      "status": "complete"
+    },
+    {
+      "id": "validate-generation-status",
+      "status": "complete"
+    }
+  ]
+}

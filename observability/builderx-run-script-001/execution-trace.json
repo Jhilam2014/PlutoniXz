@@ -1,0 +1,12 @@
+{
+  "workflow_id": "plutonix-run-script-001",
+  "started_at": "2026-06-25T00:00:00+05:30",
+  "completed_at": "2026-06-25T00:00:00+05:30",
+  "status": "complete",
+  "events": [
+    "Created executable run.sh.",
+    "Validated help and status commands.",
+    "Started existing Docker images with ./run.sh --no-build.",
+    "Verified backend, frontend, and generated-site readiness checks."
+  ]
+}

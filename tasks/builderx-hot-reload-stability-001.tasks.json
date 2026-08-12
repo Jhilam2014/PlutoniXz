@@ -1,0 +1,20 @@
+{
+  "workflow_id": "plutonix-hot-reload-stability-001",
+  "tasks": [
+    {
+      "task_id": "dependency-safe-file-writes",
+      "description": "Write generated support modules before generatedPage.jsx so Vite never imports a missing module mid-HMR.",
+      "status": "completed"
+    },
+    {
+      "task_id": "hot-reload-default",
+      "description": "Use Vite hot reload by default and make hard generated-site container restarts opt-in.",
+      "status": "completed"
+    },
+    {
+      "task_id": "stability-validation",
+      "description": "Rebuild and verify MCP generation reports hot-reload instead of hard restart.",
+      "status": "completed"
+    }
+  ]
+}

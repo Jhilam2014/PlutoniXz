@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "agent_id": {
+      "type": "string"
+    },
+    "project_execution_id": {
+      "type": "string"
+    },
+    "role": {
+      "type": "string"
+    },
+    "reused": {
+      "type": "boolean"
+    },
+    "validationStatus": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "agent_id",
+    "project_execution_id",
+    "role",
+    "validationStatus"
+  ]
+}

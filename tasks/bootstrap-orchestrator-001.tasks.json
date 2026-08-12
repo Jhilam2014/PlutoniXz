@@ -1,0 +1,29 @@
+{
+  "workflow_id": "bootstrap-orchestrator-001",
+  "tasks": [
+    {
+      "id": "create-folders",
+      "status": "complete"
+    },
+    {
+      "id": "create-local-agent",
+      "status": "complete"
+    },
+    {
+      "id": "generate-neo4j-artifacts",
+      "status": "complete"
+    },
+    {
+      "id": "generate-d3-page",
+      "status": "complete"
+    },
+    {
+      "id": "resolve-vector-provider",
+      "status": "complete"
+    },
+    {
+      "id": "write-observability",
+      "status": "complete"
+    }
+  ]
+}

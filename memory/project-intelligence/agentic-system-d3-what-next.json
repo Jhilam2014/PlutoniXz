@@ -1,0 +1,28 @@
+{
+  "recorded_at": "2026-07-24T15:57:17Z",
+  "source": "plutonix-agentic-d3-design-workshop",
+  "workflow_id": "plutonix-agentic-d3-market-ready-001",
+  "selected_path": "project-first-agent-operations-workbench",
+  "confidence": 94,
+  "status": "completed_iteration_with_active_improvement_plan",
+  "reason": "Project-first navigation keeps the default object count low while preserving progressive access to capability, agent, dependency, and runtime detail.",
+  "rejected_paths": [
+    {
+      "id": "all-nodes-inventory",
+      "reason": "It prevents rapid orientation and produces unstable, overlapping labels at useful graph sizes."
+    },
+    {
+      "id": "visual-polish-only",
+      "reason": "Aesthetic changes alone would not resolve search, focus, runtime semantics, mobile interaction, or loading resilience."
+    }
+  ],
+  "evidence": [
+    "Three specialist design reviews completed",
+    "Six model tests passed",
+    "Production build passed",
+    "Desktop and mobile browser interaction QA passed",
+    "Nine default overview objects",
+    "No browser console errors or horizontal overflow"
+  ],
+  "next_recommendation": "Continue the prioritized outcomes in memory/project-intelligence/agentic-system-d3-improvement-plan.json and validate each release with the same model, build, accessibility, and browser gates."
+}

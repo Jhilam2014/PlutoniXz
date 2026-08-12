@@ -1,0 +1,20 @@
+{
+  "workflow_id": "plutonix-mcp-chat-001",
+  "tasks": [
+    {
+      "task_id": "chat-thread-ui",
+      "description": "Replace the instruction-only composer with a chat thread containing user prompts and MCP process messages.",
+      "status": "completed"
+    },
+    {
+      "task_id": "ist-time-formatting",
+      "description": "Format backend event timestamps and frontend chat timestamps with Asia/Kolkata IST time.",
+      "status": "completed"
+    },
+    {
+      "task_id": "chat-validation",
+      "description": "Build and smoke-test the chat-driven Generate flow.",
+      "status": "completed"
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "workflow_id": "plutonix-mcp-chat-001",
+  "name": "MCP Builder chat interface",
+  "workflow_class": ["software_engineering", "dashboard_ui", "observability"],
+  "task_size": "medium",
+  "objective": "Convert the Builder instruction section into a VS Code-like MCP chat where runtime logs populate in the chat thread with IST-only timestamps.",
+  "status": "completed",
+  "created_at": "2026-06-25T10:20:59Z",
+  "updated_at": "2026-06-25T10:20:59Z",
+  "agent_id": "project-execution-agent",
+  "outputs": [
+    "apps/frontend/src/App.jsx",
+    "apps/frontend/src/App.css",
+    "apps/backend/src/server.js",
+    "README.md",
+    "docs/architecture.md"
+  ]
+}
