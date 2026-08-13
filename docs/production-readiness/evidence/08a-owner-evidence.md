@@ -61,7 +61,7 @@ Required chronology: `2026-08-11T10:41:00Z < 2026-08-11T11:07:55Z < 2026-08-11T1
 | Sanitized evidence records | The owner-evidence record, revocation Markdown record, and health-check Markdown record are present at their documented paths. |
 | Revocation PNG metadata | `docs/production-readiness/evidence/apify-revocation-sanitized.png` is a 2876 × 1362 PNG with SHA-256 `686f64afd5851e5c7b6671cb484a06bd5e47e5cfe3c567bfad5c1b005bd4f00a`. |
 | PNG content inspection | `IMAGE_INSPECTION_NOT_AVAILABLE`: local metadata inspection was available, but no local OCR or visual-content inspection was available for a safe independent assessment. The PNG is supplemental only. |
-| Reconciliation scope | `docs/production-readiness/evidence/08a-finding-reconciliation.md` records 14,908 scan observations, 14,849 canonical occurrences, and 14,849 source logical items. The later 08A1C Path A/Path B review closed one deterministic fixture and retains 14,848 external-path items. Scanner rule labels are not treated as provider, owner, validity, or Apify linkage. |
+| Reconciliation scope | The immutable R2 inventory records 14,984 observations, 14,937 canonical occurrences, and 1,068 exact candidate-equivalence classes. R4 retains one deterministic Path A closure and 1,067 pending Path B classes. Scanner rule labels are not treated as provider, owner, validity, or Apify linkage. |
 
 ## PROVIDER_VERIFIED
 
@@ -73,12 +73,16 @@ These non-Apify remediation items do not block `08A1A` and remain open for the n
 
 | Field | Status |
 | --- | --- |
-| Latest scanner observations | 14,908 |
-| Latest logical items | 14,849 |
-| Remaining unresolved logical items | 14,848 — one deterministic, non-provider test fixture is closed by 08A1C repository evidence. |
+| Latest scanner observations | 14,984 |
+| Latest logical items | 1,068 exact R2 candidate-equivalence classes |
+| Remaining unresolved logical items | 1,067 R2 Path B classes; one deterministic, non-provider test fixture is closed by current R2 Path A evidence. |
 | Authorized to review GCP, OpenAI, and unidentified findings | No |
 | Assigned authorized owner | Not yet assigned |
 | Authorized owner assignment completed | No |
 | Owner-assignment evidence | Pending per-item assignment |
 | Evidence-backed dispositions completed | Partially — one Path A repository-fact closure; no external owner/provider closure. |
 | Additional carried-forward coverage | 08A1D artifact coverage is complete and remains independent; remote exact-commit CI evidence remains outside this owner-evidence subgate. |
+
+## R4 linkage boundary
+
+The 08A1A Apify record remains valid only at its documented `OWNER_ASSERTED` evidence level. It remains **unlinked to every current R2 logical item** because no exact safe R2 alias, project, account, or environment linkage is available. It is not provider-verified terminal evidence for any R4 Path B item.

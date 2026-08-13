@@ -1,0 +1,10 @@
+{
+  "workflow_id": "08a1c-r4-reconstructed-disposition",
+  "agent_id": "project-execution-agent",
+  "provider": "chroma_local_generated",
+  "collection": "agent_prompts",
+  "status": "pending_install",
+  "content_reference": "memory/agent-knowledge/prompts/08a1c-r4-reconstructed-disposition.task.prompt.md",
+  "sanitized": true,
+  "created_at": "2026-08-13T00:00:00Z"
+}

@@ -1,13 +1,16 @@
 {
-  "task_size": "medium",
-  "context_budget": "medium_context",
-  "reason": "Bootstrap-only workflow requires creating multiple orchestrator infrastructure layers.",
+  "task_size": "large",
+  "context_budget": "large_context",
+  "reason": "Security-sensitive R2 equality preservation, deterministic candidate-semantic triage, R4 external-queue supersession, and conditional 08A1D gating cross multiple evidence boundaries.",
   "files_read": [
     "AGENTS.md",
-    "ROOT_WORKSPACE_GENERATION_POLICY.md",
-    ".codex/prompts/bootstrap-orchestrator.md",
-    ".env",
-    ".env.example"
+    "docs/agent-instruction-quality.md",
+    "docs/production-readiness/evidence/08a1b-r2-logical-credential-inventory.sanitized.json",
+    "docs/production-readiness/evidence/08a1c-external-r4/",
+    "docs/production-readiness/evidence/08a1b-r3-semantic-classification.sanitized.json",
+    "scripts/reconstruct-08a1b-r2.mjs",
+    "scripts/run-08a1b-r3-semantic-triage.mjs",
+    "scripts/scan-08a1d-artifacts.mjs"
   ],
-  "created_at": "2026-06-29T22:53:21+00:00"
+  "created_at": "2026-08-12T21:42:44Z"
 }

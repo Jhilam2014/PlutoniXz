@@ -1,0 +1,86 @@
+{
+  "schema_version": "08A1C-authority-domain-membership-v1",
+  "reviewed_at": "2026-08-11T21:51:32Z",
+  "source_inventory_run_id": "20260811T214249Z",
+  "authority_domain_id": "AD-SOURCE-BACKEND-OPERATIONAL-TESTS",
+  "source_scope_id": "SOURCE_SCOPE_BACKEND_OPERATIONAL_TESTS",
+  "provider_credential_groups": [],
+  "logical_item_count": 5,
+  "members": [
+    {
+      "logical_item_id": "LI-1D4E87AF84290D166685",
+      "canonical_occurrence_id": "CAN-63CB1955B5CB79B50C1F",
+      "authority_domain_id": "AD-SOURCE-BACKEND-OPERATIONAL-TESTS",
+      "source_scope_id": "SOURCE_SCOPE_BACKEND_OPERATIONAL_TESTS",
+      "source_system_root": "apps/backend/test/",
+      "source_location": "apps/backend/test/projectLifecycle.test.js",
+      "object_marker": "CURRENT_TREE",
+      "reachability": [
+        "CURRENT_TREE"
+      ],
+      "provider_identity_status": "UNKNOWN",
+      "provider_credential_group_id": null,
+      "closure_path": "PATH_B_EXTERNAL_AUTHORITY_OR_PROVIDER"
+    },
+    {
+      "logical_item_id": "LI-380CC9BD082ED0143DB4",
+      "canonical_occurrence_id": "CAN-A2E761073A72096EBEFB",
+      "authority_domain_id": "AD-SOURCE-BACKEND-OPERATIONAL-TESTS",
+      "source_scope_id": "SOURCE_SCOPE_BACKEND_OPERATIONAL_TESTS",
+      "source_system_root": "apps/backend/test/",
+      "source_location": "apps/backend/test/projectLifecycle.test.js",
+      "object_marker": "c4539483163e6198181c6944a335889f334fe01e",
+      "reachability": [
+        "REACHABLE_HISTORY"
+      ],
+      "provider_identity_status": "UNKNOWN",
+      "provider_credential_group_id": null,
+      "closure_path": "PATH_B_EXTERNAL_AUTHORITY_OR_PROVIDER"
+    },
+    {
+      "logical_item_id": "LI-4FC3098DB6DE141181A4",
+      "canonical_occurrence_id": "CAN-B42BE9B70B7A655941FE",
+      "authority_domain_id": "AD-SOURCE-BACKEND-OPERATIONAL-TESTS",
+      "source_scope_id": "SOURCE_SCOPE_BACKEND_OPERATIONAL_TESTS",
+      "source_system_root": "apps/backend/test/",
+      "source_location": "apps/backend/test/selfImprovement.test.js",
+      "object_marker": "c4539483163e6198181c6944a335889f334fe01e",
+      "reachability": [
+        "REACHABLE_HISTORY"
+      ],
+      "provider_identity_status": "UNKNOWN",
+      "provider_credential_group_id": null,
+      "closure_path": "PATH_B_EXTERNAL_AUTHORITY_OR_PROVIDER"
+    },
+    {
+      "logical_item_id": "LI-A4626D357DD3B585699D",
+      "canonical_occurrence_id": "CAN-CA16B24D775DF477664A",
+      "authority_domain_id": "AD-SOURCE-BACKEND-OPERATIONAL-TESTS",
+      "source_scope_id": "SOURCE_SCOPE_BACKEND_OPERATIONAL_TESTS",
+      "source_system_root": "apps/backend/test/",
+      "source_location": "apps/backend/test/operationalSecurity.test.js",
+      "object_marker": "d96548231bfec7c85cd81cc20feac70be6e39e9f",
+      "reachability": [
+        "REACHABLE_HISTORY"
+      ],
+      "provider_identity_status": "UNKNOWN",
+      "provider_credential_group_id": null,
+      "closure_path": "PATH_B_EXTERNAL_AUTHORITY_OR_PROVIDER"
+    },
+    {
+      "logical_item_id": "LI-C557B319308523E55A4A",
+      "canonical_occurrence_id": "CAN-C221F679A38A810FC4E7",
+      "authority_domain_id": "AD-SOURCE-BACKEND-OPERATIONAL-TESTS",
+      "source_scope_id": "SOURCE_SCOPE_BACKEND_OPERATIONAL_TESTS",
+      "source_system_root": "apps/backend/test/",
+      "source_location": "apps/backend/test/selfImprovement.test.js",
+      "object_marker": "CURRENT_TREE",
+      "reachability": [
+        "CURRENT_TREE"
+      ],
+      "provider_identity_status": "UNKNOWN",
+      "provider_credential_group_id": null,
+      "closure_path": "PATH_B_EXTERNAL_AUTHORITY_OR_PROVIDER"
+    }
+  ]
+}

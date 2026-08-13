@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://plutonix.local/schemas/08a1c-authority-domain-decomposition.schema.json",
+  "title": "08A1C-R3 authority-domain decomposition",
+  "type": "object",
+  "required": ["schema_version", "reviewed_at", "source_inventory", "decomposition_policy", "totals", "authority_domains"],
+  "properties": {
+    "schema_version": { "const": "08A1C-authority-domain-decomposition-v1" },
+    "reviewed_at": { "type": "string", "format": "date-time" },
+    "source_inventory": {
+      "type": "object",
+      "required": ["run_id", "observation_count", "canonical_occurrence_count", "logical_item_count"]
+    },
+    "decomposition_policy": {
+      "type": "object",
+      "required": ["reachability_is_not_authority_domain", "domain_key", "provider_identity_rule", "provider_credential_group_rule", "path_a_excluded_logical_item_ids"],
+      "properties": {
+        "reachability_is_not_authority_domain": { "const": true },
+        "provider_identity_rule": { "const": "UNKNOWN_UNTIL_SAFE_EXTERNAL_EVIDENCE" },
+        "provider_credential_group_rule": { "const": "NO_GROUP_WITHOUT_SAFE_NONSECRET_LINKAGE" }
+      }
+    },
+    "totals": {
+      "type": "object",
+      "required": ["path_a_repository_fact_logical_items", "path_b_residual_logical_items", "authority_domains", "provider_credential_groups", "safe_authority_linkages"],
+      "properties": {
+        "provider_credential_groups": { "const": 0 },
+        "safe_authority_linkages": { "const": 0 }
+      }
+    },
+    "authority_domains": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["authority_domain_id", "status", "authority_domain_kind", "source_scope_id", "source_system_root", "source_scope_basis", "provider_identity_status", "provider_credential_group_ids", "logical_item_count", "logical_item_ids", "canonical_occurrence_ids", "reachability_buckets"],
+        "properties": {
+          "status": { "const": "PENDING_SOURCE_OWNER_IDENTIFICATION" },
+          "authority_domain_kind": { "const": "SOURCE_OWNER_INVESTIGATION_SCOPE" },
+          "provider_identity_status": { "const": "UNKNOWN" },
+          "provider_credential_group_ids": { "type": "array", "maxItems": 0 }
+        }
+      }
+    }
+  }
+}

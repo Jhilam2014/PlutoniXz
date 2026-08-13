@@ -1,24 +1,14 @@
-# 08A1C evidence-path policy
+# 08A1C evidence-path policy — R4
 
-## Closure-policy repair
+## Current semantic supersession
 
-The superseded 08A1C policy applied an active owner/provider authority prerequisite to every terminal disposition. That conflated two different evidence questions and wrongly blocked repository-proven false-positive or synthetic-fixture closure. The repaired policy makes the branches disjoint.
+R3 replaces the former binary R4 input rule. Only an R3 `POSITIVE_SECRET_CANDIDATE` may enter Path B, and only after the semantic gate passes. A missing Path A proof is neither secret evidence nor external-action authority. While the R3 gate is blocked, the R4 policy below is historical audit material.
 
-| Path | Eligible result | Required evidence | Prohibited shortcut |
-| --- | --- | --- | --- |
-| Path A — repository fact | `VERIFIED_FALSE_POSITIVE` or `VERIFIED_SYNTHETIC_FIXTURE` | Canonical membership, deterministic proof family/reason/safe provenance, source and validator version, repository proof and regression reference, stable rerun | Authority/provider evidence, scanner label alone, documentation label alone, or a provider-shaped fixture without generator proof |
-| Path B — authority/provider action | `REVOKED`, `ROTATED_OLD_INVALIDATED`, `DELETED_AT_PROVIDER`, or `PROVEN_INVALID` | Current scoped authority, verified provider identity, safe linkage, required provider evidence, action/verification chronology | Path A, source removal, image-only evidence, owner assertion outside explicitly approved policy, or an unlinked batch |
+R4 consumes only `08A1B-R2-logical-credential-inventory-v1` membership. Exact candidate equality was completed by the R2 memory-only process and is never recomputed from sanitized evidence here.
 
-Path A requires no authority. Path B always requires it. Historical HUMAN provider writings `63841`, `27491`, and `74682` are retained only as superseded context; they are not executable terminal evidence.
+| Path | Eligible current classes | Terminal condition |
+| --- | --- | --- |
+| Path A | Valid R2 deterministic noncredential proofs | Exact R2 proof, validator, positive/negative regression references, and reverse lineage |
+| Path B | Every R2 `PLAUSIBLE_CREDENTIAL` class | Scoped authority, verified provider scope, exact linkage, terminal evidence, actor/time, independent chronology, remediation, and replacement health evidence when required |
 
-## Current repository-fact evidence
-
-- Fact schema: `08A1C-repository-facts-v1`; validator: `08A1C-repository-fact-discovery-v1`; reviewed at `2026-08-11T21:51:32Z`.
-- Repository-terminal facts: 1.
-- Proof-family totals:
-
-| Proof family | Logical items |
-| --- | ---: |
-| DETERMINISTIC_COMMITTED_FIXTURE | 1 |
-
-All other items are deliberately routed to Path B.
+Path B actions are one per R2 logical item by default. Reachability, source scope, scanner rule, path, provider-shaped prefix, and owner assertion are not authority, provider identity, equality, or terminal evidence. The legacy R3 eleven-domain package remains superseded audit history only.

@@ -57,8 +57,8 @@ async function main() {
     'OWNER_ASSERTED',
     'IMAGE_INSPECTION_NOT_AVAILABLE',
     'Apify owner-evidence record is complete and ready for subgate closure.',
-    'Remaining unresolved logical items | 14,848',
-    'one deterministic, non-provider test fixture is closed by 08A1C repository evidence',
+    '14,984 observations, 14,937 canonical occurrences, and 1,068 exact candidate-equivalence classes',
+    'unlinked to every current R2 logical item',
     'Authorized to review GCP, OpenAI, and unidentified findings | No',
   ]) requireText(owner, value, `owner-evidence field ${value}`);
   for (const value of [
@@ -77,12 +77,10 @@ async function main() {
     'Apify evidence classification | OWNER_ASSERTED',
     'Apify owner-evidence subgate | PASS',
     'Overall Step 08A | IN PROGRESS',
-    '08A1B inventory prerequisite | PASS — run `20260811T214249Z`',
   ]) requireText(incident, value, `incident field ${value}`);
   for (const value of [
     'SUBGATE 08A1A: PASS',
     'STEP 08A: IN PROGRESS',
-    'NEXT SUBGATE: 08A1B',
   ]) requireText(status, value, `status field ${value}`);
 
   const imageDigest = createHash('sha256').update(await readFile(imagePath)).digest('hex');

@@ -46,7 +46,7 @@ function validateSourceManifest(manifest) {
 }
 
 function validateAuthorityConfig(config) {
-  if (config?.schema_version !== '08A1C-authority-records-v1' || !Array.isArray(config.authority_records)) fail('Unsupported 08A1C authority-record schema.');
+  if (!['08A1C-authority-records-v1', '08A1C-authority-records-v2'].includes(config?.schema_version) || !Array.isArray(config.authority_records)) fail('Unsupported 08A1C authority-record schema.');
   if (!isIsoTimestamp(config.reviewed_at) || !noSecretBearingData(config)) fail('Authority config is unsafe or missing a UTC review timestamp.');
   if (!Array.isArray(config.evidence_policy?.owner_asserted_terminal_authority_ids) || !config.evidence_policy.owner_asserted_terminal_authority_ids.every((value) => typeof value === 'string')) fail('Authority config lacks an explicit owner-asserted terminal-evidence policy.');
   const authorityIds = ids(config.authority_records, 'authority_id', 'authority ID');
@@ -58,9 +58,36 @@ function validateAuthorityConfig(config) {
       if (!['OWNER_ASSERTED', 'REPOSITORY_VERIFIED', 'PROVIDER_VERIFIED'].includes(authority.evidence_level)) fail(`Active authority ${authority.authority_id} has an unsupported evidence level.`);
       if (!isIsoTimestamp(authority.valid_from) || !isIsoTimestamp(authority.valid_until) || authority.valid_from > authority.approval_timestamp || authority.approval_timestamp > authority.valid_until || config.reviewed_at > authority.valid_until) fail(`Active authority ${authority.authority_id} is expired or has an invalid validity period.`);
       if (!Array.isArray(authority.authorized_providers) || authority.authorized_providers.length === 0 || authority.authorized_providers.some((provider) => typeof provider !== 'string' || provider === 'UNKNOWN')) fail(`Active authority ${authority.authority_id} lacks authorized provider scope.`);
-    } else if (authority.approval_timestamp !== null || authority.evidence_level !== 'NONE') fail(`Pending authority ${authority.authority_id} must not claim approval or evidence.`);
+    } else {
+      if (authority.approval_timestamp !== null || authority.evidence_level !== 'NONE') fail(`Pending authority ${authority.authority_id} must not claim approval or evidence.`);
+      if (config.schema_version === '08A1C-authority-records-v2' && (typeof authority.authority_domain_id !== 'string' || authority.authority_domain_id.length === 0)) fail(`Pending authority ${authority.authority_id} lacks an authority-domain ID.`);
+    }
   }
   return authorityIds;
+}
+
+function validateAuthorityDomains(authorityDomains, sourceManifest, repositoryFacts, authorityConfig) {
+  if (authorityDomains?.schema_version !== '08A1C-authority-domain-decomposition-v1' || !Array.isArray(authorityDomains.authority_domains) || !isIsoTimestamp(authorityDomains.reviewed_at) || !noSecretBearingData(authorityDomains)) fail('Authority-domain decomposition is unsafe or malformed.');
+  if (authorityDomains.reviewed_at !== authorityConfig.reviewed_at || authorityDomains.source_inventory?.run_id !== sourceManifest.run_id) fail('Authority-domain decomposition does not match the source inventory or review timestamp.');
+  if (authorityDomains.decomposition_policy?.reachability_is_not_authority_domain !== true || authorityDomains.decomposition_policy?.provider_identity_rule !== 'UNKNOWN_UNTIL_SAFE_EXTERNAL_EVIDENCE' || authorityDomains.decomposition_policy?.provider_credential_group_rule !== 'NO_GROUP_WITHOUT_SAFE_NONSECRET_LINKAGE') fail('Authority-domain decomposition has unsafe semantics.');
+  const pathAIds = new Set(repositoryFacts.repository_facts.map((fact) => fact.logical_item_id));
+  const residualIds = new Set(sourceManifest.logical_items.map((item) => item.logical_item_id).filter((id) => !pathAIds.has(id)));
+  const authorityDomainIds = ids(authorityDomains.authority_domains, 'authority_domain_id', 'authority-domain ID');
+  const mapped = new Map();
+  for (const domain of authorityDomains.authority_domains) {
+    if (domain.status !== 'PENDING_SOURCE_OWNER_IDENTIFICATION' || domain.authority_domain_kind !== 'SOURCE_OWNER_INVESTIGATION_SCOPE' || typeof domain.source_scope_id !== 'string' || domain.source_scope_id.length === 0 || typeof domain.source_system_root !== 'string' || domain.source_system_root.length === 0) fail(`Authority domain ${domain.authority_domain_id} has no exact source-scope boundary.`);
+    if (domain.source_scope_basis === 'REACHABILITY' || !String(domain.source_scope_basis).includes('CANONICAL_NORMALIZED_LOCATION') || domain.provider_identity_status !== 'UNKNOWN' || !Array.isArray(domain.provider_credential_group_ids) || domain.provider_credential_group_ids.length !== 0 || domain.environment_scope !== 'UNKNOWN') fail(`Authority domain ${domain.authority_domain_id} improperly infers provider or authority from reachability.`);
+    if (!Array.isArray(domain.logical_item_ids) || !Array.isArray(domain.canonical_occurrence_ids) || domain.logical_item_count !== domain.logical_item_ids.length || domain.logical_item_ids.length !== domain.canonical_occurrence_ids.length || !Array.isArray(domain.reachability_buckets) || domain.reachability_buckets.length === 0) fail(`Authority domain ${domain.authority_domain_id} has malformed membership.`);
+    for (const logicalItemId of domain.logical_item_ids) {
+      if (!residualIds.has(logicalItemId) || mapped.has(logicalItemId)) fail(`Authority-domain membership is missing, duplicates, or includes Path A logical item ${logicalItemId}.`);
+      mapped.set(logicalItemId, domain);
+    }
+  }
+  if (!equalSets(new Set(mapped.keys()), residualIds)) fail('Authority-domain decomposition does not cover every Path B logical item exactly once.');
+  if (authorityDomains.totals?.path_a_repository_fact_logical_items !== pathAIds.size || authorityDomains.totals?.path_b_residual_logical_items !== residualIds.size || authorityDomains.totals?.authority_domains !== authorityDomainIds.size || authorityDomains.totals?.provider_credential_groups !== 0 || authorityDomains.totals?.safe_authority_linkages !== 0) fail('Authority-domain totals do not reconcile.');
+  const pendingByDomain = new Map(authorityConfig.authority_records.filter((authority) => authority.status === AUTHORITY_PENDING).map((authority) => [authority.authority_domain_id, authority]));
+  if (authorityConfig.schema_version !== '08A1C-authority-records-v2' || pendingByDomain.size !== authorityDomainIds.size || !equalSets(new Set(pendingByDomain.keys()), authorityDomainIds)) fail('Authority records do not provide exactly one pending record per authority domain.');
+  return { mapped, authorityDomainIds, pathAIds };
 }
 
 function validateRepositoryFacts(facts, sourceManifest, authorityConfig) {
@@ -87,7 +114,7 @@ function validateRepositoryFacts(facts, sourceManifest, authorityConfig) {
   return { factIds, canonicalFactIds, byLogicalId: new Map(facts.repository_facts.map((fact) => [fact.logical_item_id, fact])) };
 }
 
-function authorityForDomain(authorities, domain) { const matches = authorities.filter((authority) => authority.status === AUTHORITY_PENDING && authority.candidate_source_owner_domain === domain); if (matches.length !== 1) fail(`Expected exactly one pending authority record for ${domain}.`); return matches[0]; }
+function authorityForDomain(authorities, domain, { authorityDomain = false } = {}) { const matches = authorities.filter((authority) => authority.status === AUTHORITY_PENDING && (authorityDomain ? authority.authority_domain_id === domain : authority.candidate_source_owner_domain === domain)); if (matches.length !== 1) fail(`Expected exactly one pending authority record for ${domain}.`); return matches[0]; }
 function normalizeOverrideMembers(override) {
   const members = Array.isArray(override.logical_item_ids) ? override.logical_item_ids : override.logical_item_id ? [override.logical_item_id] : [];
   if (members.length === 0 || new Set(members).size !== members.length) fail('A disposition override must explicitly list unique logical item IDs.');
@@ -97,29 +124,32 @@ function normalizeOverrideMembers(override) {
   return members;
 }
 
-export function buildResolution(sourceManifest, authorityConfig, repositoryFacts) {
+export function buildResolution(sourceManifest, authorityConfig, repositoryFacts, authorityDomains = null) {
   validateSourceManifest(sourceManifest); validateAuthorityConfig(authorityConfig);
   const facts = validateRepositoryFacts(repositoryFacts, sourceManifest, authorityConfig);
+  const domainModel = authorityDomains ? validateAuthorityDomains(authorityDomains, sourceManifest, repositoryFacts, authorityConfig) : null;
   const canonicalById = new Map(sourceManifest.canonical_occurrences.map((item) => [item.canonical_occurrence_id, item]));
   const overridesById = new Map();
   for (const override of authorityConfig.disposition_overrides ?? []) for (const logicalItemId of normalizeOverrideMembers(override)) { if (overridesById.has(logicalItemId) || facts.byLogicalId.has(logicalItemId)) fail(`Logical item ${logicalItemId} appears in more than one closure input.`); overridesById.set(logicalItemId, override); }
   const dispositions = sortById(sourceManifest.logical_items, 'logical_item_id').map((logical) => {
     const canonical = canonicalById.get(logical.canonical_occurrence_ids[0]);
+    const sourceDomain = domainModel?.mapped.get(logical.logical_item_id) ?? null;
+    const pendingAuthority = facts.byLogicalId.has(logical.logical_item_id) ? null : authorityForDomain(authorityConfig.authority_records, sourceDomain?.authority_domain_id ?? logical.candidate_source_owner_domain, { authorityDomain: Boolean(sourceDomain) });
     const baseline = {
       logical_item_id: logical.logical_item_id, canonical_occurrence_ids: logical.canonical_occurrence_ids,
       safe_identity_or_provenance_basis: `Canonical occurrence ${canonical.canonical_occurrence_id}; scanner-native location/provenance metadata only; no credential-value equality identifier.`,
       closure_path: PATH_B, verified_provider: 'UNKNOWN', provider_identity_basis: 'SCANNER_RULE_LABEL_NOT_PROVIDER_PROOF',
-      authority_id: authorityForDomain(authorityConfig.authority_records, logical.candidate_source_owner_domain).authority_id, accountable_owner: 'UNASSIGNED', environment_scope: 'UNKNOWN',
+      authority_id: pendingAuthority?.authority_id ?? null, authority_domain_id: sourceDomain?.authority_domain_id ?? null, source_scope_id: sourceDomain?.source_scope_id ?? null, source_system_root: sourceDomain?.source_system_root ?? null, provider_credential_group_id: null, accountable_owner: 'UNASSIGNED', environment_scope: 'UNKNOWN',
       reachability: logical.reachability, current_tree_remediation_status: logical.current_tree_remediation_status, reachable_history_status: logical.reachable_history_status,
       disposition: 'UNKNOWN', review_state: 'OWNER_ASSIGNMENT_REQUIRED', action_timestamp: null, independent_verification_timestamp: null,
       sanitized_evidence_reference: null, evidence_level: 'NONE', evidence_source: 'NONE', safe_authority_linkage_basis: null,
       repository_proof_family: null, repository_reason_code: null, repository_safe_provenance: null, repository_source_version: null, repository_validator_version: null, deterministic_proof_reference: null, regression_test_reference: null, repository_verification_timestamp: null,
-      validator_version: '08A1C-owner-disposition-validator-v2', review_timestamp: authorityConfig.reviewed_at,
+      validator_version: domainModel ? '08A1C-owner-disposition-validator-v3' : '08A1C-owner-disposition-validator-v2', review_timestamp: authorityConfig.reviewed_at,
       pending_reason: 'No repository evidence establishes an accountable authority, provider identity, validity, or terminal disposition for this logical item.', batch_id: null, batch_linkage_basis: null, common_safe_linkage_identifier: null,
     };
     const fact = facts.byLogicalId.get(logical.logical_item_id);
     if (fact) return {
-      ...baseline, closure_path: PATH_A, authority_id: null, accountable_owner: 'NOT_APPLICABLE_REPOSITORY_FACT', environment_scope: 'NOT_APPLICABLE_REPOSITORY_FACT', verified_provider: 'UNKNOWN', provider_identity_basis: 'NOT_APPLICABLE_REPOSITORY_FACT',
+      ...baseline, closure_path: PATH_A, authority_id: null, authority_domain_id: null, source_scope_id: null, source_system_root: null, provider_credential_group_id: null, accountable_owner: 'NOT_APPLICABLE_REPOSITORY_FACT', environment_scope: 'NOT_APPLICABLE_REPOSITORY_FACT', verified_provider: 'UNKNOWN', provider_identity_basis: 'NOT_APPLICABLE_REPOSITORY_FACT',
       disposition: fact.disposition, review_state: CLOSED_STATE, evidence_level: 'REPOSITORY_VERIFIED', evidence_source: 'REPOSITORY_FACT_DISCOVERY', sanitized_evidence_reference: fact.proof_reference,
       repository_proof_family: fact.proof_family, repository_reason_code: fact.reason_code, repository_safe_provenance: fact.safe_provenance, repository_source_version: fact.source_version, repository_validator_version: fact.validator_version,
       deterministic_proof_reference: fact.proof_reference, regression_test_reference: fact.regression_test_reference, repository_verification_timestamp: fact.repository_verification_timestamp,
@@ -132,7 +162,7 @@ export function buildResolution(sourceManifest, authorityConfig, repositoryFacts
   });
   if (overridesById.size !== (authorityConfig.disposition_overrides ?? []).reduce((total, override) => total + normalizeOverrideMembers(override).length, 0)) fail('Disposition override members do not reconcile.');
   const expandedAuthorities = sortById(authorityConfig.authority_records, 'authority_id').map((authority) => ({ ...authority, logical_item_ids: dispositions.filter((item) => item.authority_id === authority.authority_id).map((item) => item.logical_item_id) }));
-  const resolution = { schema_version: '08A1C-owner-resolution-v2', source_inventory: { schema_version: sourceManifest.schema_version, run_id: sourceManifest.run_id, observation_count: sourceManifest.observation_count, canonical_occurrence_count: sourceManifest.canonical_occurrence_count, logical_item_count: sourceManifest.logical_item_count }, repository_fact_evidence: { schema_version: repositoryFacts.schema_version, validator_version: repositoryFacts.validator_version, repository_terminal_facts: repositoryFacts.repository_facts.length }, reviewed_at: authorityConfig.reviewed_at, authority_records: expandedAuthorities, dispositions };
+  const resolution = { schema_version: domainModel ? '08A1C-owner-resolution-v3' : '08A1C-owner-resolution-v2', source_inventory: { schema_version: sourceManifest.schema_version, run_id: sourceManifest.run_id, observation_count: sourceManifest.observation_count, canonical_occurrence_count: sourceManifest.canonical_occurrence_count, logical_item_count: sourceManifest.logical_item_count }, repository_fact_evidence: { schema_version: repositoryFacts.schema_version, validator_version: repositoryFacts.validator_version, repository_terminal_facts: repositoryFacts.repository_facts.length }, authority_domain_decomposition: domainModel ? { schema_version: authorityDomains.schema_version, authority_domains: authorityDomains.totals.authority_domains, provider_credential_groups: authorityDomains.totals.provider_credential_groups, safe_authority_linkages: authorityDomains.totals.safe_authority_linkages, reachability_is_not_authority_domain: true } : null, reviewed_at: authorityConfig.reviewed_at, authority_records: expandedAuthorities, dispositions };
   resolution.counts = resolutionCounts(resolution); resolution.outcome = resolution.counts.non_terminal_primary_total === 0 ? 'PASS' : 'BLOCKED';
   return resolution;
 }
@@ -142,7 +172,7 @@ export function resolutionCounts(resolution) {
   const nonTerminalStates = Object.fromEntries([...NON_TERMINAL_STATES].sort().map((state) => [state, 0]));
   const providerStates = { UNKNOWN: 0, VERIFIED: 0 };
   for (const item of resolution.dispositions ?? []) { if (TERMINAL_DISPOSITIONS.has(item.disposition)) terminal[item.disposition] += 1; if (NON_TERMINAL_STATES.has(item.review_state)) nonTerminalStates[item.review_state] += 1; providerStates[item.verified_provider === 'UNKNOWN' ? 'UNKNOWN' : 'VERIFIED'] += 1; }
-  return { terminal_dispositions: terminal, non_terminal_primary_states: nonTerminalStates, non_terminal_primary_total: Object.values(nonTerminalStates).reduce((sum, value) => sum + value, 0), provider_identity_states: providerStates, closure_path_totals: countBy(resolution.dispositions ?? [], (item) => item.closure_path ?? 'MISSING'), authority_disposition_totals: countBy(resolution.dispositions ?? [], (item) => item.authority_id ?? 'NOT_APPLICABLE_REPOSITORY_FACT'), repository_fact_proof_family_totals: countBy((resolution.dispositions ?? []).filter((item) => item.closure_path === PATH_A), (item) => item.repository_proof_family), hidden_non_terminal_state_count: 0 };
+  return { terminal_dispositions: terminal, non_terminal_primary_states: nonTerminalStates, non_terminal_primary_total: Object.values(nonTerminalStates).reduce((sum, value) => sum + value, 0), provider_identity_states: providerStates, closure_path_totals: countBy(resolution.dispositions ?? [], (item) => item.closure_path ?? 'MISSING'), authority_disposition_totals: countBy(resolution.dispositions ?? [], (item) => item.authority_id ?? 'NOT_APPLICABLE_REPOSITORY_FACT'), authority_domain_totals: countBy(resolution.dispositions ?? [], (item) => item.authority_domain_id ?? 'NOT_APPLICABLE_REPOSITORY_FACT'), repository_fact_proof_family_totals: countBy((resolution.dispositions ?? []).filter((item) => item.closure_path === PATH_A), (item) => item.repository_proof_family), hidden_non_terminal_state_count: 0 };
 }
 
 function validateRepositoryTerminal(item, fact, reviewedAt) {
@@ -162,11 +192,14 @@ function validateProviderTerminal(item, authority, reviewedAt) {
   if (item.disposition === 'ROTATED_OLD_INVALIDATED' && item.old_credential_invalidated !== true) fail(`Rotation disposition ${item.logical_item_id} lacks independent old-credential invalidation.`);
 }
 
-export function validateResolution(sourceManifest, authorityConfig, repositoryFacts, resolution, { requireClosure = false } = {}) {
+export function validateResolution(sourceManifest, authorityConfig, repositoryFacts, resolution, { requireClosure = false, authorityDomains = null } = {}) {
   const { logicalIds, canonicalIds } = validateSourceManifest(sourceManifest); validateAuthorityConfig(authorityConfig);
   const facts = validateRepositoryFacts(repositoryFacts, sourceManifest, authorityConfig);
-  if (resolution?.schema_version !== '08A1C-owner-resolution-v2' || !isIsoTimestamp(resolution.reviewed_at) || !Array.isArray(resolution.dispositions) || !Array.isArray(resolution.authority_records) || !noSecretBearingData(resolution)) fail('Malformed or unsafe 08A1C resolution.');
+  const domainModel = authorityDomains ? validateAuthorityDomains(authorityDomains, sourceManifest, repositoryFacts, authorityConfig) : null;
+  const expectedSchema = domainModel ? '08A1C-owner-resolution-v3' : '08A1C-owner-resolution-v2';
+  if (resolution?.schema_version !== expectedSchema || !isIsoTimestamp(resolution.reviewed_at) || !Array.isArray(resolution.dispositions) || !Array.isArray(resolution.authority_records) || !noSecretBearingData(resolution)) fail('Malformed or unsafe 08A1C resolution.');
   if (resolution.reviewed_at !== authorityConfig.reviewed_at) fail('Resolution review timestamp does not match authority config.');
+  if (domainModel && (resolution.authority_domain_decomposition?.schema_version !== authorityDomains.schema_version || resolution.authority_domain_decomposition?.authority_domains !== authorityDomains.totals.authority_domains || resolution.authority_domain_decomposition?.provider_credential_groups !== 0 || resolution.authority_domain_decomposition?.safe_authority_linkages !== 0 || resolution.authority_domain_decomposition?.reachability_is_not_authority_domain !== true)) fail('Resolution does not preserve the authority-domain decomposition.');
   const resolutionIds = ids(resolution.dispositions, 'logical_item_id', '08A1C disposition logical item ID'); if (!equalSets(resolutionIds, logicalIds)) fail('08A1C dispositions do not cover each logical item exactly once.');
   const sourceLogicalById = new Map(sourceManifest.logical_items.map((item) => [item.logical_item_id, item])); const sourceCanonicalById = new Map(sourceManifest.canonical_occurrences.map((item) => [item.canonical_occurrence_id, item]));
   const authorityById = new Map(resolution.authority_records.map((item) => [item.authority_id, item])); if (authorityById.size !== resolution.authority_records.length) fail('Resolution authority records are duplicated.');
@@ -174,7 +207,15 @@ export function validateResolution(sourceManifest, authorityConfig, repositoryFa
   for (const item of resolution.dispositions) {
     const sourceLogical = sourceLogicalById.get(item.logical_item_id); if (!sourceLogical || JSON.stringify(item.canonical_occurrence_ids) !== JSON.stringify(sourceLogical.canonical_occurrence_ids) || item.canonical_occurrence_ids.some((id) => !canonicalIds.has(id))) fail(`08A1C disposition ${item.logical_item_id} does not preserve canonical linkage.`);
     const canonical = sourceCanonicalById.get(item.canonical_occurrence_ids[0]); if (!item.safe_identity_or_provenance_basis?.includes(canonical.canonical_occurrence_id) || !item.safe_identity_or_provenance_basis.includes('no credential-value equality identifier')) fail(`08A1C disposition ${item.logical_item_id} has unsupported safe identity semantics.`);
-    if (item.review_timestamp !== resolution.reviewed_at || item.validator_version !== '08A1C-owner-disposition-validator-v2') fail(`08A1C disposition ${item.logical_item_id} lacks validator traceability.`);
+    const expectedValidator = domainModel ? '08A1C-owner-disposition-validator-v3' : '08A1C-owner-disposition-validator-v2';
+    if (item.review_timestamp !== resolution.reviewed_at || item.validator_version !== expectedValidator) fail(`08A1C disposition ${item.logical_item_id} lacks validator traceability.`);
+    const mappedDomain = domainModel?.mapped.get(item.logical_item_id);
+    if (domainModel) {
+      if (mappedDomain) {
+        if (item.authority_domain_id !== mappedDomain.authority_domain_id || item.source_scope_id !== mappedDomain.source_scope_id || item.source_system_root !== mappedDomain.source_system_root || item.provider_credential_group_id !== null) fail(`08A1C disposition ${item.logical_item_id} does not preserve source-scope authority membership.`);
+        if (item.reachability.join('+') !== sourceLogical.reachability.join('+')) fail(`08A1C disposition ${item.logical_item_id} mutates reachability while assigning an authority domain.`);
+      } else if (!facts.byLogicalId.has(item.logical_item_id) || item.authority_domain_id !== null || item.source_scope_id !== null || item.source_system_root !== null || item.provider_credential_group_id !== null) fail(`08A1C Path A item ${item.logical_item_id} is incorrectly mapped to an authority domain.`);
+    }
     const terminal = TERMINAL_DISPOSITIONS.has(item.disposition);
     if (terminal) {
       if (item.review_state !== CLOSED_STATE) fail(`Terminal disposition ${item.logical_item_id} is not closed.`);
@@ -185,6 +226,7 @@ export function validateResolution(sourceManifest, authorityConfig, repositoryFa
     } else {
       const authority = authorityById.get(item.authority_id); if (item.closure_path !== PATH_B || item.disposition !== 'UNKNOWN' || !NON_TERMINAL_STATES.has(item.review_state) || !authority) fail(`Unsupported non-terminal state for ${item.logical_item_id}.`);
       if (item.review_state === 'OWNER_ASSIGNMENT_REQUIRED' && authority.status !== AUTHORITY_PENDING) fail(`Owner-assignment pending item ${item.logical_item_id} references a non-pending authority.`);
+      if (domainModel && (authority.authority_domain_id !== item.authority_domain_id || authority.status !== AUTHORITY_PENDING)) fail(`Owner-assignment pending item ${item.logical_item_id} does not reference its source-scope authority record.`);
       if (item.review_state === 'PROVIDER_VERIFICATION_PENDING' && item.verified_provider === 'UNKNOWN') fail(`Provider-verification pending item ${item.logical_item_id} lacks an identified provider.`);
     }
     if (!terminal && !NON_TERMINAL_STATES.has(item.review_state)) hiddenStates += 1;
@@ -200,8 +242,9 @@ export function validateResolution(sourceManifest, authorityConfig, repositoryFa
 }
 
 async function main() {
-  const [sourceManifest, authorityConfig, repositoryFacts, resolution] = await Promise.all([readFile(required('--source-manifest'), 'utf8').then(JSON.parse), readFile(required('--authority-records'), 'utf8').then(JSON.parse), readFile(required('--repository-facts'), 'utf8').then(JSON.parse), readFile(required('--resolution'), 'utf8').then(JSON.parse)]);
-  const counts = validateResolution(sourceManifest, authorityConfig, repositoryFacts, resolution, { requireClosure: process.argv.includes('--require-closure') });
+  const authorityDomainsPath = argument('--authority-domains');
+  const [sourceManifest, authorityConfig, repositoryFacts, resolution, authorityDomains] = await Promise.all([readFile(required('--source-manifest'), 'utf8').then(JSON.parse), readFile(required('--authority-records'), 'utf8').then(JSON.parse), readFile(required('--repository-facts'), 'utf8').then(JSON.parse), readFile(required('--resolution'), 'utf8').then(JSON.parse), authorityDomainsPath ? readFile(authorityDomainsPath, 'utf8').then(JSON.parse) : Promise.resolve(null)]);
+  const counts = validateResolution(sourceManifest, authorityConfig, repositoryFacts, resolution, { requireClosure: process.argv.includes('--require-closure'), authorityDomains });
   process.stdout.write(`Validated 08A1C resolution: ${resolution.dispositions.length} logical items, ${counts.non_terminal_primary_total} non-terminal primary states.\n`);
 }
 

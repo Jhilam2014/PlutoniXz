@@ -1,0 +1,52 @@
+{
+  "schema_version": "08A1C-R4-authority-provider-evidence-v1",
+  "reviewed_at": "2026-08-13T00:00:00Z",
+  "source_inventory": {
+    "schema_version": "08A1B-R2-logical-credential-inventory-v1",
+    "run_id": "20260812T190840Z",
+    "reviewed_at": "2026-08-12T19:08:40Z",
+    "content_checksum_sha256": "0dcfdb1aef189f857dda75b212cf7e318b7d4a0861efc1f43912e9379ae60e9e",
+    "reconstruction_version": "08A1B-R2-candidate-equivalence-v1",
+    "equality_method": "MEMORY_ONLY_EPHEMERAL_HMAC_AND_CONSTANT_TIME_CONFIRMATION",
+    "validator_reference": "scripts/verify-08a1b-r2-reconstruction.mjs"
+  },
+  "accepted_authority_records": [],
+  "accepted_provider_evidence_records": [],
+  "totals": {
+    "scan_observations": 14984,
+    "canonical_occurrences": 14937,
+    "candidate_equivalence_classes": 1068,
+    "logical_items": 1068,
+    "path_a_terminal_by_proof_family": {
+      "DETERMINISTIC_COMMITTED_FIXTURE": 1
+    },
+    "path_a_terminal_total": 1,
+    "plausible_credential_total": 1067,
+    "terminal_primary_total": 1,
+    "non_terminal_primary_by_state": {
+      "PENDING_EXTERNAL_EVIDENCE": 1067
+    },
+    "non_terminal_primary_total": 1067,
+    "authority_records": {
+      "accepted": 0,
+      "rejected": 12,
+      "pending": 1067
+    },
+    "provider_evidence_records": {
+      "accepted": 0,
+      "rejected": 11,
+      "pending": 1067
+    },
+    "apify_evidence_records": {
+      "valid_unlinked": 1,
+      "applied": 0
+    }
+  },
+  "apify_08a1a_record": {
+    "status": "VALID_08A1A_UNLINKED_NO_EXACT_R2_LINKAGE",
+    "evidence_level": "OWNER_ASSERTED",
+    "linkage_state": "NOT_APPLIED_TO_ANY_R2_LOGICAL_ITEM",
+    "reason": "The retained 08A1A record has no validated exact R2 logical-item, alias, project, account, or environment linkage.",
+    "validator_reference": "scripts/verify-08a1a-owner-evidence.mjs"
+  }
+}

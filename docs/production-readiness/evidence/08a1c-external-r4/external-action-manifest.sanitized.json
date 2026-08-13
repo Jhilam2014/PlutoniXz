@@ -1,0 +1,22 @@
+{
+  "schema_version": "08A1C-current-semantic-external-action-package-v1",
+  "reviewed_at": "2026-08-12T22:59:12Z",
+  "package_status": "NON_ACTIONABLE_PENDING_SEMANTIC_TRIAGE",
+  "historical_audit_manifest_reference": "08a1c-external-r4/external-action-manifest.r4-audit.sanitized.json",
+  "historical_request_count": 1067,
+  "active_positive_candidate_actions": [],
+  "pending_actions": [],
+  "totals": {
+    "historical_r4_requests": 1067,
+    "superseded_non_actionable_requests": 1067,
+    "active_actions": 0,
+    "pending_authority": 0,
+    "pending_provider": 0
+  },
+  "policy": {
+    "r4_absence_of_path_a_inference_superseded": true,
+    "unresolved_have_no_provider_identity_authority_or_external_action": true,
+    "provider_actions_performed": false,
+    "historical_requests_not_sent_or_populated": true
+  }
+}

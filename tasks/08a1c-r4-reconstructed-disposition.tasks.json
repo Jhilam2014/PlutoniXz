@@ -1,0 +1,27 @@
+{
+  "workflow_id": "08a1c-r4-reconstructed-disposition",
+  "task_packet": {
+    "goal": "Validate R2, close deterministic Path A, issue exact Path B requests, and revalidate 08A1D mappings.",
+    "context": "R2 is immutable and R3 memberships are superseded audit history.",
+    "scope": "Sanitized evidence, local validators, documentation, and incremental graph/vector records.",
+    "constraints": [
+      "No .env content read",
+      "No provider action or authentication",
+      "No credential values, fragments, or candidate-derived tags",
+      "No commit, push, deployment, rotation, revocation, or deletion"
+    ],
+    "requirements": [
+      "One primary state per current R2 logical item",
+      "Path A uses current deterministic R2 proof only",
+      "Path B queue is one exact R2 class per request",
+      "08A1D mapping fails closed when retained coverage cannot be proven current"
+    ],
+    "done_when": "All repository-local validation passes and only genuine external evidence remains."
+  },
+  "tasks": [
+    { "id": "validate-r2-lineage", "status": "complete" },
+    { "id": "build-r4-dispositions-and-supersession-bridge", "status": "complete" },
+    { "id": "revalidate-08a1d-r2-mappings", "status": "complete" },
+    { "id": "external-evidence-intake", "status": "blocked_external_evidence" }
+  ]
+}

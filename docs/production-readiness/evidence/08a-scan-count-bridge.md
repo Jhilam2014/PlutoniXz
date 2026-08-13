@@ -7,7 +7,7 @@ All source reports passed structural redaction validation before parsing. Counts
 - Run ID: `20260811T214249Z`
 - Scanner: `zricethezav/gitleaks@sha256:691af3c7c5a48b16f187ce3446d5f194838f91238f27270ed36eef6359a574d9`
 - Scanner configuration SHA-256: `d7e50ecc5ad855cf0d98dde2d5204d7c9c432e1ac9df42244f95317405b4855b`
-- Commit boundary: `d96548231bfec7c85cd81cc20feac70be6e39e9f`
+- Commit boundary: `a59f06f3e119dff41f96328c341213a54610fa52`
 - Input roots: `worktree`, `reachable-git-history`, `runtime`, `memory`, `observability`, `deliverables`, `apps/frontend/dist`, `apps/generated-site/dist`
 - Output root: `runtime/secret-scan`
 - Source sanitation: `STRUCTURALLY_VERIFIED_SECRET_AND_MATCH_REDACTED`

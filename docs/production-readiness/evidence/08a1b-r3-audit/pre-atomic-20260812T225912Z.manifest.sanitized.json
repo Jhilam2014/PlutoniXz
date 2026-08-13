@@ -1,0 +1,23 @@
+{
+  "schema_version": "08A1B-R3-pre-atomic-audit-archive-v1",
+  "run_id": "20260812T225912Z",
+  "archive_reason": "Current R3 and R4 projections retained before validated atomic R2-to-R3 publication.",
+  "records": [
+    {
+      "source": "docs/production-readiness/evidence/08a1b-r3-semantic-classification.sanitized.json",
+      "archived": "docs/production-readiness/evidence/08a1b-r3-audit/08a1b-r3-semantic-classification.pre-atomic-20260812T225912Z.sanitized.json"
+    },
+    {
+      "source": "docs/production-readiness/evidence/08a1c-external-r4/current-semantic-triage-status.sanitized.json",
+      "archived": "docs/production-readiness/evidence/08a1b-r3-audit/current-semantic-triage-status.pre-atomic-20260812T225912Z.sanitized.json"
+    },
+    {
+      "source": "docs/production-readiness/evidence/08a-owner-authority-records.sanitized.json",
+      "archived": "docs/production-readiness/evidence/08a1b-r3-audit/08a-owner-authority-records.pre-atomic-20260812T225912Z.sanitized.json"
+    },
+    {
+      "source": "docs/production-readiness/evidence/08a-owner-dispositions.sanitized.json",
+      "archived": "docs/production-readiness/evidence/08a1b-r3-audit/08a-owner-dispositions.pre-atomic-20260812T225912Z.sanitized.json"
+    }
+  ]
+}

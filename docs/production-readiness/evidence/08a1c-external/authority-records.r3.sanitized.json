@@ -1,0 +1,177 @@
+{
+  "schema_version": "08A1C-authority-records-v2",
+  "reviewed_at": "2026-08-11T21:51:32Z",
+  "evidence_policy": {
+    "owner_asserted_terminal_authority_ids": [],
+    "policy_note": "Authority records are keyed to source-scope authority domains. Reachability buckets are not authority domains. An unlinked owner assertion cannot be used for a disposition.",
+    "unlinked_authority_assertion_ids": [
+      "AUTH-APIFY-DEV-JHILAM-BERA-20260811"
+    ]
+  },
+  "authority_records": [
+    {
+      "authority_id": "AUTH-APIFY-DEV-JHILAM-BERA-20260811",
+      "status": "ACTIVE_OWNER_ASSERTED",
+      "accountable_owner_or_role": "Jhilam Bera (Admin)",
+      "provider_project_service_scope": "Apify actor-execution credential; Development only",
+      "authorized_providers": [
+        "Apify"
+      ],
+      "environment_scope": "Development only",
+      "authority_basis": "08A1A owner-approved Apify Development authority; it does not establish authority for GCP, OpenAI, or unidentified findings.",
+      "sanitized_evidence_reference": "docs/production-readiness/evidence/08a-owner-evidence.md",
+      "evidence_level": "OWNER_ASSERTED",
+      "approval_timestamp": "2026-08-11T11:11:26Z",
+      "valid_from": "2026-08-11T11:11:26Z",
+      "valid_until": "2026-08-11T21:51:32Z",
+      "validity_or_review_period": "Scoped 08A1C review through 2026-08-11T21:51:32Z; no inventory-item linkage is asserted.",
+      "authority_domain_id": null,
+      "logical_item_ids": [],
+      "safe_linkage_status": "UNLINKED_NO_SAFE_ITEM_LINKAGE"
+    },
+    {
+      "authority_id": "AUTH-PENDING-SOURCE-AGENT-EFFICIENCY-OBSERVABILITY",
+      "authority_domain_id": "AD-SOURCE-AGENT-EFFICIENCY-OBSERVABILITY",
+      "status": "PENDING_AUTHORITY_EVIDENCE",
+      "accountable_owner_or_role": "SOURCE_OWNER_IDENTIFICATION_REQUIRED",
+      "provider_project_service_scope": "UNKNOWN — source ownership is not provider proof",
+      "environment_scope": "UNKNOWN",
+      "authority_basis": "No repository evidence identifies an accountable authority for SOURCE_SCOPE_AGENT_EFFICIENCY_OBSERVABILITY.",
+      "sanitized_evidence_reference": "NO_AUTHORITY_EVIDENCE_RECORDED",
+      "evidence_level": "NONE",
+      "approval_timestamp": null,
+      "validity_or_review_period": "Pending source-owner identification, scoped authorization, and independent evidence."
+    },
+    {
+      "authority_id": "AUTH-PENDING-SOURCE-AGENT-TOKEN-LEDGER",
+      "authority_domain_id": "AD-SOURCE-AGENT-TOKEN-LEDGER",
+      "status": "PENDING_AUTHORITY_EVIDENCE",
+      "accountable_owner_or_role": "SOURCE_OWNER_IDENTIFICATION_REQUIRED",
+      "provider_project_service_scope": "UNKNOWN — source ownership is not provider proof",
+      "environment_scope": "UNKNOWN",
+      "authority_basis": "No repository evidence identifies an accountable authority for SOURCE_SCOPE_AGENT_TOKEN_LEDGER.",
+      "sanitized_evidence_reference": "NO_AUTHORITY_EVIDENCE_RECORDED",
+      "evidence_level": "NONE",
+      "approval_timestamp": null,
+      "validity_or_review_period": "Pending source-owner identification, scoped authorization, and independent evidence."
+    },
+    {
+      "authority_id": "AUTH-PENDING-SOURCE-ARCHIVED-WORKSPACE",
+      "authority_domain_id": "AD-SOURCE-ARCHIVED-WORKSPACE",
+      "status": "PENDING_AUTHORITY_EVIDENCE",
+      "accountable_owner_or_role": "SOURCE_OWNER_IDENTIFICATION_REQUIRED",
+      "provider_project_service_scope": "UNKNOWN — source ownership is not provider proof",
+      "environment_scope": "UNKNOWN",
+      "authority_basis": "No repository evidence identifies an accountable authority for SOURCE_SCOPE_ARCHIVED_WORKSPACE.",
+      "sanitized_evidence_reference": "NO_AUTHORITY_EVIDENCE_RECORDED",
+      "evidence_level": "NONE",
+      "approval_timestamp": null,
+      "validity_or_review_period": "Pending source-owner identification, scoped authorization, and independent evidence."
+    },
+    {
+      "authority_id": "AUTH-PENDING-SOURCE-BACKEND-OPERATIONAL-TESTS",
+      "authority_domain_id": "AD-SOURCE-BACKEND-OPERATIONAL-TESTS",
+      "status": "PENDING_AUTHORITY_EVIDENCE",
+      "accountable_owner_or_role": "SOURCE_OWNER_IDENTIFICATION_REQUIRED",
+      "provider_project_service_scope": "UNKNOWN — source ownership is not provider proof",
+      "environment_scope": "UNKNOWN",
+      "authority_basis": "No repository evidence identifies an accountable authority for SOURCE_SCOPE_BACKEND_OPERATIONAL_TESTS.",
+      "sanitized_evidence_reference": "NO_AUTHORITY_EVIDENCE_RECORDED",
+      "evidence_level": "NONE",
+      "approval_timestamp": null,
+      "validity_or_review_period": "Pending source-owner identification, scoped authorization, and independent evidence."
+    },
+    {
+      "authority_id": "AUTH-PENDING-SOURCE-LEGACY-AGENT-WORKSPACE",
+      "authority_domain_id": "AD-SOURCE-LEGACY-AGENT-WORKSPACE",
+      "status": "PENDING_AUTHORITY_EVIDENCE",
+      "accountable_owner_or_role": "SOURCE_OWNER_IDENTIFICATION_REQUIRED",
+      "provider_project_service_scope": "UNKNOWN — source ownership is not provider proof",
+      "environment_scope": "UNKNOWN",
+      "authority_basis": "No repository evidence identifies an accountable authority for SOURCE_SCOPE_LEGACY_AGENT_WORKSPACE.",
+      "sanitized_evidence_reference": "NO_AUTHORITY_EVIDENCE_RECORDED",
+      "evidence_level": "NONE",
+      "approval_timestamp": null,
+      "validity_or_review_period": "Pending source-owner identification, scoped authorization, and independent evidence."
+    },
+    {
+      "authority_id": "AUTH-PENDING-SOURCE-ORCHESTRATION-POLICY",
+      "authority_domain_id": "AD-SOURCE-ORCHESTRATION-POLICY",
+      "status": "PENDING_AUTHORITY_EVIDENCE",
+      "accountable_owner_or_role": "SOURCE_OWNER_IDENTIFICATION_REQUIRED",
+      "provider_project_service_scope": "UNKNOWN — source ownership is not provider proof",
+      "environment_scope": "UNKNOWN",
+      "authority_basis": "No repository evidence identifies an accountable authority for SOURCE_SCOPE_ORCHESTRATION_POLICY.",
+      "sanitized_evidence_reference": "NO_AUTHORITY_EVIDENCE_RECORDED",
+      "evidence_level": "NONE",
+      "approval_timestamp": null,
+      "validity_or_review_period": "Pending source-owner identification, scoped authorization, and independent evidence."
+    },
+    {
+      "authority_id": "AUTH-PENDING-SOURCE-PROJECT-INTELLIGENCE-MEMORY",
+      "authority_domain_id": "AD-SOURCE-PROJECT-INTELLIGENCE-MEMORY",
+      "status": "PENDING_AUTHORITY_EVIDENCE",
+      "accountable_owner_or_role": "SOURCE_OWNER_IDENTIFICATION_REQUIRED",
+      "provider_project_service_scope": "UNKNOWN — source ownership is not provider proof",
+      "environment_scope": "UNKNOWN",
+      "authority_basis": "No repository evidence identifies an accountable authority for SOURCE_SCOPE_PROJECT_INTELLIGENCE_MEMORY.",
+      "sanitized_evidence_reference": "NO_AUTHORITY_EVIDENCE_RECORDED",
+      "evidence_level": "NONE",
+      "approval_timestamp": null,
+      "validity_or_review_period": "Pending source-owner identification, scoped authorization, and independent evidence."
+    },
+    {
+      "authority_id": "AUTH-PENDING-SOURCE-REPOSITORY-CONFIGURATION-INGRESS",
+      "authority_domain_id": "AD-SOURCE-REPOSITORY-CONFIGURATION-INGRESS",
+      "status": "PENDING_AUTHORITY_EVIDENCE",
+      "accountable_owner_or_role": "SOURCE_OWNER_IDENTIFICATION_REQUIRED",
+      "provider_project_service_scope": "UNKNOWN — source ownership is not provider proof",
+      "environment_scope": "UNKNOWN",
+      "authority_basis": "No repository evidence identifies an accountable authority for SOURCE_SCOPE_REPOSITORY_CONFIGURATION_INGRESS.",
+      "sanitized_evidence_reference": "NO_AUTHORITY_EVIDENCE_RECORDED",
+      "evidence_level": "NONE",
+      "approval_timestamp": null,
+      "validity_or_review_period": "Pending source-owner identification, scoped authorization, and independent evidence."
+    },
+    {
+      "authority_id": "AUTH-PENDING-SOURCE-SELF-IMPROVEMENT-OBSERVABILITY",
+      "authority_domain_id": "AD-SOURCE-SELF-IMPROVEMENT-OBSERVABILITY",
+      "status": "PENDING_AUTHORITY_EVIDENCE",
+      "accountable_owner_or_role": "SOURCE_OWNER_IDENTIFICATION_REQUIRED",
+      "provider_project_service_scope": "UNKNOWN — source ownership is not provider proof",
+      "environment_scope": "UNKNOWN",
+      "authority_basis": "No repository evidence identifies an accountable authority for SOURCE_SCOPE_SELF_IMPROVEMENT_OBSERVABILITY.",
+      "sanitized_evidence_reference": "NO_AUTHORITY_EVIDENCE_RECORDED",
+      "evidence_level": "NONE",
+      "approval_timestamp": null,
+      "validity_or_review_period": "Pending source-owner identification, scoped authorization, and independent evidence."
+    },
+    {
+      "authority_id": "AUTH-PENDING-SOURCE-SELF-IMPROVEMENT-RUNTIME",
+      "authority_domain_id": "AD-SOURCE-SELF-IMPROVEMENT-RUNTIME",
+      "status": "PENDING_AUTHORITY_EVIDENCE",
+      "accountable_owner_or_role": "SOURCE_OWNER_IDENTIFICATION_REQUIRED",
+      "provider_project_service_scope": "UNKNOWN — source ownership is not provider proof",
+      "environment_scope": "UNKNOWN",
+      "authority_basis": "No repository evidence identifies an accountable authority for SOURCE_SCOPE_SELF_IMPROVEMENT_RUNTIME.",
+      "sanitized_evidence_reference": "NO_AUTHORITY_EVIDENCE_RECORDED",
+      "evidence_level": "NONE",
+      "approval_timestamp": null,
+      "validity_or_review_period": "Pending source-owner identification, scoped authorization, and independent evidence."
+    },
+    {
+      "authority_id": "AUTH-PENDING-SOURCE-STAGED-PROJECT-MEDIA",
+      "authority_domain_id": "AD-SOURCE-STAGED-PROJECT-MEDIA",
+      "status": "PENDING_AUTHORITY_EVIDENCE",
+      "accountable_owner_or_role": "SOURCE_OWNER_IDENTIFICATION_REQUIRED",
+      "provider_project_service_scope": "UNKNOWN — source ownership is not provider proof",
+      "environment_scope": "UNKNOWN",
+      "authority_basis": "No repository evidence identifies an accountable authority for SOURCE_SCOPE_STAGED_PROJECT_MEDIA.",
+      "sanitized_evidence_reference": "NO_AUTHORITY_EVIDENCE_RECORDED",
+      "evidence_level": "NONE",
+      "approval_timestamp": null,
+      "validity_or_review_period": "Pending source-owner identification, scoped authorization, and independent evidence."
+    }
+  ],
+  "disposition_overrides": []
+}

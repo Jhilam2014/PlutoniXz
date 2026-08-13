@@ -1,5 +1,7 @@
 # 08A1D artifact coverage summary
 
+> Current status: **NOT RUN — semantic gate blocked.** This document records the historical pre-R3 coverage run only. See `08a1d-r3-semantic-gate.sanitized.json`; a full 08A1D rerun is prohibited until R3 has zero semantically unresolved classes.
+
 ## Scope derivation
 
 The complete in-repository surface is determined from Docker Compose's root build context with the checked-in `.dockerignore` whitelist; backend, frontend, and generated-site build inputs; runtime export/staged-media directories; generated memory and observability data; and packaged deliverables. The CI secret-scan workflow has no upload/download-artifact step, so it adds no separate CI artifact object. External mounts such as `$HOME/.codex` are not repository-owned and are not included.

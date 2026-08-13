@@ -5,7 +5,7 @@
     "workflow_id": "bootstrap-orchestrator-001",
     "source": "orchestrator",
     "graph_version": "1.3.0",
-    "latest_workflow_id": "plutonix-agentic-d3-market-ready-001",
+    "latest_workflow_id": "08a1b-r3-semantic-triage",
     "neo4j_status": "ready",
     "vector_provider": "chroma_local_generated",
     "vector_status": "pending_install",
@@ -3550,6 +3550,79 @@
         "proposalId": "si_prop_a4793a06-8a1b-4d8c-8ef6-4d0e0d6edaed",
         "decision": "stage"
       }
+    },
+    {
+      "id": "workflow:08a1c-r4-reconstructed-disposition",
+      "type": "workflow",
+      "label": "08A1C R4 Audit Queue",
+      "group": "workflow",
+      "risk_level": "high",
+      "status": "non_actionable_pending_semantic_triage",
+      "metadata": {
+        "historical_requests": 1067,
+        "active_external_actions": 0
+      }
+    },
+    {
+      "id": "functionality:08a1c-r4-disposition",
+      "type": "functionality",
+      "label": "R2 Logical Credential Disposition",
+      "group": "security-evidence",
+      "risk_level": "high",
+      "status": "blocked_external_evidence",
+      "metadata": {
+        "path_a_terminal": 1,
+        "path_b_pending": 1067
+      }
+    },
+    {
+      "id": "validation:08a1d-r4-mapping",
+      "type": "validation",
+      "label": "08A1D Rerun Gate",
+      "group": "validation",
+      "risk_level": "high",
+      "status": "not_run_semantic_gate_blocked",
+      "metadata": {
+        "retained_records": 23,
+        "unmapped_observations": 31
+      }
+    },
+    {
+      "id": "workflow:08a1b-r3-semantic-triage",
+      "type": "workflow",
+      "label": "08A1B R3 Semantic Triage",
+      "group": "workflow",
+      "risk_level": "high",
+      "status": "blocked_semantic_replay",
+      "metadata": {
+        "source": "08A1B-R2",
+        "mode": "repository_local_only",
+        "semantic_gate": "BLOCKED"
+      }
+    },
+    {
+      "id": "functionality:08a1b-r3-semantic-classification",
+      "type": "functionality",
+      "label": "R2 Equality-class Semantic Classification",
+      "group": "security-evidence",
+      "risk_level": "high",
+      "status": "semantically_unresolved",
+      "metadata": {
+        "deterministic_non_secret": 1,
+        "positive_secret_candidate": 0,
+        "semantically_unresolved": 1067
+      }
+    },
+    {
+      "id": "validation:08a1b-r3-frozen-r2-replay",
+      "type": "validation",
+      "label": "Frozen R2 Raw-correlation Replay",
+      "group": "validation",
+      "risk_level": "high",
+      "status": "bounded_replay_incomplete",
+      "metadata": {
+        "required": "FROZEN_R2_RAW_CORRELATION_REPRODUCTION_REQUIRED"
+      }
     }
   ],
   "links": [
@@ -3729,17 +3802,6 @@
     },
     {
       "source": "agent:plutonix-fullstack-agent",
-      "target": "agent:plutonix-independent-reviewer",
-      "type": "may_request_review_from",
-      "weight": 1,
-      "metadata": {
-        "dynamicProjectGraph": true,
-        "adaptive": true,
-        "readOnly": true
-      }
-    },
-    {
-      "source": "agent:plutonix-fullstack-agent",
       "target": "agent:adx-orchestrator-agent",
       "type": "runtime_delegates_to",
       "weight": 1,
@@ -3820,17 +3882,6 @@
     },
     {
       "source": "agent:plutonix-fullstack-agent",
-      "target": "agent:plutonix-independent-reviewer",
-      "type": "may_request_review_from",
-      "weight": 1,
-      "metadata": {
-        "dynamicProjectGraph": true,
-        "adaptive": true,
-        "readOnly": true
-      }
-    },
-    {
-      "source": "agent:plutonix-fullstack-agent",
       "target": "agent:virtux-orchestrator-agent",
       "type": "runtime_delegates_to",
       "weight": 1,
@@ -3897,17 +3948,6 @@
       "metadata": {
         "dynamicProjectGraph": true,
         "projectId": "brushx-zHXT8q"
-      }
-    },
-    {
-      "source": "agent:plutonix-fullstack-agent",
-      "target": "agent:plutonix-independent-reviewer",
-      "type": "may_request_review_from",
-      "weight": 1,
-      "metadata": {
-        "dynamicProjectGraph": true,
-        "adaptive": true,
-        "readOnly": true
       }
     },
     {
@@ -3992,17 +4032,6 @@
     },
     {
       "source": "agent:plutonix-fullstack-agent",
-      "target": "agent:plutonix-independent-reviewer",
-      "type": "may_request_review_from",
-      "weight": 1,
-      "metadata": {
-        "dynamicProjectGraph": true,
-        "adaptive": true,
-        "readOnly": true
-      }
-    },
-    {
-      "source": "agent:plutonix-fullstack-agent",
       "target": "agent:cvmakerx-orchestrator-agent",
       "type": "runtime_delegates_to",
       "weight": 1,
@@ -4059,17 +4088,6 @@
       "metadata": {
         "dynamicProjectGraph": true,
         "projectId": "databricksx-n7lCNf"
-      }
-    },
-    {
-      "source": "agent:plutonix-fullstack-agent",
-      "target": "agent:plutonix-independent-reviewer",
-      "type": "may_request_review_from",
-      "weight": 1,
-      "metadata": {
-        "dynamicProjectGraph": true,
-        "adaptive": true,
-        "readOnly": true
       }
     },
     {
@@ -4143,17 +4161,6 @@
       }
     },
     {
-      "source": "agent:plutonix-fullstack-agent",
-      "target": "agent:plutonix-independent-reviewer",
-      "type": "may_request_review_from",
-      "weight": 1,
-      "metadata": {
-        "dynamicProjectGraph": true,
-        "adaptive": true,
-        "readOnly": true
-      }
-    },
-    {
       "source": "project:geofinderx-2yFsDY",
       "target": "agent:geofinderx-orchestrator-agent",
       "type": "has_orchestrator",
@@ -4201,17 +4208,6 @@
       "metadata": {
         "dynamicProjectGraph": true,
         "projectId": "gymx-9JXKDV"
-      }
-    },
-    {
-      "source": "agent:plutonix-fullstack-agent",
-      "target": "agent:plutonix-independent-reviewer",
-      "type": "may_request_review_from",
-      "weight": 1,
-      "metadata": {
-        "dynamicProjectGraph": true,
-        "adaptive": true,
-        "readOnly": true
       }
     },
     {
@@ -4315,17 +4311,6 @@
       }
     },
     {
-      "source": "agent:plutonix-fullstack-agent",
-      "target": "agent:plutonix-independent-reviewer",
-      "type": "may_request_review_from",
-      "weight": 1,
-      "metadata": {
-        "dynamicProjectGraph": true,
-        "adaptive": true,
-        "readOnly": true
-      }
-    },
-    {
       "source": "project:investmentfinderx-z8rTq_",
       "target": "agent:investmentfinderx-orchestrator-agent",
       "type": "has_orchestrator",
@@ -4386,17 +4371,6 @@
       }
     },
     {
-      "source": "agent:plutonix-fullstack-agent",
-      "target": "agent:plutonix-independent-reviewer",
-      "type": "may_request_review_from",
-      "weight": 1,
-      "metadata": {
-        "dynamicProjectGraph": true,
-        "adaptive": true,
-        "readOnly": true
-      }
-    },
-    {
       "source": "project:mapex-M6rGkR",
       "target": "agent:mapex-orchestrator-agent",
       "type": "has_orchestrator",
@@ -4444,17 +4418,6 @@
       "metadata": {
         "dynamicProjectGraph": true,
         "projectId": "mentalheathcounselor-PJ1N2o"
-      }
-    },
-    {
-      "source": "agent:plutonix-fullstack-agent",
-      "target": "agent:plutonix-independent-reviewer",
-      "type": "may_request_review_from",
-      "weight": 1,
-      "metadata": {
-        "dynamicProjectGraph": true,
-        "adaptive": true,
-        "readOnly": true
       }
     },
     {
@@ -4529,17 +4492,6 @@
     },
     {
       "source": "agent:plutonix-fullstack-agent",
-      "target": "agent:plutonix-independent-reviewer",
-      "type": "may_request_review_from",
-      "weight": 1,
-      "metadata": {
-        "dynamicProjectGraph": true,
-        "adaptive": true,
-        "readOnly": true
-      }
-    },
-    {
-      "source": "agent:plutonix-fullstack-agent",
       "target": "agent:researchanddevx-orchestrator-agent",
       "type": "runtime_delegates_to",
       "weight": 1,
@@ -4606,17 +4558,6 @@
       "metadata": {
         "dynamicProjectGraph": true,
         "projectId": "spydash-qkWtmJ"
-      }
-    },
-    {
-      "source": "agent:plutonix-fullstack-agent",
-      "target": "agent:plutonix-independent-reviewer",
-      "type": "may_request_review_from",
-      "weight": 1,
-      "metadata": {
-        "dynamicProjectGraph": true,
-        "adaptive": true,
-        "readOnly": true
       }
     },
     {
@@ -4701,17 +4642,6 @@
     },
     {
       "source": "agent:plutonix-fullstack-agent",
-      "target": "agent:plutonix-independent-reviewer",
-      "type": "may_request_review_from",
-      "weight": 1,
-      "metadata": {
-        "dynamicProjectGraph": true,
-        "adaptive": true,
-        "readOnly": true
-      }
-    },
-    {
-      "source": "agent:plutonix-fullstack-agent",
       "target": "agent:videopresentationforproductx-orchestrator-agent",
       "type": "runtime_delegates_to",
       "weight": 1,
@@ -4792,17 +4722,6 @@
     },
     {
       "source": "agent:plutonix-fullstack-agent",
-      "target": "agent:plutonix-independent-reviewer",
-      "type": "may_request_review_from",
-      "weight": 1,
-      "metadata": {
-        "dynamicProjectGraph": true,
-        "adaptive": true,
-        "readOnly": true
-      }
-    },
-    {
-      "source": "agent:plutonix-fullstack-agent",
       "target": "agent:voicex-orchestrator-agent",
       "type": "runtime_delegates_to",
       "weight": 1,
@@ -4873,17 +4792,6 @@
     },
     {
       "source": "agent:plutonix-fullstack-agent",
-      "target": "agent:plutonix-independent-reviewer",
-      "type": "may_request_review_from",
-      "weight": 1,
-      "metadata": {
-        "dynamicProjectGraph": true,
-        "adaptive": true,
-        "readOnly": true
-      }
-    },
-    {
-      "source": "agent:plutonix-fullstack-agent",
       "target": "agent:webforbusinesses-orchestrator-agent",
       "type": "runtime_delegates_to",
       "weight": 1,
@@ -4950,17 +4858,6 @@
       "metadata": {
         "dynamicProjectGraph": true,
         "projectId": "whatsappmediaanalyser-oAeSvn"
-      }
-    },
-    {
-      "source": "agent:plutonix-fullstack-agent",
-      "target": "agent:plutonix-independent-reviewer",
-      "type": "may_request_review_from",
-      "weight": 1,
-      "metadata": {
-        "dynamicProjectGraph": true,
-        "adaptive": true,
-        "readOnly": true
       }
     },
     {
@@ -5976,6 +5873,80 @@
       "metadata": {
         "dynamicSelfImprovementGraph": true
       }
+    },
+    {
+      "source": "project:orchestrator-agent-001",
+      "target": "workflow:08a1c-r4-reconstructed-disposition",
+      "type": "contains",
+      "weight": 1,
+      "metadata": {}
+    },
+    {
+      "source": "workflow:08a1c-r4-reconstructed-disposition",
+      "target": "functionality:08a1c-r4-disposition",
+      "type": "implements",
+      "weight": 1,
+      "metadata": {}
+    },
+    {
+      "source": "workflow:08a1c-r4-reconstructed-disposition",
+      "target": "validation:08a1d-r4-mapping",
+      "type": "validates",
+      "weight": 1,
+      "metadata": {}
+    },
+    {
+      "source": "agent:project-execution-agent",
+      "target": "workflow:08a1c-r4-reconstructed-disposition",
+      "type": "assigned_to",
+      "weight": 1,
+      "metadata": {}
+    },
+    {
+      "source": "project:orchestrator-agent-001",
+      "target": "workflow:08a1b-r3-semantic-triage",
+      "type": "contains",
+      "weight": 1,
+      "metadata": {}
+    },
+    {
+      "source": "workflow:08a1b-r3-semantic-triage",
+      "target": "functionality:08a1b-r3-semantic-classification",
+      "type": "implements",
+      "weight": 1,
+      "metadata": {}
+    },
+    {
+      "source": "workflow:08a1b-r3-semantic-triage",
+      "target": "validation:08a1b-r3-frozen-r2-replay",
+      "type": "validates",
+      "weight": 1,
+      "metadata": {}
+    },
+    {
+      "source": "workflow:08a1b-r3-semantic-triage",
+      "target": "workflow:08a1c-r4-reconstructed-disposition",
+      "type": "depends_on",
+      "weight": 1,
+      "metadata": {
+        "requirement": "zero_semantically_unresolved"
+      }
+    },
+    {
+      "source": "workflow:08a1b-r3-semantic-triage",
+      "target": "validation:08a1d-r4-mapping",
+      "type": "validates",
+      "weight": 1,
+      "metadata": {
+        "requirement": "semantic_gate_pass"
+      }
+    },
+    {
+      "source": "agent:project-execution-agent",
+      "target": "workflow:08a1b-r3-semantic-triage",
+      "type": "assigned_to",
+      "weight": 1,
+      "metadata": {}
     }
   ]
 }

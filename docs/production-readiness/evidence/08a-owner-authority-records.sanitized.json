@@ -1,94 +1,16 @@
 {
-  "schema_version": "08A1C-authority-records-v1",
-  "reviewed_at": "2026-08-11T21:51:32Z",
-  "evidence_policy": {
-    "owner_asserted_terminal_authority_ids": [],
-    "policy_note": "No repository-approved 08A1C terminal-closure policy permits OWNER_ASSERTED evidence. The existing 08A1A Apify record remains an owner-evidence subgate only unless a future approved policy and safe logical-item linkage are recorded."
+  "schema_version": "08A1C-current-authority-provider-projection-v1",
+  "reviewed_at": "2026-08-12T22:59:12Z",
+  "status": "NON_ACTIONABLE_PENDING_SEMANTIC_TRIAGE",
+  "historical_audit_authority_projection_reference": "08a-owner-authority-records.r4-audit.sanitized.json",
+  "active_authority_records": [],
+  "active_provider_evidence_records": [],
+  "active_actions": [],
+  "totals": {
+    "pending_authority": 0,
+    "pending_provider": 0,
+    "active_actions": 0,
+    "historical_r4_requests": 1067
   },
-  "authority_records": [
-    {
-      "authority_id": "AUTH-APIFY-DEV-JHILAM-BERA-20260811",
-      "status": "ACTIVE_OWNER_ASSERTED",
-      "accountable_owner_or_role": "Jhilam Bera (Admin)",
-      "provider_project_service_scope": "Apify actor-execution credential; Development only",
-      "authorized_providers": [
-        "Apify"
-      ],
-      "environment_scope": "Development only",
-      "authority_basis": "08A1A owner-approved Apify Development authority; it does not establish authority for GCP, OpenAI, or unidentified findings.",
-      "sanitized_evidence_reference": "docs/production-readiness/evidence/08a-owner-evidence.md",
-      "evidence_level": "OWNER_ASSERTED",
-      "approval_timestamp": "2026-08-11T11:11:26Z",
-      "valid_from": "2026-08-11T11:11:26Z",
-      "valid_until": "2026-08-11T21:51:32Z",
-      "validity_or_review_period": "Scoped 08A1C review through 2026-08-11T21:51:32Z; no inventory-item linkage is asserted.",
-      "candidate_source_owner_domain": null
-    },
-    {
-      "authority_id": "AUTH-PENDING-SOURCE_OWNER_CURRENT_TREE",
-      "status": "PENDING_AUTHORITY_EVIDENCE",
-      "accountable_owner_or_role": "UNASSIGNED",
-      "provider_project_service_scope": "UNKNOWN — scanner metadata does not establish provider or service scope",
-      "environment_scope": "UNKNOWN",
-      "authority_basis": "No scoped authority record exists in repository-controlled evidence.",
-      "sanitized_evidence_reference": "NO_AUTHORITY_EVIDENCE_RECORDED",
-      "evidence_level": "NONE",
-      "approval_timestamp": null,
-      "validity_or_review_period": "Pending accountable-owner identification and approval evidence.",
-      "candidate_source_owner_domain": "SOURCE_OWNER_CURRENT_TREE"
-    },
-    {
-      "authority_id": "AUTH-PENDING-SOURCE_OWNER_MEMORY_ARTIFACT",
-      "status": "PENDING_AUTHORITY_EVIDENCE",
-      "accountable_owner_or_role": "UNASSIGNED",
-      "provider_project_service_scope": "UNKNOWN — scanner metadata does not establish provider or service scope",
-      "environment_scope": "UNKNOWN",
-      "authority_basis": "No scoped authority record exists in repository-controlled evidence.",
-      "sanitized_evidence_reference": "NO_AUTHORITY_EVIDENCE_RECORDED",
-      "evidence_level": "NONE",
-      "approval_timestamp": null,
-      "validity_or_review_period": "Pending accountable-owner identification and approval evidence.",
-      "candidate_source_owner_domain": "SOURCE_OWNER_MEMORY_ARTIFACT"
-    },
-    {
-      "authority_id": "AUTH-PENDING-SOURCE_OWNER_OBSERVABILITY_ARTIFACT",
-      "status": "PENDING_AUTHORITY_EVIDENCE",
-      "accountable_owner_or_role": "UNASSIGNED",
-      "provider_project_service_scope": "UNKNOWN — scanner metadata does not establish provider or service scope",
-      "environment_scope": "UNKNOWN",
-      "authority_basis": "No scoped authority record exists in repository-controlled evidence.",
-      "sanitized_evidence_reference": "NO_AUTHORITY_EVIDENCE_RECORDED",
-      "evidence_level": "NONE",
-      "approval_timestamp": null,
-      "validity_or_review_period": "Pending accountable-owner identification and approval evidence.",
-      "candidate_source_owner_domain": "SOURCE_OWNER_OBSERVABILITY_ARTIFACT"
-    },
-    {
-      "authority_id": "AUTH-PENDING-SOURCE_OWNER_REACHABLE_HISTORY",
-      "status": "PENDING_AUTHORITY_EVIDENCE",
-      "accountable_owner_or_role": "UNASSIGNED",
-      "provider_project_service_scope": "UNKNOWN — scanner metadata does not establish provider or service scope",
-      "environment_scope": "UNKNOWN",
-      "authority_basis": "No scoped authority record exists in repository-controlled evidence.",
-      "sanitized_evidence_reference": "NO_AUTHORITY_EVIDENCE_RECORDED",
-      "evidence_level": "NONE",
-      "approval_timestamp": null,
-      "validity_or_review_period": "Pending accountable-owner identification and approval evidence.",
-      "candidate_source_owner_domain": "SOURCE_OWNER_REACHABLE_HISTORY"
-    },
-    {
-      "authority_id": "AUTH-PENDING-SOURCE_OWNER_RUNTIME_ARTIFACT",
-      "status": "PENDING_AUTHORITY_EVIDENCE",
-      "accountable_owner_or_role": "UNASSIGNED",
-      "provider_project_service_scope": "UNKNOWN — scanner metadata does not establish provider or service scope",
-      "environment_scope": "UNKNOWN",
-      "authority_basis": "No scoped authority record exists in repository-controlled evidence.",
-      "sanitized_evidence_reference": "NO_AUTHORITY_EVIDENCE_RECORDED",
-      "evidence_level": "NONE",
-      "approval_timestamp": null,
-      "validity_or_review_period": "Pending accountable-owner identification and approval evidence.",
-      "candidate_source_owner_domain": "SOURCE_OWNER_RUNTIME_ARTIFACT"
-    }
-  ],
-  "disposition_overrides": []
+  "source_supersession_status": "08a1c-external-r4/current-semantic-triage-status.sanitized.json"
 }

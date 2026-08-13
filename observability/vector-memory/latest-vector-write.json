@@ -1,14 +1,15 @@
 {
-  "workflow_id": "plutonix-vector-sync-1786555341548",
-  "reason": "periodic",
-  "started_at": "2026-08-12T17:22:21.548Z",
-  "completed_at": "2026-08-12T17:22:21.737Z",
-  "status": "deferred",
-  "deferred_reason": "below_pending_threshold",
-  "min_pending_files": 5,
-  "local_files_scanned": 0,
+  "workflow_id": "08a1b-r3-semantic-triage",
+  "reason": "redacted task prompt and semantic-triage execution summary",
+  "started_at": "2026-08-12T21:42:44Z",
+  "completed_at": "2026-08-12T21:42:44Z",
+  "status": "pending_install",
+  "deferred_reason": "chroma_local_generated is configured as the mandatory fallback but its local service is not installed or verified",
+  "min_pending_files": 1,
+  "local_files_scanned": 1,
   "files_uploaded": 0,
   "files_skipped": 0,
   "files_failed": 0,
-  "pending_sync_count": 0
+  "pending_sync_count": 1,
+  "pending_prompt_record": "memory/agent-knowledge/prompts/08a1b-r3-semantic-triage.project-execution-agent.task.prompt.md"
 }

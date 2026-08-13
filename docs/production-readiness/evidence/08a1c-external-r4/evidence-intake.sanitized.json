@@ -1,0 +1,11 @@
+{
+  "schema_version": "08A1C-current-semantic-evidence-intake-v1",
+  "reviewed_at": "2026-08-12T22:59:12Z",
+  "package_status": "NON_ACTIONABLE_PENDING_SEMANTIC_TRIAGE",
+  "historical_audit_intake_reference": "08a1c-external-r4/evidence-intake.r4-audit.sanitized.json",
+  "historical_pending_action_count": 1067,
+  "active_pending_action_ids": [],
+  "accepted_records": [],
+  "rejected_records": [],
+  "intake_policy": "No current provider or authority intake while semantic triage is blocked. Historical R4 requests are audit-only and must not be sent or populated."
+}

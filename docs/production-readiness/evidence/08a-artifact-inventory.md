@@ -1,5 +1,7 @@
 # 08A1D artifact inventory
 
+> Current status: **NOT RUN — semantic gate blocked.** The inventory below is retained audit evidence from the pre-R3 run, not a current scan or current R2/R3 mapping claim. See `08a1d-r3-semantic-gate.md`.
+
 This evidence is derived from the checked-in Docker Compose build contexts, `.dockerignore` allowlist, and repository-owned runtime/export roots. It records metadata and redacted scanner evidence only; no credential value is copied here.
 
 - 08A1B source run: `20260811T214249Z`

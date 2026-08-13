@@ -1,5 +1,17 @@
 # Production Readiness Status
 
+## Current 08A1B-R3 semantic-triage posture
+
+Recorded: 2026-08-13. The immutable R2 inventory remains the only equality input: 14,984 observations, 14,937 canonical occurrences, and 1,068 exact candidate-equivalence classes. R3 corrects the invalid “no Path A proof means plausible credential” inference. One committed synthetic fixture remains deterministic Path A; zero classes have positive secret evidence; 1,067 classes are `SEMANTICALLY_UNRESOLVED` because the bounded reachable-history raw-correlation replay did not complete.
+
+- 08A1A retained: valid `OWNER_ASSERTED` Apify record, unlinked to every current R2 item.
+- 08A1B-R2: PASS on frozen run `20260812T190840Z`; R3 semantic gate: BLOCKED pending frozen-R2 raw-correlation reproduction.
+- 08A1C: NOT ELIGIBLE — semantic triage blocked. The 1,067 former R4 requests are retained as audit only, with zero active authority records, provider records, or external actions.
+- 08A1D: NOT RUN — blocked by the corrected semantic gate. The prior 23-record / 31-unmapped-observation mapping remains historical evidence only.
+- 08A1E: NOT ELIGIBLE. No provider action was performed.
+
+Canonical current evidence is `08a1b-r3-semantic-classification.sanitized.json`, `08a1b-r3-r4-queue-supersession.md`, and `08a1c-external-r4/current-semantic-triage-status.sanitized.json`. The `.r4-audit.sanitized.json` package files preserve the former external queue without keeping it active.
+
 ## Step 0 — verified baseline
 
 Recorded: 2026-08-10  
@@ -530,6 +542,55 @@ For every row in `docs/production-readiness/evidence/08a-owner-action-inventory.
 
 SUBGATE 08A1C: BLOCKED
 
+## Step 8 remediation 08A1B-R2 — memory-only candidate reconstruction
+
+Recorded: 2026-08-12T19:08:40Z
+Result: **PASS — fresh source bytes were reconstructed only in memory into exact candidate-equivalence classes; no credential value or equality tag was persisted**
+
+### Corrected gate baseline and source bridge
+
+- Before this R2 result, the corrected baseline was: 08A1A PASS; 08A1B REOPENED; 08A1C NOT ELIGIBLE; 08A1D coverage PASS with V1 mapping provisional; and 08A1E NOT ELIGIBLE.
+- Fresh run `20260812T190840Z` used the pinned scanner digest, checked-in configuration SHA-256, nine scoped inputs, the recorded commit boundary, and output-root exclusion before any R2 evidence was generated.
+- Fresh observations are 14,984: runtime 14,912 (+78), reachable history 34 (-1), worktree 14 (-1), memory 22, observability 2, and all four build/export scopes 0. The net +76 versus the pre-R2 14,908 baseline is retained as a source-scope delta, not silently carried forward.
+- R2 creates 14,937 canonical occurrences and 1,068 logical candidate classes. The +88 canonical delta is the +76 fresh-observation delta plus 12 V1 location/fingerprint collisions now separated by direct in-memory candidate bytes. The 14,849 V1 logical items are superseded by 1,068 exact R2 candidate classes; this is equality reconstruction, not provider, owner, validity, or disposition evidence.
+
+### Safety and provenance result
+
+- Every canonical occurrence belongs to exactly one candidate-equivalence class. Equality uses a fresh in-memory HMAC partition followed by constant-time byte comparison; raw candidates, HMAC keys/tags, fragments, and derived candidate hashes are not written.
+- R2 recorded 1 deterministic Path A synthetic fixture closure and 1,067 plausible credential classes. The fixture's current committed source and regression assertions are validated; its exact historical copy inherits that proof only through the R2 equality class.
+- Provenance totals are generated output 14,870, copied source 31, memory capture 12, primary source 10, test fixture 6, observability capture 4, and explicit unknown 4. Scanner-output recursion is 0 and unreconstructed candidates are 0.
+
+### Downstream invalidation
+
+- 08A1C-R3 remains **NON-ACTIONABLE**. Its V1 logical memberships, authority requests, provider-evidence requests, and intake assumptions must be rebuilt from the R2 equivalence inventory before any external action or inference.
+- 08A1D retains its coverage evidence only. All V1 canonical/logical mappings are **PROVISIONAL_PENDING_R2_REVALIDATION**; they are not R2 equality, owner, provider, or terminal-disposition proof.
+- 08A1E remains **NOT ELIGIBLE** until the R2-aware 08A1C revalidation and any necessary 08A1D mapping revalidation are complete.
+
+### Local validation
+
+- `npm run secret:reconcile:08a1b` completed the fresh direct scan and `--require-pass` R2 validation successfully.
+- The R2 synthetic suite covers repeated copies, cross-scope equality, unequal history, location-fingerprint ambiguity, overlap, provenance, Path A fixture inheritance, unavailable source bytes, non-disclosure, collisions, recursion, inflation, deltas, and reruns.
+
+Evidence: `08a1b-r2-count-and-provenance-bridge.md`, `08a1b-r2-candidate-provenance.sanitized.json`, `08a1b-r2-equivalence-classes.sanitized.json`, `08a1b-r2-logical-credential-inventory.sanitized.json`, and the R2 `08a-owner-action-inventory.md`.
+
+SUBGATE 08A1B: PASS
+
+## Step 8 remediation 08A1C-R3 — authority-domain decomposition and external-evidence intake
+
+Recorded: 2026-08-12
+Result: **BLOCKED — the reachability/authority-model defect is corrected locally; source-owner and provider evidence is still absent**
+
+- Revalidated the unchanged 08A1B inventory: 14,908 observations, 14,849 canonical occurrences, and 14,849 logical items. Path A still closes exactly one deterministic committed fixture as `VERIFIED_SYNTHETIC_FIXTURE`; 14,848 Path B items retain exactly one `OWNER_ASSIGNMENT_REQUIRED` state and there are no hidden states.
+- Replaced the invalid five-bucket “authority domain” grouping with 11 exact source-scope investigation domains. Reachability stays separate: CURRENT_TREE=14, MEMORY_ARTIFACT=6, OBSERVABILITY_ARTIFACT=2, REACHABLE_HISTORY=19, and RUNTIME_ARTIFACT=14,807. It proves neither ownership nor provider scope.
+- The 11 domains are source-system/root boundaries, not provider guesses: self-improvement runtime (14,792), staged project media (15), project-intelligence memory (12), repository configuration ingress (10), backend operational tests (5), agent-efficiency observability (4), archived workspace (4), orchestration policy (2), agent-token ledger (2), legacy agent workspace (1), and self-improvement observability (1).
+- Generated `docs/production-readiness/evidence/08a1c-external/` with bidirectional logical/canonical/domain membership, one authority request and one provider-evidence request per domain, an external-action manifest, empty safe intake ledger, and deterministic validation. Provider credential groups=0 and safe authority linkages=0.
+- The 08A1A Apify OWNER_ASSERTED record remains explicitly unlinked and is not reused. No provider identity, account, project, service, deployment, environment, credential equality, revocation, rotation, deletion, or terminal result is inferred or performed.
+- `scripts/verify-08a1c-external-evidence.mjs` and tests fail closed for reachability-as-authority, provider guesses, membership/fixture leakage, timestamp drift, unsafe linkage, malformed action state, redaction, and rerun drift. 08A1D artifact consistency accepts the v3 disposition schema and remains independently PASS.
+
+Evidence: `08a1c-external/README.md`, `authority-domains.sanitized.json`, `reachability-to-authority-map.sanitized.json`, `external-action-manifest.sanitized.json`, `evidence-intake.sanitized.json`, `08a-owner-authority-matrix.md`, `08a-owner-dispositions.sanitized.json`, and `08a1c-count-bridge.md`.
+
+SUBGATE 08A1C: BLOCKED
+
 ## Step 8 remediation 08A1D — bounded read-only artifact coverage
 
 Recorded: 2026-08-11T23:04:26Z
@@ -549,6 +610,8 @@ SUBGATE 08A1D: PASS
 
 Recorded: 2026-08-12
 Result: **BLOCKED — repository-proven closure is complete; 14,848 items still need external owner/provider evidence**
+
+> Historical R1 note: its “five compact external action groups” were reachability buckets. They are superseded by the 11 source-scope authority domains in 08A1C-R3 above and must not be interpreted as authority, provider, or credential groupings.
 
 ### Corrected evidence paths and count bridge
 
@@ -580,3 +643,13 @@ Result: **BLOCKED — repository-proven closure is complete; 14,848 items still 
 `08a1c-evidence-path-policy.md`, `08a1c-count-bridge.md`, `08a1c-repository-facts.sanitized.json`, `08a-owner-authority-matrix.md`, `08a-owner-dispositions.md`, `08a-owner-action-inventory.md`, and `08a-finding-reconciliation.md` now carry the current 08A1C-R1 state.
 
 SUBGATE 08A1C: BLOCKED
+
+## Current 08A1B-R2 gate record — supersedes the V1/R1/R3 mappings above
+
+The fresh 08A1B-R2 run `20260812T190840Z` is now the source of truth: 14,984 observations, 14,937 canonical occurrences, one deterministic Path A fixture, and 1,067 plausible credential classes (1,068 exact candidate-equivalence classes total). It passed the memory-only reconstruction validator with zero unreconstructed candidates and zero scanner-output recursion.
+
+The fresh source delta is fully retained: runtime +78, reachable history -1, worktree -1, net +76 observations. R2 separates 12 V1 location/fingerprint collisions with different candidate bytes, accounting for the +88 canonical delta. The V1/R3 source item, authority, provider, disposition, and 08A1D mapping records above are historical only.
+
+Current downstream state: 08A1A PASS; 08A1C-R3 NON-ACTIONABLE pending R2-aware membership rebuild; 08A1D coverage retained with mapping PROVISIONAL_PENDING_R2_REVALIDATION; 08A1E NOT ELIGIBLE. No external authority, provider, remediation, or credential action is claimed.
+
+SUBGATE 08A1B: PASS

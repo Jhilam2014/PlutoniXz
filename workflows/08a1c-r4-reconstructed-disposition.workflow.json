@@ -1,0 +1,25 @@
+{
+  "workflow_id": "08a1c-r4-reconstructed-disposition",
+  "objective": "Close repository-provable 08A1C work against the immutable R2 inventory and revalidate minimum 08A1D mapping consistency.",
+  "workflow_classification": [
+    "security_evidence_reconstruction",
+    "existing_product_change",
+    "executor"
+  ],
+  "product_shape": {
+    "shape": "existing_product_change",
+    "interaction_model": "repository-local validation and evidence projection",
+    "generation_depth": "incremental",
+    "real_data_requirement": "sanitized immutable R2 evidence only",
+    "prohibited_defaults": [
+      "provider actions",
+      "credential disclosure",
+      "R3 source-domain grouping",
+      "pre-R2 mapping reuse"
+    ],
+    "why_not_simpler": "One exact disposition and bounded evidence request per R2 equality class needs machine validation.",
+    "why_not_more_complex": "No provider integration, authentication, UI, or new service is authorized."
+  },
+  "status": "blocked_external_evidence",
+  "created_at": "2026-08-13T00:00:00Z"
+}

@@ -41,7 +41,7 @@ async function main() {
   const all = [...inventory.roots, ...inventory.artifacts]; const ids = new Set(); const logical = new Set(manifest.logical_items.map((item) => item.logical_item_id));
   let terminalByLogicalId = null;
   if (resolution) {
-    if (resolution?.schema_version !== '08A1C-owner-resolution-v2' || !Array.isArray(resolution.dispositions) || !noRaw(resolution)) throw new Error('Artifact consistency requires a safe 08A1C Path A/Path B resolution.');
+    if (!['08A1C-owner-resolution-v2', '08A1C-owner-resolution-v3'].includes(resolution?.schema_version) || !Array.isArray(resolution.dispositions) || !noRaw(resolution)) throw new Error('Artifact consistency requires a safe 08A1C Path A/Path B resolution.');
     const resolutionIds = new Set(resolution.dispositions.map((item) => item.logical_item_id));
     if (resolutionIds.size !== resolution.dispositions.length || resolutionIds.size !== logical.size || [...logical].some((item) => !resolutionIds.has(item))) throw new Error('Artifact consistency resolution does not cover each source logical item exactly once.');
     terminalByLogicalId = new Map(resolution.dispositions.map((item) => [item.logical_item_id, item.review_state === 'CLOSED']));

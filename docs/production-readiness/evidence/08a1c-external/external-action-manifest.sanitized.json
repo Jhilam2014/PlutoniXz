@@ -1,0 +1,214 @@
+{
+  "schema_version": "08A1C-external-action-manifest-v1",
+  "reviewed_at": "2026-08-11T21:51:32Z",
+  "source_inventory_run_id": "20260811T214249Z",
+  "totals": {
+    "authority_actions": 11,
+    "provider_evidence_actions": 11,
+    "pending_external_evidence_actions": 11,
+    "imported_authority_evidence": 0,
+    "imported_provider_evidence": 0,
+    "provider_credential_groups": 0,
+    "safe_authority_linkages": 0
+  },
+  "actions": [
+    {
+      "action_id": "ACTION-SOURCE-AGENT-EFFICIENCY-OBSERVABILITY",
+      "authority_domain_id": "AD-SOURCE-AGENT-EFFICIENCY-OBSERVABILITY",
+      "action_type": "REQUEST_SOURCE_OWNER_AUTHORITY_AND_PROVIDER_IDENTIFICATION",
+      "status": "PENDING_EXTERNAL_EVIDENCE",
+      "logical_item_count": 4,
+      "provider_credential_group_count": 0,
+      "authority_request": "authority-requests/AD-SOURCE-AGENT-EFFICIENCY-OBSERVABILITY.md",
+      "provider_evidence_request": "provider-evidence-requests/AD-SOURCE-AGENT-EFFICIENCY-OBSERVABILITY.md",
+      "acceptance_validator": "scripts/verify-08a1c-external-evidence.mjs",
+      "prohibited_shortcuts": [
+        "scanner_rule_label_as_provider_proof",
+        "reachability_as_authority",
+        "unlinked_owner_assertion",
+        "source_removal_as_terminal_closure",
+        "credential_or_credential_derived_hash"
+      ]
+    },
+    {
+      "action_id": "ACTION-SOURCE-AGENT-TOKEN-LEDGER",
+      "authority_domain_id": "AD-SOURCE-AGENT-TOKEN-LEDGER",
+      "action_type": "REQUEST_SOURCE_OWNER_AUTHORITY_AND_PROVIDER_IDENTIFICATION",
+      "status": "PENDING_EXTERNAL_EVIDENCE",
+      "logical_item_count": 2,
+      "provider_credential_group_count": 0,
+      "authority_request": "authority-requests/AD-SOURCE-AGENT-TOKEN-LEDGER.md",
+      "provider_evidence_request": "provider-evidence-requests/AD-SOURCE-AGENT-TOKEN-LEDGER.md",
+      "acceptance_validator": "scripts/verify-08a1c-external-evidence.mjs",
+      "prohibited_shortcuts": [
+        "scanner_rule_label_as_provider_proof",
+        "reachability_as_authority",
+        "unlinked_owner_assertion",
+        "source_removal_as_terminal_closure",
+        "credential_or_credential_derived_hash"
+      ]
+    },
+    {
+      "action_id": "ACTION-SOURCE-ARCHIVED-WORKSPACE",
+      "authority_domain_id": "AD-SOURCE-ARCHIVED-WORKSPACE",
+      "action_type": "REQUEST_SOURCE_OWNER_AUTHORITY_AND_PROVIDER_IDENTIFICATION",
+      "status": "PENDING_EXTERNAL_EVIDENCE",
+      "logical_item_count": 4,
+      "provider_credential_group_count": 0,
+      "authority_request": "authority-requests/AD-SOURCE-ARCHIVED-WORKSPACE.md",
+      "provider_evidence_request": "provider-evidence-requests/AD-SOURCE-ARCHIVED-WORKSPACE.md",
+      "acceptance_validator": "scripts/verify-08a1c-external-evidence.mjs",
+      "prohibited_shortcuts": [
+        "scanner_rule_label_as_provider_proof",
+        "reachability_as_authority",
+        "unlinked_owner_assertion",
+        "source_removal_as_terminal_closure",
+        "credential_or_credential_derived_hash"
+      ]
+    },
+    {
+      "action_id": "ACTION-SOURCE-BACKEND-OPERATIONAL-TESTS",
+      "authority_domain_id": "AD-SOURCE-BACKEND-OPERATIONAL-TESTS",
+      "action_type": "REQUEST_SOURCE_OWNER_AUTHORITY_AND_PROVIDER_IDENTIFICATION",
+      "status": "PENDING_EXTERNAL_EVIDENCE",
+      "logical_item_count": 5,
+      "provider_credential_group_count": 0,
+      "authority_request": "authority-requests/AD-SOURCE-BACKEND-OPERATIONAL-TESTS.md",
+      "provider_evidence_request": "provider-evidence-requests/AD-SOURCE-BACKEND-OPERATIONAL-TESTS.md",
+      "acceptance_validator": "scripts/verify-08a1c-external-evidence.mjs",
+      "prohibited_shortcuts": [
+        "scanner_rule_label_as_provider_proof",
+        "reachability_as_authority",
+        "unlinked_owner_assertion",
+        "source_removal_as_terminal_closure",
+        "credential_or_credential_derived_hash"
+      ]
+    },
+    {
+      "action_id": "ACTION-SOURCE-LEGACY-AGENT-WORKSPACE",
+      "authority_domain_id": "AD-SOURCE-LEGACY-AGENT-WORKSPACE",
+      "action_type": "REQUEST_SOURCE_OWNER_AUTHORITY_AND_PROVIDER_IDENTIFICATION",
+      "status": "PENDING_EXTERNAL_EVIDENCE",
+      "logical_item_count": 1,
+      "provider_credential_group_count": 0,
+      "authority_request": "authority-requests/AD-SOURCE-LEGACY-AGENT-WORKSPACE.md",
+      "provider_evidence_request": "provider-evidence-requests/AD-SOURCE-LEGACY-AGENT-WORKSPACE.md",
+      "acceptance_validator": "scripts/verify-08a1c-external-evidence.mjs",
+      "prohibited_shortcuts": [
+        "scanner_rule_label_as_provider_proof",
+        "reachability_as_authority",
+        "unlinked_owner_assertion",
+        "source_removal_as_terminal_closure",
+        "credential_or_credential_derived_hash"
+      ]
+    },
+    {
+      "action_id": "ACTION-SOURCE-ORCHESTRATION-POLICY",
+      "authority_domain_id": "AD-SOURCE-ORCHESTRATION-POLICY",
+      "action_type": "REQUEST_SOURCE_OWNER_AUTHORITY_AND_PROVIDER_IDENTIFICATION",
+      "status": "PENDING_EXTERNAL_EVIDENCE",
+      "logical_item_count": 2,
+      "provider_credential_group_count": 0,
+      "authority_request": "authority-requests/AD-SOURCE-ORCHESTRATION-POLICY.md",
+      "provider_evidence_request": "provider-evidence-requests/AD-SOURCE-ORCHESTRATION-POLICY.md",
+      "acceptance_validator": "scripts/verify-08a1c-external-evidence.mjs",
+      "prohibited_shortcuts": [
+        "scanner_rule_label_as_provider_proof",
+        "reachability_as_authority",
+        "unlinked_owner_assertion",
+        "source_removal_as_terminal_closure",
+        "credential_or_credential_derived_hash"
+      ]
+    },
+    {
+      "action_id": "ACTION-SOURCE-PROJECT-INTELLIGENCE-MEMORY",
+      "authority_domain_id": "AD-SOURCE-PROJECT-INTELLIGENCE-MEMORY",
+      "action_type": "REQUEST_SOURCE_OWNER_AUTHORITY_AND_PROVIDER_IDENTIFICATION",
+      "status": "PENDING_EXTERNAL_EVIDENCE",
+      "logical_item_count": 12,
+      "provider_credential_group_count": 0,
+      "authority_request": "authority-requests/AD-SOURCE-PROJECT-INTELLIGENCE-MEMORY.md",
+      "provider_evidence_request": "provider-evidence-requests/AD-SOURCE-PROJECT-INTELLIGENCE-MEMORY.md",
+      "acceptance_validator": "scripts/verify-08a1c-external-evidence.mjs",
+      "prohibited_shortcuts": [
+        "scanner_rule_label_as_provider_proof",
+        "reachability_as_authority",
+        "unlinked_owner_assertion",
+        "source_removal_as_terminal_closure",
+        "credential_or_credential_derived_hash"
+      ]
+    },
+    {
+      "action_id": "ACTION-SOURCE-REPOSITORY-CONFIGURATION-INGRESS",
+      "authority_domain_id": "AD-SOURCE-REPOSITORY-CONFIGURATION-INGRESS",
+      "action_type": "REQUEST_SOURCE_OWNER_AUTHORITY_AND_PROVIDER_IDENTIFICATION",
+      "status": "PENDING_EXTERNAL_EVIDENCE",
+      "logical_item_count": 10,
+      "provider_credential_group_count": 0,
+      "authority_request": "authority-requests/AD-SOURCE-REPOSITORY-CONFIGURATION-INGRESS.md",
+      "provider_evidence_request": "provider-evidence-requests/AD-SOURCE-REPOSITORY-CONFIGURATION-INGRESS.md",
+      "acceptance_validator": "scripts/verify-08a1c-external-evidence.mjs",
+      "prohibited_shortcuts": [
+        "scanner_rule_label_as_provider_proof",
+        "reachability_as_authority",
+        "unlinked_owner_assertion",
+        "source_removal_as_terminal_closure",
+        "credential_or_credential_derived_hash"
+      ]
+    },
+    {
+      "action_id": "ACTION-SOURCE-SELF-IMPROVEMENT-OBSERVABILITY",
+      "authority_domain_id": "AD-SOURCE-SELF-IMPROVEMENT-OBSERVABILITY",
+      "action_type": "REQUEST_SOURCE_OWNER_AUTHORITY_AND_PROVIDER_IDENTIFICATION",
+      "status": "PENDING_EXTERNAL_EVIDENCE",
+      "logical_item_count": 1,
+      "provider_credential_group_count": 0,
+      "authority_request": "authority-requests/AD-SOURCE-SELF-IMPROVEMENT-OBSERVABILITY.md",
+      "provider_evidence_request": "provider-evidence-requests/AD-SOURCE-SELF-IMPROVEMENT-OBSERVABILITY.md",
+      "acceptance_validator": "scripts/verify-08a1c-external-evidence.mjs",
+      "prohibited_shortcuts": [
+        "scanner_rule_label_as_provider_proof",
+        "reachability_as_authority",
+        "unlinked_owner_assertion",
+        "source_removal_as_terminal_closure",
+        "credential_or_credential_derived_hash"
+      ]
+    },
+    {
+      "action_id": "ACTION-SOURCE-SELF-IMPROVEMENT-RUNTIME",
+      "authority_domain_id": "AD-SOURCE-SELF-IMPROVEMENT-RUNTIME",
+      "action_type": "REQUEST_SOURCE_OWNER_AUTHORITY_AND_PROVIDER_IDENTIFICATION",
+      "status": "PENDING_EXTERNAL_EVIDENCE",
+      "logical_item_count": 14792,
+      "provider_credential_group_count": 0,
+      "authority_request": "authority-requests/AD-SOURCE-SELF-IMPROVEMENT-RUNTIME.md",
+      "provider_evidence_request": "provider-evidence-requests/AD-SOURCE-SELF-IMPROVEMENT-RUNTIME.md",
+      "acceptance_validator": "scripts/verify-08a1c-external-evidence.mjs",
+      "prohibited_shortcuts": [
+        "scanner_rule_label_as_provider_proof",
+        "reachability_as_authority",
+        "unlinked_owner_assertion",
+        "source_removal_as_terminal_closure",
+        "credential_or_credential_derived_hash"
+      ]
+    },
+    {
+      "action_id": "ACTION-SOURCE-STAGED-PROJECT-MEDIA",
+      "authority_domain_id": "AD-SOURCE-STAGED-PROJECT-MEDIA",
+      "action_type": "REQUEST_SOURCE_OWNER_AUTHORITY_AND_PROVIDER_IDENTIFICATION",
+      "status": "PENDING_EXTERNAL_EVIDENCE",
+      "logical_item_count": 15,
+      "provider_credential_group_count": 0,
+      "authority_request": "authority-requests/AD-SOURCE-STAGED-PROJECT-MEDIA.md",
+      "provider_evidence_request": "provider-evidence-requests/AD-SOURCE-STAGED-PROJECT-MEDIA.md",
+      "acceptance_validator": "scripts/verify-08a1c-external-evidence.mjs",
+      "prohibited_shortcuts": [
+        "scanner_rule_label_as_provider_proof",
+        "reachability_as_authority",
+        "unlinked_owner_assertion",
+        "source_removal_as_terminal_closure",
+        "credential_or_credential_derived_hash"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "schema_version": "08A1C-authority-domain-membership-v1",
+  "reviewed_at": "2026-08-11T21:51:32Z",
+  "source_inventory_run_id": "20260811T214249Z",
+  "authority_domain_id": "AD-SOURCE-ORCHESTRATION-POLICY",
+  "source_scope_id": "SOURCE_SCOPE_ORCHESTRATION_POLICY",
+  "provider_credential_groups": [],
+  "logical_item_count": 2,
+  "members": [
+    {
+      "logical_item_id": "LI-69AEAE8CD1197AC13001",
+      "canonical_occurrence_id": "CAN-9C8C666C0C834E4E1340",
+      "authority_domain_id": "AD-SOURCE-ORCHESTRATION-POLICY",
+      "source_scope_id": "SOURCE_SCOPE_ORCHESTRATION_POLICY",
+      "source_system_root": "AGENTS.md",
+      "source_location": "AGENTS.md",
+      "object_marker": "c4539483163e6198181c6944a335889f334fe01e",
+      "reachability": [
+        "REACHABLE_HISTORY"
+      ],
+      "provider_identity_status": "UNKNOWN",
+      "provider_credential_group_id": null,
+      "closure_path": "PATH_B_EXTERNAL_AUTHORITY_OR_PROVIDER"
+    },
+    {
+      "logical_item_id": "LI-EFF5162F4B2064B62492",
+      "canonical_occurrence_id": "CAN-C348399BD3DDE08E2469",
+      "authority_domain_id": "AD-SOURCE-ORCHESTRATION-POLICY",
+      "source_scope_id": "SOURCE_SCOPE_ORCHESTRATION_POLICY",
+      "source_system_root": "AGENTS.md",
+      "source_location": "AGENTS.md",
+      "object_marker": "CURRENT_TREE",
+      "reachability": [
+        "CURRENT_TREE"
+      ],
+      "provider_identity_status": "UNKNOWN",
+      "provider_credential_group_id": null,
+      "closure_path": "PATH_B_EXTERNAL_AUTHORITY_OR_PROVIDER"
+    }
+  ]
+}

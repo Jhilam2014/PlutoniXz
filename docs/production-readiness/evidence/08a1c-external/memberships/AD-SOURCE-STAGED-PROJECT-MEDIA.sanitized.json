@@ -1,0 +1,236 @@
+{
+  "schema_version": "08A1C-authority-domain-membership-v1",
+  "reviewed_at": "2026-08-11T21:51:32Z",
+  "source_inventory_run_id": "20260811T214249Z",
+  "authority_domain_id": "AD-SOURCE-STAGED-PROJECT-MEDIA",
+  "source_scope_id": "SOURCE_SCOPE_STAGED_PROJECT_MEDIA",
+  "provider_credential_groups": [],
+  "logical_item_count": 15,
+  "members": [
+    {
+      "logical_item_id": "LI-15552DB1E5350779958E",
+      "canonical_occurrence_id": "CAN-AF44954E3FE13325C708",
+      "authority_domain_id": "AD-SOURCE-STAGED-PROJECT-MEDIA",
+      "source_scope_id": "SOURCE_SCOPE_STAGED_PROJECT_MEDIA",
+      "source_system_root": "runtime/staged-project-media/",
+      "source_location": "runtime/staged-project-media/anonymous/media-reference-1785269531421-archive.zip!Untitled design - Video.html",
+      "object_marker": "CURRENT_TREE",
+      "reachability": [
+        "RUNTIME_ARTIFACT"
+      ],
+      "provider_identity_status": "UNKNOWN",
+      "provider_credential_group_id": null,
+      "closure_path": "PATH_B_EXTERNAL_AUTHORITY_OR_PROVIDER"
+    },
+    {
+      "logical_item_id": "LI-2D75BAEA7AE901FF8F09",
+      "canonical_occurrence_id": "CAN-046BB6C22E5D8835D70B",
+      "authority_domain_id": "AD-SOURCE-STAGED-PROJECT-MEDIA",
+      "source_scope_id": "SOURCE_SCOPE_STAGED_PROJECT_MEDIA",
+      "source_system_root": "runtime/staged-project-media/",
+      "source_location": "runtime/staged-project-media/anonymous/media-reference-1785269531421-archive.zip!Untitled design - Video_files/gtm.js",
+      "object_marker": "CURRENT_TREE",
+      "reachability": [
+        "RUNTIME_ARTIFACT"
+      ],
+      "provider_identity_status": "UNKNOWN",
+      "provider_credential_group_id": null,
+      "closure_path": "PATH_B_EXTERNAL_AUTHORITY_OR_PROVIDER"
+    },
+    {
+      "logical_item_id": "LI-2FD4561A5348E9231C9E",
+      "canonical_occurrence_id": "CAN-8B132AB77F61FAC20CB1",
+      "authority_domain_id": "AD-SOURCE-STAGED-PROJECT-MEDIA",
+      "source_scope_id": "SOURCE_SCOPE_STAGED_PROJECT_MEDIA",
+      "source_system_root": "runtime/staged-project-media/",
+      "source_location": "runtime/staged-project-media/anonymous/media-reference-1785363766182-archive.zip!Untitled design - Video.html",
+      "object_marker": "CURRENT_TREE",
+      "reachability": [
+        "RUNTIME_ARTIFACT"
+      ],
+      "provider_identity_status": "UNKNOWN",
+      "provider_credential_group_id": null,
+      "closure_path": "PATH_B_EXTERNAL_AUTHORITY_OR_PROVIDER"
+    },
+    {
+      "logical_item_id": "LI-45D4D86DFEB0B4F859DB",
+      "canonical_occurrence_id": "CAN-543F53A06EE2A88C8589",
+      "authority_domain_id": "AD-SOURCE-STAGED-PROJECT-MEDIA",
+      "source_scope_id": "SOURCE_SCOPE_STAGED_PROJECT_MEDIA",
+      "source_system_root": "runtime/staged-project-media/",
+      "source_location": "runtime/staged-project-media/anonymous/media-reference-1785364348251-archive.zip!Untitled design - Video_files/gtm.js",
+      "object_marker": "CURRENT_TREE",
+      "reachability": [
+        "RUNTIME_ARTIFACT"
+      ],
+      "provider_identity_status": "UNKNOWN",
+      "provider_credential_group_id": null,
+      "closure_path": "PATH_B_EXTERNAL_AUTHORITY_OR_PROVIDER"
+    },
+    {
+      "logical_item_id": "LI-4682190630B8C74CC4F3",
+      "canonical_occurrence_id": "CAN-0F1608A5E0A8C7CA6BEE",
+      "authority_domain_id": "AD-SOURCE-STAGED-PROJECT-MEDIA",
+      "source_scope_id": "SOURCE_SCOPE_STAGED_PROJECT_MEDIA",
+      "source_system_root": "runtime/staged-project-media/",
+      "source_location": "runtime/staged-project-media/anonymous/media-reference-1785364348251-archive.zip!Untitled design - Video.html",
+      "object_marker": "CURRENT_TREE",
+      "reachability": [
+        "RUNTIME_ARTIFACT"
+      ],
+      "provider_identity_status": "UNKNOWN",
+      "provider_credential_group_id": null,
+      "closure_path": "PATH_B_EXTERNAL_AUTHORITY_OR_PROVIDER"
+    },
+    {
+      "logical_item_id": "LI-5298F4AF90CB4E276FBA",
+      "canonical_occurrence_id": "CAN-A3A2911C7320EFD071D5",
+      "authority_domain_id": "AD-SOURCE-STAGED-PROJECT-MEDIA",
+      "source_scope_id": "SOURCE_SCOPE_STAGED_PROJECT_MEDIA",
+      "source_system_root": "runtime/staged-project-media/",
+      "source_location": "runtime/staged-project-media/anonymous/media-reference-1785363766182-archive.zip!Untitled design - Video_files/gtm.js",
+      "object_marker": "CURRENT_TREE",
+      "reachability": [
+        "RUNTIME_ARTIFACT"
+      ],
+      "provider_identity_status": "UNKNOWN",
+      "provider_credential_group_id": null,
+      "closure_path": "PATH_B_EXTERNAL_AUTHORITY_OR_PROVIDER"
+    },
+    {
+      "logical_item_id": "LI-5BE9DBA2AD9F1245FD38",
+      "canonical_occurrence_id": "CAN-6CC6F4E3DA0562E74A7C",
+      "authority_domain_id": "AD-SOURCE-STAGED-PROJECT-MEDIA",
+      "source_scope_id": "SOURCE_SCOPE_STAGED_PROJECT_MEDIA",
+      "source_system_root": "runtime/staged-project-media/",
+      "source_location": "runtime/staged-project-media/anonymous/media-reference-1785363766182-archive.zip!Untitled design - Video_files/gtm.js",
+      "object_marker": "CURRENT_TREE",
+      "reachability": [
+        "RUNTIME_ARTIFACT"
+      ],
+      "provider_identity_status": "UNKNOWN",
+      "provider_credential_group_id": null,
+      "closure_path": "PATH_B_EXTERNAL_AUTHORITY_OR_PROVIDER"
+    },
+    {
+      "logical_item_id": "LI-5C30E781661FBBBADC2B",
+      "canonical_occurrence_id": "CAN-761FB4FF3B6BE548D289",
+      "authority_domain_id": "AD-SOURCE-STAGED-PROJECT-MEDIA",
+      "source_scope_id": "SOURCE_SCOPE_STAGED_PROJECT_MEDIA",
+      "source_system_root": "runtime/staged-project-media/",
+      "source_location": "runtime/staged-project-media/anonymous/media-reference-1785364348251-archive.zip!Untitled design - Video_files/gtm.js",
+      "object_marker": "CURRENT_TREE",
+      "reachability": [
+        "RUNTIME_ARTIFACT"
+      ],
+      "provider_identity_status": "UNKNOWN",
+      "provider_credential_group_id": null,
+      "closure_path": "PATH_B_EXTERNAL_AUTHORITY_OR_PROVIDER"
+    },
+    {
+      "logical_item_id": "LI-7662789737E70C1F5598",
+      "canonical_occurrence_id": "CAN-12E4F6227722781A54F9",
+      "authority_domain_id": "AD-SOURCE-STAGED-PROJECT-MEDIA",
+      "source_scope_id": "SOURCE_SCOPE_STAGED_PROJECT_MEDIA",
+      "source_system_root": "runtime/staged-project-media/",
+      "source_location": "runtime/staged-project-media/anonymous/media-reference-1785269531421-archive.zip!Untitled design - Video_files/gtm.js",
+      "object_marker": "CURRENT_TREE",
+      "reachability": [
+        "RUNTIME_ARTIFACT"
+      ],
+      "provider_identity_status": "UNKNOWN",
+      "provider_credential_group_id": null,
+      "closure_path": "PATH_B_EXTERNAL_AUTHORITY_OR_PROVIDER"
+    },
+    {
+      "logical_item_id": "LI-82C1FBE3CFD159AFDE58",
+      "canonical_occurrence_id": "CAN-AE353FA9D89AFB525712",
+      "authority_domain_id": "AD-SOURCE-STAGED-PROJECT-MEDIA",
+      "source_scope_id": "SOURCE_SCOPE_STAGED_PROJECT_MEDIA",
+      "source_system_root": "runtime/staged-project-media/",
+      "source_location": "runtime/staged-project-media/anonymous/media-reference-1785363766182-archive.zip!Untitled design - Video_files/gtm.js",
+      "object_marker": "CURRENT_TREE",
+      "reachability": [
+        "RUNTIME_ARTIFACT"
+      ],
+      "provider_identity_status": "UNKNOWN",
+      "provider_credential_group_id": null,
+      "closure_path": "PATH_B_EXTERNAL_AUTHORITY_OR_PROVIDER"
+    },
+    {
+      "logical_item_id": "LI-83AFE121323382B4EBC2",
+      "canonical_occurrence_id": "CAN-583A26BF266FE75693D0",
+      "authority_domain_id": "AD-SOURCE-STAGED-PROJECT-MEDIA",
+      "source_scope_id": "SOURCE_SCOPE_STAGED_PROJECT_MEDIA",
+      "source_system_root": "runtime/staged-project-media/",
+      "source_location": "runtime/staged-project-media/anonymous/media-reference-1785363766182-archive.zip!Untitled design - Video.html",
+      "object_marker": "CURRENT_TREE",
+      "reachability": [
+        "RUNTIME_ARTIFACT"
+      ],
+      "provider_identity_status": "UNKNOWN",
+      "provider_credential_group_id": null,
+      "closure_path": "PATH_B_EXTERNAL_AUTHORITY_OR_PROVIDER"
+    },
+    {
+      "logical_item_id": "LI-8BD19EC021DD70174CE6",
+      "canonical_occurrence_id": "CAN-52F3E0120389895CE21B",
+      "authority_domain_id": "AD-SOURCE-STAGED-PROJECT-MEDIA",
+      "source_scope_id": "SOURCE_SCOPE_STAGED_PROJECT_MEDIA",
+      "source_system_root": "runtime/staged-project-media/",
+      "source_location": "runtime/staged-project-media/anonymous/media-reference-1785269531421-archive.zip!Untitled design - Video.html",
+      "object_marker": "CURRENT_TREE",
+      "reachability": [
+        "RUNTIME_ARTIFACT"
+      ],
+      "provider_identity_status": "UNKNOWN",
+      "provider_credential_group_id": null,
+      "closure_path": "PATH_B_EXTERNAL_AUTHORITY_OR_PROVIDER"
+    },
+    {
+      "logical_item_id": "LI-B61C64A0CA5678E198F0",
+      "canonical_occurrence_id": "CAN-0D94EF9089005947D596",
+      "authority_domain_id": "AD-SOURCE-STAGED-PROJECT-MEDIA",
+      "source_scope_id": "SOURCE_SCOPE_STAGED_PROJECT_MEDIA",
+      "source_system_root": "runtime/staged-project-media/",
+      "source_location": "runtime/staged-project-media/anonymous/media-reference-1785364348251-archive.zip!Untitled design - Video.html",
+      "object_marker": "CURRENT_TREE",
+      "reachability": [
+        "RUNTIME_ARTIFACT"
+      ],
+      "provider_identity_status": "UNKNOWN",
+      "provider_credential_group_id": null,
+      "closure_path": "PATH_B_EXTERNAL_AUTHORITY_OR_PROVIDER"
+    },
+    {
+      "logical_item_id": "LI-BE5752EF42B68D12F6FD",
+      "canonical_occurrence_id": "CAN-941C7F4E815ACC47B156",
+      "authority_domain_id": "AD-SOURCE-STAGED-PROJECT-MEDIA",
+      "source_scope_id": "SOURCE_SCOPE_STAGED_PROJECT_MEDIA",
+      "source_system_root": "runtime/staged-project-media/",
+      "source_location": "runtime/staged-project-media/anonymous/media-reference-1785364348251-archive.zip!Untitled design - Video_files/gtm.js",
+      "object_marker": "CURRENT_TREE",
+      "reachability": [
+        "RUNTIME_ARTIFACT"
+      ],
+      "provider_identity_status": "UNKNOWN",
+      "provider_credential_group_id": null,
+      "closure_path": "PATH_B_EXTERNAL_AUTHORITY_OR_PROVIDER"
+    },
+    {
+      "logical_item_id": "LI-ECFAB13CBD0EE3404B9D",
+      "canonical_occurrence_id": "CAN-9EB123ED22882B01AA72",
+      "authority_domain_id": "AD-SOURCE-STAGED-PROJECT-MEDIA",
+      "source_scope_id": "SOURCE_SCOPE_STAGED_PROJECT_MEDIA",
+      "source_system_root": "runtime/staged-project-media/",
+      "source_location": "runtime/staged-project-media/anonymous/media-reference-1785269531421-archive.zip!Untitled design - Video_files/gtm.js",
+      "object_marker": "CURRENT_TREE",
+      "reachability": [
+        "RUNTIME_ARTIFACT"
+      ],
+      "provider_identity_status": "UNKNOWN",
+      "provider_credential_group_id": null,
+      "closure_path": "PATH_B_EXTERNAL_AUTHORITY_OR_PROVIDER"
+    }
+  ]
+}

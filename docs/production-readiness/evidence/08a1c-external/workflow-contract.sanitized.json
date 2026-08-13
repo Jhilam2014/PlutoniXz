@@ -1,0 +1,22 @@
+{
+  "schema_version": "product-shape-contract-v1",
+  "goal": "Correct the 08A1C authority model and generate a safe external-evidence intake package.",
+  "context": "Existing production-readiness evidence repository; canonical scan inventory is immutable.",
+  "scope": "Sanitized local evidence, documentation, deterministic scripts, and validation only.",
+  "constraints": [
+    "No .env reads",
+    "No external provider actions",
+    "No credentials or credential-derived hashes",
+    "No commits, pushes, deployments, rotations, revocations, or deletions"
+  ],
+  "requirements": [
+    "Separate reachability from authority domains",
+    "Preserve Path A fixture",
+    "Keep provider identity unknown until safe evidence",
+    "Generate per-domain action requests"
+  ],
+  "done_when": "Domain membership, action manifest, and validators reconcile exactly with the unchanged 08A1B inventory.",
+  "product_shape": "existing_product_change",
+  "why_not_simpler": "A prose correction cannot guarantee per-item source-scope coverage or fail closed on unsafe external intake.",
+  "why_not_more_complex": "No product surface, provider integration, or external mutation is authorized."
+}

@@ -1,0 +1,161 @@
+{
+  "schema_version": "08A1C-authority-domain-membership-v1",
+  "reviewed_at": "2026-08-11T21:51:32Z",
+  "source_inventory_run_id": "20260811T214249Z",
+  "authority_domain_id": "AD-SOURCE-REPOSITORY-CONFIGURATION-INGRESS",
+  "source_scope_id": "SOURCE_SCOPE_REPOSITORY_CONFIGURATION_INGRESS",
+  "provider_credential_groups": [],
+  "logical_item_count": 10,
+  "members": [
+    {
+      "logical_item_id": "LI-02CB29A6D0D41A791398",
+      "canonical_occurrence_id": "CAN-533B17243C2FE037300D",
+      "authority_domain_id": "AD-SOURCE-REPOSITORY-CONFIGURATION-INGRESS",
+      "source_scope_id": "SOURCE_SCOPE_REPOSITORY_CONFIGURATION_INGRESS",
+      "source_system_root": ".env and .env.example names only",
+      "source_location": ".env.example",
+      "object_marker": "CURRENT_TREE",
+      "reachability": [
+        "CURRENT_TREE"
+      ],
+      "provider_identity_status": "UNKNOWN",
+      "provider_credential_group_id": null,
+      "closure_path": "PATH_B_EXTERNAL_AUTHORITY_OR_PROVIDER"
+    },
+    {
+      "logical_item_id": "LI-30864A1D4937622390CC",
+      "canonical_occurrence_id": "CAN-D1A6082EDD3327791988",
+      "authority_domain_id": "AD-SOURCE-REPOSITORY-CONFIGURATION-INGRESS",
+      "source_scope_id": "SOURCE_SCOPE_REPOSITORY_CONFIGURATION_INGRESS",
+      "source_system_root": ".env and .env.example names only",
+      "source_location": ".env.example",
+      "object_marker": "d96548231bfec7c85cd81cc20feac70be6e39e9f",
+      "reachability": [
+        "REACHABLE_HISTORY"
+      ],
+      "provider_identity_status": "UNKNOWN",
+      "provider_credential_group_id": null,
+      "closure_path": "PATH_B_EXTERNAL_AUTHORITY_OR_PROVIDER"
+    },
+    {
+      "logical_item_id": "LI-3AF2A436C49E81FDB144",
+      "canonical_occurrence_id": "CAN-BC3D888D518FB673C2B8",
+      "authority_domain_id": "AD-SOURCE-REPOSITORY-CONFIGURATION-INGRESS",
+      "source_scope_id": "SOURCE_SCOPE_REPOSITORY_CONFIGURATION_INGRESS",
+      "source_system_root": ".env and .env.example names only",
+      "source_location": ".env.example",
+      "object_marker": "CURRENT_TREE",
+      "reachability": [
+        "CURRENT_TREE"
+      ],
+      "provider_identity_status": "UNKNOWN",
+      "provider_credential_group_id": null,
+      "closure_path": "PATH_B_EXTERNAL_AUTHORITY_OR_PROVIDER"
+    },
+    {
+      "logical_item_id": "LI-532D6966BC0CE2552A14",
+      "canonical_occurrence_id": "CAN-44FA437E56A53E2B1922",
+      "authority_domain_id": "AD-SOURCE-REPOSITORY-CONFIGURATION-INGRESS",
+      "source_scope_id": "SOURCE_SCOPE_REPOSITORY_CONFIGURATION_INGRESS",
+      "source_system_root": ".env and .env.example names only",
+      "source_location": ".env",
+      "object_marker": "CURRENT_TREE",
+      "reachability": [
+        "CURRENT_TREE"
+      ],
+      "provider_identity_status": "UNKNOWN",
+      "provider_credential_group_id": null,
+      "closure_path": "PATH_B_EXTERNAL_AUTHORITY_OR_PROVIDER"
+    },
+    {
+      "logical_item_id": "LI-B0CCF277F88454528894",
+      "canonical_occurrence_id": "CAN-A03A974C70BBCC464C96",
+      "authority_domain_id": "AD-SOURCE-REPOSITORY-CONFIGURATION-INGRESS",
+      "source_scope_id": "SOURCE_SCOPE_REPOSITORY_CONFIGURATION_INGRESS",
+      "source_system_root": ".env and .env.example names only",
+      "source_location": ".env",
+      "object_marker": "CURRENT_TREE",
+      "reachability": [
+        "CURRENT_TREE"
+      ],
+      "provider_identity_status": "UNKNOWN",
+      "provider_credential_group_id": null,
+      "closure_path": "PATH_B_EXTERNAL_AUTHORITY_OR_PROVIDER"
+    },
+    {
+      "logical_item_id": "LI-C7FBD877A5DC34D9CA92",
+      "canonical_occurrence_id": "CAN-2857DE94E12C0ECE739D",
+      "authority_domain_id": "AD-SOURCE-REPOSITORY-CONFIGURATION-INGRESS",
+      "source_scope_id": "SOURCE_SCOPE_REPOSITORY_CONFIGURATION_INGRESS",
+      "source_system_root": ".env and .env.example names only",
+      "source_location": ".env",
+      "object_marker": "CURRENT_TREE",
+      "reachability": [
+        "CURRENT_TREE"
+      ],
+      "provider_identity_status": "UNKNOWN",
+      "provider_credential_group_id": null,
+      "closure_path": "PATH_B_EXTERNAL_AUTHORITY_OR_PROVIDER"
+    },
+    {
+      "logical_item_id": "LI-CFCD90530837EC81A746",
+      "canonical_occurrence_id": "CAN-A9428BA7BD5DDA1D9E53",
+      "authority_domain_id": "AD-SOURCE-REPOSITORY-CONFIGURATION-INGRESS",
+      "source_scope_id": "SOURCE_SCOPE_REPOSITORY_CONFIGURATION_INGRESS",
+      "source_system_root": ".env and .env.example names only",
+      "source_location": ".env.example",
+      "object_marker": "CURRENT_TREE",
+      "reachability": [
+        "CURRENT_TREE"
+      ],
+      "provider_identity_status": "UNKNOWN",
+      "provider_credential_group_id": null,
+      "closure_path": "PATH_B_EXTERNAL_AUTHORITY_OR_PROVIDER"
+    },
+    {
+      "logical_item_id": "LI-EA44987559FF86C26C4D",
+      "canonical_occurrence_id": "CAN-D695A3AE427F838F9AE4",
+      "authority_domain_id": "AD-SOURCE-REPOSITORY-CONFIGURATION-INGRESS",
+      "source_scope_id": "SOURCE_SCOPE_REPOSITORY_CONFIGURATION_INGRESS",
+      "source_system_root": ".env and .env.example names only",
+      "source_location": ".env.example",
+      "object_marker": "c4539483163e6198181c6944a335889f334fe01e",
+      "reachability": [
+        "REACHABLE_HISTORY"
+      ],
+      "provider_identity_status": "UNKNOWN",
+      "provider_credential_group_id": null,
+      "closure_path": "PATH_B_EXTERNAL_AUTHORITY_OR_PROVIDER"
+    },
+    {
+      "logical_item_id": "LI-F68387D1F50284C74AF0",
+      "canonical_occurrence_id": "CAN-9AD30020DF9869FD34E6",
+      "authority_domain_id": "AD-SOURCE-REPOSITORY-CONFIGURATION-INGRESS",
+      "source_scope_id": "SOURCE_SCOPE_REPOSITORY_CONFIGURATION_INGRESS",
+      "source_system_root": ".env and .env.example names only",
+      "source_location": ".env",
+      "object_marker": "CURRENT_TREE",
+      "reachability": [
+        "CURRENT_TREE"
+      ],
+      "provider_identity_status": "UNKNOWN",
+      "provider_credential_group_id": null,
+      "closure_path": "PATH_B_EXTERNAL_AUTHORITY_OR_PROVIDER"
+    },
+    {
+      "logical_item_id": "LI-FAFC1EAFE4CB917FBB44",
+      "canonical_occurrence_id": "CAN-F6D321283E002B859786",
+      "authority_domain_id": "AD-SOURCE-REPOSITORY-CONFIGURATION-INGRESS",
+      "source_scope_id": "SOURCE_SCOPE_REPOSITORY_CONFIGURATION_INGRESS",
+      "source_system_root": ".env and .env.example names only",
+      "source_location": ".env.example",
+      "object_marker": "c4539483163e6198181c6944a335889f334fe01e",
+      "reachability": [
+        "REACHABLE_HISTORY"
+      ],
+      "provider_identity_status": "UNKNOWN",
+      "provider_credential_group_id": null,
+      "closure_path": "PATH_B_EXTERNAL_AUTHORITY_OR_PROVIDER"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": "08A1C-R3-r2-dependency-v1",
+  "status": "NON_ACTIONABLE_PENDING_R2_MEMBERSHIP_REBUILD",
+  "superseded_source_inventory_run_id": "20260811T214249Z",
+  "required_predecessor": "08A1B-R2 PASS run 20260812T190840Z; R2-aware membership rebuild remains required",
+  "prohibited_actions": [
+    "authority_request_execution",
+    "provider_evidence_request_execution",
+    "provider_or_owner_inference",
+    "logical_item_mapping_reuse"
+  ],
+  "required_after_r2": "Rebuild source-scope domain membership from R2 equivalence classes before accepting any R3 action or intake record."
+}
