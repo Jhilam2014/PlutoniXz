@@ -3,6 +3,8 @@
 /** Refuse GitHub-incompatible blobs before a push leaves this repository. */
 import { spawnSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 export const GITHUB_MAX_BLOB_BYTES = 100 * 1024 * 1024;
 const ZERO_SHA = /^0+$/;
@@ -83,6 +85,6 @@ function main() {
   process.stdout.write(`Git push-size guard passed for ${updates.length} ref update(s).\n`);
 }
 
-if (process.argv[1] === new URL(import.meta.url).pathname) {
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   try { main(); } catch (error) { process.stderr.write(`Git push-size guard failed: ${error.message}\n`); process.exitCode = 1; }
 }

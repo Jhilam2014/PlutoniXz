@@ -1,12 +1,12 @@
 {
   "schema_version": "08A1C-R4-semantic-triage-supersession-v1",
-  "reviewed_at": "2026-08-12T22:59:12Z",
+  "reviewed_at": "2026-08-12T23:50:45Z",
   "source_semantic_classification": {
-    "content_checksum_sha256": "c3692375d3c7b3c9e9f7cac70a8067c7e1f5e2addac2e59add09049966f0f2a4",
+    "content_checksum_sha256": "9a28a763e178e87d502e62113a9e3bffdfbe7579d59373a13ccdbba03cb71701",
     "source_r2_inventory": {
-      "run_id": "20260812T225912Z",
+      "run_id": "r3-semantic-repair-20260812T235045Z",
       "schema_version": "08A1B-R2-logical-credential-inventory-v1",
-      "content_checksum_sha256": "46d40f6750edb9cafa02e0855e15f49de54956bb5ea70b05abcaab563317aaac",
+      "content_checksum_sha256": "fd889bcb9497c02710204f39e6d607b23ee803e5dd76f3ba9cf3c0ac2456801b",
       "equality_method": "MEMORY_ONLY_EPHEMERAL_HMAC_AND_CONSTANT_TIME_CONFIRMATION"
     }
   },
@@ -1099,12 +1099,12 @@
     "ENVIRONMENT_SOURCE_CONTEXT_REQUIRES_CONTROLLED_ANALYSIS": 2,
     "ENVIRONMENT_VALUE_FAILED_APPROVED_STRICT_PARSER": 1,
     "ENVIRONMENT_VARIABLE_HAS_NO_APPROVED_AUTHENTICATION_CONSUMER": 1,
-    "EXACT_SOURCE_SCHEMA_PARSER_AND_CONSUMER_SEMANTICS_REQUIRED": 1057,
-    "NO_APPROVED_PRODUCER_SCHEMA_CONSUMER_CONTRACT": 1053,
+    "EXACT_SOURCE_SCHEMA_PARSER_AND_CONSUMER_SEMANTICS_REQUIRED": 13,
+    "NO_APPROVED_PRODUCER_SCHEMA_CONSUMER_CONTRACT": 9,
     "NON_FILE_OR_ARCHIVE_LOCATION_REQUIRES_SOURCE_LINEAGE": 8,
     "ORIGINAL_SOURCE_OR_HISTORY_CONTEXT_REQUIRES_BOUNDED_RETRIEVAL": 11,
     "SOURCE_IS_NOT_A_VALIDATED_STRUCTURED_RECORD": 1,
-    "SOURCE_SCHEMA_OR_DETERMINISTIC_PRODUCER_CONTRACT_REQUIRED": 1066
+    "SOURCE_SCHEMA_OR_DETERMINISTIC_PRODUCER_CONTRACT_REQUIRED": 22
   },
   "totals": {
     "historical_r4_requests": 1067,
@@ -1113,7 +1113,7 @@
     "current_pending_authority_records": 0,
     "current_pending_provider_records": 0,
     "positive_secret_candidates": 0,
-    "semantically_unresolved_classes": 1067
+    "semantically_unresolved_classes": 23
   },
   "policy": {
     "r4_absence_of_path_a_inference_superseded": true,

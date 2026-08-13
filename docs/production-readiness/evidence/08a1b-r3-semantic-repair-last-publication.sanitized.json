@@ -1,0 +1,74 @@
+{
+  "schema_version": "08A1B-R3-semantic-repair-publication-v1",
+  "run_id": "r3-semantic-repair-20260812T235045Z",
+  "reviewed_at": "2026-08-12T23:50:45Z",
+  "publication_status": "VALIDATED_STAGED_REPLACEMENT",
+  "source_replay": {
+    "mode": "FROZEN_STRUCTURALLY_REDACTED_REPORTS_PLUS_ATOMIC_MEMORY_ONLY_R2_R3",
+    "result": "COMPLETED_ATOMIC_MEMORY_ONLY",
+    "r2_bridge": {
+      "status": "ATOMIC_EXACT_R2_MEMBERSHIP",
+      "prior_totals": null,
+      "reproduced_totals": {
+        "scan_observations": 14984,
+        "canonical_occurrences": 14937,
+        "equivalence_classes": 1068
+      },
+      "canonical_ids_exact": true,
+      "equivalence_class_ids_exact": true,
+      "equivalence_memberships_exact": true
+    }
+  },
+  "exact_prior_r2_membership": {
+    "status": "REPRODUCED_EXACT_R2_MEMBERSHIP",
+    "prior_totals": {
+      "scan_observations": 14984,
+      "canonical_occurrences": 14937,
+      "equivalence_classes": 1068
+    },
+    "reproduced_totals": {
+      "scan_observations": 14984,
+      "canonical_occurrences": 14937,
+      "equivalence_classes": 1068
+    },
+    "canonical_ids_exact": true,
+    "equivalence_class_ids_exact": true,
+    "equivalence_memberships_exact": true
+  },
+  "totals": {
+    "equivalence_classes": 1068,
+    "deterministic_non_secret": 1045,
+    "positive_secret_candidate": 0,
+    "semantically_unresolved": 23,
+    "deterministic_non_secret_by_proof_family": {
+      "DETERMINISTIC_COMMITTED_SYNTHETIC_FIXTURE": 1,
+      "GENERATED_STABLE_HASH_IDENTIFIER": 1044
+    },
+    "positive_by_subtype": {},
+    "unresolved_by_missing_predicate": {
+      "AUTHENTICATION_OR_PRIVILEGED_CONSUMPTION_TRACE_REQUIRED": 10,
+      "ENVIRONMENT_CANDIDATE_VARIABLE_UNRESOLVED": 1,
+      "ENVIRONMENT_SOURCE_CONTEXT_REQUIRES_CONTROLLED_ANALYSIS": 2,
+      "ENVIRONMENT_VALUE_FAILED_APPROVED_STRICT_PARSER": 1,
+      "ENVIRONMENT_VARIABLE_HAS_NO_APPROVED_AUTHENTICATION_CONSUMER": 1,
+      "EXACT_SOURCE_SCHEMA_PARSER_AND_CONSUMER_SEMANTICS_REQUIRED": 13,
+      "NO_APPROVED_PRODUCER_SCHEMA_CONSUMER_CONTRACT": 9,
+      "NON_FILE_OR_ARCHIVE_LOCATION_REQUIRES_SOURCE_LINEAGE": 8,
+      "ORIGINAL_SOURCE_OR_HISTORY_CONTEXT_REQUIRES_BOUNDED_RETRIEVAL": 11,
+      "SOURCE_IS_NOT_A_VALIDATED_STRUCTURED_RECORD": 1,
+      "SOURCE_SCHEMA_OR_DETERMINISTIC_PRODUCER_CONTRACT_REQUIRED": 22
+    },
+    "active_08a1c_actions": 0
+  },
+  "downstream": {
+    "r4_semantic_status": "BLOCKED",
+    "active_provider_or_authority_actions": 0,
+    "full_08a1d_status": "NOT_RUN_SEMANTIC_GATE_BLOCKED"
+  },
+  "policy": {
+    "provider_calls_performed": false,
+    "authority_actions_performed": false,
+    "candidate_bytes_persisted": false,
+    "staged_before_publish": true
+  }
+}

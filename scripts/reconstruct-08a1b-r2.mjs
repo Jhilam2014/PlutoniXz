@@ -10,6 +10,7 @@ import { createHash, createHmac, randomBytes, timingSafeEqual } from 'node:crypt
 import { access, mkdir, mkdtemp, readFile, writeFile } from 'node:fs/promises';
 import { spawn } from 'node:child_process';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { readSanitizedReports } from './reconcile-secret-findings.mjs';
 
 export const R2_SCHEMA = '08A1B-R2-logical-credential-inventory-v1';
@@ -22,6 +23,9 @@ const SCOPES = ['worktree', 'reachable-git-history', 'runtime', 'memory', 'obser
 export const MEMORY_SCAN_TIMEOUT_MS = 15 * 60 * 1000;
 
 function fail(message) { throw new Error(message); }
+export function zeroBuffers(buffers) {
+  for (const buffer of buffers) if (Buffer.isBuffer(buffer)) buffer.fill(0);
+}
 function argument(name) { const index = process.argv.indexOf(name); return index < 0 ? undefined : process.argv[index + 1]; }
 function argumentsFor(name) { return process.argv.flatMap((value, index) => value === name && process.argv[index + 1] && !process.argv[index + 1].startsWith('--') ? [process.argv[index + 1]] : []); }
 function required(name) { const value = argument(name); if (!value || value.startsWith('--')) fail(`Missing ${name}`); return value; }
@@ -457,16 +461,20 @@ async function runDockerMemoryScan(root, emptyDirectory, scope, options = {}) {
     const child = spawn('docker', dockerArgsForScope(root, emptyDirectory, scope, { ...options, timeoutMs }), { stdio: ['ignore', 'pipe', 'pipe'] });
     const chunks = []; const errors = [];
     let timedOut = false;
+    const clearCapturedOutput = () => {
+      zeroBuffers(chunks); zeroBuffers(errors);
+      chunks.length = 0; errors.length = 0;
+    };
     // Do not rely solely on a scanner-internal timeout: enforce the same
     // bounded limit at the host process boundary so a stuck history/artifact
     // scan cannot silently outlive the approved replay window.
     const timer = setTimeout(() => { timedOut = true; child.kill('SIGKILL'); }, timeoutMs);
     child.stdout.on('data', (chunk) => chunks.push(Buffer.from(chunk)));
     child.stderr.on('data', (chunk) => errors.push(Buffer.from(chunk)));
-    child.once('error', () => { clearTimeout(timer); reject(new Error(`Memory-only scanner could not start for scope ${scope}.`)); });
+    child.once('error', () => { clearTimeout(timer); clearCapturedOutput(); reject(new Error(`Memory-only scanner could not start for scope ${scope}.`)); });
     child.once('close', (code) => {
       clearTimeout(timer);
-      const output = Buffer.concat(chunks); for (const error of errors) error.fill(0);
+      const output = Buffer.concat(chunks); clearCapturedOutput();
       try {
         if (timedOut) throw new Error(`Memory-only scanner exceeded its approved aggregate scope timeout for scope ${scope}.`);
         if (![0, 1].includes(code)) throw new Error(`Memory-only scanner failed for scope ${scope}.`);
@@ -474,7 +482,7 @@ async function runDockerMemoryScan(root, emptyDirectory, scope, options = {}) {
         const rows = text.trim() ? JSON.parse(text) : [];
         if (!Array.isArray(rows)) throw new Error(`Memory-only scanner returned malformed JSON for scope ${scope}.`);
         resolve(rows);
-      } catch (error) { output.fill(0); reject(error instanceof Error ? error : new Error(`Memory-only scanner failed for scope ${scope}.`)); }
+      } catch (error) { output.fill(0); clearCapturedOutput(); reject(error instanceof Error ? error : new Error(`Memory-only scanner failed for scope ${scope}.`)); }
     });
   });
 }
@@ -622,4 +630,4 @@ async function main() {
   process.stdout.write(`Reconstructed 08A1B-R2: ${inventory.totals.scan_observations} observations, ${inventory.totals.canonical_occurrences} canonical occurrences, and ${inventory.totals.candidate_equivalence_classes} logical candidate classes.\n`);
 }
 
-if (process.argv[1] === new URL(import.meta.url).pathname) main().catch((error) => { process.stderr.write(`08A1B-R2 reconstruction failed: ${error.message}\n`); process.exitCode = 1; });
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) main().catch((error) => { process.stderr.write(`08A1B-R2 reconstruction failed: ${error.message}\n`); process.exitCode = 1; });

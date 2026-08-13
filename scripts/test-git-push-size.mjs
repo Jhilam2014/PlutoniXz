@@ -1,6 +1,9 @@
 #!/usr/bin/env node
 
 import assert from 'node:assert/strict';
+import { spawnSync } from 'node:child_process';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { GITHUB_MAX_BLOB_BYTES, oversizedBlobs, parsePrePushUpdates, revisionsForPush } from './verify-git-push-size.mjs';
 
 const updates = parsePrePushUpdates('refs/heads/main aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa refs/heads/main bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\n');
@@ -10,4 +13,8 @@ assert.deepEqual(revisionsForPush(parsePrePushUpdates('refs/heads/new cccccccccc
 assert.equal(oversizedBlobs([{ type: 'blob', size: GITHUB_MAX_BLOB_BYTES - 1 }, { type: 'tree', size: GITHUB_MAX_BLOB_BYTES }]).length, 0);
 assert.equal(oversizedBlobs([{ type: 'blob', size: GITHUB_MAX_BLOB_BYTES }]).length, 1, 'GitHub-limit-sized blobs must be rejected.');
 assert.throws(() => parsePrePushUpdates('bad update'), /Malformed/);
+const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const directInvocation = spawnSync(process.execPath, ['scripts/verify-git-push-size.mjs', '--tree', 'HEAD'], { cwd: repositoryRoot, encoding: 'utf8' });
+assert.equal(directInvocation.status, 0, directInvocation.stderr);
+assert.match(directInvocation.stdout, /contains no blob at or above GitHub's 100 MiB limit/);
 console.log('Git push-size guard parsing, ref-range, and 100 MiB boundary tests passed.');

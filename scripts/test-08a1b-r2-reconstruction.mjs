@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import assert from 'node:assert/strict';
-import { assertRawReplayCompleteness, buildR2Inventory, deriveReplayTargets, MEMORY_SCAN_TIMEOUT_MS, partitionCandidateBuffers, remainingScopeTimeout } from './reconstruct-08a1b-r2.mjs';
+import { assertRawReplayCompleteness, buildR2Inventory, deriveReplayTargets, MEMORY_SCAN_TIMEOUT_MS, partitionCandidateBuffers, remainingScopeTimeout, zeroBuffers } from './reconstruct-08a1b-r2.mjs';
 import { validateR2Inventory } from './verify-08a1b-r2-reconstruction.mjs';
 
 const REVIEWED_AT = '2026-08-13T00:00:00Z';
@@ -93,6 +93,10 @@ assert.throws(() => remainingScopeTimeout(100, 100 + MEMORY_SCAN_TIMEOUT_MS), /a
 const replayRaw = rawRow(replaySafe, 'targeted-value');
 assert.doesNotThrow(() => assertRawReplayCompleteness(replaySet, [replayRaw]));
 assert.throws(() => assertRawReplayCompleteness(replaySet, []), /omitted/);
+const unexpectedRaw = rawRow({ ...replaySafe, Fingerprint: 'unexpected-fingerprint' }, 'synthetic-unexpected-candidate');
+assert.throws(() => assertRawReplayCompleteness(replaySet, [unexpectedRaw]), /unexpected/);
+assert.equal(unexpectedRaw.Secret, '', 'raw scanner candidate text is cleared on replay-completeness failure.');
+assert.equal(unexpectedRaw.Match, '', 'raw scanner match text is cleared on replay-completeness failure.');
 
 let capturedCandidate = null;
 const zeroingRow = { ...sanitizedRow('/worktree/zeroing.txt', 'zeroing', { scope: 'worktree' }), _candidate: 'zeroing-candidate' };
@@ -100,6 +104,19 @@ const { _candidate: ignoredCandidate, ...zeroingSafe } = zeroingRow;
 buildR2Inventory({ sourceSets: sourceSets([zeroingSafe]), rawRowsByScope: rawRows([zeroingRow]), runId: 'zeroing-test', provenance: { reviewed_at: REVIEWED_AT, input_snapshot: { frozen_before_output_generation: true } }, onMemoryReconstructed: ({ candidate_by_canonical_id }) => { capturedCandidate = candidate_by_canonical_id.values().next().value; } });
 assert.ok(Buffer.isBuffer(capturedCandidate));
 assert.ok(capturedCandidate.every((byte) => byte === 0), 'candidate buffers are zeroed after the in-memory reconstruction hook returns');
+
+let failedCandidate = null;
+assert.throws(() => buildR2Inventory({
+  sourceSets: sourceSets([zeroingSafe]), rawRowsByScope: rawRows([zeroingRow]), runId: 'zeroing-failure-test', provenance: { reviewed_at: REVIEWED_AT, input_snapshot: { frozen_before_output_generation: true } },
+  onMemoryReconstructed: ({ candidate_by_canonical_id }) => { failedCandidate = candidate_by_canonical_id.values().next().value; throw new Error('synthetic callback failure'); },
+}), /synthetic callback failure/);
+assert.ok(Buffer.isBuffer(failedCandidate));
+assert.ok(failedCandidate.every((byte) => byte === 0), 'candidate buffers are zeroed when semantic analysis fails.');
+for (const lifecycle of ['success', 'failure', 'timeout']) {
+  const rawOutputBuffers = [Buffer.from(`synthetic-${lifecycle}-candidate`)];
+  zeroBuffers(rawOutputBuffers);
+  assert.ok(rawOutputBuffers[0].every((byte) => byte === 0), `captured raw-output buffers are zeroed after ${lifecycle}.`);
+}
 
 const valid = validateR2Inventory(crossScope, { requirePass: true });
 assert.equal(valid.status, 'PASS');

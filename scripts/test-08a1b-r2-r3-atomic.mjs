@@ -32,4 +32,7 @@ assert.equal(noCandidateBearingData({ inventory, classification }), true);
 assert.equal(JSON.stringify({ inventory, classification }).includes(candidate), false, 'atomic output never serializes raw candidates.');
 validateR2Inventory(inventory, { requirePass: true });
 validateSemanticTriage({ inventory, classification });
+const reorderedMembership = structuredClone(classification);
+reorderedMembership.classes[0].canonical_occurrence_ids = ['CAN-CORRUPTED'];
+assert.throws(() => validateSemanticTriage({ inventory, classification: reorderedMembership }), /membership/);
 console.log('Atomic R2-to-R3 lineage, exact membership, non-disclosure, and validator tests passed.');

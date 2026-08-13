@@ -1,7 +1,7 @@
 {
   "metadata": {
     "project_name": "plutonix",
-    "generated_at": "2026-08-10T15:37:19.080Z",
+    "generated_at": "2026-08-13T00:20:57.274Z",
     "workflow_id": "bootstrap-orchestrator-001",
     "source": "orchestrator",
     "graph_version": "1.3.0",
@@ -137,6 +137,79 @@
       "metadata": {
         "projectName": "Core Platform",
         "description": "Project-first overview, compact command surface, resilient loading, accessible navigation, responsive inspector, and living improvement plan."
+      }
+    },
+    {
+      "id": "workflow:08a1c-r4-reconstructed-disposition",
+      "type": "workflow",
+      "label": "08A1C R4 Audit Queue",
+      "group": "workflow",
+      "risk_level": "high",
+      "status": "non_actionable_pending_semantic_triage",
+      "metadata": {
+        "historical_requests": 1067,
+        "active_external_actions": 0
+      }
+    },
+    {
+      "id": "functionality:08a1c-r4-disposition",
+      "type": "functionality",
+      "label": "R2 Logical Credential Disposition",
+      "group": "security-evidence",
+      "risk_level": "high",
+      "status": "blocked_external_evidence",
+      "metadata": {
+        "path_a_terminal": 1,
+        "path_b_pending": 1067
+      }
+    },
+    {
+      "id": "validation:08a1d-r4-mapping",
+      "type": "validation",
+      "label": "08A1D Rerun Gate",
+      "group": "validation",
+      "risk_level": "high",
+      "status": "not_run_semantic_gate_blocked",
+      "metadata": {
+        "retained_records": 23,
+        "unmapped_observations": 31
+      }
+    },
+    {
+      "id": "workflow:08a1b-r3-semantic-triage",
+      "type": "workflow",
+      "label": "08A1B R3 Semantic Triage",
+      "group": "workflow",
+      "risk_level": "high",
+      "status": "blocked_semantic_replay",
+      "metadata": {
+        "source": "08A1B-R2",
+        "mode": "repository_local_only",
+        "semantic_gate": "BLOCKED"
+      }
+    },
+    {
+      "id": "functionality:08a1b-r3-semantic-classification",
+      "type": "functionality",
+      "label": "R2 Equality-class Semantic Classification",
+      "group": "security-evidence",
+      "risk_level": "high",
+      "status": "semantically_unresolved",
+      "metadata": {
+        "deterministic_non_secret": 1,
+        "positive_secret_candidate": 0,
+        "semantically_unresolved": 1067
+      }
+    },
+    {
+      "id": "validation:08a1b-r3-frozen-r2-replay",
+      "type": "validation",
+      "label": "Frozen R2 Raw-correlation Replay",
+      "group": "validation",
+      "risk_level": "high",
+      "status": "bounded_replay_incomplete",
+      "metadata": {
+        "required": "FROZEN_R2_RAW_CORRELATION_REPRODUCTION_REQUIRED"
       }
     },
     {
@@ -2136,7 +2209,7 @@
       "label": "Autonomous Tool Builder Agent",
       "group": "self-improvement",
       "risk_level": "medium",
-      "status": "building_candidates",
+      "status": "gated",
       "agent_id": "plutonix-autonomous-tool-builder-agent",
       "cluster_id": "self-improvement",
       "metadata": {
@@ -2719,7 +2792,7 @@
       }
     },
     {
-      "id": "self-improvement:investigation:si_investigation_3da554e4-cc2f-412a-89ec-25b842e695a3",
+      "id": "self-improvement:investigation:si_investigation_d517b794-c1d4-4a6a-91de-2e833da18598",
       "type": "investigation",
       "label": "plutonix-runtime",
       "group": "self-improvement-investigation",
@@ -2727,33 +2800,16 @@
       "status": "checked",
       "metadata": {
         "dynamicSelfImprovementGraph": true,
-        "investigationId": "si_investigation_3da554e4-cc2f-412a-89ec-25b842e695a3",
-        "eventType": "vector-sync-deferred",
-        "component": "plutonix-runtime",
-        "qualityScore": 0.21,
-        "relatedCount": 3,
-        "randomAuditSelected": false
-      }
-    },
-    {
-      "id": "self-improvement:investigation:si_investigation_ff536fc0-5918-4ea7-abf3-d5167c68f502",
-      "type": "investigation",
-      "label": "plutonix-runtime",
-      "group": "self-improvement-investigation",
-      "risk_level": "low",
-      "status": "checked",
-      "metadata": {
-        "dynamicSelfImprovementGraph": true,
-        "investigationId": "si_investigation_ff536fc0-5918-4ea7-abf3-d5167c68f502",
+        "investigationId": "si_investigation_d517b794-c1d4-4a6a-91de-2e833da18598",
         "eventType": "orchestrator-health-audit",
         "component": "plutonix-runtime",
         "qualityScore": 0.13,
         "relatedCount": 2,
-        "randomAuditSelected": false
+        "randomAuditSelected": true
       }
     },
     {
-      "id": "self-improvement:investigation:si_investigation_874afa09-4762-439c-847c-595739ab0f62",
+      "id": "self-improvement:investigation:si_investigation_5bbae4ef-8ea6-4ca7-a720-b4697201f809",
       "type": "investigation",
       "label": "plutonix-runtime",
       "group": "self-improvement-investigation",
@@ -2761,7 +2817,7 @@
       "status": "checked",
       "metadata": {
         "dynamicSelfImprovementGraph": true,
-        "investigationId": "si_investigation_874afa09-4762-439c-847c-595739ab0f62",
+        "investigationId": "si_investigation_5bbae4ef-8ea6-4ca7-a720-b4697201f809",
         "eventType": "vector-sync-deferred",
         "component": "plutonix-runtime",
         "qualityScore": 0.13,
@@ -2770,7 +2826,7 @@
       }
     },
     {
-      "id": "self-improvement:investigation:si_investigation_1d2cdd29-88d6-4b49-b319-1c4c0ace2772",
+      "id": "self-improvement:investigation:si_investigation_28cbbab4-0e57-48f6-9c1e-d27871dfafa0",
       "type": "investigation",
       "label": "plutonix-runtime",
       "group": "self-improvement-investigation",
@@ -2778,7 +2834,7 @@
       "status": "checked",
       "metadata": {
         "dynamicSelfImprovementGraph": true,
-        "investigationId": "si_investigation_1d2cdd29-88d6-4b49-b319-1c4c0ace2772",
+        "investigationId": "si_investigation_28cbbab4-0e57-48f6-9c1e-d27871dfafa0",
         "eventType": "orchestrator-health-audit",
         "component": "plutonix-runtime",
         "qualityScore": 0.21,
@@ -2787,7 +2843,7 @@
       }
     },
     {
-      "id": "self-improvement:investigation:si_investigation_3afea619-f9a8-4981-ab69-012a4f04cf71",
+      "id": "self-improvement:investigation:si_investigation_ffdf80f2-101a-4f80-887e-8196d0d9581f",
       "type": "investigation",
       "label": "plutonix-runtime",
       "group": "self-improvement-investigation",
@@ -2795,7 +2851,7 @@
       "status": "checked",
       "metadata": {
         "dynamicSelfImprovementGraph": true,
-        "investigationId": "si_investigation_3afea619-f9a8-4981-ab69-012a4f04cf71",
+        "investigationId": "si_investigation_ffdf80f2-101a-4f80-887e-8196d0d9581f",
         "eventType": "vector-sync-deferred",
         "component": "plutonix-runtime",
         "qualityScore": 0.13,
@@ -2804,7 +2860,7 @@
       }
     },
     {
-      "id": "self-improvement:investigation:si_investigation_9bd11870-6309-41c1-81b7-73e75d30613a",
+      "id": "self-improvement:investigation:si_investigation_c5dbf03e-3c46-4a5c-8a50-4bcb6bd7a5e2",
       "type": "investigation",
       "label": "plutonix-runtime",
       "group": "self-improvement-investigation",
@@ -2812,16 +2868,33 @@
       "status": "checked",
       "metadata": {
         "dynamicSelfImprovementGraph": true,
-        "investigationId": "si_investigation_9bd11870-6309-41c1-81b7-73e75d30613a",
+        "investigationId": "si_investigation_c5dbf03e-3c46-4a5c-8a50-4bcb6bd7a5e2",
         "eventType": "orchestrator-health-audit",
         "component": "plutonix-runtime",
-        "qualityScore": 0.13,
-        "relatedCount": 2,
+        "qualityScore": 0.21,
+        "relatedCount": 3,
         "randomAuditSelected": false
       }
     },
     {
-      "id": "self-improvement:research:si_research_b0700015-0643-477c-8ca1-50d14b7e51ce",
+      "id": "self-improvement:investigation:si_investigation_178a57c4-d6af-40ba-830d-653f82204f82",
+      "type": "investigation",
+      "label": "plutonix-runtime",
+      "group": "self-improvement-investigation",
+      "risk_level": "low",
+      "status": "checked",
+      "metadata": {
+        "dynamicSelfImprovementGraph": true,
+        "investigationId": "si_investigation_178a57c4-d6af-40ba-830d-653f82204f82",
+        "eventType": "vector-sync-deferred",
+        "component": "plutonix-runtime",
+        "qualityScore": 0.21,
+        "relatedCount": 3,
+        "randomAuditSelected": false
+      }
+    },
+    {
+      "id": "self-improvement:research:si_research_edd6a15a-d907-45ad-8cd8-1f96a1a4e421",
       "type": "research-budget",
       "label": "skipped_disabled",
       "group": "self-improvement-research",
@@ -2829,9 +2902,77 @@
       "status": "skipped_disabled",
       "metadata": {
         "dynamicSelfImprovementGraph": true,
-        "researchLogId": "si_research_b0700015-0643-477c-8ca1-50d14b7e51ce",
+        "researchLogId": "si_research_edd6a15a-d907-45ad-8cd8-1f96a1a4e421",
         "reason": "investigator-agent-random-audit",
         "topic": "Vector memory sync deferred until at least 5 files are pending.",
+        "budget": {
+          "dailyMaxCalls": 2,
+          "dailyMaxTokens": 8000,
+          "dailyMaxCostUsd": 0.5,
+          "usedToday": {
+            "calls": 2,
+            "tokens": 8000,
+            "cost": 0.5
+          },
+          "estimatedUsage": {
+            "modelCalls": 0,
+            "tokens": 0,
+            "estimatedUsd": 0
+          },
+          "remainingAfterEstimate": {
+            "calls": 0,
+            "tokens": 0,
+            "cost": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "self-improvement:research:si_research_928ef69a-0f39-4610-b698-bc977462d81d",
+      "type": "research-budget",
+      "label": "skipped_disabled",
+      "group": "self-improvement-research",
+      "risk_level": "low",
+      "status": "skipped_disabled",
+      "metadata": {
+        "dynamicSelfImprovementGraph": true,
+        "researchLogId": "si_research_928ef69a-0f39-4610-b698-bc977462d81d",
+        "reason": "investigator-agent-random-audit",
+        "topic": "Vector memory sync deferred until at least 5 files are pending.",
+        "budget": {
+          "dailyMaxCalls": 2,
+          "dailyMaxTokens": 8000,
+          "dailyMaxCostUsd": 0.5,
+          "usedToday": {
+            "calls": 0,
+            "tokens": 0,
+            "cost": 0
+          },
+          "estimatedUsage": {
+            "modelCalls": 1,
+            "tokens": 3000,
+            "estimatedUsd": 0.12
+          },
+          "remainingAfterEstimate": {
+            "calls": 1,
+            "tokens": 5000,
+            "cost": 0.38
+          }
+        }
+      }
+    },
+    {
+      "id": "self-improvement:research:si_research_f71ee31f-6063-4abe-8132-e26a3a86bd63",
+      "type": "research-budget",
+      "label": "skipped_disabled",
+      "group": "self-improvement-research",
+      "risk_level": "low",
+      "status": "skipped_disabled",
+      "metadata": {
+        "dynamicSelfImprovementGraph": true,
+        "researchLogId": "si_research_f71ee31f-6063-4abe-8132-e26a3a86bd63",
+        "reason": "investigator-agent-random-audit",
+        "topic": "Orchestrator health audit critical: 7 issues found",
         "budget": {
           "dailyMaxCalls": 2,
           "dailyMaxTokens": 8000,
@@ -2855,7 +2996,7 @@
       }
     },
     {
-      "id": "self-improvement:research:si_research_866af990-118b-471a-a7bb-c49ddf1ca33f",
+      "id": "self-improvement:research:si_research_9de5ca74-0a1e-4d2b-8be8-3d62677d6112",
       "type": "research-budget",
       "label": "skipped_disabled",
       "group": "self-improvement-research",
@@ -2863,7 +3004,7 @@
       "status": "skipped_disabled",
       "metadata": {
         "dynamicSelfImprovementGraph": true,
-        "researchLogId": "si_research_866af990-118b-471a-a7bb-c49ddf1ca33f",
+        "researchLogId": "si_research_9de5ca74-0a1e-4d2b-8be8-3d62677d6112",
         "reason": "investigator-agent-random-audit",
         "topic": "Orchestrator health audit critical: 7 issues found",
         "budget": {
@@ -2889,75 +3030,7 @@
       }
     },
     {
-      "id": "self-improvement:research:si_research_2f06a329-d421-4c7c-8f7a-282c5f6fdfcd",
-      "type": "research-budget",
-      "label": "skipped_disabled",
-      "group": "self-improvement-research",
-      "risk_level": "low",
-      "status": "skipped_disabled",
-      "metadata": {
-        "dynamicSelfImprovementGraph": true,
-        "researchLogId": "si_research_2f06a329-d421-4c7c-8f7a-282c5f6fdfcd",
-        "reason": "investigator-agent-random-audit",
-        "topic": "Orchestrator health audit critical: 7 issues found",
-        "budget": {
-          "dailyMaxCalls": 2,
-          "dailyMaxTokens": 8000,
-          "dailyMaxCostUsd": 0.5,
-          "usedToday": {
-            "calls": 2,
-            "tokens": 8000,
-            "cost": 0.36
-          },
-          "estimatedUsage": {
-            "modelCalls": 0,
-            "tokens": 0,
-            "estimatedUsd": 0.12
-          },
-          "remainingAfterEstimate": {
-            "calls": 0,
-            "tokens": 0,
-            "cost": 0.020000000000000018
-          }
-        }
-      }
-    },
-    {
-      "id": "self-improvement:research:si_research_5f4f5ef5-8b45-4cd1-adba-daf17f8e64fa",
-      "type": "research-budget",
-      "label": "skipped_disabled",
-      "group": "self-improvement-research",
-      "risk_level": "low",
-      "status": "skipped_disabled",
-      "metadata": {
-        "dynamicSelfImprovementGraph": true,
-        "researchLogId": "si_research_5f4f5ef5-8b45-4cd1-adba-daf17f8e64fa",
-        "reason": "investigator-agent-random-audit",
-        "topic": "Vector memory sync deferred until at least 5 files are pending.",
-        "budget": {
-          "dailyMaxCalls": 2,
-          "dailyMaxTokens": 8000,
-          "dailyMaxCostUsd": 0.5,
-          "usedToday": {
-            "calls": 2,
-            "tokens": 8000,
-            "cost": 0.48
-          },
-          "estimatedUsage": {
-            "modelCalls": 0,
-            "tokens": 0,
-            "estimatedUsd": 0.020000000000000018
-          },
-          "remainingAfterEstimate": {
-            "calls": 0,
-            "tokens": 0,
-            "cost": 0
-          }
-        }
-      }
-    },
-    {
-      "id": "self-improvement:tool-plan:si_tool_plan_2526fa62-c851-44a5-b2b7-4c1e06ea86d8",
+      "id": "self-improvement:tool-plan:si_tool_plan_4ce906af-de31-42a1-b5f3-8fcf10d7a80c",
       "type": "tool-plan",
       "label": "PlutoniX Sluggishness Profiler",
       "group": "self-improvement-tooling",
@@ -2965,7 +3038,7 @@
       "status": "duplicate_suppressed",
       "metadata": {
         "dynamicSelfImprovementGraph": true,
-        "toolPlanId": "si_tool_plan_2526fa62-c851-44a5-b2b7-4c1e06ea86d8",
+        "toolPlanId": "si_tool_plan_4ce906af-de31-42a1-b5f3-8fcf10d7a80c",
         "solutionKind": "platform_optimization",
         "component": "plutonix-runtime",
         "monetaryApprovalRequired": false,
@@ -2980,7 +3053,7 @@
       }
     },
     {
-      "id": "self-improvement:tool-plan:si_tool_plan_1724d835-4eba-4f86-a1b9-b988a44e66ec",
+      "id": "self-improvement:tool-plan:si_tool_plan_41d62d34-c611-4e21-aa66-a91fe1e59254",
       "type": "tool-plan",
       "label": "PlutoniX Sluggishness Profiler",
       "group": "self-improvement-tooling",
@@ -2988,7 +3061,7 @@
       "status": "duplicate_suppressed",
       "metadata": {
         "dynamicSelfImprovementGraph": true,
-        "toolPlanId": "si_tool_plan_1724d835-4eba-4f86-a1b9-b988a44e66ec",
+        "toolPlanId": "si_tool_plan_41d62d34-c611-4e21-aa66-a91fe1e59254",
         "solutionKind": "platform_optimization",
         "component": "plutonix-runtime",
         "monetaryApprovalRequired": false,
@@ -3003,7 +3076,7 @@
       }
     },
     {
-      "id": "self-improvement:tool-plan:si_tool_plan_daa2e881-1f0a-4af3-8c62-a2667bc3534f",
+      "id": "self-improvement:tool-plan:si_tool_plan_bd6caeea-76c7-4652-91d7-7cfc565dfaa1",
       "type": "tool-plan",
       "label": "PlutoniX Sluggishness Profiler",
       "group": "self-improvement-tooling",
@@ -3011,7 +3084,7 @@
       "status": "duplicate_suppressed",
       "metadata": {
         "dynamicSelfImprovementGraph": true,
-        "toolPlanId": "si_tool_plan_daa2e881-1f0a-4af3-8c62-a2667bc3534f",
+        "toolPlanId": "si_tool_plan_bd6caeea-76c7-4652-91d7-7cfc565dfaa1",
         "solutionKind": "platform_optimization",
         "component": "plutonix-runtime",
         "monetaryApprovalRequired": false,
@@ -3026,7 +3099,7 @@
       }
     },
     {
-      "id": "self-improvement:tool-plan:si_tool_plan_209360f8-ff6c-4469-a076-0564dada0da1",
+      "id": "self-improvement:tool-plan:si_tool_plan_1acfd57f-670f-4d86-955c-43c79f98f0f2",
       "type": "tool-plan",
       "label": "PlutoniX Sluggishness Profiler",
       "group": "self-improvement-tooling",
@@ -3034,7 +3107,7 @@
       "status": "duplicate_suppressed",
       "metadata": {
         "dynamicSelfImprovementGraph": true,
-        "toolPlanId": "si_tool_plan_209360f8-ff6c-4469-a076-0564dada0da1",
+        "toolPlanId": "si_tool_plan_1acfd57f-670f-4d86-955c-43c79f98f0f2",
         "solutionKind": "platform_optimization",
         "component": "plutonix-runtime",
         "monetaryApprovalRequired": false,
@@ -3049,7 +3122,7 @@
       }
     },
     {
-      "id": "self-improvement:tool-plan:si_tool_plan_868292c9-bc5e-469b-abbe-b9a73dc3961a",
+      "id": "self-improvement:tool-plan:si_tool_plan_f27118a2-6f95-486b-9f40-f6ab2b83e769",
       "type": "tool-plan",
       "label": "PlutoniX Sluggishness Profiler",
       "group": "self-improvement-tooling",
@@ -3057,7 +3130,7 @@
       "status": "duplicate_suppressed",
       "metadata": {
         "dynamicSelfImprovementGraph": true,
-        "toolPlanId": "si_tool_plan_868292c9-bc5e-469b-abbe-b9a73dc3961a",
+        "toolPlanId": "si_tool_plan_f27118a2-6f95-486b-9f40-f6ab2b83e769",
         "solutionKind": "platform_optimization",
         "component": "plutonix-runtime",
         "monetaryApprovalRequired": false,
@@ -3182,7 +3255,7 @@
       }
     },
     {
-      "id": "self-improvement:pattern:si_pattern_66bc7377-532c-4926-a7cd-4b155818b137",
+      "id": "self-improvement:pattern:si_pattern_50178b38-df19-48ec-9280-f5b99f45da05",
       "type": "pattern",
       "label": "token_resource_waste",
       "group": "self-improvement-pattern",
@@ -3190,13 +3263,13 @@
       "status": "skipped",
       "metadata": {
         "dynamicSelfImprovementGraph": true,
-        "patternId": "si_pattern_66bc7377-532c-4926-a7cd-4b155818b137",
+        "patternId": "si_pattern_50178b38-df19-48ec-9280-f5b99f45da05",
         "signalCount": 1,
         "confidence": 0.27
       }
     },
     {
-      "id": "self-improvement:pattern:si_pattern_cbd5040a-674f-41b9-a8eb-6209ae37424e",
+      "id": "self-improvement:pattern:si_pattern_ecdb6c21-3e5d-4a5c-b4f9-f8f97635a6b0",
       "type": "pattern",
       "label": "token_resource_waste",
       "group": "self-improvement-pattern",
@@ -3204,13 +3277,13 @@
       "status": "skipped",
       "metadata": {
         "dynamicSelfImprovementGraph": true,
-        "patternId": "si_pattern_cbd5040a-674f-41b9-a8eb-6209ae37424e",
+        "patternId": "si_pattern_ecdb6c21-3e5d-4a5c-b4f9-f8f97635a6b0",
         "signalCount": 1,
         "confidence": 0.27
       }
     },
     {
-      "id": "self-improvement:pattern:si_pattern_e9d57497-3253-4b57-83b8-b8246d525489",
+      "id": "self-improvement:pattern:si_pattern_ca832790-ee12-4b8d-842b-98bb6e3994be",
       "type": "pattern",
       "label": "token_resource_waste",
       "group": "self-improvement-pattern",
@@ -3218,13 +3291,13 @@
       "status": "skipped",
       "metadata": {
         "dynamicSelfImprovementGraph": true,
-        "patternId": "si_pattern_e9d57497-3253-4b57-83b8-b8246d525489",
+        "patternId": "si_pattern_ca832790-ee12-4b8d-842b-98bb6e3994be",
         "signalCount": 1,
         "confidence": 0.27
       }
     },
     {
-      "id": "self-improvement:pattern:si_pattern_0de58924-5443-4f59-bf37-7400e223d669",
+      "id": "self-improvement:pattern:si_pattern_3eac240d-bc18-4ab4-8756-aa1de32efc13",
       "type": "pattern",
       "label": "token_resource_waste",
       "group": "self-improvement-pattern",
@@ -3232,13 +3305,13 @@
       "status": "skipped",
       "metadata": {
         "dynamicSelfImprovementGraph": true,
-        "patternId": "si_pattern_0de58924-5443-4f59-bf37-7400e223d669",
+        "patternId": "si_pattern_3eac240d-bc18-4ab4-8756-aa1de32efc13",
         "signalCount": 1,
         "confidence": 0.27
       }
     },
     {
-      "id": "self-improvement:pattern:si_pattern_4e46b4d5-340c-45fa-a206-08289a7460b6",
+      "id": "self-improvement:pattern:si_pattern_15bf38b5-fcad-4e94-b7c3-758d4eb95a77",
       "type": "pattern",
       "label": "token_resource_waste",
       "group": "self-improvement-pattern",
@@ -3246,13 +3319,13 @@
       "status": "skipped",
       "metadata": {
         "dynamicSelfImprovementGraph": true,
-        "patternId": "si_pattern_4e46b4d5-340c-45fa-a206-08289a7460b6",
+        "patternId": "si_pattern_15bf38b5-fcad-4e94-b7c3-758d4eb95a77",
         "signalCount": 1,
         "confidence": 0.27
       }
     },
     {
-      "id": "self-improvement:pattern:si_pattern_0143f231-066a-494e-8a25-214aa3b3622d",
+      "id": "self-improvement:pattern:si_pattern_b9745224-ee37-4122-a8c9-eaef46895abf",
       "type": "pattern",
       "label": "tool_or_optimization_plan",
       "group": "self-improvement-pattern",
@@ -3260,13 +3333,13 @@
       "status": "skipped",
       "metadata": {
         "dynamicSelfImprovementGraph": true,
-        "patternId": "si_pattern_0143f231-066a-494e-8a25-214aa3b3622d",
+        "patternId": "si_pattern_b9745224-ee37-4122-a8c9-eaef46895abf",
         "signalCount": 1,
         "confidence": 0.19
       }
     },
     {
-      "id": "self-improvement:proposal:si_event_ffbe1d3d-e578-447d-9f2d-24e8a98a406b",
+      "id": "self-improvement:proposal:si_event_e301fd4d-0984-4ea0-8197-7c8ba0b914b0",
       "type": "proposal",
       "label": "Improve PlutoniX workflow reliability from repeated failure evidence",
       "group": "self-improvement-proposal",
@@ -3274,7 +3347,7 @@
       "status": "rejected",
       "metadata": {
         "dynamicSelfImprovementGraph": true,
-        "proposalId": "si_event_ffbe1d3d-e578-447d-9f2d-24e8a98a406b",
+        "proposalId": "si_event_e301fd4d-0984-4ea0-8197-7c8ba0b914b0",
         "category": "reliability",
         "expectedBenefit": "Resolve the observed issue while preserving inventoried features and API contracts.",
         "affectedFeatures": [
@@ -3285,7 +3358,7 @@
       }
     },
     {
-      "id": "self-improvement:proposal:si_event_faa083ff-3032-4d53-b80c-9f324f4ada95",
+      "id": "self-improvement:proposal:si_event_41b07f9f-df7d-4e39-a538-569d7bb6ec8f",
       "type": "proposal",
       "label": "Improve PlutoniX workflow reliability from repeated failure evidence",
       "group": "self-improvement-proposal",
@@ -3293,7 +3366,7 @@
       "status": "rejected",
       "metadata": {
         "dynamicSelfImprovementGraph": true,
-        "proposalId": "si_event_faa083ff-3032-4d53-b80c-9f324f4ada95",
+        "proposalId": "si_event_41b07f9f-df7d-4e39-a538-569d7bb6ec8f",
         "category": "reliability",
         "expectedBenefit": "Resolve the observed issue while preserving inventoried features and API contracts.",
         "affectedFeatures": [
@@ -3304,7 +3377,7 @@
       }
     },
     {
-      "id": "self-improvement:proposal:si_event_d4918a3b-4fe4-4e2f-99f2-d9f565314bb1",
+      "id": "self-improvement:proposal:si_event_8799ed62-5538-40b9-83a8-a95277269c8a",
       "type": "proposal",
       "label": "Improve PlutoniX workflow reliability from repeated failure evidence",
       "group": "self-improvement-proposal",
@@ -3312,7 +3385,7 @@
       "status": "rejected",
       "metadata": {
         "dynamicSelfImprovementGraph": true,
-        "proposalId": "si_event_d4918a3b-4fe4-4e2f-99f2-d9f565314bb1",
+        "proposalId": "si_event_8799ed62-5538-40b9-83a8-a95277269c8a",
         "category": "reliability",
         "expectedBenefit": "Resolve the observed issue while preserving inventoried features and API contracts.",
         "affectedFeatures": [
@@ -3323,7 +3396,7 @@
       }
     },
     {
-      "id": "self-improvement:proposal:si_event_9337dfa0-4eb4-4dcb-ae54-d7f2a0a34137",
+      "id": "self-improvement:proposal:si_event_da426e5c-2f82-4004-8dbc-54f9d2f830bf",
       "type": "proposal",
       "label": "Improve PlutoniX workflow reliability from repeated failure evidence",
       "group": "self-improvement-proposal",
@@ -3331,7 +3404,7 @@
       "status": "rejected",
       "metadata": {
         "dynamicSelfImprovementGraph": true,
-        "proposalId": "si_event_9337dfa0-4eb4-4dcb-ae54-d7f2a0a34137",
+        "proposalId": "si_event_da426e5c-2f82-4004-8dbc-54f9d2f830bf",
         "category": "reliability",
         "expectedBenefit": "Resolve the observed issue while preserving inventoried features and API contracts.",
         "affectedFeatures": [
@@ -3342,7 +3415,7 @@
       }
     },
     {
-      "id": "self-improvement:proposal:si_event_df8ccb6e-6b9a-48db-93b1-c999253a3724",
+      "id": "self-improvement:proposal:si_event_e386e735-50bd-437f-b903-6b1446f69261",
       "type": "proposal",
       "label": "Improve PlutoniX workflow reliability from repeated failure evidence",
       "group": "self-improvement-proposal",
@@ -3350,7 +3423,7 @@
       "status": "rejected",
       "metadata": {
         "dynamicSelfImprovementGraph": true,
-        "proposalId": "si_event_df8ccb6e-6b9a-48db-93b1-c999253a3724",
+        "proposalId": "si_event_e386e735-50bd-437f-b903-6b1446f69261",
         "category": "reliability",
         "expectedBenefit": "Resolve the observed issue while preserving inventoried features and API contracts.",
         "affectedFeatures": [
@@ -3361,7 +3434,7 @@
       }
     },
     {
-      "id": "self-improvement:proposal:si_event_2b8b22f7-e776-421b-8167-6bd2202b851f",
+      "id": "self-improvement:proposal:si_event_1cb40797-d89d-4782-a3b1-4698ff2caae5",
       "type": "proposal",
       "label": "Improve PlutoniX workflow reliability from repeated failure evidence",
       "group": "self-improvement-proposal",
@@ -3369,7 +3442,7 @@
       "status": "rejected",
       "metadata": {
         "dynamicSelfImprovementGraph": true,
-        "proposalId": "si_event_2b8b22f7-e776-421b-8167-6bd2202b851f",
+        "proposalId": "si_event_1cb40797-d89d-4782-a3b1-4698ff2caae5",
         "category": "reliability",
         "expectedBenefit": "Resolve the observed issue while preserving inventoried features and API contracts.",
         "affectedFeatures": [
@@ -3380,7 +3453,7 @@
       }
     },
     {
-      "id": "self-improvement:proposal:si_event_ac26d6c2-d15f-40aa-8e9e-bf2646aaa056",
+      "id": "self-improvement:proposal:si_event_a6cce3ea-c396-4b0d-93c5-4c3630b88328",
       "type": "proposal",
       "label": "Improve PlutoniX workflow reliability from repeated failure evidence",
       "group": "self-improvement-proposal",
@@ -3388,7 +3461,7 @@
       "status": "rejected",
       "metadata": {
         "dynamicSelfImprovementGraph": true,
-        "proposalId": "si_event_ac26d6c2-d15f-40aa-8e9e-bf2646aaa056",
+        "proposalId": "si_event_a6cce3ea-c396-4b0d-93c5-4c3630b88328",
         "category": "reliability",
         "expectedBenefit": "Resolve the observed issue while preserving inventoried features and API contracts.",
         "affectedFeatures": [
@@ -3399,7 +3472,7 @@
       }
     },
     {
-      "id": "self-improvement:proposal:si_event_51d5f03f-de30-4749-97fb-fa5859fe4b48",
+      "id": "self-improvement:proposal:si_event_43471a5c-c065-4880-b8ca-e3497b807bfc",
       "type": "proposal",
       "label": "Improve PlutoniX workflow reliability from repeated failure evidence",
       "group": "self-improvement-proposal",
@@ -3407,7 +3480,7 @@
       "status": "rejected",
       "metadata": {
         "dynamicSelfImprovementGraph": true,
-        "proposalId": "si_event_51d5f03f-de30-4749-97fb-fa5859fe4b48",
+        "proposalId": "si_event_43471a5c-c065-4880-b8ca-e3497b807bfc",
         "category": "reliability",
         "expectedBenefit": "Resolve the observed issue while preserving inventoried features and API contracts.",
         "affectedFeatures": [
@@ -3550,79 +3623,6 @@
         "proposalId": "si_prop_a4793a06-8a1b-4d8c-8ef6-4d0e0d6edaed",
         "decision": "stage"
       }
-    },
-    {
-      "id": "workflow:08a1c-r4-reconstructed-disposition",
-      "type": "workflow",
-      "label": "08A1C R4 Audit Queue",
-      "group": "workflow",
-      "risk_level": "high",
-      "status": "non_actionable_pending_semantic_triage",
-      "metadata": {
-        "historical_requests": 1067,
-        "active_external_actions": 0
-      }
-    },
-    {
-      "id": "functionality:08a1c-r4-disposition",
-      "type": "functionality",
-      "label": "R2 Logical Credential Disposition",
-      "group": "security-evidence",
-      "risk_level": "high",
-      "status": "blocked_external_evidence",
-      "metadata": {
-        "path_a_terminal": 1,
-        "path_b_pending": 1067
-      }
-    },
-    {
-      "id": "validation:08a1d-r4-mapping",
-      "type": "validation",
-      "label": "08A1D Rerun Gate",
-      "group": "validation",
-      "risk_level": "high",
-      "status": "not_run_semantic_gate_blocked",
-      "metadata": {
-        "retained_records": 23,
-        "unmapped_observations": 31
-      }
-    },
-    {
-      "id": "workflow:08a1b-r3-semantic-triage",
-      "type": "workflow",
-      "label": "08A1B R3 Semantic Triage",
-      "group": "workflow",
-      "risk_level": "high",
-      "status": "blocked_semantic_replay",
-      "metadata": {
-        "source": "08A1B-R2",
-        "mode": "repository_local_only",
-        "semantic_gate": "BLOCKED"
-      }
-    },
-    {
-      "id": "functionality:08a1b-r3-semantic-classification",
-      "type": "functionality",
-      "label": "R2 Equality-class Semantic Classification",
-      "group": "security-evidence",
-      "risk_level": "high",
-      "status": "semantically_unresolved",
-      "metadata": {
-        "deterministic_non_secret": 1,
-        "positive_secret_candidate": 0,
-        "semantically_unresolved": 1067
-      }
-    },
-    {
-      "id": "validation:08a1b-r3-frozen-r2-replay",
-      "type": "validation",
-      "label": "Frozen R2 Raw-correlation Replay",
-      "group": "validation",
-      "risk_level": "high",
-      "status": "bounded_replay_incomplete",
-      "metadata": {
-        "required": "FROZEN_R2_RAW_CORRELATION_REPRODUCTION_REQUIRED"
-      }
     }
   ],
   "links": [
@@ -3730,6 +3730,80 @@
       "metadata": {}
     },
     {
+      "source": "project:orchestrator-agent-001",
+      "target": "workflow:08a1c-r4-reconstructed-disposition",
+      "type": "contains",
+      "weight": 1,
+      "metadata": {}
+    },
+    {
+      "source": "workflow:08a1c-r4-reconstructed-disposition",
+      "target": "functionality:08a1c-r4-disposition",
+      "type": "implements",
+      "weight": 1,
+      "metadata": {}
+    },
+    {
+      "source": "workflow:08a1c-r4-reconstructed-disposition",
+      "target": "validation:08a1d-r4-mapping",
+      "type": "validates",
+      "weight": 1,
+      "metadata": {}
+    },
+    {
+      "source": "agent:project-execution-agent",
+      "target": "workflow:08a1c-r4-reconstructed-disposition",
+      "type": "assigned_to",
+      "weight": 1,
+      "metadata": {}
+    },
+    {
+      "source": "project:orchestrator-agent-001",
+      "target": "workflow:08a1b-r3-semantic-triage",
+      "type": "contains",
+      "weight": 1,
+      "metadata": {}
+    },
+    {
+      "source": "workflow:08a1b-r3-semantic-triage",
+      "target": "functionality:08a1b-r3-semantic-classification",
+      "type": "implements",
+      "weight": 1,
+      "metadata": {}
+    },
+    {
+      "source": "workflow:08a1b-r3-semantic-triage",
+      "target": "validation:08a1b-r3-frozen-r2-replay",
+      "type": "validates",
+      "weight": 1,
+      "metadata": {}
+    },
+    {
+      "source": "workflow:08a1b-r3-semantic-triage",
+      "target": "workflow:08a1c-r4-reconstructed-disposition",
+      "type": "depends_on",
+      "weight": 1,
+      "metadata": {
+        "requirement": "zero_semantically_unresolved"
+      }
+    },
+    {
+      "source": "workflow:08a1b-r3-semantic-triage",
+      "target": "validation:08a1d-r4-mapping",
+      "type": "validates",
+      "weight": 1,
+      "metadata": {
+        "requirement": "semantic_gate_pass"
+      }
+    },
+    {
+      "source": "agent:project-execution-agent",
+      "target": "workflow:08a1b-r3-semantic-triage",
+      "type": "assigned_to",
+      "weight": 1,
+      "metadata": {}
+    },
+    {
       "source": "agent:plutonix-fullstack-agent",
       "target": "project:agenticongen-9TUSjQ",
       "type": "creates_project",
@@ -3798,6 +3872,17 @@
       "metadata": {
         "dynamicProjectGraph": true,
         "projectId": "bag-commerce-studio-Tj4bB8"
+      }
+    },
+    {
+      "source": "agent:plutonix-fullstack-agent",
+      "target": "agent:plutonix-independent-reviewer",
+      "type": "may_request_review_from",
+      "weight": 1,
+      "metadata": {
+        "dynamicProjectGraph": true,
+        "adaptive": true,
+        "readOnly": true
       }
     },
     {
@@ -3882,6 +3967,17 @@
     },
     {
       "source": "agent:plutonix-fullstack-agent",
+      "target": "agent:plutonix-independent-reviewer",
+      "type": "may_request_review_from",
+      "weight": 1,
+      "metadata": {
+        "dynamicProjectGraph": true,
+        "adaptive": true,
+        "readOnly": true
+      }
+    },
+    {
+      "source": "agent:plutonix-fullstack-agent",
       "target": "agent:virtux-orchestrator-agent",
       "type": "runtime_delegates_to",
       "weight": 1,
@@ -3948,6 +4044,17 @@
       "metadata": {
         "dynamicProjectGraph": true,
         "projectId": "brushx-zHXT8q"
+      }
+    },
+    {
+      "source": "agent:plutonix-fullstack-agent",
+      "target": "agent:plutonix-independent-reviewer",
+      "type": "may_request_review_from",
+      "weight": 1,
+      "metadata": {
+        "dynamicProjectGraph": true,
+        "adaptive": true,
+        "readOnly": true
       }
     },
     {
@@ -4032,6 +4139,17 @@
     },
     {
       "source": "agent:plutonix-fullstack-agent",
+      "target": "agent:plutonix-independent-reviewer",
+      "type": "may_request_review_from",
+      "weight": 1,
+      "metadata": {
+        "dynamicProjectGraph": true,
+        "adaptive": true,
+        "readOnly": true
+      }
+    },
+    {
+      "source": "agent:plutonix-fullstack-agent",
       "target": "agent:cvmakerx-orchestrator-agent",
       "type": "runtime_delegates_to",
       "weight": 1,
@@ -4088,6 +4206,17 @@
       "metadata": {
         "dynamicProjectGraph": true,
         "projectId": "databricksx-n7lCNf"
+      }
+    },
+    {
+      "source": "agent:plutonix-fullstack-agent",
+      "target": "agent:plutonix-independent-reviewer",
+      "type": "may_request_review_from",
+      "weight": 1,
+      "metadata": {
+        "dynamicProjectGraph": true,
+        "adaptive": true,
+        "readOnly": true
       }
     },
     {
@@ -4161,6 +4290,17 @@
       }
     },
     {
+      "source": "agent:plutonix-fullstack-agent",
+      "target": "agent:plutonix-independent-reviewer",
+      "type": "may_request_review_from",
+      "weight": 1,
+      "metadata": {
+        "dynamicProjectGraph": true,
+        "adaptive": true,
+        "readOnly": true
+      }
+    },
+    {
       "source": "project:geofinderx-2yFsDY",
       "target": "agent:geofinderx-orchestrator-agent",
       "type": "has_orchestrator",
@@ -4208,6 +4348,17 @@
       "metadata": {
         "dynamicProjectGraph": true,
         "projectId": "gymx-9JXKDV"
+      }
+    },
+    {
+      "source": "agent:plutonix-fullstack-agent",
+      "target": "agent:plutonix-independent-reviewer",
+      "type": "may_request_review_from",
+      "weight": 1,
+      "metadata": {
+        "dynamicProjectGraph": true,
+        "adaptive": true,
+        "readOnly": true
       }
     },
     {
@@ -4311,6 +4462,17 @@
       }
     },
     {
+      "source": "agent:plutonix-fullstack-agent",
+      "target": "agent:plutonix-independent-reviewer",
+      "type": "may_request_review_from",
+      "weight": 1,
+      "metadata": {
+        "dynamicProjectGraph": true,
+        "adaptive": true,
+        "readOnly": true
+      }
+    },
+    {
       "source": "project:investmentfinderx-z8rTq_",
       "target": "agent:investmentfinderx-orchestrator-agent",
       "type": "has_orchestrator",
@@ -4371,6 +4533,17 @@
       }
     },
     {
+      "source": "agent:plutonix-fullstack-agent",
+      "target": "agent:plutonix-independent-reviewer",
+      "type": "may_request_review_from",
+      "weight": 1,
+      "metadata": {
+        "dynamicProjectGraph": true,
+        "adaptive": true,
+        "readOnly": true
+      }
+    },
+    {
       "source": "project:mapex-M6rGkR",
       "target": "agent:mapex-orchestrator-agent",
       "type": "has_orchestrator",
@@ -4418,6 +4591,17 @@
       "metadata": {
         "dynamicProjectGraph": true,
         "projectId": "mentalheathcounselor-PJ1N2o"
+      }
+    },
+    {
+      "source": "agent:plutonix-fullstack-agent",
+      "target": "agent:plutonix-independent-reviewer",
+      "type": "may_request_review_from",
+      "weight": 1,
+      "metadata": {
+        "dynamicProjectGraph": true,
+        "adaptive": true,
+        "readOnly": true
       }
     },
     {
@@ -4492,6 +4676,17 @@
     },
     {
       "source": "agent:plutonix-fullstack-agent",
+      "target": "agent:plutonix-independent-reviewer",
+      "type": "may_request_review_from",
+      "weight": 1,
+      "metadata": {
+        "dynamicProjectGraph": true,
+        "adaptive": true,
+        "readOnly": true
+      }
+    },
+    {
+      "source": "agent:plutonix-fullstack-agent",
       "target": "agent:researchanddevx-orchestrator-agent",
       "type": "runtime_delegates_to",
       "weight": 1,
@@ -4558,6 +4753,17 @@
       "metadata": {
         "dynamicProjectGraph": true,
         "projectId": "spydash-qkWtmJ"
+      }
+    },
+    {
+      "source": "agent:plutonix-fullstack-agent",
+      "target": "agent:plutonix-independent-reviewer",
+      "type": "may_request_review_from",
+      "weight": 1,
+      "metadata": {
+        "dynamicProjectGraph": true,
+        "adaptive": true,
+        "readOnly": true
       }
     },
     {
@@ -4642,6 +4848,17 @@
     },
     {
       "source": "agent:plutonix-fullstack-agent",
+      "target": "agent:plutonix-independent-reviewer",
+      "type": "may_request_review_from",
+      "weight": 1,
+      "metadata": {
+        "dynamicProjectGraph": true,
+        "adaptive": true,
+        "readOnly": true
+      }
+    },
+    {
+      "source": "agent:plutonix-fullstack-agent",
       "target": "agent:videopresentationforproductx-orchestrator-agent",
       "type": "runtime_delegates_to",
       "weight": 1,
@@ -4722,6 +4939,17 @@
     },
     {
       "source": "agent:plutonix-fullstack-agent",
+      "target": "agent:plutonix-independent-reviewer",
+      "type": "may_request_review_from",
+      "weight": 1,
+      "metadata": {
+        "dynamicProjectGraph": true,
+        "adaptive": true,
+        "readOnly": true
+      }
+    },
+    {
+      "source": "agent:plutonix-fullstack-agent",
       "target": "agent:voicex-orchestrator-agent",
       "type": "runtime_delegates_to",
       "weight": 1,
@@ -4792,6 +5020,17 @@
     },
     {
       "source": "agent:plutonix-fullstack-agent",
+      "target": "agent:plutonix-independent-reviewer",
+      "type": "may_request_review_from",
+      "weight": 1,
+      "metadata": {
+        "dynamicProjectGraph": true,
+        "adaptive": true,
+        "readOnly": true
+      }
+    },
+    {
+      "source": "agent:plutonix-fullstack-agent",
       "target": "agent:webforbusinesses-orchestrator-agent",
       "type": "runtime_delegates_to",
       "weight": 1,
@@ -4858,6 +5097,17 @@
       "metadata": {
         "dynamicProjectGraph": true,
         "projectId": "whatsappmediaanalyser-oAeSvn"
+      }
+    },
+    {
+      "source": "agent:plutonix-fullstack-agent",
+      "target": "agent:plutonix-independent-reviewer",
+      "type": "may_request_review_from",
+      "weight": 1,
+      "metadata": {
+        "dynamicProjectGraph": true,
+        "adaptive": true,
+        "readOnly": true
       }
     },
     {
@@ -5291,7 +5541,7 @@
     },
     {
       "source": "agent:plutonix-self-improvement-investigator-agent",
-      "target": "self-improvement:investigation:si_investigation_3da554e4-cc2f-412a-89ec-25b842e695a3",
+      "target": "self-improvement:investigation:si_investigation_d517b794-c1d4-4a6a-91de-2e833da18598",
       "type": "records",
       "weight": 1,
       "metadata": {
@@ -5300,7 +5550,7 @@
     },
     {
       "source": "agent:plutonix-self-improvement-investigator-agent",
-      "target": "self-improvement:investigation:si_investigation_ff536fc0-5918-4ea7-abf3-d5167c68f502",
+      "target": "self-improvement:investigation:si_investigation_5bbae4ef-8ea6-4ca7-a720-b4697201f809",
       "type": "records",
       "weight": 1,
       "metadata": {
@@ -5309,7 +5559,7 @@
     },
     {
       "source": "agent:plutonix-self-improvement-investigator-agent",
-      "target": "self-improvement:investigation:si_investigation_874afa09-4762-439c-847c-595739ab0f62",
+      "target": "self-improvement:investigation:si_investigation_28cbbab4-0e57-48f6-9c1e-d27871dfafa0",
       "type": "records",
       "weight": 1,
       "metadata": {
@@ -5318,7 +5568,7 @@
     },
     {
       "source": "agent:plutonix-self-improvement-investigator-agent",
-      "target": "self-improvement:investigation:si_investigation_1d2cdd29-88d6-4b49-b319-1c4c0ace2772",
+      "target": "self-improvement:investigation:si_investigation_ffdf80f2-101a-4f80-887e-8196d0d9581f",
       "type": "records",
       "weight": 1,
       "metadata": {
@@ -5327,7 +5577,7 @@
     },
     {
       "source": "agent:plutonix-self-improvement-investigator-agent",
-      "target": "self-improvement:investigation:si_investigation_3afea619-f9a8-4981-ab69-012a4f04cf71",
+      "target": "self-improvement:investigation:si_investigation_c5dbf03e-3c46-4a5c-8a50-4bcb6bd7a5e2",
       "type": "records",
       "weight": 1,
       "metadata": {
@@ -5336,7 +5586,7 @@
     },
     {
       "source": "agent:plutonix-self-improvement-investigator-agent",
-      "target": "self-improvement:investigation:si_investigation_9bd11870-6309-41c1-81b7-73e75d30613a",
+      "target": "self-improvement:investigation:si_investigation_178a57c4-d6af-40ba-830d-653f82204f82",
       "type": "records",
       "weight": 1,
       "metadata": {
@@ -5345,7 +5595,7 @@
     },
     {
       "source": "self-improvement:planner",
-      "target": "self-improvement:research:si_research_b0700015-0643-477c-8ca1-50d14b7e51ce",
+      "target": "self-improvement:research:si_research_edd6a15a-d907-45ad-8cd8-1f96a1a4e421",
       "type": "monitors_research_budget",
       "weight": 1,
       "metadata": {
@@ -5354,7 +5604,7 @@
     },
     {
       "source": "self-improvement:planner",
-      "target": "self-improvement:research:si_research_866af990-118b-471a-a7bb-c49ddf1ca33f",
+      "target": "self-improvement:research:si_research_928ef69a-0f39-4610-b698-bc977462d81d",
       "type": "monitors_research_budget",
       "weight": 1,
       "metadata": {
@@ -5363,7 +5613,7 @@
     },
     {
       "source": "self-improvement:planner",
-      "target": "self-improvement:research:si_research_2f06a329-d421-4c7c-8f7a-282c5f6fdfcd",
+      "target": "self-improvement:research:si_research_f71ee31f-6063-4abe-8132-e26a3a86bd63",
       "type": "monitors_research_budget",
       "weight": 1,
       "metadata": {
@@ -5372,7 +5622,7 @@
     },
     {
       "source": "self-improvement:planner",
-      "target": "self-improvement:research:si_research_5f4f5ef5-8b45-4cd1-adba-daf17f8e64fa",
+      "target": "self-improvement:research:si_research_9de5ca74-0a1e-4d2b-8be8-3d62677d6112",
       "type": "monitors_research_budget",
       "weight": 1,
       "metadata": {
@@ -5381,7 +5631,7 @@
     },
     {
       "source": "agent:plutonix-tool-capability-agent",
-      "target": "self-improvement:tool-plan:si_tool_plan_2526fa62-c851-44a5-b2b7-4c1e06ea86d8",
+      "target": "self-improvement:tool-plan:si_tool_plan_4ce906af-de31-42a1-b5f3-8fcf10d7a80c",
       "type": "plans",
       "weight": 1,
       "metadata": {
@@ -5389,7 +5639,7 @@
       }
     },
     {
-      "source": "self-improvement:tool-plan:si_tool_plan_2526fa62-c851-44a5-b2b7-4c1e06ea86d8",
+      "source": "self-improvement:tool-plan:si_tool_plan_4ce906af-de31-42a1-b5f3-8fcf10d7a80c",
       "target": "agent:plutonix-autonomous-tool-builder-agent",
       "type": "can_be_built_by",
       "weight": 2,
@@ -5399,7 +5649,7 @@
     },
     {
       "source": "agent:plutonix-tool-capability-agent",
-      "target": "self-improvement:tool-plan:si_tool_plan_1724d835-4eba-4f86-a1b9-b988a44e66ec",
+      "target": "self-improvement:tool-plan:si_tool_plan_41d62d34-c611-4e21-aa66-a91fe1e59254",
       "type": "plans",
       "weight": 1,
       "metadata": {
@@ -5407,7 +5657,7 @@
       }
     },
     {
-      "source": "self-improvement:tool-plan:si_tool_plan_1724d835-4eba-4f86-a1b9-b988a44e66ec",
+      "source": "self-improvement:tool-plan:si_tool_plan_41d62d34-c611-4e21-aa66-a91fe1e59254",
       "target": "agent:plutonix-autonomous-tool-builder-agent",
       "type": "can_be_built_by",
       "weight": 2,
@@ -5417,7 +5667,7 @@
     },
     {
       "source": "agent:plutonix-tool-capability-agent",
-      "target": "self-improvement:tool-plan:si_tool_plan_daa2e881-1f0a-4af3-8c62-a2667bc3534f",
+      "target": "self-improvement:tool-plan:si_tool_plan_bd6caeea-76c7-4652-91d7-7cfc565dfaa1",
       "type": "plans",
       "weight": 1,
       "metadata": {
@@ -5425,7 +5675,7 @@
       }
     },
     {
-      "source": "self-improvement:tool-plan:si_tool_plan_daa2e881-1f0a-4af3-8c62-a2667bc3534f",
+      "source": "self-improvement:tool-plan:si_tool_plan_bd6caeea-76c7-4652-91d7-7cfc565dfaa1",
       "target": "agent:plutonix-autonomous-tool-builder-agent",
       "type": "can_be_built_by",
       "weight": 2,
@@ -5435,7 +5685,7 @@
     },
     {
       "source": "agent:plutonix-tool-capability-agent",
-      "target": "self-improvement:tool-plan:si_tool_plan_209360f8-ff6c-4469-a076-0564dada0da1",
+      "target": "self-improvement:tool-plan:si_tool_plan_1acfd57f-670f-4d86-955c-43c79f98f0f2",
       "type": "plans",
       "weight": 1,
       "metadata": {
@@ -5443,7 +5693,7 @@
       }
     },
     {
-      "source": "self-improvement:tool-plan:si_tool_plan_209360f8-ff6c-4469-a076-0564dada0da1",
+      "source": "self-improvement:tool-plan:si_tool_plan_1acfd57f-670f-4d86-955c-43c79f98f0f2",
       "target": "agent:plutonix-autonomous-tool-builder-agent",
       "type": "can_be_built_by",
       "weight": 2,
@@ -5453,7 +5703,7 @@
     },
     {
       "source": "agent:plutonix-tool-capability-agent",
-      "target": "self-improvement:tool-plan:si_tool_plan_868292c9-bc5e-469b-abbe-b9a73dc3961a",
+      "target": "self-improvement:tool-plan:si_tool_plan_f27118a2-6f95-486b-9f40-f6ab2b83e769",
       "type": "plans",
       "weight": 1,
       "metadata": {
@@ -5461,7 +5711,7 @@
       }
     },
     {
-      "source": "self-improvement:tool-plan:si_tool_plan_868292c9-bc5e-469b-abbe-b9a73dc3961a",
+      "source": "self-improvement:tool-plan:si_tool_plan_f27118a2-6f95-486b-9f40-f6ab2b83e769",
       "target": "agent:plutonix-autonomous-tool-builder-agent",
       "type": "can_be_built_by",
       "weight": 2,
@@ -5516,7 +5766,7 @@
     },
     {
       "source": "self-improvement:aggregator",
-      "target": "self-improvement:pattern:si_pattern_66bc7377-532c-4926-a7cd-4b155818b137",
+      "target": "self-improvement:pattern:si_pattern_50178b38-df19-48ec-9280-f5b99f45da05",
       "type": "detects",
       "weight": 1,
       "metadata": {
@@ -5525,7 +5775,7 @@
     },
     {
       "source": "self-improvement:aggregator",
-      "target": "self-improvement:pattern:si_pattern_cbd5040a-674f-41b9-a8eb-6209ae37424e",
+      "target": "self-improvement:pattern:si_pattern_ecdb6c21-3e5d-4a5c-b4f9-f8f97635a6b0",
       "type": "detects",
       "weight": 1,
       "metadata": {
@@ -5534,7 +5784,7 @@
     },
     {
       "source": "self-improvement:aggregator",
-      "target": "self-improvement:pattern:si_pattern_e9d57497-3253-4b57-83b8-b8246d525489",
+      "target": "self-improvement:pattern:si_pattern_ca832790-ee12-4b8d-842b-98bb6e3994be",
       "type": "detects",
       "weight": 1,
       "metadata": {
@@ -5543,7 +5793,7 @@
     },
     {
       "source": "self-improvement:aggregator",
-      "target": "self-improvement:pattern:si_pattern_0de58924-5443-4f59-bf37-7400e223d669",
+      "target": "self-improvement:pattern:si_pattern_3eac240d-bc18-4ab4-8756-aa1de32efc13",
       "type": "detects",
       "weight": 1,
       "metadata": {
@@ -5552,7 +5802,7 @@
     },
     {
       "source": "self-improvement:aggregator",
-      "target": "self-improvement:pattern:si_pattern_4e46b4d5-340c-45fa-a206-08289a7460b6",
+      "target": "self-improvement:pattern:si_pattern_15bf38b5-fcad-4e94-b7c3-758d4eb95a77",
       "type": "detects",
       "weight": 1,
       "metadata": {
@@ -5561,7 +5811,7 @@
     },
     {
       "source": "self-improvement:aggregator",
-      "target": "self-improvement:pattern:si_pattern_0143f231-066a-494e-8a25-214aa3b3622d",
+      "target": "self-improvement:pattern:si_pattern_b9745224-ee37-4122-a8c9-eaef46895abf",
       "type": "detects",
       "weight": 1,
       "metadata": {
@@ -5570,7 +5820,7 @@
     },
     {
       "source": "self-improvement:planner",
-      "target": "self-improvement:proposal:si_event_ffbe1d3d-e578-447d-9f2d-24e8a98a406b",
+      "target": "self-improvement:proposal:si_event_e301fd4d-0984-4ea0-8197-7c8ba0b914b0",
       "type": "creates",
       "weight": 2,
       "metadata": {
@@ -5578,7 +5828,7 @@
       }
     },
     {
-      "source": "self-improvement:proposal:si_event_ffbe1d3d-e578-447d-9f2d-24e8a98a406b",
+      "source": "self-improvement:proposal:si_event_e301fd4d-0984-4ea0-8197-7c8ba0b914b0",
       "target": "system:plutonix",
       "type": "affects_component",
       "weight": 1,
@@ -5587,7 +5837,7 @@
       }
     },
     {
-      "source": "self-improvement:proposal:si_event_ffbe1d3d-e578-447d-9f2d-24e8a98a406b",
+      "source": "self-improvement:proposal:si_event_e301fd4d-0984-4ea0-8197-7c8ba0b914b0",
       "target": "self-improvement:validation",
       "type": "must_pass",
       "weight": 2,
@@ -5597,7 +5847,7 @@
     },
     {
       "source": "self-improvement:planner",
-      "target": "self-improvement:proposal:si_event_faa083ff-3032-4d53-b80c-9f324f4ada95",
+      "target": "self-improvement:proposal:si_event_41b07f9f-df7d-4e39-a538-569d7bb6ec8f",
       "type": "creates",
       "weight": 2,
       "metadata": {
@@ -5605,7 +5855,7 @@
       }
     },
     {
-      "source": "self-improvement:proposal:si_event_faa083ff-3032-4d53-b80c-9f324f4ada95",
+      "source": "self-improvement:proposal:si_event_41b07f9f-df7d-4e39-a538-569d7bb6ec8f",
       "target": "system:plutonix",
       "type": "affects_component",
       "weight": 1,
@@ -5614,7 +5864,7 @@
       }
     },
     {
-      "source": "self-improvement:proposal:si_event_faa083ff-3032-4d53-b80c-9f324f4ada95",
+      "source": "self-improvement:proposal:si_event_41b07f9f-df7d-4e39-a538-569d7bb6ec8f",
       "target": "self-improvement:validation",
       "type": "must_pass",
       "weight": 2,
@@ -5624,7 +5874,7 @@
     },
     {
       "source": "self-improvement:planner",
-      "target": "self-improvement:proposal:si_event_d4918a3b-4fe4-4e2f-99f2-d9f565314bb1",
+      "target": "self-improvement:proposal:si_event_8799ed62-5538-40b9-83a8-a95277269c8a",
       "type": "creates",
       "weight": 2,
       "metadata": {
@@ -5632,7 +5882,7 @@
       }
     },
     {
-      "source": "self-improvement:proposal:si_event_d4918a3b-4fe4-4e2f-99f2-d9f565314bb1",
+      "source": "self-improvement:proposal:si_event_8799ed62-5538-40b9-83a8-a95277269c8a",
       "target": "system:plutonix",
       "type": "affects_component",
       "weight": 1,
@@ -5641,7 +5891,7 @@
       }
     },
     {
-      "source": "self-improvement:proposal:si_event_d4918a3b-4fe4-4e2f-99f2-d9f565314bb1",
+      "source": "self-improvement:proposal:si_event_8799ed62-5538-40b9-83a8-a95277269c8a",
       "target": "self-improvement:validation",
       "type": "must_pass",
       "weight": 2,
@@ -5651,7 +5901,7 @@
     },
     {
       "source": "self-improvement:planner",
-      "target": "self-improvement:proposal:si_event_9337dfa0-4eb4-4dcb-ae54-d7f2a0a34137",
+      "target": "self-improvement:proposal:si_event_da426e5c-2f82-4004-8dbc-54f9d2f830bf",
       "type": "creates",
       "weight": 2,
       "metadata": {
@@ -5659,7 +5909,7 @@
       }
     },
     {
-      "source": "self-improvement:proposal:si_event_9337dfa0-4eb4-4dcb-ae54-d7f2a0a34137",
+      "source": "self-improvement:proposal:si_event_da426e5c-2f82-4004-8dbc-54f9d2f830bf",
       "target": "system:plutonix",
       "type": "affects_component",
       "weight": 1,
@@ -5668,7 +5918,7 @@
       }
     },
     {
-      "source": "self-improvement:proposal:si_event_9337dfa0-4eb4-4dcb-ae54-d7f2a0a34137",
+      "source": "self-improvement:proposal:si_event_da426e5c-2f82-4004-8dbc-54f9d2f830bf",
       "target": "self-improvement:validation",
       "type": "must_pass",
       "weight": 2,
@@ -5678,7 +5928,7 @@
     },
     {
       "source": "self-improvement:planner",
-      "target": "self-improvement:proposal:si_event_df8ccb6e-6b9a-48db-93b1-c999253a3724",
+      "target": "self-improvement:proposal:si_event_e386e735-50bd-437f-b903-6b1446f69261",
       "type": "creates",
       "weight": 2,
       "metadata": {
@@ -5686,7 +5936,7 @@
       }
     },
     {
-      "source": "self-improvement:proposal:si_event_df8ccb6e-6b9a-48db-93b1-c999253a3724",
+      "source": "self-improvement:proposal:si_event_e386e735-50bd-437f-b903-6b1446f69261",
       "target": "system:plutonix",
       "type": "affects_component",
       "weight": 1,
@@ -5695,7 +5945,7 @@
       }
     },
     {
-      "source": "self-improvement:proposal:si_event_df8ccb6e-6b9a-48db-93b1-c999253a3724",
+      "source": "self-improvement:proposal:si_event_e386e735-50bd-437f-b903-6b1446f69261",
       "target": "self-improvement:validation",
       "type": "must_pass",
       "weight": 2,
@@ -5705,7 +5955,7 @@
     },
     {
       "source": "self-improvement:planner",
-      "target": "self-improvement:proposal:si_event_2b8b22f7-e776-421b-8167-6bd2202b851f",
+      "target": "self-improvement:proposal:si_event_1cb40797-d89d-4782-a3b1-4698ff2caae5",
       "type": "creates",
       "weight": 2,
       "metadata": {
@@ -5713,7 +5963,7 @@
       }
     },
     {
-      "source": "self-improvement:proposal:si_event_2b8b22f7-e776-421b-8167-6bd2202b851f",
+      "source": "self-improvement:proposal:si_event_1cb40797-d89d-4782-a3b1-4698ff2caae5",
       "target": "system:plutonix",
       "type": "affects_component",
       "weight": 1,
@@ -5722,7 +5972,7 @@
       }
     },
     {
-      "source": "self-improvement:proposal:si_event_2b8b22f7-e776-421b-8167-6bd2202b851f",
+      "source": "self-improvement:proposal:si_event_1cb40797-d89d-4782-a3b1-4698ff2caae5",
       "target": "self-improvement:validation",
       "type": "must_pass",
       "weight": 2,
@@ -5732,7 +5982,7 @@
     },
     {
       "source": "self-improvement:planner",
-      "target": "self-improvement:proposal:si_event_ac26d6c2-d15f-40aa-8e9e-bf2646aaa056",
+      "target": "self-improvement:proposal:si_event_a6cce3ea-c396-4b0d-93c5-4c3630b88328",
       "type": "creates",
       "weight": 2,
       "metadata": {
@@ -5740,7 +5990,7 @@
       }
     },
     {
-      "source": "self-improvement:proposal:si_event_ac26d6c2-d15f-40aa-8e9e-bf2646aaa056",
+      "source": "self-improvement:proposal:si_event_a6cce3ea-c396-4b0d-93c5-4c3630b88328",
       "target": "system:plutonix",
       "type": "affects_component",
       "weight": 1,
@@ -5749,7 +5999,7 @@
       }
     },
     {
-      "source": "self-improvement:proposal:si_event_ac26d6c2-d15f-40aa-8e9e-bf2646aaa056",
+      "source": "self-improvement:proposal:si_event_a6cce3ea-c396-4b0d-93c5-4c3630b88328",
       "target": "self-improvement:validation",
       "type": "must_pass",
       "weight": 2,
@@ -5759,7 +6009,7 @@
     },
     {
       "source": "self-improvement:planner",
-      "target": "self-improvement:proposal:si_event_51d5f03f-de30-4749-97fb-fa5859fe4b48",
+      "target": "self-improvement:proposal:si_event_43471a5c-c065-4880-b8ca-e3497b807bfc",
       "type": "creates",
       "weight": 2,
       "metadata": {
@@ -5767,7 +6017,7 @@
       }
     },
     {
-      "source": "self-improvement:proposal:si_event_51d5f03f-de30-4749-97fb-fa5859fe4b48",
+      "source": "self-improvement:proposal:si_event_43471a5c-c065-4880-b8ca-e3497b807bfc",
       "target": "system:plutonix",
       "type": "affects_component",
       "weight": 1,
@@ -5776,7 +6026,7 @@
       }
     },
     {
-      "source": "self-improvement:proposal:si_event_51d5f03f-de30-4749-97fb-fa5859fe4b48",
+      "source": "self-improvement:proposal:si_event_43471a5c-c065-4880-b8ca-e3497b807bfc",
       "target": "self-improvement:validation",
       "type": "must_pass",
       "weight": 2,
@@ -5873,80 +6123,6 @@
       "metadata": {
         "dynamicSelfImprovementGraph": true
       }
-    },
-    {
-      "source": "project:orchestrator-agent-001",
-      "target": "workflow:08a1c-r4-reconstructed-disposition",
-      "type": "contains",
-      "weight": 1,
-      "metadata": {}
-    },
-    {
-      "source": "workflow:08a1c-r4-reconstructed-disposition",
-      "target": "functionality:08a1c-r4-disposition",
-      "type": "implements",
-      "weight": 1,
-      "metadata": {}
-    },
-    {
-      "source": "workflow:08a1c-r4-reconstructed-disposition",
-      "target": "validation:08a1d-r4-mapping",
-      "type": "validates",
-      "weight": 1,
-      "metadata": {}
-    },
-    {
-      "source": "agent:project-execution-agent",
-      "target": "workflow:08a1c-r4-reconstructed-disposition",
-      "type": "assigned_to",
-      "weight": 1,
-      "metadata": {}
-    },
-    {
-      "source": "project:orchestrator-agent-001",
-      "target": "workflow:08a1b-r3-semantic-triage",
-      "type": "contains",
-      "weight": 1,
-      "metadata": {}
-    },
-    {
-      "source": "workflow:08a1b-r3-semantic-triage",
-      "target": "functionality:08a1b-r3-semantic-classification",
-      "type": "implements",
-      "weight": 1,
-      "metadata": {}
-    },
-    {
-      "source": "workflow:08a1b-r3-semantic-triage",
-      "target": "validation:08a1b-r3-frozen-r2-replay",
-      "type": "validates",
-      "weight": 1,
-      "metadata": {}
-    },
-    {
-      "source": "workflow:08a1b-r3-semantic-triage",
-      "target": "workflow:08a1c-r4-reconstructed-disposition",
-      "type": "depends_on",
-      "weight": 1,
-      "metadata": {
-        "requirement": "zero_semantically_unresolved"
-      }
-    },
-    {
-      "source": "workflow:08a1b-r3-semantic-triage",
-      "target": "validation:08a1d-r4-mapping",
-      "type": "validates",
-      "weight": 1,
-      "metadata": {
-        "requirement": "semantic_gate_pass"
-      }
-    },
-    {
-      "source": "agent:project-execution-agent",
-      "target": "workflow:08a1b-r3-semantic-triage",
-      "type": "assigned_to",
-      "weight": 1,
-      "metadata": {}
     }
   ]
 }

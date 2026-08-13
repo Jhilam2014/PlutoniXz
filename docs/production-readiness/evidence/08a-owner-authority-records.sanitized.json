@@ -1,6 +1,6 @@
 {
   "schema_version": "08A1C-current-authority-provider-projection-v1",
-  "reviewed_at": "2026-08-12T22:59:12Z",
+  "reviewed_at": "2026-08-12T23:50:45Z",
   "status": "NON_ACTIONABLE_PENDING_SEMANTIC_TRIAGE",
   "historical_audit_authority_projection_reference": "08a-owner-authority-records.r4-audit.sanitized.json",
   "active_authority_records": [],

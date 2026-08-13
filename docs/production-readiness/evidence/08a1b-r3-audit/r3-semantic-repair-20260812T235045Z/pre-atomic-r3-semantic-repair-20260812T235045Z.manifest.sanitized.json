@@ -1,0 +1,23 @@
+{
+  "schema_version": "08A1B-R3-pre-atomic-audit-archive-v1",
+  "run_id": "r3-semantic-repair-20260812T235045Z",
+  "archive_reason": "Current R3 and R4 projections retained before validated atomic R2-to-R3 publication.",
+  "records": [
+    {
+      "source": "docs/production-readiness/evidence/08a1b-r3-semantic-classification.sanitized.json",
+      "archived": "docs/production-readiness/evidence/08a1b-r3-audit/r3-semantic-repair-20260812T235045Z/08a1b-r3-semantic-classification.pre-atomic-r3-semantic-repair-20260812T235045Z.sanitized.json"
+    },
+    {
+      "source": "docs/production-readiness/evidence/08a1c-external-r4/current-semantic-triage-status.sanitized.json",
+      "archived": "docs/production-readiness/evidence/08a1b-r3-audit/r3-semantic-repair-20260812T235045Z/current-semantic-triage-status.pre-atomic-r3-semantic-repair-20260812T235045Z.sanitized.json"
+    },
+    {
+      "source": "docs/production-readiness/evidence/08a-owner-authority-records.sanitized.json",
+      "archived": "docs/production-readiness/evidence/08a1b-r3-audit/r3-semantic-repair-20260812T235045Z/08a-owner-authority-records.pre-atomic-r3-semantic-repair-20260812T235045Z.sanitized.json"
+    },
+    {
+      "source": "docs/production-readiness/evidence/08a-owner-dispositions.sanitized.json",
+      "archived": "docs/production-readiness/evidence/08a1b-r3-audit/r3-semantic-repair-20260812T235045Z/08a-owner-dispositions.pre-atomic-r3-semantic-repair-20260812T235045Z.sanitized.json"
+    }
+  ]
+}

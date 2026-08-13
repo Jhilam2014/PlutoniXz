@@ -1,6 +1,7 @@
 import path from "node:path";
 import fs from "fs-extra";
 import { DEFAULT_SELF_IMPROVEMENT_CONFIG, SELF_IMPROVEMENT_SCHEMA_VERSION } from "./constants.js";
+import { stableHashIdentifierSchema } from "./contracts.js";
 import { fingerprintText, neutralizeLogInstruction } from "./redaction.js";
 import { createId, nowIso, stableHash } from "./store.js";
 
@@ -108,7 +109,7 @@ export function assessToolAndOptimizationNeed({
     };
   }
   const component = investigation.component || event.component || "plutonix-runtime";
-  const normalizedKey = stableHash(fingerprintText(`${solutionKind}:${component}:${event.type || ""}:${event.message || ""}`)).slice(0, 24);
+  const normalizedKey = stableHashIdentifierSchema.parse(stableHash(fingerprintText(`${solutionKind}:${component}:${event.type || ""}:${event.message || ""}`)).slice(0, 24));
   const duplicate = recentlyPlanned(recentToolPlans, normalizedKey, config.toolPlanCooldownMs);
   const buildLimitReached = dailyCount(recentToolPlans) >= Number(config.maxToolBuildsPerDay || DEFAULT_SELF_IMPROVEMENT_CONFIG.maxToolBuildsPerDay);
   const costEstimate = estimatedCostFor(solutionKind, need, config);

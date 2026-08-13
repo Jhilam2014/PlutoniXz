@@ -19,6 +19,15 @@ export const POSITIVE_SUBTYPES = new Set([
   'GENERIC_APPLICATION_SECRET_CANDIDATE',
   'AUTH_SESSION_OR_SIGNING_MATERIAL_CANDIDATE',
 ]);
+export const DETERMINISTIC_PATH_A_IDS = new Set([
+  'PATH_A_COMMITTED_SYNTHETIC_FIXTURE_V2',
+  'PATH_A_SELF_IMPROVEMENT_RUNTIME_IDENTIFIER_V1',
+  'PATH_A_TOKEN_ECONOMY_CONTENT_IDENTIFIER_V1',
+  'PATH_A_REPOSITORY_INTEGRITY_DIGEST_V1',
+  'PATH_A_STRUCTURED_UUID_IDENTIFIER_V1',
+  'PATH_A_SELF_IMPROVEMENT_PATTERN_KEY_V1',
+  'PATH_A_SELF_IMPROVEMENT_TOOL_PLAN_KEY_V1',
+]);
 
 export const RULE_SEMANTICS = Object.freeze({
   'aws-access-token': {
@@ -62,6 +71,10 @@ export const RULE_SEMANTICS = Object.freeze({
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const SELF_IMPROVEMENT_ID = /^si_[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const TOKEN_ECONOMY_ID = /^[0-9a-f]{24}$/i;
+// This grammar is intentionally separate from a provider credential parser.
+// The two Path A contracts below prove that these values are truncated local
+// SHA-256 identifiers, not merely that they happen to have 24 hex characters.
+const STABLE_HASH_IDENTIFIER = /^[0-9a-f]{24}$/i;
 const SHA256 = /^[0-9a-f]{64}$/i;
 const AWS_ACCESS_KEY_ID = /^AKIA[0-9A-Z]{16}$/;
 const GOOGLE_API_KEY = /^AIza[0-9A-Za-z_-]{35}$/;
@@ -156,6 +169,24 @@ export function evaluateSemanticEvidence({ candidate, canonicalMembers, context 
       ['apps/backend/src/tokenEconomy.js recordAgentTokenUsage producer'],
       ['token-economy JSON/JSONL identifier field contract'],
       ['token-economy timeline serialization contract'],
+    );
+  }
+  if (safeContext.record_kind === 'SELF_IMPROVEMENT_PATTERN_KEY' && STABLE_HASH_IDENTIFIER.test(candidate.toString('utf8')) && safeContext.producer_validated && safeContext.consumer_validated) {
+    return nonSecret(
+      'PATH_A_SELF_IMPROVEMENT_PATTERN_KEY_V1',
+      'GENERATED_STABLE_HASH_IDENTIFIER',
+      safeContext.source_references ?? ['self-improvement pattern-key producer'],
+      ['strict 24-hex truncated SHA-256 identifier grammar'],
+      safeContext.consumer_references ?? ['self-improvement pattern-key consumer'],
+    );
+  }
+  if (safeContext.record_kind === 'SELF_IMPROVEMENT_TOOL_PLAN_KEY' && STABLE_HASH_IDENTIFIER.test(candidate.toString('utf8')) && safeContext.producer_validated && safeContext.consumer_validated) {
+    return nonSecret(
+      'PATH_A_SELF_IMPROVEMENT_TOOL_PLAN_KEY_V1',
+      'GENERATED_STABLE_HASH_IDENTIFIER',
+      safeContext.source_references ?? ['self-improvement tool-plan-key producer'],
+      ['strict 24-hex truncated SHA-256 identifier grammar'],
+      safeContext.consumer_references ?? ['self-improvement tool-plan-key consumer'],
     );
   }
   if (safeContext.record_kind === 'SHA256_INTEGRITY_DIGEST' && SHA256.test(candidate.toString('utf8')) && safeContext.producer_validated && safeContext.consumer_validated) {

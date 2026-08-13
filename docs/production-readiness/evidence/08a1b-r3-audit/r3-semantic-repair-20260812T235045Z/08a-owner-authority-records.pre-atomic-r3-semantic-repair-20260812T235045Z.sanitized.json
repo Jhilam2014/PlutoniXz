@@ -1,0 +1,16 @@
+{
+  "schema_version": "08A1C-current-authority-provider-projection-v1",
+  "reviewed_at": "2026-08-12T22:59:12Z",
+  "status": "NON_ACTIONABLE_PENDING_SEMANTIC_TRIAGE",
+  "historical_audit_authority_projection_reference": "08a-owner-authority-records.r4-audit.sanitized.json",
+  "active_authority_records": [],
+  "active_provider_evidence_records": [],
+  "active_actions": [],
+  "totals": {
+    "pending_authority": 0,
+    "pending_provider": 0,
+    "active_actions": 0,
+    "historical_r4_requests": 1067
+  },
+  "source_supersession_status": "08a1c-external-r4/current-semantic-triage-status.sanitized.json"
+}

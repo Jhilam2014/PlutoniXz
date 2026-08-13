@@ -145,6 +145,54 @@ function valueContextFromStructuredBuffer(buffer, candidate, sourceKey) {
   const fieldKinds = analysis.fieldKindsByValue.get(candidate.toString('utf8')) ?? new Set();
   return { structured: analysis.structured, fieldKinds: [...fieldKinds].sort(), analysis };
 }
+function contractFilesPresent(repositoryRoot, requirements) {
+  try {
+    return requirements.every(({ file, snippets }) => {
+      const source = readFileSync(path.join(repositoryRoot, file), 'utf8');
+      return snippets.every((snippet) => source.includes(snippet));
+    });
+  } catch { return false; }
+}
+function selfImprovementStableHashContext(repositoryRoot, member, fieldKinds) {
+  // A source location, a 24-hex shape, or a field label on its own is never
+  // Path A proof. These narrowly pinned contracts require all three: the
+  // record field, its deterministic producer, and a local consumer.
+  if (member.object_marker !== 'CURRENT_TREE') return null;
+  if (member.normalized_location === 'runtime/self-improvement/patterns/patterns.jsonl' && fieldKinds.includes('patternKey')) {
+    const validated = contractFilesPresent(repositoryRoot, [
+      { file: 'apps/backend/src/selfImprovement/aggregator.js', snippets: ['const patternKey = stableHash(key).slice(0, 24);', 'patternKey,'] },
+      { file: 'apps/backend/src/selfImprovement/contracts.js', snippets: ['patternKey: stableHashIdentifierSchema'] },
+      { file: 'apps/backend/src/selfImprovement/controlPlane.js', snippets: ['row.patternKey || row.id'] },
+      { file: 'apps/backend/src/selfImprovement/evidenceBuilder.js', snippets: ['pattern.patternKey === trigger.patternKey'] },
+    ]);
+    if (!validated) return null;
+    return {
+      source_context_available: true,
+      schema_or_producer_validated: true,
+      producer_validated: true,
+      consumer_validated: true,
+      record_kind: 'SELF_IMPROVEMENT_PATTERN_KEY',
+      source_references: ['runtime/self-improvement/patterns/patterns.jsonl patternKey field', 'apps/backend/src/selfImprovement/aggregator.js stableHash producer'],
+      consumer_references: ['apps/backend/src/selfImprovement/controlPlane.js pattern consolidation', 'apps/backend/src/selfImprovement/evidenceBuilder.js trigger-to-pattern lookup'],
+    };
+  }
+  if (member.normalized_location === 'runtime/self-improvement/tools/tool-incorporation-plans.jsonl' && fieldKinds.includes('normalizedKey')) {
+    const validated = contractFilesPresent(repositoryRoot, [
+      { file: 'apps/backend/src/selfImprovement/toolCapabilityAgent.js', snippets: ['const normalizedKey = stableHashIdentifierSchema.parse(stableHash(fingerprintText(', ')).slice(0, 24));', 'normalizedKey,', 'row.normalizedKey !== key'] },
+    ]);
+    if (!validated) return null;
+    return {
+      source_context_available: true,
+      schema_or_producer_validated: true,
+      producer_validated: true,
+      consumer_validated: true,
+      record_kind: 'SELF_IMPROVEMENT_TOOL_PLAN_KEY',
+      source_references: ['runtime/self-improvement/tools/tool-incorporation-plans.jsonl normalizedKey field', 'apps/backend/src/selfImprovement/toolCapabilityAgent.js stableHash producer'],
+      consumer_references: ['apps/backend/src/selfImprovement/toolCapabilityAgent.js duplicate-suppression key comparison'],
+    };
+  }
+  return null;
+}
 function contextForMember(repositoryRoot, member, candidate) {
   if (member.object_marker === 'CURRENT_TREE' && member.normalized_location === '.env') {
     const environment = controlledEnvironmentContext(repositoryRoot, member.normalized_location, candidate);
@@ -165,6 +213,8 @@ function contextForMember(repositoryRoot, member, candidate) {
     const structured = valueContextFromStructuredBuffer(source.buffer, candidate, source.source_key);
     const identifierField = structured.fieldKinds.includes('id');
     const location = member.normalized_location;
+    const stableHashContext = selfImprovementStableHashContext(repositoryRoot, member, structured.fieldKinds);
+    if (stableHashContext) return stableHashContext;
     if (location.startsWith('runtime/self-improvement/') && identifierField) return {
       source_context_available: true,
       schema_or_producer_validated: true,
@@ -337,6 +387,8 @@ The runner either replays structurally redacted R2 reports against a memory-only
 | --- | --- |
 | Committed synthetic fixture | Exact fixture location plus committed positive/negative scanner assertions |
 | Self-improvement identifier | Strict generated identifier grammar, \`createId\` producer, and JSON/JSONL serialization contract |
+| Self-improvement pattern key | Exact \`patternKey\` field, strict 24-hex stable-hash grammar, aggregator producer, and pattern consumers |
+| Self-improvement tool-plan key | Exact \`normalizedKey\` field, strict 24-hex stable-hash grammar, tool-plan producer, and duplicate-suppression consumer |
 | Token-economy content identifier | Strict content-ID grammar, token-economy producer, and timeline serialization contract |
 | Integrity digest | Strict SHA-256 grammar plus an approved integrity producer and consumer contract |
 

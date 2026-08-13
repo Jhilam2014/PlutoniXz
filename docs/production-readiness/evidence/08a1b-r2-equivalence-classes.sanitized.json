@@ -1,7 +1,7 @@
 {
   "schema_version": "08A1B-R2-equivalence-classes-v1",
-  "run_id": "20260812T225912Z",
-  "reviewed_at": "2026-08-12T22:59:12Z",
+  "run_id": "r3-semantic-repair-20260812T235045Z",
+  "reviewed_at": "2026-08-12T23:50:45Z",
   "equality_contract": "MEMORY_ONLY_EPHEMERAL_HMAC_AND_CONSTANT_TIME_CONFIRMATION",
   "totals": {
     "candidate_equivalence_classes": 1068,

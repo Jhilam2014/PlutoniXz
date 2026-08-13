@@ -1,10 +1,10 @@
 {
   "schema_version": "08A1D-R3-semantic-gate-v1",
-  "reviewed_at": "2026-08-12T22:59:12Z",
+  "reviewed_at": "2026-08-12T23:50:45Z",
   "status": "NOT_RUN_SEMANTIC_GATE_BLOCKED",
   "prerequisite": {
     "source_semantic_classification": "08a1b-r3-semantic-classification.sanitized.json",
-    "semantically_unresolved_classes": 1067,
+    "semantically_unresolved_classes": 23,
     "semantic_gate_status": "BLOCKED"
   },
   "policy": {

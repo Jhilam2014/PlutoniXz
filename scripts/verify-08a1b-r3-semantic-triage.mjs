@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 
 import { readFile } from 'node:fs/promises';
-import { noCandidateBearingData } from './08a1b-r3-semantic-lib.mjs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { DETERMINISTIC_PATH_A_IDS, noCandidateBearingData } from './08a1b-r3-semantic-lib.mjs';
 import { exactR2Membership } from './run-08a1b-r3-semantic-triage.mjs';
 import { validateR2Inventory } from './verify-08a1b-r2-reconstruction.mjs';
 
@@ -17,17 +19,20 @@ export function validateSemanticTriage({ inventory, classification, supersession
   const classIds = new Set(inventory.candidate_equivalence_classes.map((item) => item.candidate_equivalence_class_id));
   const semanticIds = new Set(classification.classes.map((item) => item.equivalence_class_id));
   if (semanticIds.size !== classification.classes.length || !equalSets(classIds, semanticIds)) fail('Every R2 equivalence class must have exactly one R3 semantic state.');
+  const r2ClassById = new Map(inventory.candidate_equivalence_classes.map((item) => [item.candidate_equivalence_class_id, item]));
   const allowed = new Set(['DETERMINISTIC_NON_SECRET', 'POSITIVE_SECRET_CANDIDATE', 'SEMANTICALLY_UNRESOLVED']);
   const positiveSubtypes = new Set(['PROVIDER_CREDENTIAL_CANDIDATE', 'GENERIC_APPLICATION_SECRET_CANDIDATE', 'AUTH_SESSION_OR_SIGNING_MATERIAL_CANDIDATE']);
   let deterministic = 0; let positive = 0; let unresolved = 0;
   for (const item of classification.classes) {
     if (!allowed.has(item.semantic_state) || !Array.isArray(item.canonical_occurrence_ids) || !item.logical_item_id || !Array.isArray(item.source_references) || !Array.isArray(item.parser_references) || !Array.isArray(item.consumer_references) || !Array.isArray(item.missing_predicates)) fail('Semantic record is structurally incomplete.');
+    const r2Class = r2ClassById.get(item.equivalence_class_id);
+    if (!r2Class || item.logical_item_id !== r2Class.logical_item_id || JSON.stringify(item.canonical_occurrence_ids) !== JSON.stringify(r2Class.canonical_occurrence_ids)) fail('R3 semantic membership must exactly preserve its R2 equivalence class and member ordering.');
     if (item.semantic_state === 'DETERMINISTIC_NON_SECRET') {
       deterministic += 1;
-      if (!item.proof_or_evidence_path_id || !item.proof_family || item.missing_predicates.length !== 0 || item.validator_result !== 'PASS') fail('Path A semantic class lacks complete deterministic proof.');
+      if (!DETERMINISTIC_PATH_A_IDS.has(item.proof_or_evidence_path_id) || !item.proof_family || item.source_references.length === 0 || item.parser_references.length === 0 || item.consumer_references.length === 0 || item.missing_predicates.length !== 0 || item.validator_result !== 'PASS') fail('Path A semantic class lacks complete deterministic proof.');
     } else if (item.semantic_state === 'POSITIVE_SECRET_CANDIDATE') {
       positive += 1;
-      if (!positiveSubtypes.has(item.semantic_subtype) || !item.proof_or_evidence_path_id || item.missing_predicates.length !== 0 || item.parser_references.length === 0 || item.consumer_references.length === 0 || item.validator_result !== 'PASS') fail('Positive semantic class lacks strict parser/context evidence.');
+      if (!positiveSubtypes.has(item.semantic_subtype) || !item.proof_or_evidence_path_id || item.source_references.length === 0 || item.parser_references.length === 0 || item.consumer_references.length === 0 || item.missing_predicates.length !== 0 || item.validator_result !== 'PASS') fail('Positive semantic class lacks strict parser/context evidence.');
     } else {
       unresolved += 1;
       if (item.semantic_subtype !== null || item.proof_or_evidence_path_id !== null || item.proof_family !== null || item.missing_predicates.length === 0 || /provider|authority|external action/i.test(JSON.stringify(item))) fail('Unresolved semantic class is improperly assigned an action or unsupported evidence.');
@@ -70,4 +75,4 @@ async function main() {
   const result = validateSemanticTriage({ inventory, classification, supersession, currentManifest, currentAuthority, artifactGate });
   process.stdout.write(`Validated 08A1B-R3 semantic triage: ${result.deterministic} deterministic, ${result.positive} positive, ${result.unresolved} unresolved; ${result.status}.\n`);
 }
-if (process.argv[1] === new URL(import.meta.url).pathname) main().catch((error) => { process.stderr.write(`08A1B-R3 semantic validation failed: ${error.message}\n`); process.exitCode = 1; });
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) main().catch((error) => { process.stderr.write(`08A1B-R3 semantic validation failed: ${error.message}\n`); process.exitCode = 1; });

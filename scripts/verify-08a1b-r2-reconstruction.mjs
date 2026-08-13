@@ -2,6 +2,8 @@
 
 /** Fail-closed structural validator for the safe 08A1B-R2 reconstruction. */
 import { readFile } from 'node:fs/promises';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { R2_SCHEMA } from './reconstruct-08a1b-r2.mjs';
 
 const FORBIDDEN = /^(?:secret|match|authorization|token_value|credential_value|replacement_value|raw_value|equality_tag|candidate_tag)$/i;
@@ -100,4 +102,4 @@ async function main() {
   process.stdout.write(`Validated 08A1B-R2 reconstruction: ${result.totals.scan_observations} observations, ${result.totals.candidate_equivalence_classes} candidate classes, ${result.status}.\n`);
 }
 
-if (process.argv[1] === new URL(import.meta.url).pathname) main().catch((error) => { process.stderr.write(`08A1B-R2 validation failed: ${error.message}\n`); process.exitCode = 1; });
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) main().catch((error) => { process.stderr.write(`08A1B-R2 validation failed: ${error.message}\n`); process.exitCode = 1; });

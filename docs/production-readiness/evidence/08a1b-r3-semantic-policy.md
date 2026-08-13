@@ -21,6 +21,8 @@ The runner either replays structurally redacted R2 reports against a memory-only
 | --- | --- |
 | Committed synthetic fixture | Exact fixture location plus committed positive/negative scanner assertions |
 | Self-improvement identifier | Strict generated identifier grammar, `createId` producer, and JSON/JSONL serialization contract |
+| Self-improvement pattern key | Exact `patternKey` field, strict 24-hex stable-hash grammar, aggregator producer, and pattern consumers |
+| Self-improvement tool-plan key | Exact `normalizedKey` field, strict 24-hex stable-hash grammar, tool-plan producer, and duplicate-suppression consumer |
 | Token-economy content identifier | Strict content-ID grammar, token-economy producer, and timeline serialization contract |
 | Integrity digest | Strict SHA-256 grammar plus an approved integrity producer and consumer contract |
 

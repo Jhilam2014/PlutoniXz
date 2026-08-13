@@ -5,6 +5,9 @@ const severitySchema = z.enum(["info", "low", "medium", "high", "critical"]);
 const statusSchema = z.enum(["new", "observed", "aggregated", "triggered", "analyzed", "proposed", "candidate", "validated", "reviewed", "promoted", "rolled_back", "rejected", "skipped", "failed"]);
 const riskSchema = z.enum(["none", "low", "medium", "high", "critical"]);
 const categorySchema = z.enum(IMPROVEMENT_CATEGORIES);
+// Stable internal lookup identifiers are 24 lower-case hex characters sliced
+// from a local SHA-256 result. This is deliberately not a credential schema.
+export const stableHashIdentifierSchema = z.string().regex(/^[a-f0-9]{24}$/);
 
 const eventBase = z.object({
   id: z.string().min(6),
@@ -32,7 +35,7 @@ export const ImprovementSignalSchema = eventBase.extend({
 }).strict();
 
 export const SignalPatternSchema = eventBase.extend({
-  patternKey: z.string().min(8),
+  patternKey: stableHashIdentifierSchema,
   kind: z.string().min(1),
   severity: severitySchema,
   components: z.array(z.string()).default([]),
