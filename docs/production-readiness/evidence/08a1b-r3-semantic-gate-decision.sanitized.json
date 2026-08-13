@@ -1,0 +1,248 @@
+{
+  "schema_version": "08A1B-R3-semantic-gate-evidence-gap-decision-v1",
+  "reviewed_at": "2026-08-13T03:00:26Z",
+  "execution_status": "PASS",
+  "semantic_gate_status": "BLOCKED",
+  "semantic_gate_reason_code": "SEMANTIC_GATE_UNRESOLVED_CLASSES_REQUIRE_AUTHORIZED_EVIDENCE",
+  "overall_disposition": "BLOCKED_PASS",
+  "decision": "ACCEPT_BLOCKED_PASS",
+  "decision_outcome": "ACCEPTED_EVIDENCE_LIMITED_EXCEPTION",
+  "decision_scope": {
+    "no_additional_repository_scan_performed": true,
+    "no_classifier_relaxation_or_positive_creation_performed": true,
+    "no_live_environment_or_external_system_access_performed": true,
+    "no_provider_or_authority_action_performed": true,
+    "no_candidate_or_candidate_derived_material_persisted": true
+  },
+  "source_artifacts": [
+    "08a1b-r2-logical-credential-inventory.sanitized.json",
+    "08a1b-r3-semantic-classification.sanitized.json",
+    "08a1c-external-r4/current-semantic-triage-status.sanitized.json",
+    "08a1c-external-r4/external-action-manifest.sanitized.json",
+    "08a-owner-authority-records.sanitized.json",
+    "08a1d-r3-semantic-gate.sanitized.json"
+  ],
+  "reconciled_state": {
+    "r2_scan_observations": 14984,
+    "equivalence_classes": 1068,
+    "deterministic_non_secrets": 1045,
+    "positive_candidates_established": 0,
+    "semantically_unresolved_classes": 23,
+    "current_r4_provider_queue": 0,
+    "current_r4_authority_queue": 0,
+    "full_08a1d_status": "NOT_RUN_SEMANTIC_GATE_BLOCKED"
+  },
+  "non_exclusive_evidence_gap_dimensions": [
+    {
+      "evidence_gap_dimension": "MISSING_SOURCE_SCHEMA_PRODUCER_OR_CONSUMER_PROOF",
+      "class_count": 22,
+      "counting_method": "COUNT_OF_UNRESOLVED_CLASSES_WITH_PREDICATE"
+    },
+    {
+      "evidence_gap_dimension": "MISSING_EXACT_SEMANTIC_CONTRACT",
+      "class_count": 13,
+      "counting_method": "COUNT_OF_UNRESOLVED_CLASSES_WITH_PREDICATE"
+    },
+    {
+      "evidence_gap_dimension": "MISSING_BOUNDED_HISTORY_OR_SOURCE_LINEAGE_PROOF",
+      "class_count": 11,
+      "counting_method": "COUNT_OF_UNRESOLVED_CLASSES_WITH_PREDICATE"
+    },
+    {
+      "evidence_gap_dimension": "MISSING_AUTHENTICATION_CONSUMER_TRACE",
+      "class_count": 10,
+      "counting_method": "COUNT_OF_UNRESOLVED_CLASSES_WITH_PREDICATE"
+    },
+    {
+      "evidence_gap_dimension": "CONTROLLED_ENVIRONMENT_OR_STRUCTURED_RECORD_GAP",
+      "class_count": 6,
+      "counting_method": "COUNT_OF_UNRESOLVED_CLASSES_WITH_ANY_LISTED_PREDICATE"
+    }
+  ],
+  "exclusive_reason_breakdown": [
+    {
+      "evidence_gap_category": "MISSING_BOUNDED_HISTORY_OR_SOURCE_LINEAGE_PROOF",
+      "class_count": 6,
+      "missing_predicates": [
+        "AUTHENTICATION_OR_PRIVILEGED_CONSUMPTION_TRACE_REQUIRED",
+        "NON_FILE_OR_ARCHIVE_LOCATION_REQUIRES_SOURCE_LINEAGE",
+        "ORIGINAL_SOURCE_OR_HISTORY_CONTEXT_REQUIRES_BOUNDED_RETRIEVAL",
+        "SOURCE_SCHEMA_OR_DETERMINISTIC_PRODUCER_CONTRACT_REQUIRED"
+      ],
+      "why_repository_only_evidence_is_insufficient": "The available record lacks a bounded source lineage, a deterministic producer contract, and a privileged-consumer trace. The existing repository scope cannot safely establish the original record semantics.",
+      "minimum_authorized_evidence": "One service-owner-approved bounded lineage packet, limited to the relevant source record, plus its producer/schema contract and either a privileged-consumer trace or an explicit no-consumer attestation.",
+      "authorized_evidence_source_types": [
+        "approved bounded historical source retrieval",
+        "schema contract or internal documentation",
+        "service-owner attestation"
+      ],
+      "resolution_scope": "MAY_ESTABLISH_POSITIVE_CANDIDATE_OR_NON_SECRET_STATUS_ONLY_WITH_ALL_REQUIRED_CONTRACTS",
+      "status": "BLOCKED",
+      "blocked_reason_code": "AUTHORIZATION_REQUIRED_FOR_BOUNDED_SOURCE_LINEAGE_AND_AUTHENTICATION_TRACE"
+    },
+    {
+      "evidence_gap_category": "MISSING_EXACT_SEMANTIC_CONTRACT",
+      "class_count": 6,
+      "missing_predicates": [
+        "EXACT_SOURCE_SCHEMA_PARSER_AND_CONSUMER_SEMANTICS_REQUIRED",
+        "NO_APPROVED_PRODUCER_SCHEMA_CONSUMER_CONTRACT",
+        "SOURCE_SCHEMA_OR_DETERMINISTIC_PRODUCER_CONTRACT_REQUIRED"
+      ],
+      "why_repository_only_evidence_is_insufficient": "A structurally parsed record exists, but no approved source-to-field producer, parser, and consumer contract identifies its semantic role.",
+      "minimum_authorized_evidence": "The smallest source-specific schema or producer contract that names the field role, its strict parser, and its allowed consumers.",
+      "authorized_evidence_source_types": [
+        "internal documentation",
+        "schema contract",
+        "service-owner attestation"
+      ],
+      "resolution_scope": "MAY_ESTABLISH_POSITIVE_CANDIDATE_OR_NON_SECRET_STATUS_ONLY_IF_THE_AUTHORIZED_CONTRACT_INCLUDES_STRICT_SECRET_AND_PRIVILEGED_USE_SEMANTICS",
+      "status": "BLOCKED",
+      "blocked_reason_code": "AUTHORIZATION_REQUIRED_FOR_EXACT_SOURCE_SEMANTIC_CONTRACT"
+    },
+    {
+      "evidence_gap_category": "MISSING_SOURCE_SCHEMA_PRODUCER_AND_AUTHENTICATION_CONSUMER_PROOF",
+      "class_count": 3,
+      "missing_predicates": [
+        "AUTHENTICATION_OR_PRIVILEGED_CONSUMPTION_TRACE_REQUIRED",
+        "NO_APPROVED_PRODUCER_SCHEMA_CONSUMER_CONTRACT",
+        "SOURCE_SCHEMA_OR_DETERMINISTIC_PRODUCER_CONTRACT_REQUIRED"
+      ],
+      "why_repository_only_evidence_is_insufficient": "The sanitized repository record has neither an approved producer/schema contract nor a trace from the exact semantic field to a privileged consumer.",
+      "minimum_authorized_evidence": "A source-specific schema or producer contract and one approved consumer trace that is bounded to the declared authentication or privileged-use boundary.",
+      "authorized_evidence_source_types": [
+        "approved runtime trace",
+        "schema contract",
+        "service-owner attestation"
+      ],
+      "resolution_scope": "MAY_ESTABLISH_POSITIVE_CANDIDATE_OR_NON_SECRET_STATUS_ONLY_WITH_STRICT_PARSER_AND_SECRET_BEARING_CONTRACT",
+      "status": "BLOCKED",
+      "blocked_reason_code": "AUTHORIZATION_REQUIRED_FOR_SOURCE_CONTRACT_AND_AUTHENTICATION_TRACE"
+    },
+    {
+      "evidence_gap_category": "CONTROLLED_ENVIRONMENT_EVIDENCE_GAP",
+      "class_count": 2,
+      "missing_predicates": [
+        "ENVIRONMENT_SOURCE_CONTEXT_REQUIRES_CONTROLLED_ANALYSIS",
+        "EXACT_SOURCE_SCHEMA_PARSER_AND_CONSUMER_SEMANTICS_REQUIRED",
+        "ORIGINAL_SOURCE_OR_HISTORY_CONTEXT_REQUIRES_BOUNDED_RETRIEVAL",
+        "SOURCE_SCHEMA_OR_DETERMINISTIC_PRODUCER_CONTRACT_REQUIRED"
+      ],
+      "why_repository_only_evidence_is_insufficient": "The required source is controlled environment material that the current authorization excludes; history and field semantics therefore cannot be validated from published repository evidence.",
+      "minimum_authorized_evidence": "A controlled-environment review authorization limited to variable-role metadata and the matching schema, producer, parser, and consumer contract; no value collection is permitted.",
+      "authorized_evidence_source_types": [
+        "controlled-environment authorization",
+        "schema contract",
+        "service-owner attestation"
+      ],
+      "resolution_scope": "MAY_ESTABLISH_POSITIVE_CANDIDATE_OR_NON_SECRET_STATUS_ONLY_WITH_VALUE_FREE_STRICT_SEMANTIC_EVIDENCE",
+      "status": "BLOCKED",
+      "blocked_reason_code": "AUTHORIZATION_REQUIRED_FOR_CONTROLLED_ENVIRONMENT_METADATA_ANALYSIS"
+    },
+    {
+      "evidence_gap_category": "MISSING_SOURCE_LINEAGE_AND_EXACT_SEMANTIC_CONTRACT",
+      "class_count": 2,
+      "missing_predicates": [
+        "EXACT_SOURCE_SCHEMA_PARSER_AND_CONSUMER_SEMANTICS_REQUIRED",
+        "NON_FILE_OR_ARCHIVE_LOCATION_REQUIRES_SOURCE_LINEAGE",
+        "ORIGINAL_SOURCE_OR_HISTORY_CONTEXT_REQUIRES_BOUNDED_RETRIEVAL",
+        "SOURCE_SCHEMA_OR_DETERMINISTIC_PRODUCER_CONTRACT_REQUIRED"
+      ],
+      "why_repository_only_evidence_is_insufficient": "No bounded source lineage is available, and the published evidence does not establish the exact field contract needed to distinguish an identifier, fixture, or secret-bearing field.",
+      "minimum_authorized_evidence": "One owner-approved bounded source-lineage record together with the exact source schema, parser, and consumer contract.",
+      "authorized_evidence_source_types": [
+        "approved bounded historical source retrieval",
+        "schema contract",
+        "service-owner attestation"
+      ],
+      "resolution_scope": "MAY_PROVE_NON_SECRET_STATUS_OR_REMAIN_UNRESOLVED; A_POSITIVE_RESULT_REQUIRES_A_SEPARATE_STRICT_SECRET_AND_PRIVILEGED_USE_CONTRACT",
+      "status": "BLOCKED",
+      "blocked_reason_code": "AUTHORIZATION_REQUIRED_FOR_SOURCE_LINEAGE_AND_EXACT_FIELD_SEMANTICS"
+    },
+    {
+      "evidence_gap_category": "UNVALIDATED_STRUCTURED_RECORD_GAP",
+      "class_count": 1,
+      "missing_predicates": [
+        "EXACT_SOURCE_SCHEMA_PARSER_AND_CONSUMER_SEMANTICS_REQUIRED",
+        "SOURCE_IS_NOT_A_VALIDATED_STRUCTURED_RECORD",
+        "SOURCE_SCHEMA_OR_DETERMINISTIC_PRODUCER_CONTRACT_REQUIRED"
+      ],
+      "why_repository_only_evidence_is_insufficient": "Observed bytes are not tied to an approved structured-record schema, so the field role and any consumer semantics are unproven.",
+      "minimum_authorized_evidence": "The governing structured-record schema and producer contract, plus the documented parser and consumer semantics for that field.",
+      "authorized_evidence_source_types": [
+        "internal documentation",
+        "schema contract",
+        "service-owner attestation"
+      ],
+      "resolution_scope": "MAY_ESTABLISH_POSITIVE_CANDIDATE_OR_NON_SECRET_STATUS_ONLY_IF_AN_APPROVED_STRICT_SECRET_CONTRACT_IS_PROVIDED",
+      "status": "BLOCKED",
+      "blocked_reason_code": "AUTHORIZATION_REQUIRED_FOR_STRUCTURED_RECORD_SCHEMA_AND_PRODUCER_PROOF"
+    },
+    {
+      "evidence_gap_category": "MISSING_AUTHENTICATION_CONSUMER_TRACE",
+      "class_count": 1,
+      "missing_predicates": [
+        "AUTHENTICATION_OR_PRIVILEGED_CONSUMPTION_TRACE_REQUIRED",
+        "ENVIRONMENT_VARIABLE_HAS_NO_APPROVED_AUTHENTICATION_CONSUMER",
+        "SOURCE_SCHEMA_OR_DETERMINISTIC_PRODUCER_CONTRACT_REQUIRED"
+      ],
+      "why_repository_only_evidence_is_insufficient": "Controlled-environment role metadata alone does not prove that the exact semantic field is consumed by an approved authentication or privileged-use boundary.",
+      "minimum_authorized_evidence": "A value-free service-owner attestation or approved runtime trace that binds the declared environment role to one authentication or privileged-use consumer, plus its schema contract.",
+      "authorized_evidence_source_types": [
+        "approved runtime trace",
+        "schema contract",
+        "service-owner attestation"
+      ],
+      "resolution_scope": "MAY_ESTABLISH_POSITIVE_CANDIDATE_OR_NON_SECRET_STATUS_ONLY_WITH_SECRET_BEARING_SCHEMA_AND_STRICT_PARSER_CONFIRMATION",
+      "status": "BLOCKED",
+      "blocked_reason_code": "AUTHORIZATION_REQUIRED_FOR_VALUE_FREE_AUTHENTICATION_CONSUMER_TRACE"
+    },
+    {
+      "evidence_gap_category": "CONTROLLED_ENVIRONMENT_VARIABLE_MAPPING_GAP",
+      "class_count": 1,
+      "missing_predicates": [
+        "ENVIRONMENT_CANDIDATE_VARIABLE_UNRESOLVED",
+        "EXACT_SOURCE_SCHEMA_PARSER_AND_CONSUMER_SEMANTICS_REQUIRED",
+        "ORIGINAL_SOURCE_OR_HISTORY_CONTEXT_REQUIRES_BOUNDED_RETRIEVAL",
+        "SOURCE_SCHEMA_OR_DETERMINISTIC_PRODUCER_CONTRACT_REQUIRED"
+      ],
+      "why_repository_only_evidence_is_insufficient": "The current authorized evidence cannot establish a unique value-free mapping from the source record to a controlled-environment role or its historical lineage.",
+      "minimum_authorized_evidence": "A controlled-environment authorization for value-free variable-role mapping, accompanied by the relevant historical lineage and source schema contract.",
+      "authorized_evidence_source_types": [
+        "approved bounded historical source retrieval",
+        "controlled-environment authorization",
+        "schema contract"
+      ],
+      "resolution_scope": "MAY_ESTABLISH_POSITIVE_CANDIDATE_OR_NON_SECRET_STATUS_ONLY_WITH_A_UNIQUE_VALUE_FREE_MAPPING_AND_STRICT_CONTRACT",
+      "status": "BLOCKED",
+      "blocked_reason_code": "AUTHORIZATION_REQUIRED_FOR_CONTROLLED_ENVIRONMENT_ROLE_MAPPING"
+    },
+    {
+      "evidence_gap_category": "CONTROLLED_ENVIRONMENT_STRICT_PARSER_GAP",
+      "class_count": 1,
+      "missing_predicates": [
+        "ENVIRONMENT_VALUE_FAILED_APPROVED_STRICT_PARSER",
+        "EXACT_SOURCE_SCHEMA_PARSER_AND_CONSUMER_SEMANTICS_REQUIRED"
+      ],
+      "why_repository_only_evidence_is_insufficient": "An observed controlled-environment role has an approved consumer, but the value did not satisfy the approved strict parser and no exact alternate non-secret semantic contract is authorized.",
+      "minimum_authorized_evidence": "A value-free schema or producer contract that proves the field is non-secret, including the field parser and consumer role; no alternate parser or classifier change is implied.",
+      "authorized_evidence_source_types": [
+        "internal documentation",
+        "schema contract",
+        "service-owner attestation"
+      ],
+      "resolution_scope": "CAN_ONLY_PROVE_NON_SECRET_STATUS_OR_REMAIN_UNRESOLVED_UNDER_THE_CURRENT_APPROVED_PARSER",
+      "status": "BLOCKED",
+      "blocked_reason_code": "AUTHORIZATION_REQUIRED_FOR_NON_SECRET_CONTRACT_AFTER_STRICT_PARSER_NON_MATCH"
+    }
+  ],
+  "owner_authorization_decision": {
+    "status": "PASS",
+    "decision": "ACCEPT_BLOCKED_PASS",
+    "decision_reason_code": "OWNER_ACCEPTED_EVIDENCE_LIMITED_EXCEPTION",
+    "required": false,
+    "additional_evidence_authorized": false,
+    "future_reopening_requires_new_explicit_authorization": true,
+    "authorization_limits": "Any future authorization must remain value-free and bounded to the documented evidence source. It must not authorize provider contact, authority action, live-environment access, candidate-value collection, or classifier relaxation."
+  },
+  "no_further_repository_only_action_justified_without_new_authorization": true
+}
