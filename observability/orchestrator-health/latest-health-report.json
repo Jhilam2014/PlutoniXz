@@ -1,13 +1,13 @@
 {
   "status": "critical",
-  "generatedAt": "2026-08-12T17:21:36.332Z",
+  "generatedAt": "2026-08-17T19:35:34.139Z",
   "reason": "periodic",
   "scope": "plutonix-orchestrator-health",
   "userActivitySummary": {
     "recentEvents": 0,
     "errors": 0,
     "recentInstructions": 120,
-    "failedInstructions": 10,
+    "failedInstructions": 33,
     "repairedInstructions": 0,
     "sampleIntentSignals": [
       {
@@ -18,30 +18,30 @@
         "instructionStored": false
       },
       {
-        "projectName": "BrushX",
+        "projectName": "DatabricksX",
         "taskType": "Medium",
-        "status": "succeeded",
+        "status": "failed",
         "instruction": "",
         "instructionStored": false
       },
       {
-        "projectName": "BrushX",
+        "projectName": "DatabricksX",
         "taskType": "Medium",
-        "status": "succeeded",
+        "status": "failed",
         "instruction": "",
         "instructionStored": false
       },
       {
-        "projectName": "BrushX",
+        "projectName": "DatabricksX",
         "taskType": "Medium",
-        "status": "succeeded",
+        "status": "failed",
         "instruction": "",
         "instructionStored": false
       },
       {
-        "projectName": "BrushX",
-        "taskType": "Large",
-        "status": "succeeded",
+        "projectName": "DatabricksX",
+        "taskType": "Medium",
+        "status": "failed",
         "instruction": "",
         "instructionStored": false
       }
@@ -90,7 +90,7 @@
       "title": "User instructions are not reliably reaching successful outcomes",
       "detail": "The user asked for working functionality, but recent instruction records include failures.",
       "evidence": {
-        "count": 10,
+        "count": 33,
         "examples": [
           {
             "projectName": "DatabricksX",
@@ -226,42 +226,23 @@
       "name": "plutonix-independent-reviewer",
       "status": "observed",
       "sourcePath": "",
-      "healthScore": 61,
-      "qualityScore": 71,
-      "efficiencyScore": 59,
-      "concerns": [],
-      "directives": [
-        "Use smaller context windows, cite exact files, and avoid broad rewrites unless required."
-      ],
-      "tokenEconomy": {
-        "totalRuns": 2,
-        "averageTotalTokens": 29598,
-        "tokensPerAccuracyPoint": 704.71,
-        "estimatedUsd": 1.721955
-      }
-    },
-    {
-      "agentId": "databricksx-orchestrator-agent",
-      "name": "DatabricksX Orchestrator Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/databricksx-n7lCNf.agents.json",
       "healthScore": 62,
-      "qualityScore": 71,
+      "qualityScore": 72,
       "efficiencyScore": 61,
       "concerns": [],
       "directives": [],
       "tokenEconomy": {
-        "totalRuns": 7,
-        "averageTotalTokens": 50283,
-        "tokensPerAccuracyPoint": 4190.27,
-        "estimatedUsd": 8.61279
+        "totalRuns": 3,
+        "averageTotalTokens": 31026,
+        "tokensPerAccuracyPoint": 1095.05,
+        "estimatedUsd": 2.683295
       }
     },
     {
       "agentId": "investmentfinderx-orchestrator-agent",
-      "name": "Investmentfinderx Orchestrator Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/investmentfinderx-z8rTq_.agents.json",
+      "name": "investmentfinderx-orchestrator-agent",
+      "status": "observed",
+      "sourcePath": "",
       "healthScore": 63,
       "qualityScore": 74,
       "efficiencyScore": 60,
@@ -277,27 +258,10 @@
       }
     },
     {
-      "agentId": "mentalheathcounselor-orchestrator-agent",
-      "name": "MentalHeathCounselor Orchestrator Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/mentalheathcounselor-PJ1N2o.agents.json",
-      "healthScore": 63,
-      "qualityScore": 72,
-      "efficiencyScore": 62,
-      "concerns": [],
-      "directives": [],
-      "tokenEconomy": {
-        "totalRuns": 1,
-        "averageTotalTokens": 29551,
-        "tokensPerAccuracyPoint": 360.38,
-        "estimatedUsd": 0.72668
-      }
-    },
-    {
       "agentId": "spydash-orchestrator-agent",
-      "name": "Spydash Orchestrator Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/spydash-qkWtmJ.agents.json",
+      "name": "spydash-orchestrator-agent",
+      "status": "observed",
+      "sourcePath": "",
       "healthScore": 63,
       "qualityScore": 72,
       "efficiencyScore": 62,
@@ -313,10 +277,121 @@
       }
     },
     {
-      "agentId": "agenticongen-orchestrator-agent",
-      "name": "Agenticongen Orchestrator Agent",
+      "agentId": "mentalheathcounselor-orchestrator-agent",
+      "name": "mentalheathcounselor-orchestrator-agent",
+      "status": "observed",
+      "sourcePath": "",
+      "healthScore": 63,
+      "qualityScore": 72,
+      "efficiencyScore": 62,
+      "concerns": [],
+      "directives": [],
+      "tokenEconomy": {
+        "totalRuns": 1,
+        "averageTotalTokens": 29551,
+        "tokensPerAccuracyPoint": 360.38,
+        "estimatedUsd": 0.72668
+      }
+    },
+    {
+      "agentId": "databricksx-orchestrator-agent",
+      "name": "databricksx-orchestrator-agent",
+      "status": "observed",
+      "sourcePath": "",
+      "healthScore": 63,
+      "qualityScore": 72,
+      "efficiencyScore": 62,
+      "concerns": [],
+      "directives": [],
+      "tokenEconomy": {
+        "totalRuns": 8,
+        "averageTotalTokens": 55675,
+        "tokensPerAccuracyPoint": 5240.04,
+        "estimatedUsd": 11.12764
+      }
+    },
+    {
+      "agentId": "project-orchestrator-agent",
+      "name": "Project Orchestrator Agent",
       "status": "unknown",
-      "sourcePath": "runtime/agents/projects/agenticongen-9TUSjQ.agents.json",
+      "sourcePath": "runtime/agents/projects/whatsappmediaanalyser-oAeSvn.agents.json",
+      "healthScore": 64,
+      "qualityScore": 70,
+      "efficiencyScore": 70,
+      "concerns": [],
+      "directives": []
+    },
+    {
+      "agentId": "qagent-controller",
+      "name": "QAgent Controller",
+      "status": "unknown",
+      "sourcePath": "runtime/agents/projects/whatsappmediaanalyser-oAeSvn.agents.json",
+      "healthScore": 64,
+      "qualityScore": 70,
+      "efficiencyScore": 70,
+      "concerns": [],
+      "directives": []
+    },
+    {
+      "agentId": "experience-composition-agent",
+      "name": "Experience Composition Agent",
+      "status": "unknown",
+      "sourcePath": "runtime/agents/projects/whatsappmediaanalyser-oAeSvn.agents.json",
+      "healthScore": 64,
+      "qualityScore": 70,
+      "efficiencyScore": 70,
+      "concerns": [],
+      "directives": []
+    },
+    {
+      "agentId": "data-contract-agent",
+      "name": "Data Contract Agent",
+      "status": "unknown",
+      "sourcePath": "runtime/agents/projects/whatsappmediaanalyser-oAeSvn.agents.json",
+      "healthScore": 64,
+      "qualityScore": 70,
+      "efficiencyScore": 70,
+      "concerns": [],
+      "directives": []
+    },
+    {
+      "agentId": "runtime-packaging-agent",
+      "name": "Runtime Packaging Agent",
+      "status": "unknown",
+      "sourcePath": "runtime/agents/projects/whatsappmediaanalyser-oAeSvn.agents.json",
+      "healthScore": 64,
+      "qualityScore": 70,
+      "efficiencyScore": 70,
+      "concerns": [],
+      "directives": []
+    },
+    {
+      "agentId": "design-workshop-review-agent",
+      "name": "Design Workshop Review Agent",
+      "status": "unknown",
+      "sourcePath": "runtime/agents/projects/whatsappmediaanalyser-oAeSvn.agents.json",
+      "healthScore": 64,
+      "qualityScore": 70,
+      "efficiencyScore": 70,
+      "concerns": [],
+      "directives": []
+    },
+    {
+      "agentId": "artifact-production-agent",
+      "name": "Artifact Production Agent",
+      "status": "unknown",
+      "sourcePath": "runtime/agents/projects/cvmakerx-e4XAzI.agents.json",
+      "healthScore": 64,
+      "qualityScore": 70,
+      "efficiencyScore": 70,
+      "concerns": [],
+      "directives": []
+    },
+    {
+      "agentId": "agenticongen-orchestrator-agent",
+      "name": "agenticongen-orchestrator-agent",
+      "status": "observed",
+      "sourcePath": "",
       "healthScore": 64,
       "qualityScore": 76,
       "efficiencyScore": 61,
@@ -328,843 +403,6 @@
         "tokensPerAccuracyPoint": 1717.67,
         "estimatedUsd": 4.50215
       }
-    },
-    {
-      "agentId": "agenticongen-ui-composition-agent",
-      "name": "Agenticongen UI Composition Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/agenticongen-9TUSjQ.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "agenticongen-content-data-agent",
-      "name": "Agenticongen Content Data Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/agenticongen-9TUSjQ.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "agenticongen-runtime-packaging-agent",
-      "name": "Agenticongen Runtime Packaging Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/agenticongen-9TUSjQ.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "adx-orchestrator-agent",
-      "name": "AdX Orchestrator Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/bag-commerce-studio-Tj4bB8.agents.json",
-      "healthScore": 64,
-      "qualityScore": 73,
-      "efficiencyScore": 63,
-      "concerns": [],
-      "directives": [],
-      "tokenEconomy": {
-        "totalRuns": 11,
-        "averageTotalTokens": 96057,
-        "tokensPerAccuracyPoint": 11872.24,
-        "estimatedUsd": 29.31607
-      }
-    },
-    {
-      "agentId": "adx-qagent-controller",
-      "name": "AdX QAgent Controller",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/bag-commerce-studio-Tj4bB8.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "adx-experience-composition-agent",
-      "name": "AdX Experience Composition Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/bag-commerce-studio-Tj4bB8.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "adx-data-contract-agent",
-      "name": "AdX Data Contract Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/bag-commerce-studio-Tj4bB8.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "adx-runtime-packaging-agent",
-      "name": "AdX Runtime Packaging Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/bag-commerce-studio-Tj4bB8.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "adx-media-asset-agent",
-      "name": "AdX Media Asset Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/bag-commerce-studio-Tj4bB8.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "virtux-orchestrator-agent",
-      "name": "VirtuX Orchestrator Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/bag-commerce-studio-y2obrr.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "virtux-qagent-controller",
-      "name": "VirtuX QAgent Controller",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/bag-commerce-studio-y2obrr.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "virtux-ui-composition-agent",
-      "name": "VirtuX UI Composition Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/bag-commerce-studio-y2obrr.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "virtux-content-data-agent",
-      "name": "VirtuX Content Data Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/bag-commerce-studio-y2obrr.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "virtux-runtime-packaging-agent",
-      "name": "VirtuX Runtime Packaging Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/bag-commerce-studio-y2obrr.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "brushx-orchestrator-agent",
-      "name": "BrushX Orchestrator Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/brushx-zHXT8q.agents.json",
-      "healthScore": 64,
-      "qualityScore": 74,
-      "efficiencyScore": 64,
-      "concerns": [],
-      "directives": [],
-      "tokenEconomy": {
-        "totalRuns": 23,
-        "averageTotalTokens": 52167,
-        "tokensPerAccuracyPoint": 13481.46,
-        "estimatedUsd": 30.67665
-      }
-    },
-    {
-      "agentId": "brushx-qagent-controller",
-      "name": "BrushX QAgent Controller",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/brushx-zHXT8q.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "brushx-experience-composition-agent",
-      "name": "BrushX Experience Composition Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/brushx-zHXT8q.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "brushx-data-contract-agent",
-      "name": "BrushX Data Contract Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/brushx-zHXT8q.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "brushx-runtime-packaging-agent",
-      "name": "BrushX Runtime Packaging Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/brushx-zHXT8q.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "brushx-media-asset-agent",
-      "name": "BrushX Media Asset Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/brushx-zHXT8q.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "cvmakerx-qagent-controller",
-      "name": "CVMakerX QAgent Controller",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/cvmakerx-e4XAzI.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "cvmakerx-artifact-production-agent",
-      "name": "CVMakerX Artifact Production Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/cvmakerx-e4XAzI.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "cvmakerx-runtime-packaging-agent",
-      "name": "CVMakerX Runtime Packaging Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/cvmakerx-e4XAzI.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "databricksx-qagent-controller",
-      "name": "DatabricksX QAgent Controller",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/databricksx-n7lCNf.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "databricksx-experience-composition-agent",
-      "name": "DatabricksX Experience Composition Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/databricksx-n7lCNf.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "databricksx-data-contract-agent",
-      "name": "DatabricksX Data Contract Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/databricksx-n7lCNf.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "databricksx-runtime-packaging-agent",
-      "name": "DatabricksX Runtime Packaging Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/databricksx-n7lCNf.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "geofinderx-ui-composition-agent",
-      "name": "Geofinderx UI Composition Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/geofinderx-2yFsDY.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "geofinderx-content-data-agent",
-      "name": "Geofinderx Content Data Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/geofinderx-2yFsDY.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "geofinderx-runtime-packaging-agent",
-      "name": "Geofinderx Runtime Packaging Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/geofinderx-2yFsDY.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "gymx-qagent-controller",
-      "name": "GymX QAgent Controller",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/gymx-9JXKDV.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "gymx-experience-composition-agent",
-      "name": "GymX Experience Composition Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/gymx-9JXKDV.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "gymx-data-contract-agent",
-      "name": "GymX Data Contract Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/gymx-9JXKDV.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "gymx-runtime-packaging-agent",
-      "name": "GymX Runtime Packaging Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/gymx-9JXKDV.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "gymx-application-architecture-agent",
-      "name": "GymX Application Architecture Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/gymx-9JXKDV.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "gymx-governance-security-agent",
-      "name": "GymX Governance and Security Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/gymx-9JXKDV.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "gymx-media-asset-agent",
-      "name": "GymX Media Asset Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/gymx-9JXKDV.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "investmentfinderx-qagent-controller",
-      "name": "Investmentfinderx QAgent Controller",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/investmentfinderx-z8rTq_.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "investmentfinderx-ui-composition-agent",
-      "name": "Investmentfinderx UI Composition Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/investmentfinderx-z8rTq_.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "investmentfinderx-content-data-agent",
-      "name": "Investmentfinderx Content Data Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/investmentfinderx-z8rTq_.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "investmentfinderx-runtime-packaging-agent",
-      "name": "Investmentfinderx Runtime Packaging Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/investmentfinderx-z8rTq_.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "mapex-orchestrator-agent",
-      "name": "Mapex Orchestrator Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/mapex-M6rGkR.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "mapex-ui-composition-agent",
-      "name": "Mapex UI Composition Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/mapex-M6rGkR.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "mapex-content-data-agent",
-      "name": "Mapex Content Data Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/mapex-M6rGkR.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "mapex-runtime-packaging-agent",
-      "name": "Mapex Runtime Packaging Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/mapex-M6rGkR.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "mentalheathcounselor-qagent-controller",
-      "name": "MentalHeathCounselor QAgent Controller",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/mentalheathcounselor-PJ1N2o.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "mentalheathcounselor-ui-composition-agent",
-      "name": "MentalHeathCounselor UI Composition Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/mentalheathcounselor-PJ1N2o.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "mentalheathcounselor-content-data-agent",
-      "name": "MentalHeathCounselor Content Data Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/mentalheathcounselor-PJ1N2o.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "mentalheathcounselor-runtime-packaging-agent",
-      "name": "MentalHeathCounselor Runtime Packaging Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/mentalheathcounselor-PJ1N2o.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "researchanddevx-qagent-controller",
-      "name": "Researchanddevx QAgent Controller",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/researchanddevx-xF8SDs.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "researchanddevx-ui-composition-agent",
-      "name": "Researchanddevx UI Composition Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/researchanddevx-xF8SDs.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "researchanddevx-content-data-agent",
-      "name": "Researchanddevx Content Data Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/researchanddevx-xF8SDs.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "researchanddevx-runtime-packaging-agent",
-      "name": "Researchanddevx Runtime Packaging Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/researchanddevx-xF8SDs.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "spydash-qagent-controller",
-      "name": "Spydash QAgent Controller",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/spydash-qkWtmJ.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "spydash-ui-composition-agent",
-      "name": "Spydash UI Composition Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/spydash-qkWtmJ.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "spydash-content-data-agent",
-      "name": "Spydash Content Data Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/spydash-qkWtmJ.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "spydash-runtime-packaging-agent",
-      "name": "Spydash Runtime Packaging Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/spydash-qkWtmJ.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "spydash-analytics-dashboard-agent",
-      "name": "Spydash Analytics Dashboard Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/spydash-qkWtmJ.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "videopresentationforproductx-qagent-controller",
-      "name": "VideoPresentationForProductX QAgent Controller",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/videopresentationforproductx-GtDUxv.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "videopresentationforproductx-ui-composition-agent",
-      "name": "VideoPresentationForProductX UI Composition Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/videopresentationforproductx-GtDUxv.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "videopresentationforproductx-content-data-agent",
-      "name": "VideoPresentationForProductX Content Data Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/videopresentationforproductx-GtDUxv.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "videopresentationforproductx-runtime-packaging-agent",
-      "name": "VideoPresentationForProductX Runtime Packaging Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/videopresentationforproductx-GtDUxv.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "videopresentationforproductx-analytics-dashboard-agent",
-      "name": "VideoPresentationForProductX Analytics Dashboard Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/videopresentationforproductx-GtDUxv.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "voicex-qagent-controller",
-      "name": "VoiceX QAgent Controller",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/voicex-4q9G58.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "voicex-experience-composition-agent",
-      "name": "VoiceX Experience Composition Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/voicex-4q9G58.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "voicex-data-contract-agent",
-      "name": "VoiceX Data Contract Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/voicex-4q9G58.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "voicex-runtime-packaging-agent",
-      "name": "VoiceX Runtime Packaging Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/voicex-4q9G58.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "webforbusinesses-qagent-controller",
-      "name": "Webforbusinesses QAgent Controller",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/webforbusinesses-xu7qsM.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "webforbusinesses-ui-composition-agent",
-      "name": "Webforbusinesses UI Composition Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/webforbusinesses-xu7qsM.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "webforbusinesses-content-data-agent",
-      "name": "Webforbusinesses Content Data Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/webforbusinesses-xu7qsM.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "webforbusinesses-runtime-packaging-agent",
-      "name": "Webforbusinesses Runtime Packaging Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/webforbusinesses-xu7qsM.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "whatsappmediaanalyser-qagent-controller",
-      "name": "Whatsappmediaanalyser QAgent Controller",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/whatsappmediaanalyser-oAeSvn.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "whatsappmediaanalyser-ui-composition-agent",
-      "name": "Whatsappmediaanalyser UI Composition Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/whatsappmediaanalyser-oAeSvn.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "whatsappmediaanalyser-content-data-agent",
-      "name": "Whatsappmediaanalyser Content Data Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/whatsappmediaanalyser-oAeSvn.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
-    },
-    {
-      "agentId": "whatsappmediaanalyser-runtime-packaging-agent",
-      "name": "Whatsappmediaanalyser Runtime Packaging Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/whatsappmediaanalyser-oAeSvn.agents.json",
-      "healthScore": 64,
-      "qualityScore": 70,
-      "efficiencyScore": 70,
-      "concerns": [],
-      "directives": []
     },
     {
       "agentId": "bag-commerce-studio-orchestrator-agent",
@@ -1184,75 +422,37 @@
       }
     },
     {
-      "agentId": "gymx-orchestrator-agent",
-      "name": "GymX Orchestrator Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/gymx-9JXKDV.agents.json",
-      "healthScore": 65,
-      "qualityScore": 75,
+      "agentId": "brushx-orchestrator-agent",
+      "name": "brushx-orchestrator-agent",
+      "status": "observed",
+      "sourcePath": "",
+      "healthScore": 64,
+      "qualityScore": 74,
       "efficiencyScore": 64,
       "concerns": [],
       "directives": [],
       "tokenEconomy": {
-        "totalRuns": 3,
-        "averageTotalTokens": 38150,
-        "tokensPerAccuracyPoint": 1315.52,
-        "estimatedUsd": 2.695125
+        "totalRuns": 23,
+        "averageTotalTokens": 52167,
+        "tokensPerAccuracyPoint": 13481.46,
+        "estimatedUsd": 30.67665
       }
     },
     {
-      "agentId": "researchanddevx-orchestrator-agent",
-      "name": "Researchanddevx Orchestrator Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/researchanddevx-xF8SDs.agents.json",
-      "healthScore": 65,
-      "qualityScore": 74,
-      "efficiencyScore": 65,
-      "concerns": [
-        "researchanddevx-orchestrator-agent has poor token/resource efficiency"
-      ],
-      "directives": [],
-      "tokenEconomy": {
-        "totalRuns": 5,
-        "averageTotalTokens": 33216,
-        "tokensPerAccuracyPoint": 1908.98,
-        "estimatedUsd": 4.37498
-      }
-    },
-    {
-      "agentId": "videopresentationforproductx-orchestrator-agent",
-      "name": "VideoPresentationForProductX Orchestrator Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/videopresentationforproductx-GtDUxv.agents.json",
-      "healthScore": 65,
-      "qualityScore": 74,
-      "efficiencyScore": 65,
+      "agentId": "adx-orchestrator-agent",
+      "name": "adx-orchestrator-agent",
+      "status": "observed",
+      "sourcePath": "",
+      "healthScore": 64,
+      "qualityScore": 73,
+      "efficiencyScore": 63,
       "concerns": [],
       "directives": [],
       "tokenEconomy": {
-        "totalRuns": 13,
-        "averageTotalTokens": 43103,
-        "tokensPerAccuracyPoint": 6295.96,
-        "estimatedUsd": 15.011525
-      }
-    },
-    {
-      "agentId": "webforbusinesses-orchestrator-agent",
-      "name": "Webforbusinesses Orchestrator Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/webforbusinesses-xu7qsM.agents.json",
-      "healthScore": 65,
-      "qualityScore": 75,
-      "efficiencyScore": 64,
-      "concerns": [
-        "webforbusinesses-orchestrator-agent has poor token/resource efficiency"
-      ],
-      "directives": [],
-      "tokenEconomy": {
-        "totalRuns": 13,
-        "averageTotalTokens": 55556,
-        "tokensPerAccuracyPoint": 8114.85,
-        "estimatedUsd": 20.21891
+        "totalRuns": 11,
+        "averageTotalTokens": 96057,
+        "tokensPerAccuracyPoint": 11872.24,
+        "estimatedUsd": 29.31607
       }
     },
     {
@@ -1273,10 +473,82 @@
       }
     },
     {
+      "agentId": "webforbusinesses-orchestrator-agent",
+      "name": "webforbusinesses-orchestrator-agent",
+      "status": "observed",
+      "sourcePath": "",
+      "healthScore": 65,
+      "qualityScore": 75,
+      "efficiencyScore": 64,
+      "concerns": [
+        "webforbusinesses-orchestrator-agent has poor token/resource efficiency"
+      ],
+      "directives": [],
+      "tokenEconomy": {
+        "totalRuns": 13,
+        "averageTotalTokens": 55556,
+        "tokensPerAccuracyPoint": 8114.85,
+        "estimatedUsd": 20.21891
+      }
+    },
+    {
+      "agentId": "researchanddevx-orchestrator-agent",
+      "name": "researchanddevx-orchestrator-agent",
+      "status": "observed",
+      "sourcePath": "",
+      "healthScore": 65,
+      "qualityScore": 74,
+      "efficiencyScore": 65,
+      "concerns": [
+        "researchanddevx-orchestrator-agent has poor token/resource efficiency"
+      ],
+      "directives": [],
+      "tokenEconomy": {
+        "totalRuns": 5,
+        "averageTotalTokens": 33216,
+        "tokensPerAccuracyPoint": 1908.98,
+        "estimatedUsd": 4.37498
+      }
+    },
+    {
+      "agentId": "videopresentationforproductx-orchestrator-agent",
+      "name": "videopresentationforproductx-orchestrator-agent",
+      "status": "observed",
+      "sourcePath": "",
+      "healthScore": 65,
+      "qualityScore": 74,
+      "efficiencyScore": 65,
+      "concerns": [],
+      "directives": [],
+      "tokenEconomy": {
+        "totalRuns": 13,
+        "averageTotalTokens": 43103,
+        "tokensPerAccuracyPoint": 6295.96,
+        "estimatedUsd": 15.011525
+      }
+    },
+    {
+      "agentId": "gymx-orchestrator-agent",
+      "name": "gymx-orchestrator-agent",
+      "status": "observed",
+      "sourcePath": "",
+      "healthScore": 65,
+      "qualityScore": 75,
+      "efficiencyScore": 64,
+      "concerns": [],
+      "directives": [],
+      "tokenEconomy": {
+        "totalRuns": 3,
+        "averageTotalTokens": 38150,
+        "tokensPerAccuracyPoint": 1315.52,
+        "estimatedUsd": 2.695125
+      }
+    },
+    {
       "agentId": "geofinderx-orchestrator-agent",
-      "name": "Geofinderx Orchestrator Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/geofinderx-2yFsDY.agents.json",
+      "name": "geofinderx-orchestrator-agent",
+      "status": "observed",
+      "sourcePath": "",
       "healthScore": 66,
       "qualityScore": 76,
       "efficiencyScore": 65,
@@ -1293,9 +565,9 @@
     },
     {
       "agentId": "voicex-orchestrator-agent",
-      "name": "VoiceX Orchestrator Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/voicex-4q9G58.agents.json",
+      "name": "voicex-orchestrator-agent",
+      "status": "observed",
+      "sourcePath": "",
       "healthScore": 66,
       "qualityScore": 76,
       "efficiencyScore": 65,
@@ -1310,9 +582,9 @@
     },
     {
       "agentId": "whatsappmediaanalyser-orchestrator-agent",
-      "name": "Whatsappmediaanalyser Orchestrator Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/whatsappmediaanalyser-oAeSvn.agents.json",
+      "name": "whatsappmediaanalyser-orchestrator-agent",
+      "status": "observed",
+      "sourcePath": "",
       "healthScore": 67,
       "qualityScore": 77,
       "efficiencyScore": 68,
@@ -1346,9 +618,9 @@
     },
     {
       "agentId": "cvmakerx-orchestrator-agent",
-      "name": "CVMakerX Orchestrator Agent",
-      "status": "unknown",
-      "sourcePath": "runtime/agents/projects/cvmakerx-e4XAzI.agents.json",
+      "name": "cvmakerx-orchestrator-agent",
+      "status": "observed",
+      "sourcePath": "",
       "healthScore": 69,
       "qualityScore": 80,
       "efficiencyScore": 68,

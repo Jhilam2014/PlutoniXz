@@ -1,0 +1,11 @@
+{
+  "workflow_id": "architecture-feature-relations-20260815",
+  "status": "deferred",
+  "deferred_reason": "chroma_local_generated_pending_install",
+  "pending_sync_count": 1,
+  "files_uploaded": 0,
+  "files_failed": 0,
+  "local_memory_written": true,
+  "provider": "chroma_local_generated",
+  "recorded_at": "2026-08-15T18:17:00Z"
+}

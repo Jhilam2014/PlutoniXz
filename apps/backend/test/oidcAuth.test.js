@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import crypto from "node:crypto";
 import test from "node:test";
-import { AuthenticationError, assertProductionIdentityConfiguration, externalIdentityFromRequest, verifyOidcToken } from "../src/auth.js";
+import { AuthenticationError, assertProductionIdentityConfiguration, externalIdentityFromRequest, userFromRequest, verifyOidcToken } from "../src/auth.js";
 
 const issuer = "https://issuer.test/plutonix-unit";
 const audience = "plutonix-api";
@@ -75,4 +75,20 @@ test("development header identities require the explicit non-production flag and
   assert.doesNotThrow(
     () => assertProductionIdentityConfiguration({ NODE_ENV: "production", PLUTONIX_AUTH_MODE: "oidc", OIDC_ISSUER: issuer, OIDC_AUDIENCE: audience, PLUTONIX_CORS_ORIGINS: "https://app.example" })
   );
+});
+
+test("development profile projects use the same subject alias as the Decision Continuity identity", () => {
+  const previous = process.env.PLUTONIX_DEV_AUTH_ENABLED;
+  process.env.PLUTONIX_DEV_AUTH_ENABLED = "true";
+  try {
+    const user = userFromRequest({
+      get: (name) => name === "x-plutonix-dev-subject" ? "local:local-plutonix-user" : "",
+      query: {}
+    });
+    assert.equal(user.id, "local:local-plutonix-user");
+    assert.deepEqual(user.aliases, ["anonymous"]);
+  } finally {
+    if (previous === undefined) delete process.env.PLUTONIX_DEV_AUTH_ENABLED;
+    else process.env.PLUTONIX_DEV_AUTH_ENABLED = previous;
+  }
 });

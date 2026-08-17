@@ -6,6 +6,7 @@ import fs from "fs-extra";
 import { nanoid } from "nanoid";
 import { estimateTokens, recordAgentTokenUsage } from "./tokenEconomy.js";
 import { productShapePrompt, validateProductShapeOutputs } from "./productShape.js";
+import { redactOperational } from "./operationalSecurity.js";
 
 const ignoredDirs = new Set(["node_modules", "dist", ".git"]);
 const largeArtifactExtensions = new Set([
@@ -49,6 +50,135 @@ function codexProcessEnvironment() {
   };
 }
 
+function gothamSandboxFeatureArgs() {
+  // Legacy Landlock cannot satisfy every provider permission profile. Keep it
+  // opt-in only; the default preflight must prove the normal workspace-write
+  // sandbox rather than silently selecting a weaker compatibility backend.
+  return process.env.GOTHAM_USE_LEGACY_LANDLOCK_FALLBACK === "true"
+    ? ["--enable", "use_legacy_landlock"]
+    : [];
+}
+
+export const GOTHAM_FAILURE_CLASSES = Object.freeze({
+  WORKSPACE_SANDBOX_UNAVAILABLE: "workspace_sandbox_unavailable"
+});
+
+function sandboxFailureReason(value) {
+  const text = String(value?.message || value || "").toLowerCase();
+  if (/apparmor/.test(text)) return "apparmor_denied";
+  if (/seccomp/.test(text)) return "seccomp_denied";
+  if (/unshare|new namespace|user namespace/.test(text)) return "user_namespace_denied";
+  if (/bwrap|bubblewrap/.test(text)) return "bubblewrap_initialization_failed";
+  return "workspace_sandbox_initialization_failed";
+}
+
+// Keep this deliberately scoped: a generic "permission denied" can be a
+// project error. Only known sandbox/runtime diagnoses become infrastructure
+// failures and therefore bypass automatic project-code repair.
+export function isGothamWorkspaceSandboxUnavailable(value) {
+  if (value?.workflowFailureClass === GOTHAM_FAILURE_CLASSES.WORKSPACE_SANDBOX_UNAVAILABLE ||
+      value?.failureClass === GOTHAM_FAILURE_CLASSES.WORKSPACE_SANDBOX_UNAVAILABLE ||
+      value?.code === GOTHAM_FAILURE_CLASSES.WORKSPACE_SANDBOX_UNAVAILABLE) return true;
+  const text = String(value?.message || value || "").toLowerCase();
+  return (
+    (/(?:bwrap|bubblewrap)/.test(text) && /(?:namespace|sandbox|operation not permitted|permission denied|denied)/.test(text)) ||
+    /(?:creating|create) (?:a )?new namespace.*(?:operation not permitted|permission denied|denied)/.test(text) ||
+    /unshare.*(?:failed|operation not permitted|permission denied|denied)/.test(text) ||
+    /apparmor.*(?:denied|namespace|sandbox)/.test(text) ||
+    /seccomp.*(?:denied|required syscall|sandbox)/.test(text) ||
+    /permission profiles?.*direct runtime enforcement.*(?:incompatible with|legacy[- ]landlock)/.test(text) ||
+    /legacy[- ]landlock.*(?:incompatible|direct runtime enforcement)/.test(text) ||
+    /sandbox (?:could not|cannot|can.t|failed to) (?:initialize|start|create)/.test(text) ||
+    /workspace (?:security policy|sandbox).*(?:prevented|denied|unavailable)/.test(text)
+  );
+}
+
+export function createGothamWorkspaceSandboxUnavailableError(preflight = {}) {
+  const diagnostic = redactedProcessOutputTail(preflight.diagnostic || preflight.error || "");
+  const error = new Error(
+    `Sandbox unavailable; Gotham did not start provider execution.${diagnostic ? ` Diagnostic: ${diagnostic}` : ""}`
+  );
+  error.name = "GothamWorkspaceSandboxUnavailableError";
+  error.code = GOTHAM_FAILURE_CLASSES.WORKSPACE_SANDBOX_UNAVAILABLE;
+  error.workflowFailureClass = GOTHAM_FAILURE_CLASSES.WORKSPACE_SANDBOX_UNAVAILABLE;
+  error.failureClass = GOTHAM_FAILURE_CLASSES.WORKSPACE_SANDBOX_UNAVAILABLE;
+  error.sandboxPreflight = preflight;
+  return error;
+}
+
+// This calls the same Codex sandbox implementation used for execution rather
+// than merely checking whether Bubblewrap is installed. It never opens a
+// workspace or passes an instruction to a model.
+export async function probeCodexWorkspaceSandbox(codexBin = process.env.CODEX_BIN || "codex", timeoutMs = Number(process.env.GOTHAM_SANDBOX_PREFLIGHT_TIMEOUT_MS || 8000)) {
+  return new Promise((resolve) => {
+    const output = [];
+    const errors = [];
+    let settled = false;
+    let timer;
+    const finish = (result) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolve(result);
+    };
+    let child;
+    try {
+      child = spawn(codexBin, [...gothamSandboxFeatureArgs(), "sandbox", "/bin/true"], {
+        env: codexProcessEnvironment(),
+        stdio: ["ignore", "pipe", "pipe"]
+      });
+    } catch (error) {
+      finish({
+        status: "unavailable",
+        component: "workspace_sandbox",
+        failureClass: GOTHAM_FAILURE_CLASSES.WORKSPACE_SANDBOX_UNAVAILABLE,
+        reason: "sandbox_probe_start_failed",
+        diagnostic: redactOperational(error.message || String(error)),
+        remediation: "Verify the Codex installation and the secure sandbox runtime."
+      });
+      return;
+    }
+    timer = setTimeout(() => {
+      child.kill("SIGTERM");
+      finish({
+        status: "unavailable",
+        component: "workspace_sandbox",
+        failureClass: GOTHAM_FAILURE_CLASSES.WORKSPACE_SANDBOX_UNAVAILABLE,
+        reason: "sandbox_probe_timed_out",
+        diagnostic: `Codex workspace sandbox probe exceeded ${Math.round(timeoutMs / 1000)} seconds.`,
+        remediation: "Verify the Codex sandbox runtime and host resource policy."
+      });
+    }, Math.max(1000, timeoutMs));
+    child.stdout?.setEncoding("utf8");
+    child.stderr?.setEncoding("utf8");
+    child.stdout?.on("data", (chunk) => output.push(chunk));
+    child.stderr?.on("data", (chunk) => errors.push(chunk));
+    child.on("error", (error) => finish({
+      status: "unavailable",
+      component: "workspace_sandbox",
+      failureClass: GOTHAM_FAILURE_CLASSES.WORKSPACE_SANDBOX_UNAVAILABLE,
+      reason: "sandbox_probe_start_failed",
+      diagnostic: redactOperational(error.message || String(error)),
+      remediation: "Verify the Codex installation and the secure sandbox runtime."
+    }));
+    child.on("close", (code) => {
+      if (code === 0) {
+        finish({ status: "ready", component: "workspace_sandbox", failureClass: "", reason: "", diagnostic: "", remediation: "" });
+        return;
+      }
+      const diagnostic = redactedProcessOutputTail([...errors, ...output]);
+      finish({
+        status: "unavailable",
+        component: "workspace_sandbox",
+        failureClass: GOTHAM_FAILURE_CLASSES.WORKSPACE_SANDBOX_UNAVAILABLE,
+        reason: sandboxFailureReason(diagnostic),
+        diagnostic,
+        remediation: "Verify host user namespaces, the approved AppArmor profile, and Docker seccomp policy. Gotham will not run unsandboxed."
+      });
+    });
+  });
+}
+
 export function shouldSkipHashFile(relativePath, stat) {
   const normalizedPath = String(relativePath || "").split(path.sep).join("/");
   const extension = path.extname(normalizedPath).toLowerCase();
@@ -88,6 +218,21 @@ function diffHashes(before, after) {
     if (!after.has(filePath)) changed.push(filePath);
   }
   return [...new Set(changed)].sort();
+}
+
+function redactedProcessOutputTail(chunks, maxLength = 1200) {
+  const text = (Array.isArray(chunks) ? chunks : [chunks]).join("").slice(-maxLength);
+  return redactOperational(text).replace(/\s+/g, " ").trim();
+}
+
+function childProcessFailureMessage(label, code, stderr, stdout) {
+  const stderrTail = redactedProcessOutputTail(stderr);
+  const stdoutTail = redactedProcessOutputTail(stdout);
+  const details = [
+    stderrTail ? `stderr: ${stderrTail}` : "",
+    stdoutTail ? `stdout: ${stdoutTail}` : ""
+  ].filter(Boolean);
+  return `${label} exited with code ${code}${details.length ? `: ${details.join(" | ")}` : "."}`;
 }
 
 function receiptIds(metadata = {}) {
@@ -315,6 +460,25 @@ Requirements:
 ${requirements}`;
 }
 
+export function copilotCliArgsForPrompt(promptText, { allowTools = ["shell(git)", "shell(node)"], binary = "copilot" } = {}) {
+  const prompt = String(promptText);
+  if (binary === "gh" || /(^|\s)gh(?:\s+copilot)?$/i.test(String(binary))) {
+    return [
+      "copilot",
+      "-p",
+      prompt,
+      ...allowTools.flatMap((tool) => ["--allow-tool", tool])
+    ];
+  }
+  return [
+    "-p",
+    prompt,
+    "--model",
+    "auto",
+    "--allow-all-tools"
+  ];
+}
+
 function emitCodexLine(line, emit, buildId, agentId) {
   const trimmed = line.trim();
   if (!trimmed) return;
@@ -330,14 +494,14 @@ function emitCodexLine(line, emit, buildId, agentId) {
       event.item?.message ||
       event.result?.message ||
       eventType;
-    emit("codex-progress", String(message).slice(0, 600), {
+    emit("codex-progress", String(message), {
       stage: "5/8",
       buildId,
       agentId,
       codexEventType: eventType
     });
   } catch {
-    emit("codex-progress", trimmed.slice(0, 600), {
+    emit("codex-progress", trimmed, {
       stage: "5/8",
       buildId,
       agentId
@@ -349,17 +513,18 @@ export function isRecoverableGothamModelsCacheError(value) {
   const line = String(value?.message || value || "");
   return (
     /codex_models_manager::(manager|cache)|gotham_models_manager::(manager|cache)/.test(line) &&
-    /missing field `supports_reasoning_summaries`/.test(line) &&
+    /missing field `(?:supports_reasoning_summaries|base_instructions)`/.test(line) &&
     /failed to (renew cache TTL|load models cache)/.test(line)
   );
 }
 
 export function isGothamCodexModelCompatibilityError(value) {
   const line = String(value?.message || value || "");
-  return /model requires a newer version of Codex|model metadata for .+ not found/i.test(line);
+  return /model requires a newer version of (?:Codex|Gotham)|model metadata for .+ not found/i.test(line);
 }
 
 export function classifyGothamWorkflowFailure(value) {
+  if (isGothamWorkspaceSandboxUnavailable(value)) return GOTHAM_FAILURE_CLASSES.WORKSPACE_SANDBOX_UNAVAILABLE;
   if (isRecoverableGothamModelsCacheError(value)) return "models_cache_incompatible";
   if (isGothamCodexModelCompatibilityError(value)) return "codex_cli_model_incompatible";
   return "workflow_execution_failed";
@@ -367,7 +532,7 @@ export function classifyGothamWorkflowFailure(value) {
 
 function requestedModelFromFailure(value) {
   const message = String(value?.message || value || "");
-  return message.match(/The ['\"]([^'\"]+)['\"] model requires a newer version of Codex/i)?.[1] || "";
+  return message.match(/The ['\"]([^'\"]+)['\"] model requires a newer version of (?:Codex|Gotham)/i)?.[1] || "";
 }
 
 export async function probeCodexCli(codexBin, timeoutMs = 8000) {
@@ -393,8 +558,6 @@ export async function probeCodexCli(codexBin, timeoutMs = 8000) {
     }
     timer = setTimeout(() => {
       child.kill("SIGTERM");
-      // The command was successfully started. A slow version response must not
-      // be rendered as an unavailable CLI while the actual workflow can run.
       finish({ available: true, status: "version_check_timed_out", version: "" });
     }, timeoutMs);
     child.stdout?.setEncoding("utf8");
@@ -410,6 +573,65 @@ export async function probeCodexCli(codexBin, timeoutMs = 8000) {
         version
       });
     });
+  });
+}
+
+export async function probeCopilotCli(timeoutMs = 8000) {
+  return new Promise((resolve) => {
+    let settled = false;
+    let timer;
+    const output = [];
+    const finish = (result) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolve(result);
+    };
+    const candidates = [
+      { command: "copilot", args: ["--help"] },
+      { command: "gh", args: ["copilot", "--help"] },
+      { command: "github-copilot", args: ["--help"] }
+    ].filter(({ command }) => command);
+    const tryNext = (index) => {
+      const candidate = candidates[index];
+      if (!candidate) {
+        finish({ available: false, status: "unavailable", version: "", command: "", error: "No Copilot CLI command available on PATH." });
+        return;
+      }
+      let child;
+      try {
+        child = spawn(candidate.command, candidate.args, {
+          env: codexProcessEnvironment(),
+          stdio: ["ignore", "pipe", "pipe"]
+        });
+      } catch (error) {
+        finish({ available: false, status: "unavailable", version: "", command: candidate.command, error: error.message || String(error) });
+        return;
+      }
+      timer = setTimeout(() => {
+        child.kill("SIGTERM");
+        finish({ available: true, status: "help_check_timed_out", version: "", command: candidate.command });
+      }, timeoutMs);
+      child.stdout?.setEncoding("utf8");
+      child.stderr?.setEncoding("utf8");
+      child.stdout?.on("data", (chunk) => output.push(chunk));
+      child.stderr?.on("data", (chunk) => output.push(chunk));
+      child.on("error", () => tryNext(index + 1));
+      child.on("close", (code) => {
+        const versionText = output.join("").trim();
+        const versionShape = /GitHub Copilot CLI|gh copilot|Runs the GitHub Copilot CLI|AI-powered coding assistant|Usage: copilot/i.test(versionText);
+        if (code === 0 && versionShape) {
+          finish({ available: true, status: "available", version: versionText.slice(0, 500), command: candidate.command });
+          return;
+        }
+        if (candidate.command === "github-copilot") {
+          finish({ available: false, status: "unavailable", version: "", command: "", error: versionText || "GitHub Copilot CLI not available." });
+          return;
+        }
+        tryNext(index + 1);
+      });
+    };
+    tryNext(0);
   });
 }
 
@@ -442,19 +664,39 @@ async function quarantineGothamModelCaches() {
   return moved;
 }
 
+export function resolveGothamRuntime({ codexBin = process.env.CODEX_BIN || "codex", codexProbe = { available: false, status: "not_checked", version: "" }, copilotProbe = { available: false, status: "not_checked", version: "", command: "" } } = {}) {
+  if (codexProbe.available) return { kind: "codex", bin: codexBin, probe: codexProbe };
+  if (copilotProbe.available) {
+    const normalizedCopilotProbe = { ...copilotProbe, command: copilotProbe.command || "copilot" };
+    return { kind: "copilot", bin: normalizedCopilotProbe.command || "copilot", probe: normalizedCopilotProbe };
+  }
+  return { kind: "none", bin: "", probe: codexProbe };
+}
+
 export async function runCodexWorkflow(orchestratedRequest, options = {}) {
   const emit = typeof options.emit === "function" ? options.emit : () => {};
   const signal = options.signal;
   if (signal?.aborted) throw new Error("Gotham workflow was stopped by the user.");
   const generatedSiteDir =
     options.generatedSiteDir || process.env.GENERATED_SITE_DIR || path.resolve(process.cwd(), "../generated-site");
-  const codexBin = process.env.CODEX_BIN || "codex";
+  const preferredCodexBin = process.env.CODEX_BIN || "codex";
   const selectedModel = options.model || "";
-  const codexProbe = process.env.GOTHAM_RUNTIME_PROBE === "true"
-    ? await probeCodexCli(codexBin)
-    : { available: null, status: "not_checked", version: "" };
+  const runtimeProbeEnabled = process.env.GOTHAM_RUNTIME_PROBE !== "false";
+  const codexProbe = runtimeProbeEnabled
+    ? await probeCodexCli(preferredCodexBin)
+    : { available: false, status: "not_checked", version: "" };
+  const copilotProbe = runtimeProbeEnabled && !codexProbe.available
+    ? await probeCopilotCli()
+    : { available: false, status: codexProbe.available ? "not_needed" : "not_checked", version: "" };
+  const effectiveRuntime = resolveGothamRuntime({ codexBin: preferredCodexBin, codexProbe, copilotProbe });
   const codexVersion = codexProbe.version;
   const codexCliStatus = codexCliLabel(codexProbe);
+  const runtimeKind = effectiveRuntime.kind;
+  const runtimeCommand = effectiveRuntime.bin || preferredCodexBin;
+  const sandboxPreflightEnabled = runtimeProbeEnabled && process.env.GOTHAM_SANDBOX_PREFLIGHT !== "false";
+  const sandboxPreflight = runtimeKind === "codex" && sandboxPreflightEnabled
+    ? await probeCodexWorkspaceSandbox(runtimeCommand)
+    : { status: "not_applicable", component: "workspace_sandbox", failureClass: "", reason: "", diagnostic: "", remediation: "" };
   const timeoutMs = Number(options.timeoutMs ?? process.env.CODEX_WORKFLOW_TIMEOUT_MS ?? 10 * 60 * 1000);
   const inactivityTimeoutMs = Math.max(1000, timeoutMs);
   const sourceInstruction = orchestratedRequest.sourceInstruction || orchestratedRequest.objective || "";
@@ -466,6 +708,37 @@ export async function runCodexWorkflow(orchestratedRequest, options = {}) {
   const promptText = codexPrompt(sourceInstruction, orchestratedRequest, hasProjectOrchestrator);
   const quarantinedModelCaches = options.recoverModelsCache ? await quarantineGothamModelCaches() : [];
 
+  emit("preflight.started", "Gotham is verifying the selected provider's secure workspace sandbox.", {
+    stage: "preflight",
+    provider: runtimeKind,
+    component: sandboxPreflight.component,
+    parentWorkflowId: orchestratedRequest.orchestrationEnvelope?.parentWorkflowId || buildId
+  });
+  if (sandboxPreflight.status === "unavailable") {
+    emit("preflight.failed", "Sandbox unavailable; Gotham did not start provider execution.", {
+      stage: "preflight",
+      provider: runtimeKind,
+      parentWorkflowId: orchestratedRequest.orchestrationEnvelope?.parentWorkflowId || buildId,
+      ...sandboxPreflight
+    });
+    emit("execution.blocked", "Execution was blocked because the secure workspace sandbox could not be initialized.", {
+      stage: "execution",
+      provider: runtimeKind,
+      parentWorkflowId: orchestratedRequest.orchestrationEnvelope?.parentWorkflowId || buildId,
+      failureClass: GOTHAM_FAILURE_CLASSES.WORKSPACE_SANDBOX_UNAVAILABLE,
+      reason: sandboxPreflight.reason
+    });
+    throw createGothamWorkspaceSandboxUnavailableError(sandboxPreflight);
+  }
+  emit("preflight.succeeded", sandboxPreflight.status === "ready"
+    ? "Gotham verified the secure workspace sandbox."
+    : "Provider sandbox preflight is not applicable to the selected runtime.", {
+    stage: "preflight",
+    provider: runtimeKind,
+    parentWorkflowId: orchestratedRequest.orchestrationEnvelope?.parentWorkflowId || buildId,
+    sandboxPreflight
+  });
+
   await fs.ensureDir(generatedSourceDir);
   const before = await collectFileHashes(generatedSiteDir);
   const startedAt = Date.now();
@@ -475,10 +748,11 @@ export async function runCodexWorkflow(orchestratedRequest, options = {}) {
     buildId,
     generatedSiteDir,
     generatedSourceDir,
-    codexBin,
+    codexBin: runtimeCommand,
+    runtimeKind,
     codexVersion: codexCliStatus,
     codexCliStatus: codexProbe.status,
-    codexCliError: codexProbe.error || "",
+    codexCliError: codexProbe.error || (runtimeKind === "copilot" ? copilotProbe.error || "" : ""),
     requestedModel: selectedModel || "Codex configuration default",
     agentInput: sourceInstruction.slice(0, 12000),
     agentPrompt: promptText.slice(0, 12000),
@@ -489,38 +763,46 @@ export async function runCodexWorkflow(orchestratedRequest, options = {}) {
     orchestratorPolicyPath: hasProjectOrchestrator ? projectOrchestratorPath : null,
     modelsCacheRecovery: options.recoverModelsCache
       ? { attempted: true, quarantinedFiles: quarantinedModelCaches.map((file) => path.basename(file)) }
-      : null
+      : null,
+    sandboxPreflight
   });
-  emit("gotham-runtime-verified", `Gotham CLI ${codexCliStatus}; model ${selectedModel || "from Codex configuration"}`, {
+  emit("gotham-runtime-verified", `Gotham runtime ${runtimeKind}; model ${selectedModel || (runtimeKind === "copilot" ? "from Copilot CLI" : "from Codex configuration") }`, {
     stage: "runtime",
     buildId,
-    codexBin,
+    codexBin: runtimeCommand,
+    runtimeKind,
     codexVersion: codexCliStatus,
     codexCliStatus: codexProbe.status,
-    codexCliError: codexProbe.error || "",
+    codexCliError: codexProbe.error || (runtimeKind === "copilot" ? copilotProbe.error || "" : ""),
     requestedModel: selectedModel || "",
     fallbackModel: process.env.GOTHAM_FALLBACK_MODEL || ""
   });
 
-  const args = [
-    "exec",
-    "--json",
-    "--cd",
-    generatedSiteDir,
-    "--skip-git-repo-check",
-    "--ephemeral",
-    "--sandbox",
-    "workspace-write",
-    ...(selectedModel ? ["--model", selectedModel] : []),
-    promptText
-  ];
+  const effectiveCopilotBin = runtimeKind === "copilot" ? (effectiveRuntime.bin || "copilot") : runtimeCommand;
+  const args = runtimeKind === "copilot"
+    ? copilotCliArgsForPrompt(promptText, { binary: effectiveCopilotBin })
+    : [
+        ...gothamSandboxFeatureArgs(),
+        "exec",
+        "--json",
+        "--cd",
+        generatedSiteDir,
+        "--skip-git-repo-check",
+        "--ephemeral",
+        "--sandbox",
+        "workspace-write",
+        ...(selectedModel ? ["--model", selectedModel] : []),
+        promptText
+      ];
 
   const output = [];
   const errors = [];
   await new Promise((resolve, reject) => {
-    const child = spawn(codexBin, args, {
+    const child = spawn(runtimeKind === "copilot" ? effectiveCopilotBin : runtimeCommand, args, {
       cwd: generatedSiteDir,
       env: codexProcessEnvironment(),
+      // Codex appends a piped stdin stream to an argument prompt. Ignore stdin
+      // so it runs only the Gotham Chat instruction and never waits for more.
       stdio: ["ignore", "pipe", "pipe"]
     });
 
@@ -583,7 +865,7 @@ export async function runCodexWorkflow(orchestratedRequest, options = {}) {
         resolveOnce();
         return;
       }
-      const error = new Error(`Gotham workflow exited with code ${code}: ${errors.join("").slice(-2000)}`);
+      const error = new Error(childProcessFailureMessage("Gotham workflow", code, errors, output));
       error.workflowFailureClass = classifyGothamWorkflowFailure(error);
       error.requestedModel = selectedModel || requestedModelFromFailure(error);
       error.codexVersion = codexVersion;
@@ -642,7 +924,8 @@ export async function runCodexWorkflow(orchestratedRequest, options = {}) {
     title: orchestratedRequest.topic || "Generated Site",
     instructionHash,
     runtime: {
-      codexBin,
+      codexBin: runtimeCommand,
+      runtimeKind,
       codexVersion,
       selectedModel: selectedModel || requestedModelFromFailure("") || ""
     },
@@ -656,7 +939,7 @@ export async function runCodexWorkflow(orchestratedRequest, options = {}) {
       reason: "Changed by current Gotham CLI workflow."
     })),
     codex: {
-      command: codexBin,
+      command: runtimeCommand,
       durationMs,
       outputTail: outputText.slice(-4000)
     },
@@ -717,6 +1000,7 @@ Rules:
 
   await new Promise((resolve, reject) => {
     const child = spawn(codexBin, [
+      ...gothamSandboxFeatureArgs(),
       "exec", "--json", "--cd", generatedSiteDir, "--skip-git-repo-check", "--ephemeral",
       "--sandbox", "read-only", promptText
     ], {
@@ -740,7 +1024,7 @@ Rules:
     child.on("error", (error) => { clearTimeout(timer); reject(error); });
     child.on("close", (code) => {
       clearTimeout(timer);
-      code === 0 ? resolve() : reject(new Error(`Independent review exited with code ${code}: ${errors.join("").slice(-2000)}`));
+      code === 0 ? resolve() : reject(new Error(childProcessFailureMessage("Independent review", code, errors, output)));
     });
   });
 
@@ -816,6 +1100,7 @@ function repairArgsFor(candidate, promptText, generatedSiteDir) {
       .map((part) => part === "{prompt}" ? promptText : part === "{cwd}" ? generatedSiteDir : part);
   }
   return [
+    ...gothamSandboxFeatureArgs(),
     "exec",
     "--json",
     "--cd",
@@ -828,11 +1113,56 @@ function repairArgsFor(candidate, promptText, generatedSiteDir) {
   ];
 }
 
+function completionCheckArgsFor(candidate, promptText, generatedSiteDir) {
+  if (candidate.kind === "claude" || /(^|\/)claude(?:$|\.cmd$)/i.test(candidate.bin)) {
+    return [
+      "-p",
+      promptText,
+      "--permission-mode",
+      "acceptEdits"
+    ];
+  }
+  if (candidate.kind === "custom" && process.env.PLUTONIX_REPAIR_ARGS) {
+    return process.env.PLUTONIX_REPAIR_ARGS
+      .split(/\s+/)
+      .filter(Boolean)
+      .map((part) => part === "{prompt}" ? promptText : part === "{cwd}" ? generatedSiteDir : part);
+  }
+  return [
+    ...gothamSandboxFeatureArgs(),
+    "exec",
+    "--json",
+    "--cd",
+    generatedSiteDir,
+    "--skip-git-repo-check",
+    "--ephemeral",
+    "--sandbox",
+    "read-only",
+    promptText
+  ];
+}
+
+export function parseCompletionCheckResult(text) {
+  const normalized = String(text || "");
+  const match = normalized.match(/PLUTONIX_COMPLETION_CHECK:\s*(PASS|FAIL)(?::\s*([^\n]+))?/i);
+  if (!match) {
+    return { pass: false, status: "FAIL", reason: "No completion-check marker was returned." };
+  }
+  const status = match[1].toUpperCase();
+  const reason = String(match[2] || "").trim();
+  return {
+    pass: status === "PASS",
+    status,
+    reason
+  };
+}
+
 function repairPrompt(orchestratedRequest, failure, options = {}) {
   const originalInstruction = orchestratedRequest.sourceInstruction || orchestratedRequest.objective || "";
   const changedFiles = Array.isArray(options.changedFiles) ? options.changedFiles : [];
   const failureMessage = String(failure?.message || failure || "");
   const intelProfile = options.intelProfile || null;
+  const zeroChangeExecution = /completed but did not change any (?:meaningful project or requested artifact )?files/i.test(failureMessage);
   return `You are the automatic recovery model for PlutoniX.
 
 PlutoniX already ran Gotham/Codex for this project, but execution or preview validation failed. Your job is to fix the project in-place so the app can install, start, and preview successfully.
@@ -851,6 +1181,11 @@ ${JSON.stringify({
 
 Failure/error to repair:
 ${failureMessage}
+
+${zeroChangeExecution ? `Repair classification: requested-task completion failure.
+- The prior model exited without changing a project file, so the requested feature was not implemented.
+- Implement the original user instruction directly; do not treat a healthy preview or an unchanged workspace as success.
+- Before you finish, verify that at least one in-scope project file was created or modified for the requested behavior.` : "Repair classification: runtime or validation failure."}
 
 ${intelProfile ? `Intel repair contract:
 - Selected profile: ${intelProfile.displayName || intelProfile.id} (${intelProfile.id}).
@@ -871,6 +1206,34 @@ Rules:
 - Do not start long-running dev servers. Short validation/build commands are allowed only if they terminate.
 - Keep secrets out of files.
 - End with a concise summary of changed files and why the failure should be fixed.`;
+}
+
+function completionCheckPrompt(orchestratedRequest, options = {}) {
+  const originalInstruction = orchestratedRequest.sourceInstruction || orchestratedRequest.objective || "";
+  const generatedSiteDir = options.generatedSiteDir || process.env.GENERATED_SITE_DIR || path.resolve(process.cwd(), "../generated-site");
+  const changedFiles = Array.isArray(options.changedFiles) ? options.changedFiles : [];
+  return `You are the PlutoniX completion checker.
+
+Your job is to decide whether a repaired project now satisfies the original task instruction. You are not allowed to change files. Inspect the workspace and answer strictly using the markers below.
+
+Original user instruction:
+${originalInstruction}
+
+Project workspace:
+${generatedSiteDir}
+
+Files changed by the repair attempt:
+${JSON.stringify(changedFiles, null, 2)}
+
+Rules:
+- Determine whether the specific user request is now satisfied with the current project files.
+- Use the original instruction as the source of truth, not the earlier error message.
+- If the task is still incomplete, missing behavior, broken preview, wrong artifact type, or violates the requested objective, return FAIL.
+- If the task is now satisfied, return PASS.
+- Keep the answer compact and factual.
+- End with exactly these markers on separate lines:
+PLUTONIX_COMPLETION_CHECK: PASS or FAIL: <one clause explaining the result>
+PLUTONIX_REVIEW: PASS or FAIL: <one clause explaining the result>`;
 }
 
 export async function runModelRepairWorkflow(orchestratedRequest, failure, options = {}) {
@@ -945,13 +1308,75 @@ export async function runModelRepairWorkflow(orchestratedRequest, failure, optio
         });
         child.on("error", rejectOnce);
         child.on("close", (code) => {
-          code === 0 ? resolveOnce() : rejectOnce(new Error(`${candidate.kind} repair exited with code ${code}: ${stderr.join("").slice(-2000)}`));
+          code === 0 ? resolveOnce() : rejectOnce(new Error(childProcessFailureMessage(`${candidate.kind} repair`, code, stderr, output)));
         });
       });
 
       const after = await collectFileHashes(generatedSiteDir);
       const changedFiles = diffHashes(before, after);
-      if (!changedFiles.length) throw new Error(`${candidate.kind} repair completed but did not change any files.`);
+      if (!changedFiles.length) {
+        const outputTail = redactedProcessOutputTail([...output, ...stderr]);
+        throw new Error(`${candidate.kind} repair completed but did not change any files.${outputTail ? ` Model output: ${outputTail}` : ""}`);
+      }
+      const normalizedFiles = changedFiles.map((filePath) => filePath.split(path.sep).join("/"));
+      const completionCheckPromptText = completionCheckPrompt(orchestratedRequest, {
+        generatedSiteDir,
+        changedFiles: normalizedFiles
+      });
+      const completionOutput = [];
+      const completionErrors = [];
+      try {
+        await new Promise((resolve, reject) => {
+          const child = spawn(candidate.bin, completionCheckArgsFor(candidate, completionCheckPromptText, generatedSiteDir), {
+            cwd: generatedSiteDir,
+            env: { ...process.env, CI: "1", NO_COLOR: "1" },
+            stdio: ["ignore", "pipe", "pipe"]
+          });
+          let timer;
+          let settled = false;
+          const rejectOnce = (error) => {
+            if (settled) return;
+            settled = true;
+            clearTimeout(timer);
+            reject(error);
+          };
+          const resolveOnce = () => {
+            if (settled) return;
+            settled = true;
+            clearTimeout(timer);
+            resolve();
+          };
+          const resetTimer = () => {
+            clearTimeout(timer);
+            timer = setTimeout(() => {
+              child.kill("SIGTERM");
+              rejectOnce(new Error(`Completion check produced no output for ${Math.round(timeoutMs / 1000)} seconds and was stopped.`));
+            }, timeoutMs);
+          };
+          resetTimer();
+          child.stdout.setEncoding("utf8");
+          child.stderr.setEncoding("utf8");
+          child.stdout.on("data", (chunk) => {
+            resetTimer();
+            completionOutput.push(chunk);
+          });
+          child.stderr.on("data", (chunk) => {
+            resetTimer();
+            completionErrors.push(chunk);
+          });
+          child.on("error", rejectOnce);
+          child.on("close", (code) => {
+            code === 0 ? resolveOnce() : rejectOnce(new Error(childProcessFailureMessage(`${candidate.kind} completion check`, code, completionErrors, completionOutput)));
+          });
+        });
+      } catch (completionError) {
+        throw new Error(`Repair model succeeded but the completion check failed to run: ${completionError.message}`);
+      }
+      const completionText = completionOutput.join("");
+      const completionCheck = parseCompletionCheckResult(completionText);
+      if (!completionCheck.pass) {
+        throw new Error(`${candidate.kind} repair was not accepted by the completion gate: ${completionCheck.reason || "missing required behavior remained after repair."}`);
+      }
       const durationMs = Date.now() - startedAt;
       const outputText = output.join("");
       const tokenUsage = await recordAgentTokenUsage({
@@ -966,15 +1391,16 @@ export async function runModelRepairWorkflow(orchestratedRequest, failure, optio
         inputTokens: estimateTokens(promptText),
         outputTokens: estimateTokens(outputText),
         durationMs,
-        changedFiles: changedFiles.length
+        changedFiles: normalizedFiles.length,
+        validationStatus: "passed"
       });
-      const normalizedFiles = changedFiles.map((filePath) => filePath.split(path.sep).join("/"));
       emit("plutonix-repair-complete", `Automatic repair changed ${normalizedFiles.length} files`, {
         stage: "repair",
         repairId,
         modelKind: candidate.kind,
         changedFiles: normalizedFiles,
-        tokenUsage
+        tokenUsage,
+        completionCheck
       });
       return {
         repairId,
@@ -988,6 +1414,7 @@ export async function runModelRepairWorkflow(orchestratedRequest, failure, optio
           path: filePath,
           reason: "Changed by automatic PlutoniX repair after Gotham failure."
         })),
+        completionCheck,
         tokenUsage
       };
     } catch (error) {

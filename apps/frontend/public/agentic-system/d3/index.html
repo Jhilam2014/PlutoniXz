@@ -46,7 +46,7 @@
             <i data-lucide="activity" aria-hidden="true"></i><span>Live execution</span>
           </button>
           <button type="button" role="tab" data-view-mode="explore" aria-selected="false">
-            <i data-lucide="compass" aria-hidden="true"></i><span>Explore</span>
+            <i data-lucide="compass" aria-hidden="true"></i><span>Explore architecture</span>
           </button>
         </div>
 
@@ -113,13 +113,6 @@
             <span>Relationship</span>
             <select id="relationship-filter"></select>
           </label>
-          <label>
-            <span>Focus depth</span>
-            <select id="depth-filter">
-              <option value="1">1 hop</option>
-              <option value="2">2 hops</option>
-            </select>
-          </label>
           <button id="clear-filters" class="text-button" type="button">
             <i data-lucide="x" aria-hidden="true"></i><span>Clear filters</span>
           </button>
@@ -135,6 +128,15 @@
       </div>
 
       <section class="graph-workspace">
+        <aside id="architecture-panel" class="architecture-panel" aria-label="Explore architecture guide" hidden>
+          <header class="architecture-panel-header">
+            <span>Explore architecture</span>
+            <strong>Functionality inspector</strong>
+          </header>
+          <section id="architecture-selection" class="architecture-selection" aria-live="polite">
+            <p>Select a node to inspect its functionality, ownership, and branch provenance.</p>
+          </section>
+        </aside>
         <div class="graph-main">
           <div
             id="graph"
@@ -155,6 +157,7 @@
               <strong>Loading system topology</strong>
               <span>Connecting to the runtime graph...</span>
             </div>
+            <section id="legend" class="graph-legend" aria-label="Graph legend"></section>
 
             <div class="zoom-controls" role="group" aria-label="Zoom controls">
               <button id="zoom-in" class="icon-button" type="button" aria-label="Zoom in" title="Zoom in">
@@ -165,7 +168,6 @@
               </button>
             </div>
 
-            <section id="legend" class="graph-legend" aria-label="Graph legend"></section>
             <section id="entity-list-panel" class="entity-list-panel" aria-label="Visible entities" hidden>
               <header>
                 <div><span>Navigator</span><strong>Visible entities</strong></div>

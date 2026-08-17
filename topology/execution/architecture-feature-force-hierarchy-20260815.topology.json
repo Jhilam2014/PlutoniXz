@@ -1,0 +1,23 @@
+{
+  "workflow_id": "architecture-feature-force-hierarchy-20260815",
+  "status": "completed",
+  "nodes": [
+    { "id": "diagnose-api-only-projection", "type": "task", "status": "completed" },
+    { "id": "extract-source-features", "type": "task", "status": "completed" },
+    { "id": "build-feature-hierarchy", "type": "task", "status": "completed" },
+    { "id": "render-force-canvas", "type": "task", "status": "completed" },
+    { "id": "remove-hop-filtering", "type": "task", "status": "completed" },
+    { "id": "render-directed-relationships", "type": "task", "status": "completed" },
+    { "id": "standardize-architecture-nodes", "type": "task", "status": "completed" },
+    { "id": "validate-architecture-view", "type": "validation", "status": "completed" }
+  ],
+  "links": [
+    { "source": "diagnose-api-only-projection", "target": "extract-source-features", "type": "informs" },
+    { "source": "extract-source-features", "target": "build-feature-hierarchy", "type": "precedes" },
+    { "source": "build-feature-hierarchy", "target": "render-force-canvas", "type": "precedes" },
+    { "source": "render-force-canvas", "target": "remove-hop-filtering", "type": "precedes" },
+    { "source": "remove-hop-filtering", "target": "render-directed-relationships", "type": "precedes" },
+    { "source": "render-directed-relationships", "target": "standardize-architecture-nodes", "type": "precedes" },
+    { "source": "standardize-architecture-nodes", "target": "validate-architecture-view", "type": "precedes" }
+  ]
+}

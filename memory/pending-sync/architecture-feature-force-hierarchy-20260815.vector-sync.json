@@ -1,0 +1,14 @@
+{
+  "workflow_id": "architecture-feature-force-hierarchy-20260815",
+  "agent_id": "project-execution-agent",
+  "provider": "chroma_local_generated",
+  "collection": "agent_prompts",
+  "status": "pending_install",
+  "content_references": [
+    "memory/agent-knowledge/prompts/architecture-feature-force-hierarchy-20260815.project-execution-agent.task.prompt.md",
+    "memory/agent-knowledge/prompts/architecture-feature-force-hierarchy-20260815.project-execution-agent.direct-relationships-correction.prompt.md",
+    "memory/agent-knowledge/projects/architecture-feature-force-hierarchy-2026-08-15.summary.md"
+  ],
+  "sanitized": true,
+  "created_at": "2026-08-15T17:11:08Z"
+}

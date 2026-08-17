@@ -315,8 +315,12 @@ async function assertQueuedSubmission(pool, entry, response, before) {
 
 test("the lifecycle HTTP authorization and tenant-isolation matrix covers every registered route against PostgreSQL", options, async (context) => {
   const matrix = decisionContinuityHttpSecurityMatrix();
-  assert.deepEqual(assertDecisionContinuityHttpSecurityCoverage(matrix), { inventory: 19, matrixCases: 19 });
+  assert.deepEqual(assertDecisionContinuityHttpSecurityCoverage(matrix), { inventory: 21, matrixCases: 21 });
   assert.equal(matrix.length, Object.keys(DECISION_CONTINUITY_LIFECYCLE_ROUTES).length);
+  // Architecture discovery has an independent project fixture because its
+  // route binds an actual managed project to a Decision Continuity tenant.
+  // Keep the generic branch/workflow matrix on its existing ledger fixtures.
+  const ledgerMatrix = matrix.filter((entry) => !["architecture_branch_discovery", "architecture_branch_list"].includes(entry.key));
 
   const previousEnvironment = Object.fromEntries([
     "NODE_ENV", "DECISION_CONTINUITY_ADAPTER", "DECISION_CONTINUITY_DATABASE_URL", "DECISION_CONTINUITY_DURABLE_WORKFLOWS",
@@ -391,7 +395,7 @@ test("the lifecycle HTTP authorization and tenant-isolation matrix covers every 
 
   const totals = { matrixCases: 0, unauthenticated: 0, insufficientCapability: 0, crossTenant: 0, tenantMismatch: 0, authorizedSuccess: 0, headerTenantTamper: 0, queryTenantTamper: 0, bodyTenantTamper: 0, pathCrossTenant: 0, missingTenant: 0, invalidContentType: 0, invalidPayload: 0 };
   const standardCases = ["unauthenticated", "insufficient_capability", "cross_tenant", "tenant_mismatch", "authorized_success"];
-  for (const entry of matrix) {
+  for (const entry of ledgerMatrix) {
     for (const caseName of standardCases) {
       const before = await effectSnapshot(fixtureQueue.pool);
       const input = requestCase(entry, caseName, fixtureA);

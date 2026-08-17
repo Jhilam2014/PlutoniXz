@@ -1,0 +1,11 @@
+{
+  "workflow_id": "architecture-feature-relations-20260815",
+  "provider": "chroma_local_generated",
+  "status": "pending",
+  "reason": "Local ChromaDB provider is generated but pending installation.",
+  "files": [
+    "memory/agent-knowledge/projects/architecture-feature-relations-2026-08-15.summary.md",
+    "memory/agent-knowledge/prompts/architecture-feature-relations-20260815.project-execution-agent.task.prompt.md"
+  ],
+  "created_at": "2026-08-15T18:17:00Z"
+}

@@ -1,0 +1,55 @@
+{
+  "agent_id": "artifact-production-agent",
+  "agent_name": "Artifact Production Agent",
+  "role": "artifact-production",
+  "definitionType": "AgentDefinition",
+  "scope": "global_reusable",
+  "version": "1.0.0",
+  "status": "active",
+  "capability_score": {
+    "capabilityScore": 60,
+    "deliverableAccuracyScore": 50,
+    "reliabilityScore": 50,
+    "adaptabilityScore": 70,
+    "reuseConfidenceScore": 40,
+    "successCount": 0,
+    "failureCount": 0,
+    "repeatedCorrectionCount": 0
+  },
+  "projectAssignments": [
+    {
+      "id": "project-agent-assignment:cvmakerx-e4XAzI:artifact-production-agent",
+      "projectId": "cvmakerx-e4XAzI",
+      "agentId": "artifact-production-agent",
+      "role": "artifact-production",
+      "projectResponsibility": "Produce and validate the requested document as the primary deliverable without substituting an app shell.",
+      "status": "active",
+      "contextPath": ".agentic/orchestrator-agent.md",
+      "createdAt": "2026-08-16T08:45:56.199Z"
+    }
+  ],
+  "reuse_decisions": [
+    {
+      "id": "agent-reuse:cvmakerx-e4XAzI:artifact-production-agent",
+      "projectExecution": "cvmakerx-e4XAzI",
+      "selectedAgent": "artifact-production-agent",
+      "requestedRole": "artifact-production",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global artifact-production definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:56.199Z"
+    }
+  ],
+  "latest_reuse_decision": {
+    "id": "agent-reuse:cvmakerx-e4XAzI:artifact-production-agent",
+    "projectExecution": "cvmakerx-e4XAzI",
+    "selectedAgent": "artifact-production-agent",
+    "requestedRole": "artifact-production",
+    "decisionType": "exact_reuse",
+    "reuseConfidenceScore": 100,
+    "similarityScore": 1,
+    "reason": "Reused the existing global artifact-production definition; project context is stored in a separate assignment.",
+    "createdAt": "2026-08-16T08:45:56.199Z"
+  }
+}

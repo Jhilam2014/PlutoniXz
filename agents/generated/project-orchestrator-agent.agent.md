@@ -1,0 +1,14 @@
+# Project Orchestrator Agent
+
+agent_id: "project-orchestrator-agent"
+role: "project-orchestrator"
+source: "local-agent-registry"
+definition_type: "AgentDefinition"
+scope: "global_reusable"
+version: "1.0.0"
+
+## Responsibility
+Read the project instruction, decide required specialist bindings, and coordinate Gotham workflow handoff.
+
+## Reuse Contract
+This is a project-neutral agent definition. Bind project objectives, workspace paths, and runtime context through a ProjectAgentAssignment and the project-local `.agentic/` overlay.

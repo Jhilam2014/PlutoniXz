@@ -3,11 +3,35 @@
   "type": "object",
   "additionalProperties": false,
   "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "projectExecution": {
+      "type": "string",
+      "minLength": 1
+    },
     "selectedAgent": {
-      "type": "string"
+      "type": "string",
+      "minLength": 1
+    },
+    "requestedRole": {
+      "type": "string",
+      "minLength": 1
     },
     "decisionType": {
-      "type": "string"
+      "type": "string",
+      "enum": [
+        "exact_reuse",
+        "reuse_with_minor_instruction_update",
+        "reuse_with_skill_upgrade",
+        "create_new_agent",
+        "merge_duplicate_agents",
+        "archive_low_performing_agent",
+        "human_review_required",
+        "reuse_rejected_due_to_low_score",
+        "reuse_rejected_due_to_permission_risk"
+      ]
     },
     "reuseConfidenceScore": {
       "type": "integer",
@@ -15,14 +39,28 @@
       "maximum": 100
     },
     "similarityScore": {
-      "type": "number"
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
     },
     "reason": {
-      "type": "string"
+      "type": "string",
+      "minLength": 1
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
     }
   },
   "required": [
+    "id",
+    "projectExecution",
+    "selectedAgent",
+    "requestedRole",
     "decisionType",
-    "reason"
+    "reuseConfidenceScore",
+    "similarityScore",
+    "reason",
+    "createdAt"
   ]
 }

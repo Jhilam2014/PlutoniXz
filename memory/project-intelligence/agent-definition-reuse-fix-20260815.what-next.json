@@ -1,0 +1,35 @@
+{
+  "recordedAt": "2026-08-15T16:30:00Z",
+  "source": "plutonix-orchestrator",
+  "projectId": "plutonix",
+  "projectName": "PlutoniX",
+  "instructionSummary": "Fix repeated project-prefixed agent creation using reusable definitions and project assignments.",
+  "candidateDevelopmentPaths": [
+    "keep project-prefixed definitions",
+    "deduplicate display only",
+    "separate global definitions from project assignments"
+  ],
+  "selectedPath": "separate global definitions from project assignments",
+  "rejectedPaths": [
+    { "path": "keep project-prefixed definitions", "reason": "Preserves semantic duplicates and makes project count drive agent count." },
+    { "path": "deduplicate display only", "reason": "Hides duplication without correcting identity, persistence, or lifecycle semantics." }
+  ],
+  "confidenceScore": 97,
+  "evidenceUsed": [
+    "projectAgents.js generated IDs from project slug",
+    "global catalog was not used by the generation path",
+    "generated Markdown stored project context as agent identity",
+    "equivalent-project regression tests"
+  ],
+  "humanInputNeeded": false,
+  "resultingFiles": [
+    "apps/backend/src/projectAgents.js",
+    "apps/backend/src/globalAgentKnowledge.js",
+    "apps/backend/src/server.js",
+    "apps/backend/test/projectAgentReuse.test.js",
+    "schemas/agent-definition.schema.json",
+    "schemas/project-agent-assignment.schema.json"
+  ],
+  "validationStatus": "targeted_pass; full_suite_160_of_162_with_two_unrelated_failures",
+  "followUpRecommendation": "Allow startup migration to archive legacy managed definitions; do not delete shared definitions when projects are removed."
+}

@@ -1,0 +1,13 @@
+{
+  "workflow_id": "architecture-feature-relations-20260815",
+  "status": "completed",
+  "agent_id": "project-execution-agent",
+  "reuse_decision": {
+    "decisionType": "exact_reuse",
+    "reuseConfidenceScore": 97,
+    "similarityScore": 0.99,
+    "reason": "The existing project execution agent already owned the preceding Architecture Branches correction; no new specialist definition was justified."
+  },
+  "created_at": "2026-08-15T18:17:00Z",
+  "updated_at": "2026-08-15T18:17:00Z"
+}

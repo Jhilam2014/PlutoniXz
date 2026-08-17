@@ -7,7 +7,7 @@ import multer from "multer";
 import path from "node:path";
 import { XMLParser } from "fast-xml-parser";
 import { z } from "zod";
-import { classifyGothamWorkflowFailure, isGothamCodexModelCompatibilityError, isRecoverableGothamModelsCacheError, runCodexReviewWorkflow, runCodexWorkflow, runModelRepairWorkflow } from "./codexWorkflow.js";
+import { classifyGothamWorkflowFailure, isGothamCodexModelCompatibilityError, isGothamWorkspaceSandboxUnavailable, isRecoverableGothamModelsCacheError, probeCodexWorkspaceSandbox, runCodexReviewWorkflow, runCodexWorkflow, runModelRepairWorkflow } from "./codexWorkflow.js";
 import { createPlutoniXOrchestrationEnvelope } from "./plutonixAuthority.js";
 import { isTransientWorkflowError, selectAdaptiveRoute } from "./adaptiveOrchestration.js";
 import { formatGothamModeInstruction, formatProjectOrchestratorInstruction, inferGothamRequestIntent, orchestrateBuilderInstruction } from "./orchestratorAgent.js";
@@ -20,7 +20,9 @@ import { analyzeRealDataNeed, normalizeRealDataPreflightPayload } from "./realDa
 import { buildFunctionalityGraph } from "./functionalityGraph.js";
 import { createOrchestratorHealthMonitor } from "./orchestratorHealthMonitor.js";
 import { createSelfImprovementControlPlane, readSelfImprovementConfig } from "./selfImprovement/controlPlane.js";
+import { orchestratorRuntimeSelfHealEnabled, selfImprovementRuntimeEventsEnabled, selfImprovementStartupCycleEnabled } from "./selfImprovement/runtimePolicy.js";
 import { buildAgenticSystemGraph, syncProjectAgentTopology } from "./projectAgents.js";
+import { ANALYSIS_VERSION, analyzeProjectArchitecture, publicArchitectureAnalysis, publishArchitectureBranches, readLatestProjectArchitectureAnalysis, readProjectArchitectureAnalysis, writeProjectArchitectureAnalysis } from "./projectBranchDiscovery.js";
 import { createLocalGothamMcpServer } from "./gothamMcpServer.js";
 import { createHuggingFaceModelPool, localModelRoutingForTask } from "./huggingFaceModelPool.js";
 import {
@@ -38,6 +40,8 @@ import {
   startProjectInstance,
   startRegisteredProjects,
   stopProjectInstance,
+  bindProjectDecisionContinuity,
+  getProjectDecisionContinuity,
   updateProjectIdentity
 } from "./projectManager.js";
 import { restartGeneratedRuntime } from "./runtimeRestart.js";
@@ -73,6 +77,14 @@ let governedPromotionController = null;
 let qagentDecisionContinuity = null;
 let brainxModelRegistry = null;
 let suggestionIntelGovernance = null;
+let gothamSandboxReadiness = {
+  status: "not_checked",
+  component: "workspace_sandbox",
+  failureClass: "",
+  reason: "",
+  diagnostic: "",
+  remediation: ""
+};
 
 function corsMiddleware() {
   if (String(process.env.NODE_ENV || "").toLowerCase() !== "production") return cors();
@@ -155,6 +167,40 @@ function respondDecisionContinuityError(res, error) {
     code: error.code || "invalid_request",
     details: error instanceof z.ZodError ? error.issues : undefined
   });
+}
+
+function decisionProjectUser(req, scope) {
+  const legacy = userFromRequest(req);
+  const principal = scope.principal || {};
+  return {
+    ...legacy,
+    subject: principal.subject,
+    issuer: principal.issuer,
+    aliases: [
+      legacy.id,
+      ...(Array.isArray(legacy.aliases) ? legacy.aliases : []),
+      principal.id,
+      principal.subject,
+      principal.issuer && principal.subject ? `${principal.issuer}:${principal.subject}` : ""
+    ].filter(Boolean)
+  };
+}
+
+async function decisionProject(req, scope, projectId, { bind = false } = {}) {
+  try {
+    const access = { user: decisionProjectUser(req, scope), tenantId: scope.tenantId };
+    const project = bind
+      ? await bindProjectDecisionContinuity(projectId, { ...access, principalId: scope.principal.id })
+      : await getProjectDecisionContinuity(projectId, access);
+    const requestedWorkspace = String(req.query?.workspaceId || req.body?.workspaceId || "").trim();
+    if (requestedWorkspace && requestedWorkspace !== project.id) {
+      throw new DecisionContinuityError("Architecture discovery uses the managed project ID as its Decision Continuity workspace.", { code: "project_workspace_mismatch", status: 400 });
+    }
+    return project;
+  } catch (error) {
+    if (error instanceof DecisionContinuityError) throw error;
+    throw new DecisionContinuityError(error.message || "Project access is unavailable.", { code: error.code || "project_access_unavailable", status: error.status || 503 });
+  }
 }
 
 async function brainxScope(req, res, permission, principalTypes = ["human"]) {
@@ -357,7 +403,7 @@ function event(type, message, extra = {}) {
   }
   persistRuntimeLogEvent(payload);
   console.log(`[workflow-runtime] ${payload.type}: ${payload.message}`);
-  if (selfImprovementControlPlane) {
+  if (selfImprovementControlPlane && selfImprovementRuntimeEventsEnabled()) {
     Promise.resolve(selfImprovementControlPlane.recordRuntimeEvent(payload)).catch((error) => {
       console.warn(`[self-improvement-investigator] runtime event check failed: ${error.message}`);
     });
@@ -365,6 +411,35 @@ function event(type, message, extra = {}) {
   for (const client of clients) {
     client.write(`data: ${JSON.stringify(payload)}\n\n`);
   }
+}
+
+async function refreshGothamSandboxReadiness({ source = "startup", emitAuditEvent = true } = {}) {
+  if (process.env.GOTHAM_SANDBOX_PREFLIGHT === "false") {
+    gothamSandboxReadiness = {
+      status: "disabled",
+      component: "workspace_sandbox",
+      failureClass: "",
+      reason: "disabled_by_configuration",
+      diagnostic: "",
+      remediation: "Enable GOTHAM_SANDBOX_PREFLIGHT to verify the Codex workspace sandbox before execution.",
+      checkedAt: new Date().toISOString()
+    };
+    return gothamSandboxReadiness;
+  }
+  gothamSandboxReadiness = {
+    ...await probeCodexWorkspaceSandbox(),
+    checkedAt: new Date().toISOString()
+  };
+  if (emitAuditEvent) {
+    event(
+      gothamSandboxReadiness.status === "ready" ? "sandbox.preflight.succeeded" : "sandbox.preflight.failed",
+      gothamSandboxReadiness.status === "ready"
+        ? "Gotham startup verified the secure Codex workspace sandbox."
+        : "Gotham startup found the secure Codex workspace sandbox unavailable; workflow execution will be blocked.",
+      { stage: "preflight", source, sandboxPreflight: gothamSandboxReadiness }
+    );
+  }
+  return gothamSandboxReadiness;
 }
 
 function readRuntimeLogRows() {
@@ -689,6 +764,17 @@ async function runPlutoniXOwnedWorkflow(orchestratedRequest, options, orchestrat
         });
         break;
       }
+      if (isGothamWorkspaceSandboxUnavailable(error)) {
+        event("execution.blocked", "Gotham preserved the selected route, but secure provider execution was blocked by the workspace sandbox.", {
+          stage: "execution",
+          parentWorkflowId: orchestrationEnvelope.parentWorkflowId,
+          childExecutionIds: orchestrationEnvelope.childExecutionIds,
+          projectId: options.projectId || "",
+          failureClass,
+          sandboxPreflight: error.sandboxPreflight || null
+        });
+        break;
+      }
       if (attempt >= maxAttempts || !isTransientWorkflowError(error)) break;
       event("plutonix-retry", `PlutoniX is retrying failed execution (${attempt + 1}/${maxAttempts})`, {
         parentWorkflowId: orchestrationEnvelope.parentWorkflowId,
@@ -737,6 +823,19 @@ async function attemptAutomaticRepairAfterFailure({
   source = "gotham-chat",
   signal = null
 } = {}) {
+  if (isGothamWorkspaceSandboxUnavailable(error)) {
+    event("repair.skipped", "Sandbox unavailable; repair was not attempted because execution was blocked by the runtime environment.", {
+      stage: "repair",
+      source,
+      projectId: project?.id || "",
+      projectName: project?.name || "PlutoniX default workspace",
+      failureClass: classifyGothamWorkflowFailure(error),
+      reason: error?.sandboxPreflight?.reason || "workspace_sandbox_unavailable",
+      diagnostic: error?.sandboxPreflight?.diagnostic || "",
+      remediation: error?.sandboxPreflight?.remediation || "Verify host user namespaces, AppArmor, and Docker seccomp policy."
+    });
+    return null;
+  }
   if (String(process.env.PLUTONIX_AUTO_REPAIR || "1") === "0") return null;
   if (signal?.aborted) return null;
   if (!orchestratedRequest) return null;
@@ -1145,7 +1244,11 @@ function mergeAgenticSystemGraph(baseGraph, globalAgentsResult) {
 }
 
 function adaptiveFlowEvidence({ projectName, orchestrated, result, error = "" }) {
-  const route = result?.adaptiveRoute || null;
+  // A workflow can fail before `runPlutoniXOwnedWorkflow` returns a result.
+  // The route has already been selected and recorded in the orchestration
+  // envelope at that point, so retain it instead of presenting the route as
+  // "failed" or claiming that none of the choices were taken.
+  const route = result?.adaptiveRoute || orchestrated?.structuredRequest?.orchestrationEnvelope?.adaptiveRoute || null;
   const selectedMode = route?.mode || (error ? "failed" : "pending");
   const projectAgentId = `${String(projectName || "project").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "")}-orchestrator-agent`;
   const activeAgents = [
@@ -1153,7 +1256,7 @@ function adaptiveFlowEvidence({ projectName, orchestrated, result, error = "" })
       id: "plutonix-fullstack-agent",
       name: "PlutoniX Fullstack Agent",
       role: "Canonical authority",
-      status: error ? "failed" : "completed",
+      status: "completed",
       action: "Classified the task, selected the route, enforced constraints, and controlled completion."
     }
   ];
@@ -1171,8 +1274,10 @@ function adaptiveFlowEvidence({ projectName, orchestrated, result, error = "" })
       id: "plutonix-independent-reviewer",
       name: "PlutoniX Independent Reviewer",
       role: "Read-only validator",
-      status: result?.review?.status || (error ? "failed" : "pending"),
-      action: "Inspected workspace evidence and returned an independent pass/fail verdict."
+      status: result?.review?.status || (error ? "skipped" : "pending"),
+      action: error
+        ? "Not run because execution did not produce the required file-change evidence."
+        : "Inspected workspace evidence and returned an independent pass/fail verdict."
     });
   }
 
@@ -1195,6 +1300,10 @@ function adaptiveFlowEvidence({ projectName, orchestrated, result, error = "" })
     id: `functionality-${index + 1}`,
     label,
     type: "functionality",
+    // The requested objective is the major capability. Planned sections and
+    // routes are its children, which gives the functionality graph a useful
+    // execution hierarchy instead of a flat list from the project root.
+    parentFunctionalityId: index === 0 ? "" : "functionality-1",
     state: error ? "failed" : result?.buildId ? "completed" : "selected",
     detail: index === 0 ? "Requested project functionality selected for implementation." : "Included by the PlutoniX feature and route plan."
   }));
@@ -1214,13 +1323,16 @@ function adaptiveFlowEvidence({ projectName, orchestrated, result, error = "" })
     id: result?.parentWorkflowId || "plutonix-pending",
     label: `${projectName || "PlutoniX"} adaptive workflow`,
     type: "workflow",
-    state: error ? "failed" : "completed",
+    // The workflow can fail after a route has been selected. Keep the tree
+    // root selected in that case; the execution and completion nodes carry
+    // the failure state and make the actual failure point explicit.
+    state: route ? "selected" : error ? "failed" : "pending",
     children: [
       {
         id: "adaptive-routing",
         label: `Adaptive route: ${selectedMode}`,
         type: "decision",
-        state: error ? "failed" : "selected",
+        state: route ? "selected" : error ? "failed" : "pending",
         detail: route ? `Score ${route.routeScore}; risk ${route.riskLevel}; ${route.plannedModelCalls}/${route.modelCallBudget} model calls.` : error || "Route pending.",
         children: routeChoices
       },
@@ -1420,7 +1532,9 @@ function projectCreationFlowPath({ projectName, taskType, orchestrated, result, 
     nodes: [...baseFunctionalityGraph.nodes, ...intelGraph.nodes],
     links: [...baseFunctionalityGraph.links, ...intelGraph.edges]
   };
-  const selectedPath = error ? "human-choice-review" : "plutonix-global-orchestration";
+  // Recovery is a follow-up choice, not a retroactive replacement for the
+  // execution path PlutoniX already selected.
+  const selectedPath = "plutonix-global-orchestration";
   const deterministicScore = error
     ? {
         objectiveFit: 10,
@@ -1443,7 +1557,7 @@ function projectCreationFlowPath({ projectName, taskType, orchestrated, result, 
   const confidence = Object.values(deterministicScore).reduce((sum, value) => sum + value, 0);
   const hardConstraints = [
     "preserve_user_instruction_objective",
-    "generate_project_local_agents",
+    "bind_reusable_agents_to_project",
     "preserve_standalone_docker_portability",
     "avoid_secret_storage",
     "maintain_graph_vector_memory_and_local_agent_controls",
@@ -1502,7 +1616,7 @@ function projectCreationFlowPath({ projectName, taskType, orchestrated, result, 
     projectName,
     taskType,
     summary: error
-      ? "Generation failed or path confidence was insufficient. Human Agent review is the next decision point."
+      ? "Generation failed after PlutoniX selected its execution path. A Human Agent may now choose a recovery action."
       : "PlutoniX retained global authority, delegated bounded project execution, and approved the generated result.",
     activeAgents: [...adaptive.activeAgents, ...intelEvidence.agents],
     intel: intelRuntime
@@ -1540,7 +1654,7 @@ function projectCreationFlowPath({ projectName, taskType, orchestrated, result, 
         label: "Selected path",
         value: selectedPath,
         reason: error
-          ? "Generation failed, so Human Agent review became the active recovery path."
+          ? "PlutoniX selected this execution path before generation failed; no recovery option has been selected yet."
           : "Highest deterministic score while preserving project-local agents, memory, Docker readiness, and Gotham handoff."
       },
       {
@@ -1606,7 +1720,7 @@ function projectCreationFlowPath({ projectName, taskType, orchestrated, result, 
       {
         id: "human-choice-review",
         label: "Human Agent choice",
-        state: selectedPath === "human-choice-review" ? "selected" : "disabled",
+        state: error ? "pending" : "disabled",
         detail: error ? "Review retry, scope change, or alternate architecture." : "Available when path confidence is low."
       },
       {
@@ -1634,7 +1748,7 @@ function projectCreationFlowPath({ projectName, taskType, orchestrated, result, 
       },
       {
         id: "human-choice-review",
-        reason: error ? "Selected because generation failed." : "Not selected because confidence was sufficient."
+        reason: error ? "Available after the failure; no recovery option has been selected yet." : "Not selected because path confidence was sufficient."
       }
     ],
     evidence: [
@@ -1649,11 +1763,11 @@ function projectCreationFlowPath({ projectName, taskType, orchestrated, result, 
   };
 }
 
-function gothamInstructionFlowPath({ projectName, taskType, workflowMode = "executor", orchestrated, result, status = "succeeded", error = "", useProjectOrchestrator = false }) {
+export function gothamInstructionFlowPath({ projectName, taskType, workflowMode = "executor", orchestrated, result, status = "succeeded", error = "", useProjectOrchestrator = false }) {
   const flowPath = projectCreationFlowPath({ projectName, taskType, orchestrated, result, status, error });
   const mode = normalizeGothamWorkflowMode(workflowMode);
   const modeLabel = gothamModeLabel(mode);
-  const selectedPath = error ? "human-choice-review" : "plutonix-global-orchestration";
+  const selectedPath = "plutonix-global-orchestration";
   const changedCount = result?.files?.length || 0;
   return {
     ...flowPath,
@@ -1696,7 +1810,7 @@ function gothamInstructionFlowPath({ projectName, taskType, workflowMode = "exec
         label: "Selected path",
         value: selectedPath,
         reason: error
-          ? "Generation failed, so Human Agent review became the active recovery path."
+          ? "PlutoniX selected this execution path before generation failed; no recovery option has been selected yet."
           : useProjectOrchestrator
             ? "PlutoniX retained task authority and selected bounded project execution."
             : "No project-local scope was selected, so PlutoniX used its default generated-site workflow."
@@ -1718,7 +1832,7 @@ function gothamInstructionFlowPath({ projectName, taskType, workflowMode = "exec
       },
       {
         id: "human-choice-review",
-        reason: error ? "Selected because generation failed." : "Not selected because path confidence was sufficient."
+        reason: error ? "Available after the failure; no recovery option has been selected yet." : "Not selected because path confidence was sufficient."
       }
     ],
     nextRecommendation: error
@@ -2172,7 +2286,7 @@ async function saveUniqueInvestorProfiles(records = [], pull = {}) {
 }
 
 function defaultProductContext(overrides = {}) {
-  const marketVisionPath = path.join(plutonixProjectRoot(), "runtime", "self-improvement", "market-vision", "agentic-builderx-market-differentiation.json");
+  const marketVisionPath = path.join(plutonixProjectRoot(), "runtime", "self-improvement", "market-vision", "plutonix-market-differentiation.json");
   const marketVision = readJsonFile(marketVisionPath, {});
   return {
     productName: overrides.productName || "PlutoniX",
@@ -2422,9 +2536,54 @@ function persistProjectInstruction(record = {}) {
   );
 }
 
+export function hydratePersistedWorkflowRoute(record = {}) {
+  const adaptiveRoute = record.adaptiveRoute;
+  if (!adaptiveRoute?.mode || record.flowPath?.adaptiveRoute?.mode === adaptiveRoute.mode) return record;
+
+  // Earlier failed Gotham records retained the selected route at the ledger
+  // level but lost it in their derived flow/snapshot. Rebuild that projection
+  // on read so history remains accurate without mutating its append-only log.
+  const flowPath = gothamInstructionFlowPath({
+    projectName: record.projectName || "PlutoniX default workspace",
+    taskType: record.taskType || "Medium",
+    workflowMode: record.workflowMode || "executor",
+    orchestrated: {
+      structuredRequest: {
+        sourceInstruction: record.instruction || "",
+        orchestrationEnvelope: { adaptiveRoute }
+      }
+    },
+    result: record.buildId ? {
+      buildId: record.buildId,
+      adaptiveRoute,
+      files: record.changedFiles || []
+    } : undefined,
+    status: record.status || "failed",
+    error: record.error || "",
+    useProjectOrchestrator: Boolean(record.projectId && record.projectId !== "plutonix-default")
+  });
+  const snapshot = record.orchestrationSnapshot;
+  return {
+    ...record,
+    flowPath,
+    orchestrationSnapshot: snapshot ? {
+      ...snapshot,
+      route: adaptiveRoute,
+      agents: flowPath.activeAgents,
+      selectedDecisions: flowPath.executedDecisions,
+      rejectedDecisions: flowPath.rejectedPaths,
+      decisionTree: flowPath.decisionTree,
+      validation: {
+        ...(snapshot.validation || {}),
+        review: adaptiveRoute.requiresIndependentReview ? "independent" : snapshot.validation?.review || "plutonix"
+      }
+    } : null
+  };
+}
+
 function readProjectInstructionTimeline({ projectId = "" } = {}) {
   const normalizeInstructionBuild = (value = "") => String(value || "").replace(/^Gotham build\s+/i, "").trim();
-  const ledgerRows = projectHistoryFiles("project-instructions.jsonl", projectId).flatMap(safeJsonLines).map((row) => ({
+  const ledgerRows = projectHistoryFiles("project-instructions.jsonl", projectId).flatMap(safeJsonLines).map((row) => hydratePersistedWorkflowRoute({
     recordedAt: row.recordedAt,
     source: row.source || "plutonix-instruction",
     projectId: row.projectId || "",
@@ -2667,6 +2826,9 @@ const orchestratorHealthMonitor = createOrchestratorHealthMonitor({
   getRuntimeEvents: readRuntimeLogRows,
   getInstructionTimeline: () => readProjectInstructionTimeline({}),
   onSelfHeal: async (report) => {
+    if (!orchestratorRuntimeSelfHealEnabled()) {
+      return { status: "deferred", reason: "runtime_self_heal_disabled" };
+    }
     event("orchestrator-health-self-heal-start", "Forwarding orchestrator health findings to the safe self-improvement control plane", {
       source: "plutonix-orchestrator-health",
       status: report.status,
@@ -2843,6 +3005,81 @@ decisionContinuityRoute("readiness", async (req, res) => {
     component: "decision-continuity",
     ...health
   });
+});
+
+decisionContinuityRoute("architecture_branch_discovery", async (req, res) => {
+  const scope = await decisionContinuityScope(req, res, "architecture_branch_discovery");
+  if (!scope) return;
+  try {
+    const project = await decisionProject(req, scope, req.params.projectId, { bind: true });
+    // Fingerprinting uses the same redacted, allowlisted scan as full analysis,
+    // but deliberately avoids an external model call when an immutable report
+    // for this exact source tree already exists.
+    const fingerprint = await analyzeProjectArchitecture({ project, env: process.env, skipModel: true });
+    const existing = await readProjectArchitectureAnalysis({
+      root: plutonixProjectRoot(),
+      projectId: project.id,
+      sourceDigest: fingerprint.sourceDigest
+    });
+    if (existing?.version >= ANALYSIS_VERSION) {
+      return res.json({ status: "ok", report: publicArchitectureAnalysis({ ...existing, idempotent: true }) });
+    }
+
+    const report = await analyzeProjectArchitecture({ project, env: process.env });
+    const topology = await syncProjectAgentTopology(project, {
+      objective: `Maintain and improve ${project.name} using code-evidenced architecture ownership.`,
+      pageType: "managed_app_project",
+      topic: project.name,
+      sections: [...new Set(["project", "runtime", "playground", ...report.functionalities.map((item) => item.category)])],
+      media: project.media || [],
+      discoveredFunctionalities: report.functionalities,
+      applicationLinks: report.applicationLinks,
+      inferredChains: report.inferredChains,
+      analysis: { version: report.version, sourceDigest: report.sourceDigest, analyzedAt: report.analyzedAt, modelAssist: report.modelAssist }
+    });
+    const branches = await publishArchitectureBranches({
+      report,
+      store: decisionContinuityStore,
+      tenantId: scope.tenantId,
+      workspaceId: project.id,
+      actor: scope.actor,
+      principalId: scope.principal.id
+    });
+    report.assignments = topology.functionalityAssignments || [];
+    report.branches = branches;
+    report.agentSummary = {
+      reused: report.assignments.filter((assignment) => assignment.assignment === "reused").length,
+      created: report.assignments.filter((assignment) => assignment.assignment === "created").length
+    };
+    await syncProjectAgentTopology(project, {
+      objective: `Maintain and improve ${project.name} using code-evidenced architecture ownership.`,
+      pageType: "managed_app_project",
+      topic: project.name,
+      sections: [...new Set(["project", "runtime", "playground", ...report.functionalities.map((item) => item.category)])],
+      media: project.media || [],
+      discoveredFunctionalities: report.functionalities,
+      applicationLinks: report.applicationLinks,
+      inferredChains: report.inferredChains,
+      architectureBranches: branches,
+      analysis: { version: report.version, sourceDigest: report.sourceDigest, analyzedAt: report.analyzedAt, modelAssist: report.modelAssist }
+    });
+    const saved = await writeProjectArchitectureAnalysis({ root: plutonixProjectRoot(), report });
+    res.status(201).json({ status: "created", report: publicArchitectureAnalysis(saved) });
+  } catch (error) {
+    respondDecisionContinuityError(res, error);
+  }
+});
+
+decisionContinuityRoute("architecture_branch_list", async (req, res) => {
+  const scope = await decisionContinuityScope(req, res, "architecture_branch_list");
+  if (!scope) return;
+  try {
+    await decisionProject(req, scope, req.params.projectId);
+    const report = await readLatestProjectArchitectureAnalysis({ root: plutonixProjectRoot(), projectId: req.params.projectId });
+    res.json({ status: "ok", report: publicArchitectureAnalysis(report) });
+  } catch (error) {
+    respondDecisionContinuityError(res, error);
+  }
 });
 
 decisionContinuityRoute("branch_list", async (req, res) => {
@@ -3259,8 +3496,10 @@ app.get("/api/health", async (_req, res) => {
       timestamp: new Date().toISOString(),
       checks: {
         http: "healthy",
-        selfImprovement: selfImprovement.status || "unknown"
-      }
+        selfImprovement: selfImprovement.status || "unknown",
+        workspaceSandbox: gothamSandboxReadiness.status
+      },
+      gothamSandbox: gothamSandboxReadiness
     });
   } catch (error) {
     res.status(503).json({
@@ -3481,7 +3720,7 @@ app.get("/api/self-improvement/feature-inventory", (_req, res) => {
 app.get("/api/self-improvement/market-vision", (_req, res) => {
   try {
     const root = plutonixProjectRoot();
-    const knowledgePath = path.join(root, "runtime", "self-improvement", "market-vision", "agentic-builderx-market-differentiation.json");
+    const knowledgePath = path.join(root, "runtime", "self-improvement", "market-vision", "plutonix-market-differentiation.json");
     const latestPath = path.join(root, "observability", "self-improvement", "latest-market-vision.json");
     const pdfPath = path.join(root, "docs", "quotes", "PlutoniX_Market_Differentiation_Investor_Quotation.pdf");
     const marketVision = fs.existsSync(knowledgePath) ? JSON.parse(fs.readFileSync(knowledgePath, "utf8")) : null;
@@ -4179,6 +4418,7 @@ app.post("/api/projects/new", async (req, res) => {
   const initialOrchestrated = orchestrateBuilderInstruction(projectInstruction);
   if (rejectRestrictedIntent(res, `${parsed.data.name}\n${projectInstruction}`)) return;
   const projectTaskType = parsed.data.taskType || "Medium";
+  initialOrchestrated.structuredRequest.taskType = projectTaskType;
   const projectOrchestratorPrompt = formatProjectOrchestratorInstruction(projectInstruction, projectTaskType);
   event("project-create-start", `Creating project ${parsed.data.name}`, {
     projectName: parsed.data.name,
@@ -4223,10 +4463,15 @@ app.post("/api/projects/new", async (req, res) => {
       ...projectDocuments.map((item) => ({ id: item.id, label: item.originalName, value: item.projectPath, sourceType: "document" }))
     ];
     const projectAgents = await syncProjectAgentTopology(project, orchestrated.structuredRequest);
-    event("project-agents-created", `Created ${projectAgents.agents.length} project-scoped agents for ${project.name}`, {
+    event("project-agents-bound", `Bound ${projectAgents.agents.length} reusable agent definitions to ${project.name}`, {
       projectName: project.name,
       projectId: project.id,
-      agents: projectAgents.agents.map((agent) => agent.id)
+      agents: projectAgents.agents.map((agent) => agent.id),
+      assignments: (projectAgents.agentAssignments || []).map((assignment) => assignment.id),
+      reuseDecisions: (projectAgents.agentReuseDecisions || []).map((decision) => ({
+        agentId: decision.selectedAgent,
+        decisionType: decision.decisionType
+      }))
     });
     orchestrated.structuredRequest.sourceInstruction = media.length
       ? `${orchestrated.structuredRequest.sourceInstruction}\n\nUploaded media available to use:\n${media
@@ -5436,7 +5681,7 @@ async function handleGenerateRequest(req, res, { executionMode = "direct" } = {}
   const adaptiveExecutionAgentId = adaptiveRoute.executionAgent === "project-orchestrator" && orchestrationEnvelope.delegations[0]
     ? orchestrationEnvelope.delegations[0].agentId
     : "plutonix-fullstack-agent";
-  event("generating", "Running current Gotham CLI against generated-site workspace", {
+  event("generating", "Preparing Gotham CLI execution; secure workspace preflight must pass before the provider starts.", {
     stage: "5/8",
     agentId: adaptiveExecutionAgentId,
     parentWorkflowId: orchestrationEnvelope.parentWorkflowId
@@ -5853,9 +6098,32 @@ export async function closePlutonixServerResources() {
 export function startPlutonixServer({ listenPort = port, host = "0.0.0.0" } = {}) {
   return app.listen(listenPort, host, async () => {
   console.log(`PlutoniX backend listening on ${listenPort}`);
-  selfImprovementControlPlane.start().catch((error) => {
+  try {
+    await refreshGothamSandboxReadiness({ source: "backend-startup" });
+  } catch (error) {
+    gothamSandboxReadiness = {
+      status: "unavailable",
+      component: "workspace_sandbox",
+      failureClass: "workspace_sandbox_unavailable",
+      reason: "startup_probe_failed",
+      diagnostic: error.message,
+      remediation: "Verify the Codex workspace sandbox runtime before running Gotham workflows.",
+      checkedAt: new Date().toISOString()
+    };
+    event("sandbox.preflight.failed", "Gotham startup could not verify the secure workspace sandbox; workflow execution will be blocked.", {
+      stage: "preflight",
+      source: "backend-startup",
+      sandboxPreflight: gothamSandboxReadiness
+    });
+  }
+  try {
+    await selfImprovementControlPlane.start();
+    if (selfImprovementStartupCycleEnabled()) {
+      await selfImprovementControlPlane.runCycle({ reason: "service-startup" });
+    }
+  } catch (error) {
     console.error(`Failed to start self-improvement control plane: ${error.message}`);
-  });
+  }
   orchestratorHealthMonitor.start();
   try {
     const projects = await startRegisteredProjects();

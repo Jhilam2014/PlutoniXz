@@ -60,7 +60,7 @@ export const DEFAULT_SELF_IMPROVEMENT_CONFIG = {
   researchMaxTokensPerDay: 8000,
   researchMaxCostPerDay: 0.5,
   researchSources: [
-    "local:self-improvement-market-vision:runtime/self-improvement/market-vision/agentic-builderx-market-differentiation.json",
+    "local:self-improvement-market-vision:runtime/self-improvement/market-vision/plutonix-market-differentiation.json",
     "local:market-differentiation-pdf:docs/quotes/PlutoniX_Market_Differentiation_Investor_Quotation.pdf"
   ],
   toolBuildEnabled: true,

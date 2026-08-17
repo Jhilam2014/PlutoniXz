@@ -1,0 +1,16 @@
+{
+  "workflow_id": "agent-definition-reuse-fix-20260815",
+  "status": "completed",
+  "task_size": "medium",
+  "product_shape": "existing_product_change",
+  "context_budget": "medium_context",
+  "agents_reused": ["project-execution-agent"],
+  "agent_creation": "skipped",
+  "graph_update": "Incremental model update: AgentDefinition and ProjectAgentAssignment nodes and relationships.",
+  "validation": [
+    "node syntax checks",
+    "8 targeted backend tests",
+    "full backend suite: 160 passed, 2 unrelated failures"
+  ],
+  "completed_at": "2026-08-15T16:30:00Z"
+}

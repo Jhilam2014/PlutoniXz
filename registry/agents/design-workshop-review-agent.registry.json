@@ -1,0 +1,307 @@
+{
+  "agent_id": "design-workshop-review-agent",
+  "agent_name": "Design Workshop Review Agent",
+  "role": "design-workshop-review",
+  "definitionType": "AgentDefinition",
+  "scope": "global_reusable",
+  "version": "1.0.0",
+  "status": "active",
+  "capability_score": {
+    "capabilityScore": 60,
+    "deliverableAccuracyScore": 50,
+    "reliabilityScore": 50,
+    "adaptabilityScore": 70,
+    "reuseConfidenceScore": 40,
+    "successCount": 0,
+    "failureCount": 0,
+    "repeatedCorrectionCount": 0
+  },
+  "projectAssignments": [
+    {
+      "id": "project-agent-assignment:mapex-M6rGkR:design-workshop-review-agent",
+      "projectId": "mapex-M6rGkR",
+      "agentId": "design-workshop-review-agent",
+      "role": "design-workshop-review",
+      "projectResponsibility": "Periodically review growing UI/UX surfaces with design strategy, frontend implementation, accessibility, responsive behavior, visual hierarchy, command placement, and professional aesthetic quality while preserving all existing functionality.",
+      "status": "active",
+      "contextPath": ".agentic/orchestrator-agent.md",
+      "createdAt": "2026-08-17T13:01:34.403Z"
+    },
+    {
+      "id": "project-agent-assignment:geofinderx-2yFsDY:design-workshop-review-agent",
+      "projectId": "geofinderx-2yFsDY",
+      "agentId": "design-workshop-review-agent",
+      "role": "design-workshop-review",
+      "projectResponsibility": "Periodically review growing UI/UX surfaces with design strategy, frontend implementation, accessibility, responsive behavior, visual hierarchy, command placement, and professional aesthetic quality while preserving all existing functionality.",
+      "status": "active",
+      "contextPath": ".agentic/orchestrator-agent.md",
+      "createdAt": "2026-08-16T08:45:24.010Z"
+    },
+    {
+      "id": "project-agent-assignment:agenticongen-9TUSjQ:design-workshop-review-agent",
+      "projectId": "agenticongen-9TUSjQ",
+      "agentId": "design-workshop-review-agent",
+      "role": "design-workshop-review",
+      "projectResponsibility": "Periodically review growing UI/UX surfaces with design strategy, frontend implementation, accessibility, responsive behavior, visual hierarchy, command placement, and professional aesthetic quality while preserving all existing functionality.",
+      "status": "active",
+      "contextPath": ".agentic/orchestrator-agent.md",
+      "createdAt": "2026-08-16T08:45:26.988Z"
+    },
+    {
+      "id": "project-agent-assignment:investmentfinderx-z8rTq_:design-workshop-review-agent",
+      "projectId": "investmentfinderx-z8rTq_",
+      "agentId": "design-workshop-review-agent",
+      "role": "design-workshop-review",
+      "projectResponsibility": "Periodically review growing UI/UX surfaces with design strategy, frontend implementation, accessibility, responsive behavior, visual hierarchy, command placement, and professional aesthetic quality while preserving all existing functionality.",
+      "status": "active",
+      "contextPath": ".agentic/orchestrator-agent.md",
+      "createdAt": "2026-08-16T08:45:29.282Z"
+    },
+    {
+      "id": "project-agent-assignment:whatsappmediaanalyser-oAeSvn:design-workshop-review-agent",
+      "projectId": "whatsappmediaanalyser-oAeSvn",
+      "agentId": "design-workshop-review-agent",
+      "role": "design-workshop-review",
+      "projectResponsibility": "Periodically review growing UI/UX surfaces with design strategy, frontend implementation, accessibility, responsive behavior, visual hierarchy, command placement, and professional aesthetic quality while preserving all existing functionality.",
+      "status": "active",
+      "contextPath": ".agentic/orchestrator-agent.md",
+      "createdAt": "2026-08-16T08:45:32.873Z"
+    },
+    {
+      "id": "project-agent-assignment:spydash-qkWtmJ:design-workshop-review-agent",
+      "projectId": "spydash-qkWtmJ",
+      "agentId": "design-workshop-review-agent",
+      "role": "design-workshop-review",
+      "projectResponsibility": "Periodically review growing UI/UX surfaces with design strategy, frontend implementation, accessibility, responsive behavior, visual hierarchy, command placement, and professional aesthetic quality while preserving all existing functionality.",
+      "status": "active",
+      "contextPath": ".agentic/orchestrator-agent.md",
+      "createdAt": "2026-08-16T08:45:36.701Z"
+    },
+    {
+      "id": "project-agent-assignment:webforbusinesses-xu7qsM:design-workshop-review-agent",
+      "projectId": "webforbusinesses-xu7qsM",
+      "agentId": "design-workshop-review-agent",
+      "role": "design-workshop-review",
+      "projectResponsibility": "Periodically review growing UI/UX surfaces with design strategy, frontend implementation, accessibility, responsive behavior, visual hierarchy, command placement, and professional aesthetic quality while preserving all existing functionality.",
+      "status": "active",
+      "contextPath": ".agentic/orchestrator-agent.md",
+      "createdAt": "2026-08-16T08:45:38.494Z"
+    },
+    {
+      "id": "project-agent-assignment:researchanddevx-xF8SDs:design-workshop-review-agent",
+      "projectId": "researchanddevx-xF8SDs",
+      "agentId": "design-workshop-review-agent",
+      "role": "design-workshop-review",
+      "projectResponsibility": "Periodically review growing UI/UX surfaces with design strategy, frontend implementation, accessibility, responsive behavior, visual hierarchy, command placement, and professional aesthetic quality while preserving all existing functionality.",
+      "status": "active",
+      "contextPath": ".agentic/orchestrator-agent.md",
+      "createdAt": "2026-08-16T08:45:40.857Z"
+    },
+    {
+      "id": "project-agent-assignment:mentalheathcounselor-PJ1N2o:design-workshop-review-agent",
+      "projectId": "mentalheathcounselor-PJ1N2o",
+      "agentId": "design-workshop-review-agent",
+      "role": "design-workshop-review",
+      "projectResponsibility": "Periodically review growing UI/UX surfaces with design strategy, frontend implementation, accessibility, responsive behavior, visual hierarchy, command placement, and professional aesthetic quality while preserving all existing functionality.",
+      "status": "active",
+      "contextPath": ".agentic/orchestrator-agent.md",
+      "createdAt": "2026-08-16T08:45:44.270Z"
+    },
+    {
+      "id": "project-agent-assignment:videopresentationforproductx-GtDUxv:design-workshop-review-agent",
+      "projectId": "videopresentationforproductx-GtDUxv",
+      "agentId": "design-workshop-review-agent",
+      "role": "design-workshop-review",
+      "projectResponsibility": "Periodically review growing UI/UX surfaces with design strategy, frontend implementation, accessibility, responsive behavior, visual hierarchy, command placement, and professional aesthetic quality while preserving all existing functionality.",
+      "status": "active",
+      "contextPath": ".agentic/orchestrator-agent.md",
+      "createdAt": "2026-08-16T08:45:46.095Z"
+    },
+    {
+      "id": "project-agent-assignment:brushx-zHXT8q:design-workshop-review-agent",
+      "projectId": "brushx-zHXT8q",
+      "agentId": "design-workshop-review-agent",
+      "role": "design-workshop-review",
+      "projectResponsibility": "Periodically review growing UI/UX surfaces with design strategy, frontend implementation, accessibility, responsive behavior, visual hierarchy, command placement, and professional aesthetic quality while preserving all existing functionality.",
+      "status": "active",
+      "contextPath": ".agentic/orchestrator-agent.md",
+      "createdAt": "2026-08-16T08:45:47.622Z"
+    },
+    {
+      "id": "project-agent-assignment:gymx-9JXKDV:design-workshop-review-agent",
+      "projectId": "gymx-9JXKDV",
+      "agentId": "design-workshop-review-agent",
+      "role": "design-workshop-review",
+      "projectResponsibility": "Periodically review growing UI/UX surfaces with design strategy, frontend implementation, accessibility, responsive behavior, visual hierarchy, command placement, and professional aesthetic quality while preserving all existing functionality.",
+      "status": "active",
+      "contextPath": ".agentic/orchestrator-agent.md",
+      "createdAt": "2026-08-16T15:38:43.936Z"
+    },
+    {
+      "id": "project-agent-assignment:databricksx-n7lCNf:design-workshop-review-agent",
+      "projectId": "databricksx-n7lCNf",
+      "agentId": "design-workshop-review-agent",
+      "role": "design-workshop-review",
+      "projectResponsibility": "Periodically review growing UI/UX surfaces with design strategy, frontend implementation, accessibility, responsive behavior, visual hierarchy, command placement, and professional aesthetic quality while preserving all existing functionality.",
+      "status": "active",
+      "contextPath": ".agentic/orchestrator-agent.md",
+      "createdAt": "2026-08-17T19:20:04.752Z"
+    }
+  ],
+  "reuse_decisions": [
+    {
+      "id": "agent-reuse:mapex-M6rGkR:design-workshop-review-agent",
+      "projectExecution": "mapex-M6rGkR",
+      "selectedAgent": "design-workshop-review-agent",
+      "requestedRole": "design-workshop-review",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global design-workshop-review definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-17T13:01:34.403Z"
+    },
+    {
+      "id": "agent-reuse:geofinderx-2yFsDY:design-workshop-review-agent",
+      "projectExecution": "geofinderx-2yFsDY",
+      "selectedAgent": "design-workshop-review-agent",
+      "requestedRole": "design-workshop-review",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global design-workshop-review definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:24.009Z"
+    },
+    {
+      "id": "agent-reuse:agenticongen-9TUSjQ:design-workshop-review-agent",
+      "projectExecution": "agenticongen-9TUSjQ",
+      "selectedAgent": "design-workshop-review-agent",
+      "requestedRole": "design-workshop-review",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global design-workshop-review definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:26.988Z"
+    },
+    {
+      "id": "agent-reuse:investmentfinderx-z8rTq_:design-workshop-review-agent",
+      "projectExecution": "investmentfinderx-z8rTq_",
+      "selectedAgent": "design-workshop-review-agent",
+      "requestedRole": "design-workshop-review",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global design-workshop-review definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:29.282Z"
+    },
+    {
+      "id": "agent-reuse:whatsappmediaanalyser-oAeSvn:design-workshop-review-agent",
+      "projectExecution": "whatsappmediaanalyser-oAeSvn",
+      "selectedAgent": "design-workshop-review-agent",
+      "requestedRole": "design-workshop-review",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global design-workshop-review definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:32.872Z"
+    },
+    {
+      "id": "agent-reuse:spydash-qkWtmJ:design-workshop-review-agent",
+      "projectExecution": "spydash-qkWtmJ",
+      "selectedAgent": "design-workshop-review-agent",
+      "requestedRole": "design-workshop-review",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global design-workshop-review definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:36.701Z"
+    },
+    {
+      "id": "agent-reuse:webforbusinesses-xu7qsM:design-workshop-review-agent",
+      "projectExecution": "webforbusinesses-xu7qsM",
+      "selectedAgent": "design-workshop-review-agent",
+      "requestedRole": "design-workshop-review",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global design-workshop-review definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:38.494Z"
+    },
+    {
+      "id": "agent-reuse:researchanddevx-xF8SDs:design-workshop-review-agent",
+      "projectExecution": "researchanddevx-xF8SDs",
+      "selectedAgent": "design-workshop-review-agent",
+      "requestedRole": "design-workshop-review",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global design-workshop-review definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:40.857Z"
+    },
+    {
+      "id": "agent-reuse:mentalheathcounselor-PJ1N2o:design-workshop-review-agent",
+      "projectExecution": "mentalheathcounselor-PJ1N2o",
+      "selectedAgent": "design-workshop-review-agent",
+      "requestedRole": "design-workshop-review",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global design-workshop-review definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:44.270Z"
+    },
+    {
+      "id": "agent-reuse:videopresentationforproductx-GtDUxv:design-workshop-review-agent",
+      "projectExecution": "videopresentationforproductx-GtDUxv",
+      "selectedAgent": "design-workshop-review-agent",
+      "requestedRole": "design-workshop-review",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global design-workshop-review definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:46.094Z"
+    },
+    {
+      "id": "agent-reuse:brushx-zHXT8q:design-workshop-review-agent",
+      "projectExecution": "brushx-zHXT8q",
+      "selectedAgent": "design-workshop-review-agent",
+      "requestedRole": "design-workshop-review",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global design-workshop-review definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:47.622Z"
+    },
+    {
+      "id": "agent-reuse:gymx-9JXKDV:design-workshop-review-agent",
+      "projectExecution": "gymx-9JXKDV",
+      "selectedAgent": "design-workshop-review-agent",
+      "requestedRole": "design-workshop-review",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global design-workshop-review definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T15:38:43.936Z"
+    },
+    {
+      "id": "agent-reuse:databricksx-n7lCNf:design-workshop-review-agent",
+      "projectExecution": "databricksx-n7lCNf",
+      "selectedAgent": "design-workshop-review-agent",
+      "requestedRole": "design-workshop-review",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global design-workshop-review definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-17T19:20:04.752Z"
+    }
+  ],
+  "latest_reuse_decision": {
+    "id": "agent-reuse:databricksx-n7lCNf:design-workshop-review-agent",
+    "projectExecution": "databricksx-n7lCNf",
+    "selectedAgent": "design-workshop-review-agent",
+    "requestedRole": "design-workshop-review",
+    "decisionType": "exact_reuse",
+    "reuseConfidenceScore": 100,
+    "similarityScore": 1,
+    "reason": "Reused the existing global design-workshop-review definition; project context is stored in a separate assignment.",
+    "createdAt": "2026-08-17T19:20:04.752Z"
+  }
+}

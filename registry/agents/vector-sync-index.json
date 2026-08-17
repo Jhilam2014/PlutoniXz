@@ -706,39 +706,39 @@
       "synced_at": "2026-07-28T22:44:49.457Z"
     },
     "agents/generated/brushx-data-contract-agent.agent.md": {
-      "content_sha256": "12d1466707b6c900d713fd1c88e1a9484b7417c2433f721398d5bc63faff1a64",
-      "file_id": "file-QD17hqQZhXNhjvb4gbsnZ6",
-      "status": "completed",
+      "content_sha256": "5621d6966a8493d928f26945d8e110a6704ac247b970331464b358a484d3f2cb",
+      "file_id": "file-QJfwHzMmLm1fCr49sVSBD9",
+      "status": "in_progress",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
-      "synced_at": "2026-07-29T22:31:49.059Z"
+      "synced_at": "2026-08-14T23:05:57.136Z"
     },
     "agents/generated/brushx-experience-composition-agent.agent.md": {
-      "content_sha256": "0de66fd299c9ead3ef9e2fad777f3503628fa9df77fb31f7cb46e401be42bd6b",
-      "file_id": "file-UG4JCKewxyH4CpfUQ6kAUC",
-      "status": "completed",
+      "content_sha256": "370b394543a1f93df2e2dedd2d8d741b69a3e600fdcb7e873495c54ed325632b",
+      "file_id": "file-7zzD5bLuHwiC2XwoxzGD6h",
+      "status": "in_progress",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
-      "synced_at": "2026-07-29T22:31:51.369Z"
+      "synced_at": "2026-08-14T23:06:00.981Z"
     },
     "agents/generated/brushx-orchestrator-agent.agent.md": {
-      "content_sha256": "64793753d21335fd2bd547edcbe59d467b36785024e5a94a5d6adbbae6ea8786",
-      "file_id": "file-MvsqvEwkdPgRCzUwNYQ6AA",
-      "status": "completed",
+      "content_sha256": "ac702f2b9a616ba052b4b20e812c733017f151b1c35341d130c1f2a7bc68ce04",
+      "file_id": "file-2dib7vKukLYtgsbvfgVxke",
+      "status": "in_progress",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
-      "synced_at": "2026-07-29T22:31:53.595Z"
+      "synced_at": "2026-08-14T23:07:11.363Z"
     },
     "agents/generated/brushx-qagent-controller.agent.md": {
-      "content_sha256": "d784ecc5ee076a2f5946134565834a13b06409bf254e32ce0bbc75bbf8aa66b6",
-      "file_id": "file-WvnReHLpZtqqwnzFN7k3wd",
-      "status": "completed",
+      "content_sha256": "a95a5912b07fe509789d6db2c0e57cacaec023b0581c740332c7e3a9489185ca",
+      "file_id": "file-7VSbAPtvHYA3bGx7Ru6eme",
+      "status": "in_progress",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
-      "synced_at": "2026-07-29T22:31:58.478Z"
+      "synced_at": "2026-08-14T23:07:15.988Z"
     },
     "agents/generated/brushx-runtime-packaging-agent.agent.md": {
-      "content_sha256": "c39faff6f39c904e73200bd35226166ed9524fb8dc14cb91060426bbbbeaf323",
-      "file_id": "file-51zSU2PnTfVFjP3nxj6fJS",
-      "status": "completed",
+      "content_sha256": "7c5687375b293c5906e989ce073402336c2d5209a92835690c9e612f13e6768a",
+      "file_id": "file-3k8JFDY2c4yjm1sSECeXfJ",
+      "status": "in_progress",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
-      "synced_at": "2026-07-29T22:32:00.026Z"
+      "synced_at": "2026-08-14T23:07:20.108Z"
     },
     "agents/generated/brushx-media-asset-agent.agent.md": {
       "content_sha256": "e826a7c6bc1290f929fc62df1ff8492c5d1dc236be544af389631690759f8034",
@@ -867,18 +867,18 @@
       "synced_at": "2026-08-02T11:55:31.513Z"
     },
     "agents/generated/adx-data-contract-agent.agent.md": {
-      "content_sha256": "726af7a17e60a32a5046a4ed0517f6bdea40a0719382b489932b131daadfc11d",
-      "file_id": "file-V1hun9wacG4opQgJm8kDuK",
+      "content_sha256": "b72b17bebc4d4407dc02c82ae8307f8bfeebcc88cb55ec73a594a38b9de5474e",
+      "file_id": "file-Vnxek4JBHf41o3A9SnoYef",
       "status": "completed",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
-      "synced_at": "2026-08-02T12:25:20.764Z"
+      "synced_at": "2026-08-13T19:52:27.226Z"
     },
     "agents/generated/adx-experience-composition-agent.agent.md": {
-      "content_sha256": "3a4c1a6bff4808741db7a214c5ea2c2b1f39bb855122d0340b1eeb9fcf1e5264",
-      "file_id": "file-UsyuGXKTFoDqKXv3Jm6FR7",
+      "content_sha256": "8e4ec245750e8e2603a0ed126e7433ee2091173045eaaece693bd447092f8716",
+      "file_id": "file-1Lr51g5rEFynN4RP5BCpLT",
       "status": "completed",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
-      "synced_at": "2026-08-02T12:25:23.005Z"
+      "synced_at": "2026-08-13T19:52:29.960Z"
     },
     "agents/generated/adx-media-asset-agent.agent.md": {
       "content_sha256": "b6816c6b7620d62a200aeb417ed296f2c5276b58cec80f57fbbd1bed21d2673d",
@@ -888,60 +888,60 @@
       "synced_at": "2026-08-02T12:25:24.441Z"
     },
     "agents/generated/adx-orchestrator-agent.agent.md": {
-      "content_sha256": "a14984a1802789da0bd7485b96b227a84af06662685a66f691eab35880123960",
-      "file_id": "file-JcEWLVuWASQGe3qn5weuXR",
+      "content_sha256": "ade098b70150668adcf0741381bf0492b73219da8dfa18e7439a5b34b4d24137",
+      "file_id": "file-AtHvGsXR8cp2PpRxTqNyzN",
       "status": "completed",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
-      "synced_at": "2026-08-02T12:25:27.077Z"
+      "synced_at": "2026-08-13T19:54:43.085Z"
     },
     "agents/generated/adx-qagent-controller.agent.md": {
-      "content_sha256": "23cdb183eebca1f0d0d5e07481c9121fec26ad9f6efcca6f5d2812a861f46892",
-      "file_id": "file-S2aRSRNcAvr7bEVDXw2ygU",
+      "content_sha256": "b9fd686e165b450e23e26cdf7290a7f8837e7c73a42aadec43c859b3ae5757cc",
+      "file_id": "file-8XuWTK3kQUFGUs9p8SKGFJ",
       "status": "completed",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
-      "synced_at": "2026-08-02T12:25:28.774Z"
+      "synced_at": "2026-08-13T19:54:45.054Z"
     },
     "agents/generated/adx-runtime-packaging-agent.agent.md": {
-      "content_sha256": "beb87fbe1864b4b3f7cf43b31f5e1eb178d979662a4254082fc3026a45e5a7c9",
-      "file_id": "file-MNP3uSp5isPsxkmifFgtUk",
+      "content_sha256": "b594a497f11bf45c0980b605a3cd3e3afdbad3be77fa178fe3f8f5943675bf89",
+      "file_id": "file-6KE1ckv5gemHXqa6HE7fGi",
       "status": "completed",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
-      "synced_at": "2026-08-02T12:25:31.440Z"
+      "synced_at": "2026-08-13T19:54:50.024Z"
     },
     "agents/generated/databricksx-data-contract-agent.agent.md": {
-      "content_sha256": "ba1312e79378d29831e8a9e23e736c60c6375df41a15af35f676256491ed7bff",
-      "file_id": "file-6U3hADFShBBNtn2r6Bz6aK",
+      "content_sha256": "12c5cb5009316cdd74a320860bd604d545c4f4a874a0270490dc6655d060f72b",
+      "file_id": "file-DdSJfrCvEFUJ8szwgXiuyL",
       "status": "completed",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
-      "synced_at": "2026-08-07T06:59:32.164Z"
+      "synced_at": "2026-08-13T11:45:39.628Z"
     },
     "agents/generated/databricksx-experience-composition-agent.agent.md": {
-      "content_sha256": "5b7382419da51cea8ea8067e3d0cc5f739ca580cc1ed2d5f1d519923b85bf308",
-      "file_id": "file-Q4Q441vSqAQgK7u7UZREJg",
+      "content_sha256": "e0daca4234f6ac6d80c72a9bf249298bfa24dc2f19bb7d1191492dc206aed75a",
+      "file_id": "file-DTLNHjpPEi3hoZ8qVLJmpV",
       "status": "completed",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
-      "synced_at": "2026-08-07T06:59:34.020Z"
+      "synced_at": "2026-08-13T11:45:46.085Z"
     },
     "agents/generated/databricksx-orchestrator-agent.agent.md": {
-      "content_sha256": "37c055f3691bbec0314ee5102ff9d6875609ae77db45069903c3369d5245dba7",
-      "file_id": "file-NDrf4bFsVnKZCFCitrJphw",
+      "content_sha256": "57be5c20efa30b9c2591dca3fdf903b373af6fe735f532af47bec0e52e830e23",
+      "file_id": "file-J6RQra1PV3SovVt1Go34kB",
       "status": "completed",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
-      "synced_at": "2026-08-07T06:59:36.789Z"
+      "synced_at": "2026-08-13T11:49:02.986Z"
     },
     "agents/generated/databricksx-qagent-controller.agent.md": {
-      "content_sha256": "a562f0b8be323cd120687f24a3d3f8a55467d30f4de775ce7a38b846859610de",
-      "file_id": "file-2w8nBSTvBoxWPZufCVUg9f",
+      "content_sha256": "3b8d76cfe5b700d46dc02257e07a970f7b8a51cd87ec7f84a7a96905d2984929",
+      "file_id": "file-2CViBvVoNCnKjCPXAvr8Mx",
       "status": "completed",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
-      "synced_at": "2026-08-07T07:02:07.913Z"
+      "synced_at": "2026-08-13T11:49:06.699Z"
     },
     "agents/generated/databricksx-runtime-packaging-agent.agent.md": {
-      "content_sha256": "a84e4cd0c7b299c132e3c2258c7008b992cfb0729b0c5f8d69199adea9fcc93c",
-      "file_id": "file-RAdGHgN7zQqS4Sjk9WGxfK",
+      "content_sha256": "a0c8eff908d139430149d3f43b03eae82f577e5e453a6274fcc1a253014d2201",
+      "file_id": "file-W7bKBpn9ybCai8qLcY9RfS",
       "status": "completed",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
-      "synced_at": "2026-08-07T06:59:40.298Z"
+      "synced_at": "2026-08-13T11:49:08.295Z"
     },
     "memory/agent-knowledge/projects/builderx-agentic-d3-market-ready-001.summary.md": {
       "content_sha256": "3742fc0535f8ee765abaf227ce8fa9b0a45af5a8fb2115564da0a15260f3635e",
@@ -1082,7 +1082,1022 @@
       "status": "completed",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
       "synced_at": "2026-08-08T15:58:58.696Z"
+    },
+    "agents/generated/databricksx-design-workshop-review-agent.agent.md": {
+      "content_sha256": "1958478f88aff4a3243c3338a9e3f355eff4482a5d682e0169ee8aa38b638eb8",
+      "file_id": "file-CnX8MrsSZ7o9j2rvJcff5M",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T11:45:44.084Z"
+    },
+    "agents/generated/databricksx-functionality-api-backend-src-server-js-get-api-databricks-compute-clusters-agent.agent.md": {
+      "content_sha256": "fa38e1b5ee4eb2f2c900069e38a9a01e7340fa77a096ebc472427213b0462e2a",
+      "file_id": "file-9TZW9QK9TuUcd1i5CknuZk",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T11:45:47.937Z"
+    },
+    "agents/generated/databricksx-functionality-api-backend-src-server-js-get-api-databricks-sql-history-agent.agent.md": {
+      "content_sha256": "78e97371054792882fb108b3b1dd00f5d6611852962c9fba181fb31160d5231a",
+      "file_id": "file-SAvFZVxSYLxCQDD33wLpod",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T11:45:57.093Z"
+    },
+    "agents/generated/databricksx-functionality-api-backend-src-server-js-get-api-databricks-sql-statements-statementid-agent.agent.md": {
+      "content_sha256": "4f94d109983a3e226e3dfaa5031ef453065db225e4ac5af313a79356fbae0fec",
+      "file_id": "file-3ps3S2u9HZtxhaGM3w7njG",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T11:46:00.549Z"
+    },
+    "agents/generated/databricksx-functionality-api-backend-src-server-js-get-api-databricks-sql-warehouses-agent.agent.md": {
+      "content_sha256": "61975795dd937eaa548e55f49dbe5c6fb668f4e3a87059a0eb416178a17bb824",
+      "file_id": "file-2WmevLroDsU1DHPzLTwj1r",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T11:46:07.188Z"
+    },
+    "agents/generated/databricksx-functionality-api-backend-src-server-js-get-api-health-agent.agent.md": {
+      "content_sha256": "02e3db53d2070b192e5ab83911f937c68156407b652d4323ac14459f0a493fe9",
+      "file_id": "file-F2S9sToQBdGAEbAPesoB9e",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T11:46:08.758Z"
+    },
+    "agents/generated/databricksx-functionality-api-backend-src-server-js-get-api-integrations-databricks-status-agent.agent.md": {
+      "content_sha256": "c752e75be6940aff628e01250326b0baa373d50906836045301e420d17134d0e",
+      "file_id": "file-7fEUrSg5KphQQLNoVYMG21",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T11:46:13.879Z"
+    },
+    "agents/generated/databricksx-functionality-api-backend-src-server-js-get-api-local-compute-config-agent.agent.md": {
+      "content_sha256": "323fa790b976d80893e818adb320fb8106a0d20e831a3ef90a25ee643824c6d6",
+      "file_id": "file-RWDEUVbd3XLrR4h7ZAsib1",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T11:46:15.406Z"
+    },
+    "agents/generated/databricksx-functionality-api-backend-src-server-js-get-api-local-notebook-agent.agent.md": {
+      "content_sha256": "4797dea403af2cf4d3292bab34c03f69023d5ca47824b5e8e822020f94d9f197",
+      "file_id": "file-9KHzKsJFnR4aGdjG5sqTTV",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T11:46:17.970Z"
+    },
+    "agents/generated/databricksx-functionality-api-backend-src-server-js-get-api-local-notebook-runs-agent.agent.md": {
+      "content_sha256": "db8e90dcbc845e4100b18af7324f48b16bd9037b385523c60aa27a70fd63aa35",
+      "file_id": "file-P6ZCY19n2Le8bWnfydGzjs",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T11:46:19.542Z"
+    },
+    "agents/generated/databricksx-functionality-api-backend-src-server-js-post-api-databricks-sql-statements-agent.agent.md": {
+      "content_sha256": "6bd8f92477a8c8e7013f585863f57ceeb48aaeebdfde87e2b6d8a44198f8b062",
+      "file_id": "file-SpdAThn45zJ5VnFCNMkcn4",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T11:46:22.020Z"
+    },
+    "agents/generated/databricksx-functionality-api-backend-src-server-js-post-api-databricks-sql-statements-statementid-agent.agent.md": {
+      "content_sha256": "23cb52ba4a616b60bbec85c1c67d951a67ce66c32e686f5a2fb251d1c2fd54c2",
+      "file_id": "file-EMSam3fvSWTXM5zvfAerpR",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T11:46:25.841Z"
+    },
+    "agents/generated/databricksx-functionality-api-backend-src-server-js-post-api-databricks-workspace-notebook-export-agent.agent.md": {
+      "content_sha256": "6d1d294672d7c89809df5a2d2f39454551cc72c0ef94542819761571b6196673",
+      "file_id": "file-8a9Tit13hPu14WaQrMpipS",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T11:46:31.649Z"
+    },
+    "agents/generated/databricksx-functionality-api-backend-src-server-js-post-api-local-compute-config-agent.agent.md": {
+      "content_sha256": "cdba97b230ad364e0609fe92ec4de251e0092b14924964492dc2dadecba52d85",
+      "file_id": "file-J3EPC1sK2eyHRg1e3wsL2s",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T11:46:33.850Z"
+    },
+    "agents/generated/databricksx-functionality-api-backend-src-server-js-post-api-local-notebook-agent.agent.md": {
+      "content_sha256": "755c5f34c29ae28d3cf81bce7a0d7b2538ac552e00c029326c39223995d28f73",
+      "file_id": "file-FivPsekXbGjTdSt51fwBD5",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T11:46:35.456Z"
+    },
+    "agents/generated/databricksx-functionality-api-backend-src-server-js-post-api-local-notebook-runs-agent.agent.md": {
+      "content_sha256": "e0cce1e61d504f085195b110f555ba114c7c476a6289285a01ebb4268d31f90c",
+      "file_id": "file-Kp8uedEdLL6zfqcKKx75Jm",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T11:46:37.473Z"
+    },
+    "agents/generated/databricksx-functionality-integration-backend-src-server-js-agent.agent.md": {
+      "content_sha256": "46c833fa6a874445dc963ba4f662a1b500cac608a1725db6d92e2e35ef009995",
+      "file_id": "file-65vGjBnSd6NnCLnBeJHk5q",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T11:46:54.542Z"
+    },
+    "agents/generated/databricksx-functionality-integration-configs-openai-vector-store-config-json-agent.agent.md": {
+      "content_sha256": "3a35edd334a363f7ce4d282ee0ccbe9ad17ba1fd5b7398c360246e29b167c4db",
+      "file_id": "file-JcrjTZUDHp4ajKtPfXbEYZ",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T11:46:58.699Z"
+    },
+    "agents/generated/databricksx-functionality-integration-agentic-system-d3-agentic-system-d3-js-agent.agent.md": {
+      "content_sha256": "63c029ae9c72df1daf0c1e860c7e195344b41ebf74fac426815b31b31e07ad10",
+      "file_id": "file-54M9E5oxo3ax8tuaBwPjCf",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T11:47:29.096Z"
+    },
+    "agents/generated/databricksx-functionality-integration-deliverables-bootstrap-20260807070021-delivery-manifest-json-agent.agent.md": {
+      "content_sha256": "979389dc3599a9ccb6eab015b662eeb891e00ebfe5ac12be3384c4fd81d04e7e",
+      "file_id": "file-DcP8Fd5RfECeWxgqCAbrHA",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T11:47:33.020Z"
+    },
+    "agents/generated/databricksx-functionality-integration-memory-pending-sync-bootstrap-20260807070021-vector-sync-jso-agent.agent.md": {
+      "content_sha256": "043d7cafa49a07f0941ac19c19b93c3213708e3669dfb7f7835f629c25c08b06",
+      "file_id": "file-YPtHrsRveoqcqXPQMn3Wbn",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T11:47:35.151Z"
+    },
+    "agents/generated/databricksx-functionality-integration-memory-vector-provider-resolution-json-agent.agent.md": {
+      "content_sha256": "78c506d75812d145a889cb0173b4334243313451588b27e27d6ef73c48988ffc",
+      "file_id": "file-Kyju9cFWaf2rrv6H9zNSzw",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T11:47:38.723Z"
+    },
+    "agents/generated/databricksx-functionality-integration-observability-agent-memory-latest-sync-json-agent.agent.md": {
+      "content_sha256": "d9c74f3bf71aea43dbedcd5280b5a35d8288a7a904362f6bd3b7d5a60b48f4a2",
+      "file_id": "file-EQBfj6W2jXp37249nPu3pk",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T11:47:41.559Z"
+    },
+    "agents/generated/databricksx-functionality-integration-observability-bootstrap-20260807070021-agent-memory-sync-jso-agent.agent.md": {
+      "content_sha256": "c39ff696f1f41495c827d04e725ac1fcfb7927111238a9cc9eb2fb3248f07cf6",
+      "file_id": "file-WRvuY7ENP6DQTCrvZ9YeEM",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T11:47:54.360Z"
+    },
+    "agents/generated/databricksx-functionality-integration-observability-bootstrap-20260807070021-execution-trace-json-agent.agent.md": {
+      "content_sha256": "97d728ca8b5838f6ed36ba871dd75333ea6d2b9884e2991ea69acabb197ed330",
+      "file_id": "file-5LgsA4LQQSzLPJsYhRJCZy",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T11:47:58.017Z"
+    },
+    "agents/generated/databricksx-functionality-integration-observability-token-economics-bootstrap-20260807070021-token-agent.agent.md": {
+      "content_sha256": "fa4d2ab5f4f253a7f72ed3411a07722ac7b3c00b002c1a91f922c7d1392989d7",
+      "file_id": "file-NY6Z4KfqzPmvSU3tSNPR9h",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T11:48:04.358Z"
+    },
+    "agents/generated/databricksx-functionality-integration-observability-token-economics-bootstrap-token-report-json-agent.agent.md": {
+      "content_sha256": "2b10e0dccac42ac35c08adca1b311359aeed69474138fe095d73a7e8ba8c7817",
+      "file_id": "file-APGdKgF6EyXZng7gvLAfMn",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T11:48:06.055Z"
+    },
+    "agents/generated/databricksx-functionality-integration-observability-token-economics-latest-token-plan-json-agent.agent.md": {
+      "content_sha256": "0f8e2972c2656c5420c03fd445b819bc037f4dad4178f20acf2125ade393723b",
+      "file_id": "file-KXsR8zGkoNPvAYaWf7X76q",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T11:48:07.425Z"
+    },
+    "agents/generated/databricksx-functionality-integration-scripts-bootstrap-orchestrator-local-mjs-agent.agent.md": {
+      "content_sha256": "1c54c01300f57786e0af961b5f5ec2848d951359c8b8d8124f533ddfef1c3d6c",
+      "file_id": "file-QnAQjuLtGNcnA6zFrZ1sUg",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T11:48:09.548Z"
+    },
+    "agents/generated/databricksx-functionality-integration-scripts-huggingface-models-mjs-agent.agent.md": {
+      "content_sha256": "09330ff92ed84ec80efa124e03f6cea43e86da93378ca1dea83a2896dc640b35",
+      "file_id": "file-2sWv4HhKbG2xvE3RpCbYFD",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T11:48:12.275Z"
+    },
+    "agents/generated/databricksx-functionality-integration-scripts-verify-openai-vector-store-ts-agent.agent.md": {
+      "content_sha256": "1affc85569f77f0f94eaced669c4790ba6035ea0a1c25c9be6785a95f5ddc3a4",
+      "file_id": "file-EN9kQWwpHBCzSgM3qKHoMr",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T11:48:28.056Z"
+    },
+    "agents/generated/databricksx-functionality-integration-src-generated-generatedpage-jsx-agent.agent.md": {
+      "content_sha256": "1d020dcbe8a69a649971fe14045394a8f346920b4cacba9b204b45f443a84b55",
+      "file_id": "file-Ao91z1WxKa6yp2T1jj4shy",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T11:48:30.434Z"
+    },
+    "agents/generated/databricksx-functionality-integration-tests-agent-memory-vector-store-sync-test-ts-agent.agent.md": {
+      "content_sha256": "f5179bfc8e6dc89986e31c6a7a200c41f44228bc68a436c6df32bf2a5d310522",
+      "file_id": "file-KPM7RPoyjtLm3wspZ1FRtb",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T11:48:36.926Z"
+    },
+    "agents/generated/databricksx-functionality-security-backend-src-server-js-agent.agent.md": {
+      "content_sha256": "b953f38b500cb5ca7afec98f9295743d2c91cdfd3f24dc70b22faa8070e239b6",
+      "file_id": "file-EwJ8RcZo2EE9Gj2rYUkJ3X",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T11:48:38.326Z"
+    },
+    "agents/generated/databricksx-functionality-security-src-generated-datasource-js-agent.agent.md": {
+      "content_sha256": "ee2b8f59a74cd33825c45c4f7ff8a98061982fada3b8c0d23af83a0131bc2d33",
+      "file_id": "file-Hu7BufxicNZDTFXKfHaHHC",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T11:48:40.052Z"
+    },
+    "agents/generated/databricksx-functionality-test-scripts-huggingface-models-mjs-agent.agent.md": {
+      "content_sha256": "379230f2471a5695377775e16936f7856797f11187d95e2a80fab063d276f8ba",
+      "file_id": "file-EG2WxnPzMVrhqDBEMy5P3p",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T11:48:44.961Z"
+    },
+    "agents/generated/databricksx-functionality-test-tests-agent-memory-agent-scoring-test-ts-agent.agent.md": {
+      "content_sha256": "06818f8217dd818d7fbf66e61310c44a29ee8968c315d4f45e4acffba8e2a6d7",
+      "file_id": "file-Y2duduxxJn57mYSGCVcYR9",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T11:48:51.512Z"
+    },
+    "agents/generated/databricksx-functionality-test-tests-agent-memory-agent-selection-test-ts-agent.agent.md": {
+      "content_sha256": "e92513c344eee6f4f421b775737e4a57eb33deec2cd20cf1addc3e40c31e6a68",
+      "file_id": "file-8vH8voDx3aMNbeddx6n2Ca",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T11:48:53.216Z"
+    },
+    "agents/generated/databricksx-functionality-test-tests-agent-memory-repeated-request-detector-test-ts-agent.agent.md": {
+      "content_sha256": "68aa91b21496431711c06b92714bcf1a875216f64cc32c15bd92f780a7eeac48",
+      "file_id": "file-DymoRpKzzY8pXjzp25GMSQ",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T11:48:57.492Z"
+    },
+    "agents/generated/databricksx-functionality-test-tests-agent-memory-vector-store-sync-test-ts-agent.agent.md": {
+      "content_sha256": "43277a40165e52a6695be6a0b4585b3438230142bac3be258503311e3f9c1901",
+      "file_id": "file-LiUS7oRDDqa1wGaDj89dBH",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T11:49:01.582Z"
+    },
+    "memory/agent-knowledge/prompts/08a1b-r3-semantic-triage.project-execution-agent.task.prompt.md": {
+      "content_sha256": "b0737b6c554e7613c14e2bb0fe4834ea6f634b824153d05b92798f3986387c71",
+      "file_id": "file-M1Hyc1Mpqkd8itTJ2QNaZa",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T11:49:13.113Z"
+    },
+    "memory/agent-knowledge/prompts/08a1c-r4-reconstructed-disposition.task.prompt.md": {
+      "content_sha256": "8170bdd065068cb257c9ed31b5d57e4476895cb7fdb82dfa645b69cbf022f78f",
+      "file_id": "file-XKG79LGGp14v6bbSCeKAuw",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T11:49:14.990Z"
+    },
+    "agents/generated/adx-functionality-api-venv-local-flux-lib-python3-12-site-packages-fastapi-applications-py-agent.agent.md": {
+      "content_sha256": "2590aba8ef883a29be895e54ae29d1a37136bb01ee703db2bc4ec31dbf2430b4",
+      "file_id": "file-Aa9h76bSdJVS6LSDFkUzRZ",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T19:52:37.007Z"
+    },
+    "agents/generated/adx-functionality-api-venv-local-flux-lib-python3-12-site-packages-fastapi-background-py-p-agent.agent.md": {
+      "content_sha256": "a5d48cc0f1a6a878a2b57f8c53667ee75775e67cef7522de5f8b9d89ff03e342",
+      "file_id": "file-3X5i6mmKfNYCbDWmvxDfhs",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T19:52:39.940Z"
+    },
+    "agents/generated/adx-functionality-api-venv-local-flux-lib-python3-12-site-packages-fastapi-datastructures--agent.agent.md": {
+      "content_sha256": "e1f2b985bfaaa448cfaf0c16e1a2172072aee529437efde0494144e63d18035c",
+      "file_id": "file-YV9C9hmec4HbG6EoaHBkhv",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T19:52:43.626Z"
+    },
+    "agents/generated/adx-functionality-api-venv-local-flux-lib-python3-12-site-packages-fastapi-exceptions-py-g-agent.agent.md": {
+      "content_sha256": "3777f639e9c874dbe0ddcf6900e5b72683b1bfd7d968743db7ffd2ba1711c7e9",
+      "file_id": "file-BcoU4Ge1CEokRxAe1rrtjx",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T19:52:46.004Z"
+    },
+    "agents/generated/adx-functionality-api-venv-local-flux-lib-python3-12-site-packages-fastapi-openapi-constan-agent.agent.md": {
+      "content_sha256": "a439b254d1bec2c511086dde0abb9996b917fb7e002d2899cb3566d20af12a9f",
+      "file_id": "file-WegCCzaVNuS9pX7QksshQZ",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T19:52:49.943Z"
+    },
+    "agents/generated/adx-functionality-api-venv-local-flux-lib-python3-12-site-packages-fastapi-openapi-docs-py-agent.agent.md": {
+      "content_sha256": "b060ee48e7adcda0b112ab8e3a686a1d614faf51392551988c318a5db80e6f56",
+      "file_id": "file-VzQNZahz82UGYCnrhcWuVs",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T19:52:53.799Z"
+    },
+    "agents/generated/adx-functionality-api-venv-local-flux-lib-python3-12-site-packages-fastapi-openapi-models--agent.agent.md": {
+      "content_sha256": "8dc057043404a447a8ae41019c8a69bfb3fec97f70ed159abdef901872e35684",
+      "file_id": "file-Lw57EdfGduUsGBH3YEjdcX",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T19:52:58.719Z"
+    },
+    "agents/generated/adx-functionality-api-venv-local-flux-lib-python3-12-site-packages-fastapi-openapi-utils-p-agent.agent.md": {
+      "content_sha256": "fdda09d3b2c517fff2de8ab28a5c6c0de591c8fa5c0fdc6d8b506bf6ba44c1cc",
+      "file_id": "file-8ucxpAoBBFBty3QymtjGKM",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T19:53:00.092Z"
+    },
+    "agents/generated/adx-functionality-api-venv-local-flux-lib-python3-12-site-packages-fastapi-param-functions-agent.agent.md": {
+      "content_sha256": "e56e5e1c2912dbd927a329146d391c9416917ed5b0a8f494189d2abd519dfa33",
+      "file_id": "file-5DvaSW56ArpyK7iMkNseBa",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T19:53:07.063Z"
+    },
+    "agents/generated/adx-functionality-api-venv-local-flux-lib-python3-12-site-packages-fastapi-routing-py-dele-agent.agent.md": {
+      "content_sha256": "d4728c8e8a0ad0428013b1b8b6a6e2b3e2d3ef7e4d84f1fd9e6c667cebface98",
+      "file_id": "file-DYg8V99NptzGaQsivovuZt",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T19:53:09.336Z"
+    },
+    "agents/generated/adx-functionality-api-venv-local-flux-lib-python3-12-site-packages-fastapi-routing-py-get--agent.agent.md": {
+      "content_sha256": "5c82545a4937a84f8a07585b2ac594dc7034f1880b4c4c81ef91fede88da3eb9",
+      "file_id": "file-DFvFmB8mRDgZ8zMxD5xAYB",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T19:53:13.386Z"
+    },
+    "agents/generated/adx-functionality-api-venv-local-flux-lib-python3-12-site-packages-fastapi-routing-py-patc-agent.agent.md": {
+      "content_sha256": "97de63e0e0e187d98c98f54e986e80b967e1adaefe1faa99d7c21ee011f6bd50",
+      "file_id": "file-NEjk1NjFJwy5iGYhkkAqXx",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T19:53:19.999Z"
+    },
+    "agents/generated/adx-functionality-api-venv-local-flux-lib-python3-12-site-packages-fastapi-routing-py-post-agent.agent.md": {
+      "content_sha256": "4e0f8f099d73b6020e31d474b9540f7a52ba25c870cccbbe3b165a813de2ff2e",
+      "file_id": "file-9Qc8HLn4padwfr6ErU6n4h",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T19:53:23.559Z"
+    },
+    "agents/generated/adx-functionality-api-venv-local-flux-lib-python3-12-site-packages-fastapi-routing-py-put--agent.agent.md": {
+      "content_sha256": "cd3bfe54cc22fa83bc221acbfc8db564a34243883f9b9229eac7dd5f05d3fd55",
+      "file_id": "file-JnXPBD8owBSaxVmjifdEJn",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T19:53:25.235Z"
+    },
+    "agents/generated/adx-functionality-api-venv-local-flux-lib-python3-12-site-packages-fastapi-security-api-ke-agent.agent.md": {
+      "content_sha256": "9d055459f6e1610763ff0c722ad3b231e7c443856fd879de94b0847dd45ca9e2",
+      "file_id": "file-J3kfrVBCtmSeft1A5m8yR3",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T19:53:28.261Z"
+    },
+    "agents/generated/adx-functionality-api-venv-local-flux-lib-python3-12-site-packages-fastapi-security-http-p-agent.agent.md": {
+      "content_sha256": "128bb97ca3d1d2cf39cf05fcff28f2f55cc2319efa4daa0673b96101af08476c",
+      "file_id": "file-AhuJG462jiVAJzNsmpMXmv",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T19:53:29.973Z"
+    },
+    "agents/generated/adx-functionality-api-venv-local-flux-lib-python3-12-site-packages-fastapi-security-oauth2-agent.agent.md": {
+      "content_sha256": "688145c2ceb246cd93f94881da204bfb5e0a46594bdea5f5dcfc5f43b2a58a57",
+      "file_id": "file-8RFk1HY6WQHhuUWvfHx22S",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T19:53:36.984Z"
+    },
+    "agents/generated/adx-functionality-integration-venv-local-flux-lib-python3-12-site-packages-pip-internal-ne-agent.agent.md": {
+      "content_sha256": "332926d7c471bd404228b2aece1eab367b8de61b274875fefe4b03c9a9e7b6c1",
+      "file_id": "file-C7pL4TsYQifE1WqQiWk71N",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T19:53:38.517Z"
+    },
+    "agents/generated/adx-functionality-security-venv-local-flux-lib-python3-12-site-packages-anyio-pytest-plugi-agent.agent.md": {
+      "content_sha256": "e91065e6f900535ece7d78d9f15e11df34891cebdf87a83fc85a8b53880c1117",
+      "file_id": "file-WFrTopeuYBVE9pQZeYUDC5",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T19:53:39.982Z"
+    },
+    "agents/generated/adx-functionality-security-venv-local-flux-lib-python3-12-site-packages-anyio-streams-tls--agent.agent.md": {
+      "content_sha256": "fe6e0a474e8fa84aa0c01c8cf2e9c0133660437d527cef22aa9fa0d68b2e5b81",
+      "file_id": "file-72KQjkBwBvsn4wwQMujyVS",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T19:53:44.504Z"
+    },
+    "agents/generated/adx-functionality-security-venv-local-flux-lib-python3-12-site-packages-click-termui-py-agent.agent.md": {
+      "content_sha256": "8b43acb20a077542dd38058db7c1bc7fa7297db6b63aea7aa17222187b60427c",
+      "file_id": "file-JcXtFP6rqBnrsx1ea51Q9f",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T19:53:46.917Z"
+    },
+    "agents/generated/adx-functionality-security-venv-local-flux-lib-python3-12-site-packages-fastapi-applicatio-agent.agent.md": {
+      "content_sha256": "b3e580cad7a87f6cf270242084d03777248057bbeda21bd748376009ce31f448",
+      "file_id": "file-WrA73dnWqUdiCSD1u7wbQc",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T19:53:48.739Z"
+    },
+    "agents/generated/adx-functionality-security-venv-local-flux-lib-python3-12-site-packages-fastapi-exceptions-agent.agent.md": {
+      "content_sha256": "7c2fe9b92ca41431ea81d1eecdb2b59458e644bbdafd92ce252e765865f445ad",
+      "file_id": "file-N4PnmwtwjcPGrYo4irYrJc",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T19:53:50.215Z"
+    },
+    "agents/generated/adx-functionality-security-venv-local-flux-lib-python3-12-site-packages-fastapi-openapi-do-agent.agent.md": {
+      "content_sha256": "7c3bf145710f3451e36ff0ca87172d89cfa8b20168f951d123f15116421f9409",
+      "file_id": "file-GcERxxGVqmFgFKMmfzrTgP",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T19:53:53.555Z"
+    },
+    "agents/generated/adx-functionality-security-venv-local-flux-lib-python3-12-site-packages-fastapi-routing-py-agent.agent.md": {
+      "content_sha256": "e8293bd61b9efd86420ba60575e291109d3ee7d6861b79da93c6bd35d1275739",
+      "file_id": "file-WwZfevuXZbkRrv6jS4HJwP",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T19:53:56.002Z"
+    },
+    "agents/generated/adx-functionality-security-venv-local-flux-lib-python3-12-site-packages-fastapi-security-a-agent.agent.md": {
+      "content_sha256": "fc6ae4d9bc8232ab1c20650c76b1c9a76b5d851fb9926fd70d5d3b2594e3f216",
+      "file_id": "file-2sazeN9tyCmKkR1154AdUM",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T19:53:57.881Z"
+    },
+    "agents/generated/adx-functionality-security-venv-local-flux-lib-python3-12-site-packages-fastapi-security-h-agent.agent.md": {
+      "content_sha256": "3ce1059d3e113ccd5b18a51f6420397933a1b2ddedf337c4441a09d9d38796f6",
+      "file_id": "file-SQYyU8jL5xVDwHN5PDVQDD",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T19:54:00.610Z"
+    },
+    "agents/generated/adx-functionality-security-venv-local-flux-lib-python3-12-site-packages-fastapi-security-o-agent.agent.md": {
+      "content_sha256": "00d18cdc09331e54e3ddf58d15b81614a798b20fa2c27929918993e719a7888d",
+      "file_id": "file-24XFrohp1JVo5dT5roXGv3",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T19:54:02.534Z"
+    },
+    "agents/generated/adx-functionality-security-venv-local-flux-lib-python3-12-site-packages-pip-internal-build-agent.agent.md": {
+      "content_sha256": "702a6f8304cd13b7b097543575e69ddd92e6b3dbd5fc17321a8d0b6077ef692d",
+      "file_id": "file-YKsawAuECfpAcJgnbUFN8u",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T19:54:03.889Z"
+    },
+    "agents/generated/adx-functionality-security-venv-local-flux-lib-python3-12-site-packages-pip-internal-cli-c-agent.agent.md": {
+      "content_sha256": "ab542a4b68d6d953d39c4b00f6174b9ce4044e4f3f5e092b72d1ce39ba839f02",
+      "file_id": "file-PQxSEKocMs6tow3HuThMM9",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T19:54:05.375Z"
+    },
+    "agents/generated/adx-functionality-security-venv-local-flux-lib-python3-12-site-packages-pip-internal-cli-i-agent.agent.md": {
+      "content_sha256": "743e6d3cca1b588c92654087804f384ef621b26ac7520e74d7a9998bae140f3a",
+      "file_id": "file-L1RDct6LRuzgpc83QNSovp",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T19:54:08.532Z"
+    },
+    "agents/generated/adx-functionality-security-venv-local-flux-lib-python3-12-site-packages-pip-internal-cli-r-agent.agent.md": {
+      "content_sha256": "9a77b50b7396786af9c3ec8637c4f8ccb65771eea02346229309128f40111e91",
+      "file_id": "file-ACtqYeAL2bWbeNfJ4MH1T6",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T19:54:12.223Z"
+    },
+    "agents/generated/adx-functionality-security-venv-local-flux-lib-python3-12-site-packages-pip-internal-comma-agent.agent.md": {
+      "content_sha256": "6b61b9d011bb2d6e87274630ce5970d39b87c7e38f26f0afaa7259f669315f90",
+      "file_id": "file-HEHNHq3WdQNZjNTBgq8Wor",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T19:54:14.013Z"
+    },
+    "agents/generated/adx-functionality-security-venv-local-flux-lib-python3-12-site-packages-pip-internal-confi-agent.agent.md": {
+      "content_sha256": "da333c6d7c6c18aa2e6f7111cdaa25d91207828f26cf46cdb4005697fee92c81",
+      "file_id": "file-88wazkLpXdgmHJZeicjSmA",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T19:54:17.812Z"
+    },
+    "agents/generated/adx-functionality-security-venv-local-flux-lib-python3-12-site-packages-pip-internal-excep-agent.agent.md": {
+      "content_sha256": "ac65a7776b6d2a39b672a522d33771e49dc9c624e9345e0a9319d4e81a74aad0",
+      "file_id": "file-FFfngvoodrBKRLgzq5YZtA",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T19:54:19.914Z"
+    },
+    "agents/generated/adx-functionality-security-venv-local-flux-lib-python3-12-site-packages-pip-internal-index-agent.agent.md": {
+      "content_sha256": "4672bc7017e8b6df914d0d90b25f74adac7364a5a9feb9c0a92cf7d23ceeffcd",
+      "file_id": "file-34sgmuMUEYU5jnjuYUzTZ3",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T19:54:22.052Z"
+    },
+    "agents/generated/adx-functionality-security-venv-local-flux-lib-python3-12-site-packages-pip-internal-netwo-agent.agent.md": {
+      "content_sha256": "d60ecaea987df65645d3391bc1214815040bb4c02679f175e67798b916555eb5",
+      "file_id": "file-SRmohEvUaE5pMpjh876jtP",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T19:54:24.273Z"
+    },
+    "agents/generated/adx-functionality-security-venv-local-flux-lib-python3-12-site-packages-pip-internal-opera-agent.agent.md": {
+      "content_sha256": "fb5f604ad0566a4e942b0dce8af4e5595cc08abdac8891829e21124bcd56e1f7",
+      "file_id": "file-Q2VUdmXvEcTR3dsJicLS5r",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T19:54:26.163Z"
+    },
+    "agents/generated/adx-functionality-security-venv-local-flux-lib-python3-12-site-packages-pip-internal-req-r-agent.agent.md": {
+      "content_sha256": "7cdd6abd08222e8e1fcb5af24d9311bede12bc17fee6c955c068c6ac830d36b7",
+      "file_id": "file-VKtF4V2QUWpDL243nhxf7F",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T19:54:29.049Z"
+    },
+    "agents/generated/adx-functionality-security-venv-local-flux-lib-python3-12-site-packages-pip-internal-self--agent.agent.md": {
+      "content_sha256": "3be971b917e8b8a0c0d0d625236f73b79c234974ec76922582a0c2af0dbe26e1",
+      "file_id": "file-AVCTAuQGNUwoXuJMbpfUV1",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T19:54:30.877Z"
+    },
+    "agents/generated/adx-functionality-security-venv-local-flux-lib-python3-12-site-packages-pip-internal-utils-agent.agent.md": {
+      "content_sha256": "28d0d0eaca825ab28324a9da2a365158941eb3678b3eb4892ed0d15db9657e85",
+      "file_id": "file-E7jamzbHEDnE6gCQiFokQm",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T19:54:35.012Z"
+    },
+    "agents/generated/adx-functionality-test-venv-local-flux-lib-python3-12-site-packages-click-exceptions-py-agent.agent.md": {
+      "content_sha256": "3417e07f61ceac5e327b49ed390c3d04091b08da4800a90cb8aa86403476be35",
+      "file_id": "file-4dqF7v2fQaHoro2aQsSMCQ",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T19:54:37.979Z"
+    },
+    "agents/generated/adx-functionality-test-venv-local-flux-lib-python3-12-site-packages-fastapi-openapi-docs-p-agent.agent.md": {
+      "content_sha256": "87248687a4ba73ba727ffecd14bee807eed081f01e55c6f76eaf81b586f0f73f",
+      "file_id": "file-2S8wuFnqxai1C8uQ34Gr53",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T19:54:40.015Z"
+    },
+    "agents/generated/databricksx-functionality-integration-observability-agent-memory-vector-store-verification-json-agent.agent.md": {
+      "content_sha256": "3a6c2fd0a739c9800e0ee0196fe2e7ab8890d39ee855ebb901201485e1a4788c",
+      "file_id": "file-PJQWQvjy7vCWA8JYKMt44p",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T19:54:50.253Z"
+    },
+    "agents/generated/databricksx-functionality-integration-scripts-sync-agent-knowledge-to-vector-store-ts-agent.agent.md": {
+      "content_sha256": "91ca81be9c927cc7f7a720d8c95b628a64aa42d1861e2e903a3961c33bb798f8",
+      "file_id": "file-JpGLhg66RxgpdpLPUDAVxR",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-13T19:54:50.275Z"
+    },
+    "memory/agent-knowledge/projects/agentic-system-dependencies-explore-2026-08-14.summary.md": {
+      "content_sha256": "b1e3e4738364d6f8574e2046f7feb18fd85818675d32cf716adce6253c76e399",
+      "file_id": "file-Ja8UFVwigFfZg95oT7BpPL",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-14T14:20:06.377Z"
+    },
+    "memory/agent-knowledge/prompts/agentic-system-dependencies-explore-20260814.architecture_review.agentic-system-dependencies-explore-architecture-review.prompt.md": {
+      "content_sha256": "1915ee338b4b50efde60df9329a65f05f5e61eb65154b4351b096e515c1b32e8",
+      "file_id": "file-R2FJszYjyvCW8K7cfP5v1D",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-14T14:20:09.048Z"
+    },
+    "memory/agent-knowledge/prompts/agentic-system-dependencies-explore-20260814.data_science_review.agentic-system-dependencies-explore-data-review.prompt.md": {
+      "content_sha256": "cbcde3a434564ea935d01d4198c76bca3d32ceaa0c615c5340706e6b2a05c70f",
+      "file_id": "file-7SeaLuaUcsb9a7xHgBZ3Ly",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-14T14:20:11.015Z"
+    },
+    "memory/agent-knowledge/prompts/agentic-system-dependencies-explore-20260814.design_review.agentic-system-dependencies-explore-design-review.prompt.md": {
+      "content_sha256": "bdffd8e33c62e4089996bafd413be2c7523ba2e7e37b04f06e89409fcb2a8a63",
+      "file_id": "file-64LPdbFgCQHon7MrFGvpYP",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-14T14:20:12.632Z"
+    },
+    "memory/agent-knowledge/prompts/agentic-system-dependencies-explore-20260814.plutonix-fullstack-agent.agentic-system-dependencies-explore-task.prompt.md": {
+      "content_sha256": "dbdb6c438113c7a63d6b31dfbb838cc8e619a8f4e2b4db903ba5aa6fd289f8b2",
+      "file_id": "file-XKXm7uybsGCiR86sVUxeju",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-14T14:20:14.499Z"
+    },
+    "memory/agent-knowledge/projects/agentic-system-architecture-rails-2026-08-14.summary.md": {
+      "content_sha256": "1bff47c87dc233afefdf16c85a4937da9a3965b496d1bc0e12434b77d1ef6349",
+      "file_id": "file-7RHUUcFCJWjh6Ju74fN2dK",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-14T21:37:34.002Z"
+    },
+    "memory/agent-knowledge/prompts/agentic-system-architecture-rails-20260814.architecture-review.validation.prompt.md": {
+      "content_sha256": "98a18555bdfcd417c658378bd868f4109b4e91de52518e98c53cf8681bcfd2a4",
+      "file_id": "file-MFpEW3LiKQAyjwunHuo6tv",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-14T21:37:37.684Z"
+    },
+    "memory/agent-knowledge/prompts/agentic-system-architecture-rails-20260814.data-review.validation.prompt.md": {
+      "content_sha256": "8645e91da0d5dd0e2d442d5f0a2b3e53761953ae60d99c74735d911017183e8e",
+      "file_id": "file-TMbBBYemthEKVsVqwUawwJ",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-14T21:37:42.409Z"
+    },
+    "memory/agent-knowledge/prompts/agentic-system-architecture-rails-20260814.design-review.validation.prompt.md": {
+      "content_sha256": "d7286ab177751725dd3c8c8eae4611b4cab652b21032976993e5a54ccda6fe22",
+      "file_id": "file-NqcVaYJmtMsdzemTgL7FeC",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-14T21:37:44.141Z"
+    },
+    "memory/agent-knowledge/prompts/agentic-system-architecture-rails-20260814.plutonix-fullstack-agent.task.prompt.md": {
+      "content_sha256": "a9df8b66ced2daa0043bd1c5656d177cc8fd9f7e4e109882e122bda7dcba6828",
+      "file_id": "file-YSmBvt9xw3H3eUuu1A72VB",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-14T21:37:46.348Z"
+    },
+    "agents/generated/brushx-design-workshop-review-agent.agent.md": {
+      "content_sha256": "266bc6db8cbd3f9ec48f9a8e7648e1ae87b95bf49a32436df668a78b6d75de06",
+      "file_id": "file-RWw2kW6GY1xgEHbZYh6Wcc",
+      "status": "in_progress",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-14T23:05:59.034Z"
+    },
+    "agents/generated/brushx-functionality-api-backend-src-server-js-get-api-health-agent.agent.md": {
+      "content_sha256": "830f3127fe870f675fddce41f6d3a30f05f9bcba0d22a1ce0e773fa2fe7a0352",
+      "file_id": "file-V894fvGQxqpthMU6MEFriM",
+      "status": "in_progress",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-14T23:06:02.537Z"
+    },
+    "agents/generated/brushx-functionality-api-backend-src-server-js-get-api-openai-status-agent.agent.md": {
+      "content_sha256": "4b258b07066c054ace2810aa7be85b71ac863ceeca7b1963fff0669ff5ac7926",
+      "file_id": "file-HFA73AWnuUKoy58C1YAgNT",
+      "status": "in_progress",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-14T23:06:04.172Z"
+    },
+    "agents/generated/brushx-functionality-api-backend-src-server-js-post-api-openai-generate-agent.agent.md": {
+      "content_sha256": "5e7da39880e33f41727de272267d4eacf5f6c97019cabf026ba3c093adc3cbad",
+      "file_id": "file-6RgEPkgvztBzEdLvKrSBoz",
+      "status": "in_progress",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-14T23:06:06.113Z"
+    },
+    "agents/generated/brushx-functionality-api-schemas-openapi-planning-schema-json-contract-agent.agent.md": {
+      "content_sha256": "1e4cc4ffd2b93f36ce354d85a7332957da1b6ee1d9b58b382ef2c63c13e31eac",
+      "file_id": "file-EGNxKaWyu71PBUsp7Ywp5s",
+      "status": "in_progress",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-14T23:06:07.930Z"
+    },
+    "agents/generated/brushx-functionality-integration-agentic-system-d3-agentic-system-d3-js-agent.agent.md": {
+      "content_sha256": "48e8c70199a5a9fa84705b1ffdd462e21f2ec545ec6ff9d59151eb658105d986",
+      "file_id": "file-BSmX5yw1b4URn52NaMmZfD",
+      "status": "in_progress",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-14T23:06:09.514Z"
+    },
+    "agents/generated/brushx-functionality-integration-backend-src-server-js-agent.agent.md": {
+      "content_sha256": "14a3f21d862051d5d20f77aa5c0316bb7785365452b70d087c32e8313f9655be",
+      "file_id": "file-4orRivr3RvoHeH42xGxckE",
+      "status": "in_progress",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-14T23:06:11.314Z"
+    },
+    "agents/generated/brushx-functionality-integration-graph-agent-functionality-map-json-agent.agent.md": {
+      "content_sha256": "594a884a1cebbbd5c09b6c3af14338e18f3746c15fd43e78767f68f8e810e559",
+      "file_id": "file-TX7PGp1uQ8w7dfimN3FDRL",
+      "status": "in_progress",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-14T23:06:13.607Z"
+    },
+    "agents/generated/brushx-functionality-integration-graph-workspace-graph-json-agent.agent.md": {
+      "content_sha256": "609c7c2a3a9ef04e03b79bd25b5fdfbadc9aaf07268230fb2bee18a525e316ea",
+      "file_id": "file-6g66NmfKcDRAUTUcudJpGj",
+      "status": "in_progress",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-14T23:06:15.384Z"
+    },
+    "agents/generated/brushx-functionality-integration-memory-vector-provider-resolution-json-agent.agent.md": {
+      "content_sha256": "f76a228abfaa7da7c2e3466dce864ee9079ee1e413aaf20950e03abfbf2ce9ce",
+      "file_id": "file-VGx17dE73V1cR6hN78bUjg",
+      "status": "in_progress",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-14T23:06:16.957Z"
+    },
+    "agents/generated/brushx-functionality-integration-observability-agent-memory-env-check-json-agent.agent.md": {
+      "content_sha256": "dfdb85cc02b1b84ee7c06dfaba95808568b2cb14ad598b2a398338e0a78c752a",
+      "file_id": "file-KiUoRYHDkZzU8GkyDKJf85",
+      "status": "in_progress",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-14T23:06:19.042Z"
+    },
+    "agents/generated/brushx-functionality-integration-observability-agent-memory-latest-sync-json-agent.agent.md": {
+      "content_sha256": "ab002ccc807d3688a294fcc74fb223320b34eea0ec285e3a82210074d3f4351a",
+      "file_id": "file-SK9Gfyfw4PYKj5uKcWbJkj",
+      "status": "in_progress",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-14T23:06:21.154Z"
+    },
+    "agents/generated/brushx-functionality-integration-observability-agent-memory-vector-store-verification-json-agent.agent.md": {
+      "content_sha256": "3c2afbe67bd0a770925d8280275136618d6bedc803bedf3e926f0a6485a758f7",
+      "file_id": "file-UobzHQVSKiXNQbFKAdpX4j",
+      "status": "in_progress",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-14T23:06:22.715Z"
+    },
+    "agents/generated/brushx-functionality-integration-observability-vector-memory-chromadb-verification-json-agent.agent.md": {
+      "content_sha256": "0cd45dacb56c912c3f2d18efb67720aa4e5c0493678186020fe49e5cb50808cf",
+      "file_id": "file-GLMABZSuZ3pyqh7MVroG34",
+      "status": "in_progress",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-14T23:06:24.043Z"
+    },
+    "agents/generated/brushx-functionality-integration-observability-vector-memory-latest-vector-write-json-agent.agent.md": {
+      "content_sha256": "6249cfeb7d55fdf5d370ce8fae4176e753a503574ae71fff08848e858f679ecb",
+      "file_id": "file-6kix2rmAp5goL6mu6G7hP4",
+      "status": "in_progress",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-14T23:06:25.333Z"
+    },
+    "agents/generated/brushx-functionality-integration-registry-agents-vector-sync-index-json-agent.agent.md": {
+      "content_sha256": "acd7568c51f24aaeec1f507e3282ac59e2d931c604e72c10b0c8abe0b50c8055",
+      "file_id": "file-7ZE63K3Yo7wdtpkgknWyoD",
+      "status": "in_progress",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-14T23:06:26.692Z"
+    },
+    "agents/generated/brushx-functionality-integration-registry-vector-vector-provider-registry-json-agent.agent.md": {
+      "content_sha256": "52172524d391c8980ea0ab178a13f0992b6245edb16d6554b0631519cb6b97a9",
+      "file_id": "file-AxxbPjZ4G3AHamxyEFeWHx",
+      "status": "in_progress",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-14T23:06:29.530Z"
+    },
+    "agents/generated/brushx-functionality-integration-scripts-sync-agent-knowledge-to-vector-store-ts-agent.agent.md": {
+      "content_sha256": "ef0e6401e9cc7da728a3cae2b3c96bfde33aa89d0e0b41859f56cedb5d5f7768",
+      "file_id": "file-FMTiYSPaKjTu8otQY5ZL6B",
+      "status": "in_progress",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-14T23:06:31.306Z"
+    },
+    "agents/generated/brushx-functionality-integration-scripts-verify-bootstrap-artifacts-mjs-agent.agent.md": {
+      "content_sha256": "a4f34d522175ad716522f8480c00093d956b541b3cc7b2fdd9771833511868b7",
+      "file_id": "file-A6Lyxdd91JmuN1bwWZMJUj",
+      "status": "in_progress",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-14T23:06:33.083Z"
+    },
+    "agents/generated/brushx-functionality-integration-scripts-verify-openai-vector-store-ts-agent.agent.md": {
+      "content_sha256": "acab3520b584c7699f3ebc571d65ff3b1d45da18c3710e6d4222d485ce8c3f6b",
+      "file_id": "file-JE14Hm12s6nfBz3fTJDEmv",
+      "status": "in_progress",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-14T23:06:36.353Z"
+    },
+    "agents/generated/brushx-functionality-integration-src-generated-datasource-js-agent.agent.md": {
+      "content_sha256": "74d1d57f775c1f5ad08a8e17a1ea8729adb1b288c618781644a8a68369e7c633",
+      "file_id": "file-2tvTdym2yuehsgEjurNSJV",
+      "status": "in_progress",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-14T23:06:38.290Z"
+    },
+    "agents/generated/brushx-functionality-integration-src-generated-metadata-json-agent.agent.md": {
+      "content_sha256": "615063f960dc815322ddca793989770c86725821681153dc05249b43568b025a",
+      "file_id": "file-4RweEJQugVwMt1eXkdV2aM",
+      "status": "in_progress",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-14T23:06:41.340Z"
+    },
+    "agents/generated/brushx-functionality-integration-src-generated-pages-creativeworkspacepage-jsx-agent.agent.md": {
+      "content_sha256": "61eb8b7f1ea0f754cbb42e242e95991fdaac0c8cf1e1af1960f8edadf63446e9",
+      "file_id": "file-M143hhaR1XZC7XRrh1GWJo",
+      "status": "in_progress",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-14T23:06:45.784Z"
+    },
+    "agents/generated/brushx-functionality-integration-topology-d3-agentic-system-graph-json-agent.agent.md": {
+      "content_sha256": "740b2d9dc1068f0a970ba2d5dcc7ab8d557331c92f9cad353d112a9bb4169188",
+      "file_id": "file-LJcaZ6dp7XpMRjT9pgzwjZ",
+      "status": "in_progress",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-14T23:06:49.134Z"
+    },
+    "agents/generated/brushx-functionality-integration-vite-config-js-agent.agent.md": {
+      "content_sha256": "63db14b1c64313aa83f434f55616fc259322020d4536d5aee797f05ea1ab235c",
+      "file_id": "file-RaagDXeTHTLZpuCdYidBJn",
+      "status": "in_progress",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-14T23:06:50.634Z"
+    },
+    "agents/generated/brushx-functionality-security-backend-src-server-js-agent.agent.md": {
+      "content_sha256": "40cc576e3a50291566b9fb50feaf120b31674d5ca07a15a6befd790575d29aad",
+      "file_id": "file-AqUR2WoHfpoTcLrVx9aCzZ",
+      "status": "in_progress",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-14T23:06:52.598Z"
+    },
+    "agents/generated/brushx-functionality-security-graph-agent-functionality-map-json-agent.agent.md": {
+      "content_sha256": "ebc41e4eccc78c8bf4a28539227728778f36640f12844a4e99ae4fe5427192ab",
+      "file_id": "file-F6BbddnxtYUPM5TAXNnraT",
+      "status": "in_progress",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-14T23:06:53.944Z"
+    },
+    "agents/generated/brushx-functionality-security-scripts-sync-agent-knowledge-to-vector-store-ts-agent.agent.md": {
+      "content_sha256": "2cede40dc676b6ef771f8c37eee8f9ccbf92a759600449c664b133156574149e",
+      "file_id": "file-FQJZ8pwQ6P2L8VxSXZmDK1",
+      "status": "in_progress",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-14T23:06:55.441Z"
+    },
+    "agents/generated/brushx-functionality-security-scripts-verify-openai-vector-store-ts-agent.agent.md": {
+      "content_sha256": "85178962f4783e5a41605f88b495bff92b310749583794d08c8dbf928feceece",
+      "file_id": "file-VoZYhn72Zzu3SrThhEAoHP",
+      "status": "in_progress",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-14T23:06:57.448Z"
+    },
+    "agents/generated/brushx-functionality-security-src-generated-pages-creativeworkspacepage-jsx-agent.agent.md": {
+      "content_sha256": "fce46dcb023ae4492f346efcf044ef335a9ad555177b0e489769e247eee780a9",
+      "file_id": "file-29kX3cgkxm7PSK5cC5xSYo",
+      "status": "in_progress",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-14T23:06:58.883Z"
+    },
+    "agents/generated/brushx-functionality-security-vite-config-js-agent.agent.md": {
+      "content_sha256": "4bdcd0230b1afabfd0cc55a9ed178d21bb722cbbd34bccb3c20294d517344b57",
+      "file_id": "file-U4LfJAud9xByiG2gTLv6LB",
+      "status": "in_progress",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-14T23:07:06.301Z"
+    },
+    "agents/generated/application-architecture-agent.agent.md": {
+      "content_sha256": "21c540b4e26cca0e5476f93bb53ae6bffc4037029cf01dbd2945cb8da58825ae",
+      "file_id": "file-LhNx1MDimieGqRjFn4sYsB",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-15T17:20:45.023Z"
+    },
+    "agents/generated/artifact-production-agent.agent.md": {
+      "content_sha256": "14153f3cfd55457464c8dfa8b9db016f4407f4d7d596760ee54cc747f3052f19",
+      "file_id": "file-MQML1A8A2tjWgXAd8waUj9",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-15T17:20:50.296Z"
+    },
+    "agents/generated/data-contract-agent.agent.md": {
+      "content_sha256": "1be3e296ab3e6238f55251f18c7b48211a78d0b03bb601cac2d7e64c5955d87f",
+      "file_id": "file-6r64trftbULUGag8G1csUe",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-15T16:25:10.974Z"
+    },
+    "agents/generated/design-workshop-review-agent.agent.md": {
+      "content_sha256": "a3a10055dfeb439a3564389ffe7edac0545f58bcdd509ca98295669097252bac",
+      "file_id": "file-7Mj3KgstK37U5RiDSLWnGR",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-15T16:25:14.498Z"
+    },
+    "agents/generated/experience-composition-agent.agent.md": {
+      "content_sha256": "f5ab57101aa08b9142d5371e2d0bf4ec440839d2889a75005f5bd530ac6bcf20",
+      "file_id": "file-DMTmFspA8fbS9Sfzys7GHd",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-15T16:25:16.429Z"
+    },
+    "agents/generated/governance-security-agent.agent.md": {
+      "content_sha256": "1c4603605efa202aab95dc7cb860e228b6159983ca786dd06cbfd1c4af31570d",
+      "file_id": "file-UwQedTkXCZDs14nxMMUqhG",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-15T17:20:51.833Z"
+    },
+    "agents/generated/project-orchestrator-agent.agent.md": {
+      "content_sha256": "d15caa5fd1eb462a293561be2ac6077bb235f3c3a77e00b71ae1516793b77302",
+      "file_id": "file-MwkEsHyE1Fub2AxEsxsff8",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-15T16:25:21.681Z"
+    },
+    "agents/generated/qagent-controller.agent.md": {
+      "content_sha256": "18540d7862d2d898c35d13a3868430d04a5983a74d84adfaf6140d397b7a3695",
+      "file_id": "file-BGeDzvAdTVFy8L8sjwEDfp",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-15T16:25:26.439Z"
+    },
+    "agents/generated/runtime-packaging-agent.agent.md": {
+      "content_sha256": "9c9a7482de8091b0329702e46b83f62774ab526a7d5d9115faf6c2687ebf0267",
+      "file_id": "file-43SkPLR641i9wXzSTnYLJ2",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-15T16:25:29.528Z"
+    },
+    "memory/agent-knowledge/projects/agent-definition-reuse-fix-2026-08-15.summary.md": {
+      "content_sha256": "6d328bb463462196b3d9672f1ff91989631c24e89841db9e8844ba227c92d485",
+      "file_id": "file-VZmRfqmfJSWGRJGtqBGtMb",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-15T16:25:33.700Z"
+    },
+    "memory/agent-knowledge/prompts/agent-definition-reuse-fix-20260815.project-execution-agent.task.prompt.md": {
+      "content_sha256": "2b9e958ef6bc4e87952a1f9802e3e825fa392901714eadc1593e975070a9f955",
+      "file_id": "file-U16J1Bb2ovdc5U2A11pfWG",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-15T16:25:36.686Z"
+    },
+    "memory/agent-knowledge/projects/architecture-feature-force-hierarchy-2026-08-15.summary.md": {
+      "content_sha256": "06fc563e431b7b7b2104487e9a9bb18e3cb83fb107b2a02d6e1c3c2ec9a930ee",
+      "file_id": "file-XLFWVEYPicUsRSUhny4Nhi",
+      "status": "in_progress",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-15T19:40:39.282Z"
+    },
+    "memory/agent-knowledge/prompts/architecture-feature-force-hierarchy-20260815.project-execution-agent.task.prompt.md": {
+      "content_sha256": "47f03ac56fe2b8b7c00fcb55053aeb55fb920dd4cea5e847134f86b5c9798472",
+      "file_id": "file-UpcGyMbTNUS44kL9NBRLFy",
+      "status": "completed",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-15T17:20:57.027Z"
+    },
+    "memory/agent-knowledge/projects/architecture-feature-relations-2026-08-15.summary.md": {
+      "content_sha256": "df22bef29b695fae72ab160c27908dbc9d452efc8a6b95060ffa69d216503594",
+      "file_id": "file-5uVZye1ftnRXfTVbnNppHM",
+      "status": "in_progress",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-15T19:40:40.999Z"
+    },
+    "memory/agent-knowledge/projects/architecture-ui-feature-gravity-20260816.summary.md": {
+      "content_sha256": "e2adea7291c997963bb6eec3103e3406e3df40e26c4e63afc82e0a4f597f42ef",
+      "file_id": "file-LXDDt7UeE9LCPHRsHyDX5c",
+      "status": "in_progress",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-15T19:40:44.806Z"
+    },
+    "memory/agent-knowledge/prompts/architecture-feature-force-hierarchy-20260815.project-execution-agent.direct-relationships-correction.prompt.md": {
+      "content_sha256": "fefe0cfacc2b71e03b0c4bed7b99690612a6032348a9aa7ef930fbb0bf83c8bb",
+      "file_id": "file-PmXWYxa9QTwH951Q8oWrrj",
+      "status": "in_progress",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-15T19:40:49.911Z"
+    },
+    "memory/agent-knowledge/prompts/architecture-feature-relations-20260815.project-execution-agent.task.prompt.md": {
+      "content_sha256": "77d6349fd31153264707d7fa260a1d5ddd885de47d9f743bf7b3d1b332ea2e32",
+      "file_id": "file-6MqkxUQ2wXUGnJWXHNoXya",
+      "status": "in_progress",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-15T19:40:54.730Z"
     }
   },
-  "last_sync_at": "2026-08-09T11:09:39.118Z"
+  "last_sync_at": "2026-08-15T19:40:55.106Z"
 }

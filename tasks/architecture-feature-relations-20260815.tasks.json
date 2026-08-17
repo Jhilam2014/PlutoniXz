@@ -1,0 +1,11 @@
+{
+  "workflow_id": "architecture-feature-relations-20260815",
+  "tasks": [
+    { "task_id": "trace-page-dependencies", "description": "Identify why page nodes lacked API, service, and database relationships.", "status": "completed" },
+    { "task_id": "discover-imported-relations", "description": "Follow bounded local import chains and retain source evidence for page-to-client-to-API-to-service-to-data relationships.", "status": "completed" },
+    { "task_id": "remove-project-feature-node", "description": "Use the project selector as context and omit project roots from the Architecture feature projection.", "status": "completed" },
+    { "task_id": "simplify-canvas-relations", "description": "Render Architecture relationships as solid, unlabeled, non-directional Canvas lines.", "status": "completed" },
+    { "task_id": "move-details-to-insight", "description": "Expose relationship direction, type, connected entity kind, and source evidence in Insight.", "status": "completed" },
+    { "task_id": "validate-correction", "description": "Run syntax checks, focused backend/frontend regression tests, collision checks, and the frontend production build.", "status": "completed" }
+  ]
+}

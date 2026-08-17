@@ -13,7 +13,19 @@ const databaseUrl = process.env.DECISION_CONTINUITY_DATABASE_URL || process.env.
 if (!databaseUrl) throw new Error("DECISION_CONTINUITY_DATABASE_URL (or DATABASE_URL) is required to run migrations.");
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
-const migrationDir = path.resolve(scriptDir, "../../../database/migrations");
+const migrationRoots = [process.env.PLUTONIX_PROJECT_ROOT, path.resolve(scriptDir, "../../..")].filter(Boolean);
+let migrationDir = "";
+for (const root of migrationRoots) {
+  const candidate = path.resolve(root, "database/migrations");
+  try {
+    await fs.access(candidate);
+    migrationDir = candidate;
+    break;
+  } catch {
+    // Try the next supported repository root.
+  }
+}
+if (!migrationDir) throw new Error("Decision-continuity migration files are unavailable from the configured project root.");
 let files = (await fs.readdir(migrationDir))
   .filter((name) => /^(?:00[2-9]|010)_(?:decision_continuity|governed_promotion|brainx_model_registry|suggestion_intel_governance).*\.sql$/.test(name))
   .sort();

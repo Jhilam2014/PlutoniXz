@@ -1,0 +1,57 @@
+{
+  "workflow_id": "agentic-system-architecture-rails-20260814",
+  "delivered_at": "2026-08-14T21:33:30Z",
+  "status": "delivered",
+  "deliverables": [
+    {
+      "path": "apps/frontend/public/agentic-system/d3/agentic-system-model.js",
+      "summary": "Presentation-only Architecture edge plan that bundles only repeated ancestry/fanout routing while conserving every source relationship."
+    },
+    {
+      "path": "apps/frontend/public/agentic-system/d3/agentic-system-d3.js",
+      "summary": "Contained source-zone scaffold, radial trunks, ordered rail spines, local twigs, exact path emphasis, and accessible relationship membership attributes."
+    },
+    {
+      "path": "apps/frontend/public/agentic-system/d3/agentic-system.css",
+      "summary": "Professional transit-map visual grammar for zone boards, rails, stubs, local hierarchy, selected paths, and both color themes."
+    },
+    {
+      "path": "apps/frontend/test/agentic-system-model.test.mjs",
+      "summary": "Rail-plan conservation, fanout, and production-topology regression coverage."
+    }
+  ],
+  "validation": {
+    "frontend_model_tests": {
+      "status": "passed",
+      "passed": 42,
+      "failed": 0
+    },
+    "syntax_check": {
+      "status": "passed",
+      "files": [
+        "apps/frontend/public/agentic-system/d3/agentic-system-d3.js",
+        "apps/frontend/public/agentic-system/d3/agentic-system-model.js"
+      ]
+    },
+    "production_build": {
+      "status": "passed",
+      "modules_transformed": 2167,
+      "advisory": "Existing Vite large-chunk advisory only."
+    },
+    "architecture_projection": {
+      "status": "passed",
+      "nodes": 640,
+      "relationships": 638,
+      "zone_rails": 14,
+      "total_rails": 15,
+      "missing_relationships": 0,
+      "duplicated_semantic_memberships": 0
+    }
+  },
+  "data_handling": {
+    "topology_semantics_changed": false,
+    "mock_or_demo_data_added": false,
+    "new_database_or_api": "None",
+    "graph_artifacts": "Unchanged because this is a presentation-only routing update."
+  }
+}

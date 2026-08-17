@@ -5,7 +5,7 @@ import http from "node:http";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
-import { classifyGothamWorkflowFailure, runCodexReviewWorkflow, runCodexWorkflow, shouldSkipHashFile } from "../src/codexWorkflow.js";
+import { classifyGothamWorkflowFailure, isGothamWorkspaceSandboxUnavailable, probeCodexWorkspaceSandbox, runCodexReviewWorkflow, runCodexWorkflow, runModelRepairWorkflow, shouldSkipHashFile } from "../src/codexWorkflow.js";
 import { createPlutoniXOrchestrationEnvelope } from "../src/plutonixAuthority.js";
 import { formatProjectOrchestratorInstruction, inferGothamRequestIntent } from "../src/orchestratorAgent.js";
 import { runProjectOrchestratorBootstrap } from "../src/projectBootstrap.js";
@@ -241,10 +241,68 @@ test("executes text-box prompt through project-local orchestrator command rules"
 
   assert.equal(result.files.includes("src/generated/generatedPage.jsx"), true);
   const args = await fs.readFile(path.join(projectRoot, "codex-args.txt"), "utf8");
+  assert.doesNotMatch(args, /use_legacy_landlock/);
   assert.match(args, /Read canonical AGENTS\.md and ROOT_WORKSPACE_GENERATION_POLICY\.md first/);
   assert.match(args, /Treat the PlutoniX text-box prompt above as the active user task/);
   assert.match(args, /using AGENTS\.md, ROOT_WORKSPACE_GENERATION_POLICY\.md, and \.agentic\/orchestrator-agent\.md command rules/);
   assert.match(args, new RegExp(textBoxPrompt.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+});
+
+test("runs Codex with ignored stdin and gives a zero-change repair its task-completion context", async (context) => {
+  const temporaryRoot = await fs.mkdtemp(path.join(os.tmpdir(), "plutonix-repair-context-"));
+  const previous = {
+    CODEX_BIN: process.env.CODEX_BIN,
+    CLAUDE_BIN: process.env.CLAUDE_BIN,
+    PLUTONIX_REPAIR_BIN: process.env.PLUTONIX_REPAIR_BIN,
+    PLUTONIX_REPAIR_MODEL: process.env.PLUTONIX_REPAIR_MODEL,
+    PLUTONIX_REPAIR_ARGS: process.env.PLUTONIX_REPAIR_ARGS,
+    PLUTONIX_PROJECT_ROOT: process.env.PLUTONIX_PROJECT_ROOT,
+    GOTHAM_RUNTIME_PROBE: process.env.GOTHAM_RUNTIME_PROBE
+  };
+  context.after(async () => {
+    for (const [key, value] of Object.entries(previous)) {
+      if (value === undefined) delete process.env[key];
+      else process.env[key] = value;
+    }
+    await fs.rm(temporaryRoot, { recursive: true, force: true });
+  });
+
+  const projectRoot = path.join(temporaryRoot, "project");
+  await fs.mkdir(path.join(projectRoot, "src", "generated"), { recursive: true });
+  await fs.writeFile(path.join(projectRoot, "src", "generated", "generatedPage.jsx"), "export default function Page() { return null; }\n");
+  const fakeCodex = path.join(temporaryRoot, "fake-codex");
+  await fs.writeFile(fakeCodex, [
+    "#!/bin/sh",
+    "if [ -p /dev/stdin ]; then printf 'Reading additional input from stdin...\\n' >&2; exit 1; fi",
+    "case \"$*\" in",
+    "  *\"automatic recovery model\"*) printf '%s\\n' \"$@\" > \"$0.repair-args.txt\" ;;",
+    "  *) printf '%s\\n' \"$@\" > codex-args.txt ;;",
+    "esac",
+    "printf '{\\\"type\\\":\\\"item.completed\\\",\\\"message\\\":\\\"No file was changed; token=sk_test_123\\\"}\\n'",
+    ""
+  ].join("\n"));
+  await fs.chmod(fakeCodex, 0o755);
+  process.env.CODEX_BIN = fakeCodex;
+  process.env.PLUTONIX_PROJECT_ROOT = temporaryRoot;
+  process.env.GOTHAM_RUNTIME_PROBE = "false";
+  delete process.env.CLAUDE_BIN;
+  delete process.env.PLUTONIX_REPAIR_BIN;
+  delete process.env.PLUTONIX_REPAIR_MODEL;
+  delete process.env.PLUTONIX_REPAIR_ARGS;
+
+  const request = { sourceInstruction: "Add a SQL database connection.", objective: "Add a SQL database connection.", sections: [] };
+  const execution = await runCodexWorkflow(request, { generatedSiteDir: projectRoot });
+  assert.equal(execution.files.includes("codex-args.txt"), true);
+
+  await assert.rejects(
+    runModelRepairWorkflow(request, new Error("Gotham completed but did not change any meaningful project or requested artifact files."), { generatedSiteDir: projectRoot }),
+    (error) => {
+      assert.match(error.message, /Model output: .*<redacted>/i);
+      return true;
+    }
+  );
+  const repairArgs = await fs.readFile(`${fakeCodex}.repair-args.txt`, "utf8");
+  assert.match(repairArgs, /Implement the original user instruction directly/i);
 });
 
 test("exposes backend interface metadata only after project backend routes are generated", async (context) => {
@@ -413,10 +471,86 @@ test("classifies incompatible Gotham model metadata separately from cache and pr
     "codex_cli_model_incompatible"
   );
   assert.equal(
+    classifyGothamWorkflowFailure(new Error("The 'gpt-5.6-terra' model requires a newer version of Gotham.")),
+    "codex_cli_model_incompatible"
+  );
+  assert.equal(
     classifyGothamWorkflowFailure(new Error("gotham_models_manager::cache: failed to load models cache: missing field `supports_reasoning_summaries`")),
     "models_cache_incompatible"
   );
+  assert.equal(
+    classifyGothamWorkflowFailure(new Error("gotham_models_manager::manager: failed to renew cache TTL: missing field `base_instructions`")),
+    "models_cache_incompatible"
+  );
   assert.equal(classifyGothamWorkflowFailure(new Error("workflow exited with code 1: syntax error")), "workflow_execution_failed");
+});
+
+test("blocks known Bubblewrap namespace failures as workspace sandbox infrastructure", async (context) => {
+  const temporaryRoot = await fs.mkdtemp(path.join(os.tmpdir(), "plutonix-sandbox-probe-"));
+  context.after(() => fs.rm(temporaryRoot, { recursive: true, force: true }));
+  const fakeCodex = path.join(temporaryRoot, "fake-codex");
+  await fs.writeFile(fakeCodex, [
+    "#!/bin/sh",
+    "printf '%s\\n' 'bwrap: No permissions to create a new namespace, likely because the kernel does not allow non-privileged user namespaces.' >&2",
+    "exit 1",
+    ""
+  ].join("\n"));
+  await fs.chmod(fakeCodex, 0o755);
+
+  const preflight = await probeCodexWorkspaceSandbox(fakeCodex, 2000);
+  assert.equal(preflight.status, "unavailable");
+  assert.equal(preflight.failureClass, "workspace_sandbox_unavailable");
+  assert.equal(preflight.reason, "user_namespace_denied");
+  assert.equal(isGothamWorkspaceSandboxUnavailable(new Error(preflight.diagnostic)), true);
+  assert.equal(classifyGothamWorkflowFailure(new Error(preflight.diagnostic)), "workspace_sandbox_unavailable");
+  assert.equal(
+    classifyGothamWorkflowFailure(new Error("permission profiles requiring direct runtime enforcement are incompatible with --use-legacy-landlock")),
+    "workspace_sandbox_unavailable"
+  );
+  assert.equal(isGothamWorkspaceSandboxUnavailable(new Error("Permission denied writing src/app.jsx")), false);
+});
+
+test("does not start Codex execution when workspace sandbox preflight is unavailable", async (context) => {
+  const temporaryRoot = await fs.mkdtemp(path.join(os.tmpdir(), "plutonix-sandbox-blocked-"));
+  const previous = {
+    CODEX_BIN: process.env.CODEX_BIN,
+    GOTHAM_RUNTIME_PROBE: process.env.GOTHAM_RUNTIME_PROBE,
+    GOTHAM_SANDBOX_PREFLIGHT: process.env.GOTHAM_SANDBOX_PREFLIGHT
+  };
+  context.after(async () => {
+    for (const [key, value] of Object.entries(previous)) {
+      if (value === undefined) delete process.env[key];
+      else process.env[key] = value;
+    }
+    await fs.rm(temporaryRoot, { recursive: true, force: true });
+  });
+  const projectRoot = path.join(temporaryRoot, "project");
+  await fs.mkdir(path.join(projectRoot, "src", "generated"), { recursive: true });
+  const fakeCodex = path.join(temporaryRoot, "fake-codex");
+  const executionMarker = path.join(temporaryRoot, "provider-exec-started");
+  await fs.writeFile(fakeCodex, [
+    "#!/bin/sh",
+    "if [ \"$1\" = \"--version\" ]; then printf 'codex-cli 0.147.0\\n'; exit 0; fi",
+    "if [ \"$1\" = \"sandbox\" ] || [ \"$3\" = \"sandbox\" ]; then printf '%s\\n' 'bwrap: Creating new namespace failed: Operation not permitted' >&2; exit 1; fi",
+    `touch '${executionMarker}'`,
+    "exit 0",
+    ""
+  ].join("\n"));
+  await fs.chmod(fakeCodex, 0o755);
+  process.env.CODEX_BIN = fakeCodex;
+  process.env.GOTHAM_RUNTIME_PROBE = "true";
+  process.env.GOTHAM_SANDBOX_PREFLIGHT = "true";
+
+  const events = [];
+  await assert.rejects(
+    runCodexWorkflow({ sourceInstruction: "Change the project.", objective: "Change the project." }, {
+      generatedSiteDir: projectRoot,
+      emit: (type, message, extra) => events.push({ type, message, ...extra })
+    }),
+    (error) => classifyGothamWorkflowFailure(error) === "workspace_sandbox_unavailable"
+  );
+  assert.equal(await fs.access(executionMarker).then(() => true).catch(() => false), false);
+  assert.equal(events.some((event) => event.type === "execution.blocked"), true);
 });
 
 test("runs the configured Gotham fallback with an explicit model and records runtime verification", async (context) => {

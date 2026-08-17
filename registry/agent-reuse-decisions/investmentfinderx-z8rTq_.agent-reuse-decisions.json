@@ -1,0 +1,72 @@
+{
+  "projectId": "investmentfinderx-z8rTq_",
+  "agentModelVersion": "2.0.0",
+  "decisions": [
+    {
+      "id": "agent-reuse:investmentfinderx-z8rTq_:project-orchestrator-agent",
+      "projectExecution": "investmentfinderx-z8rTq_",
+      "selectedAgent": "project-orchestrator-agent",
+      "requestedRole": "project-orchestrator",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global project-orchestrator definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:29.282Z"
+    },
+    {
+      "id": "agent-reuse:investmentfinderx-z8rTq_:qagent-controller",
+      "projectExecution": "investmentfinderx-z8rTq_",
+      "selectedAgent": "qagent-controller",
+      "requestedRole": "qagent-controller",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global qagent-controller definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:29.282Z"
+    },
+    {
+      "id": "agent-reuse:investmentfinderx-z8rTq_:experience-composition-agent",
+      "projectExecution": "investmentfinderx-z8rTq_",
+      "selectedAgent": "experience-composition-agent",
+      "requestedRole": "experience-composition",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global experience-composition definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:29.282Z"
+    },
+    {
+      "id": "agent-reuse:investmentfinderx-z8rTq_:data-contract-agent",
+      "projectExecution": "investmentfinderx-z8rTq_",
+      "selectedAgent": "data-contract-agent",
+      "requestedRole": "data-contract",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global data-contract definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:29.282Z"
+    },
+    {
+      "id": "agent-reuse:investmentfinderx-z8rTq_:runtime-packaging-agent",
+      "projectExecution": "investmentfinderx-z8rTq_",
+      "selectedAgent": "runtime-packaging-agent",
+      "requestedRole": "runtime-packaging",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global runtime-packaging definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:29.282Z"
+    },
+    {
+      "id": "agent-reuse:investmentfinderx-z8rTq_:design-workshop-review-agent",
+      "projectExecution": "investmentfinderx-z8rTq_",
+      "selectedAgent": "design-workshop-review-agent",
+      "requestedRole": "design-workshop-review",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global design-workshop-review definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:29.282Z"
+    }
+  ]
+}

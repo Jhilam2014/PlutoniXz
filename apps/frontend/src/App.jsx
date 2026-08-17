@@ -66,6 +66,17 @@ import {
   layoutFunctionalityGraph,
   normalizeFunctionalityGraph
 } from "./functionalityGraphModel.js";
+import {
+  buildDecisionBranchLandscape,
+  buildDecisionObjectiveLedger,
+  buildDecisionTimelineFlow,
+  decisionBranchLineageIds,
+  decisionBranchReviewSignal,
+  decisionBranchStateLabel,
+  decisionBranchWorkshopSummary,
+  isDisabledDecisionBranch
+} from "./decisionBranchTreeModel.js";
+import { runtimeEventTranscript } from "./runtimeEventTranscript.js";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:8080";
 const GENERATED_SITE_URL = import.meta.env.VITE_GENERATED_SITE_URL || "http://localhost:5174";
@@ -984,8 +995,10 @@ function EventRow({ event, sessionStartedAt, selectedProject }) {
     event.codexVersion ? `CLI: ${event.codexVersion}` : null,
     event.upgradeAction
   ].filter(Boolean).join(" · ");
-  const inputLog = event.agentInput || event.instruction || event.sourceInstruction || event.message || "No separate input was recorded for this status event.";
-  const responseLog = event.agentResponse || event.outputTail || event.result?.message || event.message || "No response content was recorded for this status event.";
+  const sandboxFailure = event.failureClass === "workspace_sandbox_unavailable" || event.sandboxPreflight?.failureClass === "workspace_sandbox_unavailable";
+  const sandboxDiagnostic = event.sandboxPreflight?.diagnostic || event.diagnostic || "";
+  const sandboxRemediation = event.sandboxPreflight?.remediation || event.remediation || "";
+  const { inputLog, responseLog, statusLog } = runtimeEventTranscript(event);
   const eventMetadata = Object.fromEntries(Object.entries({
     agentId: event.agentId,
     projectId: event.projectId,
@@ -1030,20 +1043,33 @@ function EventRow({ event, sessionStartedAt, selectedProject }) {
           </small>
         ) : null}
         {runtimeDetail ? <small className="event-detail">{runtimeDetail}</small> : null}
+        {sandboxFailure ? (
+          <aside className="sandbox-unavailable-notice" aria-label="Sandbox unavailable">
+            <strong>Sandbox unavailable</strong>
+            <span>Gotham kept the selected route, but secure execution was not attempted. Automatic repair was skipped because this is an environment failure.</span>
+            {event.reason ? <small>Reason: {gothamText(event.reason)}</small> : null}
+            {sandboxDiagnostic ? <small>Diagnostic: {gothamText(sandboxDiagnostic)}</small> : null}
+            {sandboxRemediation ? <small>Administrator remediation: {gothamText(sandboxRemediation)}</small> : null}
+          </aside>
+        ) : null}
         {expanded ? (
           <section className="agent-log-detail" aria-label={`Agent details for ${visual.name}`} onClick={(clickEvent) => clickEvent.stopPropagation()}>
             <header>
-              <strong>Agent request and response</strong>
+              <strong>{inputLog || responseLog ? "Agent request and response" : "Execution event"}</strong>
               <button type="button" onClick={() => setExpanded(false)} aria-label="Collapse agent log details" title="Collapse details"><X size={14} /></button>
             </header>
-            <div>
+            {inputLog ? <div>
               <span>Input</span>
               <pre>{gothamText(inputLog)}</pre>
-            </div>
-            <div>
+            </div> : null}
+            {responseLog ? <div>
               <span>Response</span>
               <pre>{gothamText(responseLog)}</pre>
-            </div>
+            </div> : null}
+            {statusLog ? <div>
+              <span>{inputLog || responseLog ? "Execution status" : "Failure"}</span>
+              <pre>{gothamText(statusLog)}</pre>
+            </div> : null}
             {event.activityThread?.length ? (
               <div>
                 <span>Related updates</span>
@@ -2961,7 +2987,395 @@ function SelfImprovementPanel() {
   );
 }
 
-function DecisionContinuityPanel() {
+function trimDecisionCanvasText(value, max = 42) {
+  const text = String(value || "").replace(/\s+/g, " ").trim();
+  return text.length > max ? `${text.slice(0, Math.max(1, max - 1)).trimEnd()}…` : text;
+}
+
+function decisionCanvasLines(value, max = 21) {
+  const words = String(value || "Recorded branch").replace(/\s+/g, " ").trim().split(" ");
+  const lines = [];
+  let line = "";
+  for (const word of words) {
+    const candidate = line ? `${line} ${word}` : word;
+    if (candidate.length > max && line) {
+      lines.push(line);
+      line = word;
+      continue;
+    }
+    line = candidate;
+  }
+  if (line) lines.push(line);
+  return lines.length ? lines : ["Recorded branch"];
+}
+
+function decisionLandscapeState(kind) {
+  return ({ current: "CURRENT", possibility: "OPTION", dormant: "DORMANT", record: "RECORD", stage: "REVIEW" })[kind] || "RECORD";
+}
+
+function DecisionInspectorLabel({ icon: Icon, children, tone = "violet" }) {
+  return <dt><span className={`decision-inspector-icon ${tone}`} aria-hidden="true"><Icon size={12} /></span><span>{children}</span></dt>;
+}
+
+function DecisionBranchInspector({
+  selectedBranch,
+  selectedBranchSignal,
+  selectedFunctionality,
+  selectedObjective,
+  selectedDecisionRecord,
+  selectedFunctionalityId = "",
+  selectedAssignment,
+  onResetFocus,
+  className = ""
+}) {
+  return (
+    <aside className={`decision-workshop-inspector ${className}`.trim()} aria-live="polite">
+      <header><span className="eyebrow">Decision path</span><span className={`decision-status ${selectedBranch?.status || ""}`}>{selectedBranch ? decisionBranchStateLabel(selectedBranch) : "No selection"}</span></header>
+      {selectedBranch ? <>
+        <h3>{selectedBranch.objective?.summary || selectedBranch.id}</h3>
+        <p>{selectedDecisionRecord?.reason || selectedBranch.candidate?.decisionRationale || selectedBranch.disposition?.reason || "This branch is retained with its recorded provenance for governed comparison."}</p>
+        <dl>
+          <div><DecisionInspectorLabel icon={GitBranch} tone="teal">Project objective</DecisionInspectorLabel><dd>{selectedObjective?.label || "Objective grouping is unavailable for this recorded branch"}</dd></div>
+          <div><DecisionInspectorLabel icon={Code2}>Functionality</DecisionInspectorLabel><dd>{selectedFunctionality?.label || (selectedFunctionalityId ? `Source function ${selectedFunctionalityId}` : "Ledger record without a discovered function")}{selectedFunctionality?.category ? ` · ${selectedFunctionality.category}` : ""}</dd></div>
+          <div><DecisionInspectorLabel icon={Bot} tone="blue">Assigned agent</DecisionInspectorLabel><dd>{selectedAssignment ? `${selectedAssignment.agentId} · ${selectedAssignment.assignment} ownership` : "No project analysis assignment recorded"}</dd></div>
+          <div><DecisionInspectorLabel icon={Network} tone="teal">Interpretation</DecisionInspectorLabel><dd>{selectedBranchSignal?.label}</dd></div>
+          <div><DecisionInspectorLabel icon={FileCode2} tone="amber">Evidence</DecisionInspectorLabel><dd>{selectedBranchSignal?.evidenceCount || 0} immutable references</dd></div>
+          <div><DecisionInspectorLabel icon={GitBranch} tone="violet">Lineage</DecisionInspectorLabel><dd>{selectedBranch.parentBranchId ? `Child of ${selectedBranch.parentBranchId}` : "Directly connected to project genesis"}</dd></div>
+          <div><DecisionInspectorLabel icon={ShieldCheck} tone="green">Future use</DecisionInspectorLabel><dd>{selectedBranchSignal?.disabled ? (selectedBranchSignal.revisitEligible ? "May be reconsidered under governed conditions" : "Preserved as disabled provenance") : selectedBranch.autoReconsideration ? "Eligible for governed reconsideration" : "Recorded; no automatic reconsideration"}</dd></div>
+        </dl>
+        {selectedBranch.evidence?.length ? (
+          <div className="decision-workshop-inspector-evidence">
+            <span className="eyebrow decision-inspector-evidence-title"><span className="decision-inspector-icon amber" aria-hidden="true"><FileCode2 size={12} /></span>Cited source provenance</span>
+            <ul>
+              {selectedBranch.evidence.slice(0, 4).map((evidence) => <li key={evidence.id || evidence.reference}><code>{evidence.reference || evidence.id}</code><span>{evidence.source || "recorded source"}</span></li>)}
+            </ul>
+          </div>
+        ) : null}
+        {selectedFunctionality?.features?.length ? (
+          <div className="decision-workshop-inspector-evidence">
+            <span className="eyebrow decision-inspector-evidence-title"><span className="decision-inspector-icon violet" aria-hidden="true"><Code2 size={12} /></span>Coordinated features</span>
+            <ul>
+              {selectedFunctionality.features.slice(0, 5).map((feature) => <li key={feature.id}><code>{feature.entityType || feature.category || "feature"}</code><span>{feature.label}</span></li>)}
+            </ul>
+          </div>
+        ) : null}
+        <button type="button" className="ghost-action" onClick={onResetFocus}>Use default focus</button>
+      </> : <p>Select any path in the tree or review queue to inspect its provenance.</p>}
+    </aside>
+  );
+}
+
+function DecisionBranchTreeCanvas({
+  project,
+  branches = [],
+  analysisReport = null,
+  decisionGraph = null,
+  selectedBranchId = "",
+  selectedBranch = null,
+  selectedBranchSignal = null,
+  selectedFunctionality = null,
+  selectedObjective = null,
+  selectedDecisionRecord = null,
+  selectedFunctionalityId = "",
+  selectedAssignment = null,
+  onSelectBranch,
+  onResetFocus,
+  onAnalyze,
+  analyzing = false,
+  analysisStatus = ""
+}) {
+  const svgRef = useRef(null);
+  const canvasRef = useRef(null);
+  const zoomInteractionRef = useRef(null);
+  const zoomTransformRef = useRef(d3.zoomIdentity);
+  const zoomProjectRef = useRef("");
+  const landscape = useMemo(
+    () => buildDecisionTimelineFlow({
+      projectId: project?.id || "",
+      projectName: project?.name || "Project",
+      branches,
+      analysisReport,
+      graph: decisionGraph
+    }),
+    [analysisReport, branches, decisionGraph, project?.id, project?.name]
+  );
+  const selectedLineageIds = useMemo(
+    () => decisionBranchLineageIds(branches, selectedBranchId),
+    [branches, selectedBranchId]
+  );
+  const adjustCanvasZoom = (factor) => {
+    const interaction = zoomInteractionRef.current;
+    if (!interaction) return;
+    interaction.svg.transition().duration(150).call(interaction.zoom.scaleBy, factor);
+  };
+  const resetCanvasZoom = () => {
+    const interaction = zoomInteractionRef.current;
+    if (!interaction) return;
+    interaction.svg.transition().duration(170).call(interaction.zoom.transform, d3.zoomIdentity);
+  };
+
+  useEffect(() => {
+    const svgElement = svgRef.current;
+    if (!svgElement || !landscape.branchCount) return undefined;
+    const projectId = String(project?.id || "");
+    if (zoomProjectRef.current !== projectId) {
+      zoomProjectRef.current = projectId;
+      zoomTransformRef.current = d3.zoomIdentity;
+    }
+    const { width, height } = landscape.canvas;
+    const svg = d3.select(svgElement);
+    svg.selectAll("*").remove();
+    svg.attr("viewBox", `0 0 ${width} ${height}`).attr("width", width).attr("height", height);
+    const baseTransform = zoomTransformRef.current;
+    const viewport = svg.append("g").attr("class", "decision-branch-landscape-viewport").attr("transform", baseTransform);
+    const graph = viewport.append("g");
+    const dimUnrelated = Boolean(selectedBranchId);
+    const isLineage = (branchId) => selectedLineageIds.has(branchId);
+    const nodeLineageId = (datum) => datum.branchId || datum.lineageBranchId || "";
+
+    const zones = graph.append("g").attr("class", "decision-branch-landscape-zones");
+    const zone = zones.selectAll("g")
+      .data(landscape.zones)
+      .join("g")
+      .attr("class", (datum) => `decision-branch-landscape-zone ${datum.tone} ${dimUnrelated && !landscape.nodes.some((node) => node.zoneId === datum.id && isLineage(node.branchId)) ? "muted" : ""}`)
+      .attr("transform", (datum) => `translate(${datum.x},${datum.y})`);
+    zone.append("rect")
+      .attr("class", "decision-branch-landscape-zone-frame")
+      .attr("width", (datum) => datum.width)
+      .attr("height", (datum) => datum.height)
+      .attr("rx", 28);
+    zone.append("path")
+      .attr("class", "decision-branch-landscape-zone-corner")
+      .attr("d", (datum) => `M25,0 H${Math.max(25, datum.width - 76)} L${Math.max(25, datum.width - 48)},28 H${datum.width - 25}`);
+    zone.append("text")
+      .attr("class", "decision-branch-landscape-zone-type")
+      .attr("x", 25)
+      .attr("y", 29)
+      .text((datum) => `${datum.glyph} · ${datum.categoryLabel}`.toUpperCase());
+    zone.append("text")
+      .attr("class", "decision-branch-landscape-zone-label")
+      .attr("x", 25)
+      .attr("y", 50)
+      .text((datum) => trimDecisionCanvasText(datum.label, 40));
+    zone.append("text")
+      .attr("class", "decision-branch-landscape-zone-detail")
+      .attr("x", 25)
+      .attr("y", 69)
+      .text((datum) => datum.timelineLabel || `${datum.branchCount} record${datum.branchCount === 1 ? "" : "s"} · ${datum.evidenceCount} cited source${datum.evidenceCount === 1 ? "" : "s"}`);
+
+    const zoneById = new Map(landscape.zones.map((zoneItem) => [zoneItem.id, zoneItem]));
+    const route = (link) => {
+      if (landscape.layout === "timeline") {
+        const sourceX = link.source.x + link.source.radius;
+        const targetX = link.target.x - link.target.radius;
+        const shoulder = Math.max(52, Math.abs(targetX - sourceX) * 0.42);
+        return `M${sourceX},${link.source.y} C${sourceX + shoulder},${link.source.y} ${targetX - shoulder},${link.target.y} ${targetX},${link.target.y}`;
+      }
+      if (link.kind === "genesis") {
+        const targetZone = zoneById.get(link.target.zoneId);
+        if (targetZone) {
+          const sourceY = link.source.y + link.source.radius;
+          const railX = targetZone.x + targetZone.width - 18;
+          const targetX = link.target.x + link.target.radius;
+          const approachY = link.target.y;
+          const outerY = Math.max(sourceY + 36, targetZone.y - 26);
+          return `M${link.source.x},${sourceY} C${link.source.x},${outerY} ${railX},${outerY} ${railX},${targetZone.y - 8} L${railX},${approachY} C${railX},${approachY} ${targetX + 18},${approachY} ${targetX},${approachY}`;
+        }
+      }
+      const sourceY = link.source.y + link.source.radius;
+      const targetY = link.target.y - link.target.radius;
+      const shoulder = Math.max(42, Math.abs(targetY - sourceY) * 0.42);
+      return `M${link.source.x},${sourceY} C${link.source.x},${sourceY + shoulder} ${link.target.x},${targetY - shoulder} ${link.target.x},${targetY}`;
+    };
+    const links = graph.append("g").attr("class", "decision-branch-landscape-links");
+    links.selectAll("path")
+      .data(landscape.links)
+      .join("path")
+      .attr("class", (link) => [
+        "decision-branch-landscape-link",
+        link.kind,
+        link.disabled ? "disabled" : "",
+        link.visualKind || "record",
+        selectedBranchId && (link.targetBranchId === selectedBranchId || link.sourceBranchId === selectedBranchId) ? "selected-path" : "",
+        dimUnrelated && !isLineage(link.targetBranchId) ? "muted" : ""
+      ].filter(Boolean).join(" "))
+      .attr("d", route);
+
+    const genesis = graph.append("g")
+      .attr("class", "decision-branch-landscape-genesis")
+      .attr("transform", `translate(${landscape.genesis.x},${landscape.genesis.y})`);
+    genesis.append("circle").attr("class", "decision-branch-landscape-genesis-orbit").attr("r", landscape.genesis.radius + 11);
+    genesis.append("circle").attr("class", "decision-branch-landscape-genesis-core").attr("r", landscape.genesis.radius);
+    genesis.append("text").attr("class", "decision-branch-landscape-genesis-label").attr("text-anchor", "middle").attr("y", -4).text(landscape.layout === "timeline" ? "TIMELINE" : "GENESIS");
+    genesis.append("text").attr("class", "decision-branch-landscape-genesis-detail").attr("text-anchor", "middle").attr("y", 14).text(landscape.layout === "timeline" ? `${landscape.knownCount} known · ${landscape.anticipatedCount} anticipated` : `${landscape.branchCount} records`);
+
+    const node = graph.append("g")
+      .attr("class", "decision-branch-landscape-nodes")
+      .selectAll("g")
+      .data(landscape.nodes)
+      .join("g")
+      .attr("class", (datum) => [
+        "decision-branch-landscape-node",
+        datum.visualKind || "record",
+        datum.signal?.level || "reference",
+        datum.signal?.disabled ? "disabled" : "",
+        datum.timelineKind || "",
+        datum.branchId === selectedBranchId ? "selected" : "",
+        datum.kind === "deferred-review-stage" ? "stage" : "",
+        dimUnrelated && !isLineage(nodeLineageId(datum)) ? "muted" : ""
+      ].filter(Boolean).join(" "))
+      .attr("transform", (datum) => `translate(${datum.x},${datum.y})`)
+      .attr("tabindex", (datum) => datum.kind === "deferred-review-stage" ? -1 : 0)
+      .attr("role", (datum) => datum.kind === "deferred-review-stage" ? "img" : "button")
+      .attr("aria-label", (datum) => datum.kind === "deferred-review-stage"
+        ? `${datum.label}: ${datum.detail}. Visual-only; this is not a decision ledger record.`
+        : `${datum.label}, ${decisionBranchStateLabel(datum.branch)}. ${datum.timelineLabel || `${datum.signal?.evidenceCount || 0} cited source references.`}`)
+      .on("pointerdown", (event, datum) => {
+        if (datum.branchId) event.stopPropagation();
+      })
+      .on("click", (event, datum) => {
+        event.stopPropagation();
+        if (datum.branchId) onSelectBranch?.(datum.branchId);
+      })
+      .on("keydown", (event, datum) => {
+        if (!datum.branchId) return;
+        if (!["Enter", " "].includes(event.key)) return;
+        event.preventDefault();
+        onSelectBranch?.(datum.branchId);
+      });
+    node.append("circle").attr("class", "decision-branch-landscape-node-aura").attr("r", (datum) => datum.radius + 7);
+    node.append("circle").attr("class", "decision-branch-landscape-node-core").attr("r", (datum) => datum.radius);
+    node.append("circle").attr("class", "decision-branch-landscape-node-evidence-ring").attr("r", (datum) => Math.max(13, datum.radius - 7));
+    node.append("text").attr("class", "decision-branch-landscape-node-glyph").attr("text-anchor", "middle").attr("y", -5).text((datum) => datum.glyph);
+    node.append("text").attr("class", "decision-branch-landscape-node-state").attr("text-anchor", "middle").attr("y", 13).text((datum) => decisionLandscapeState(datum.visualKind));
+    const nodeLabel = node.append("text")
+      .attr("class", "decision-branch-landscape-node-label")
+      .attr("text-anchor", "middle")
+      .attr("y", (datum) => datum.radius + 17);
+    nodeLabel.each(function renderLabel(datum) {
+      const label = d3.select(this);
+      decisionCanvasLines(datum.label, 21).slice(0, 2).forEach((line, index) => {
+        label.append("tspan").attr("x", 0).attr("dy", index ? 13 : 0).text(line);
+      });
+    });
+    node.append("text")
+      .attr("class", "decision-branch-landscape-node-detail")
+      .attr("text-anchor", "middle")
+      .attr("y", (datum) => datum.radius + 17 + Math.min(2, decisionCanvasLines(datum.label, 21).length) * 13 + 3)
+      .text((datum) => datum.kind === "deferred-review-stage" ? datum.detail : datum.timelineLabel || `${datum.signal?.evidenceCount || 0} cited · ${datum.signal?.childCount || 0} linked`);
+    const zoom = d3.zoom()
+      .scaleExtent([0.35, 3.1])
+      .filter((event) => {
+        if (event.type === "dblclick") return false;
+        if (event.type === "wheel") return true;
+        return !event.target?.closest?.(".decision-branch-landscape-node");
+      })
+      .on("zoom", (event) => {
+        zoomTransformRef.current = event.transform;
+        viewport.attr("transform", event.transform);
+      });
+    zoomInteractionRef.current = { svg, zoom };
+    svg.call(zoom).call(zoom.transform, baseTransform).on("dblclick.zoom", null);
+    return () => {
+      if (zoomInteractionRef.current?.svg?.node() === svgElement) zoomInteractionRef.current = null;
+      svg.on(".zoom", null);
+      svg.selectAll("*").remove();
+    };
+  }, [landscape, onSelectBranch, project?.id, selectedBranchId, selectedLineageIds]);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas || !landscape.branchCount) return undefined;
+    const svg = svgRef.current;
+    const initial = () => {
+      const visibleWidth = canvas.clientWidth || 0;
+      const graphWidth = Number(svg?.getAttribute("width") || 0);
+      if (visibleWidth && graphWidth > visibleWidth) canvas.scrollLeft = 0;
+    };
+    const frame = window.requestAnimationFrame(initial);
+    return () => window.cancelAnimationFrame(frame);
+  }, [landscape.branchCount]);
+
+  if (!landscape.branchCount) {
+    return (
+      <section className="decision-branch-tree decision-branch-tree-empty" aria-label="Architecture branch discovery">
+        <div className="decision-branch-tree-empty-content">
+          <span className="decision-branch-tree-empty-icon" aria-hidden="true"><GitBranch size={23} /></span>
+          <span className="decision-workshop-eyebrow">Architecture discovery</span>
+          <h3>Map this project’s decision space</h3>
+          <p>
+            Analyze the managed project to create a cited map of its current implementation,
+            future possibilities, and dormant provenance. Nothing is changed in the project code.
+          </p>
+          {onAnalyze ? (
+            <button className="ghost-action decision-analyze-empty-action" type="button" onClick={onAnalyze} disabled={analyzing}>
+              {analyzing ? <Loader2 size={15} className="spin" /> : <Sparkles size={15} />}
+              {analyzing ? "Analyzing architecture…" : "Analyze architecture branches"}
+            </button>
+          ) : null}
+          {analysisStatus ? <span className="decision-analysis-status">{analysisStatus}</span> : null}
+        </div>
+      </section>
+    );
+  }
+
+  return (
+    <section className="decision-branch-tree" aria-label={`${project?.name || "Project"} branch tree workshop`}>
+      <header>
+        <div>
+          <span className="eyebrow">Decision workshop · project-only</span>
+          <h3>Decision timeline &amp; flow</h3>
+          <p>Each lane follows a major functionality through its recorded decision paths. Known ledger events set the sequence; where no sequence is recorded, PlutoniX shows an explicitly anticipated order without treating it as historical fact.</p>
+        </div>
+        <div className="decision-branch-tree-counts">
+          <span>{landscape.functionalityCount} major functions</span>
+          <span>{landscape.knownCount || 0} known sequence steps</span>
+          <span>{landscape.anticipatedCount || 0} anticipated steps</span>
+          <span>{landscape.activeCount} live records</span>
+          <span className={landscape.disabledCount ? "disabled" : ""}>{landscape.disabledCount} dormant</span>
+          {landscape.deferredReviewStageCount ? <span>{landscape.deferredReviewStageCount} impact review stage{landscape.deferredReviewStageCount === 1 ? "" : "s"}</span> : null}
+        </div>
+      </header>
+      <div className="decision-branch-tree-legend" aria-label="Branch tree legend">
+        <span><i className="genesis" />Timeline origin</span>
+        <span><i className="current" />Observed current</span>
+        <span><i className="possibility" />Future possibility</span>
+        <span><i className="disabled" />Dormant evidence</span>
+        <small>Each bordered zone is a project objective, with one horizontal lane per major functionality. Solid left-to-right flow follows known ledger sequence; nodes labelled Anticipated are ordered only from the recorded path shape and remain non-authoritative. Drag to explore · scroll to zoom · use Reset to recenter.</small>
+      </div>
+      <div className="decision-branch-landscape-workspace">
+        <DecisionBranchInspector
+          className="decision-branch-landscape-inspector"
+          selectedBranch={selectedBranch}
+          selectedBranchSignal={selectedBranchSignal}
+          selectedFunctionality={selectedFunctionality}
+          selectedObjective={selectedObjective}
+          selectedDecisionRecord={selectedDecisionRecord}
+          selectedFunctionalityId={selectedFunctionalityId}
+          selectedAssignment={selectedAssignment}
+          onResetFocus={onResetFocus}
+        />
+        <div ref={canvasRef} className="decision-branch-tree-canvas decision-branch-landscape-canvas" tabIndex="0" aria-label="Draggable project decision timeline canvas">
+          <div className="decision-branch-landscape-controls" aria-label="Canvas controls">
+            <button type="button" onClick={() => adjustCanvasZoom(1.22)} aria-label="Zoom in branch canvas" title="Zoom in">+</button>
+            <button type="button" onClick={() => adjustCanvasZoom(0.82)} aria-label="Zoom out branch canvas" title="Zoom out">−</button>
+            <button type="button" className="reset" onClick={resetCanvasZoom} aria-label="Reset branch canvas view" title="Reset view">Reset</button>
+          </div>
+          <svg ref={svgRef} aria-label={`${project?.name || "Project"} decision timeline flowchart`} />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function DecisionContinuityPanel({
+  selectedProject = null,
+  onAnalyzeArchitecture,
+  analyzingArchitecture = false,
+  architectureAnalysisStatus = "",
+  architectureAnalysisRevision = "",
+  architectureAnalysisReport = null
+}) {
   const [branches, setBranches] = useState([]);
   const [reconsiderations, setReconsiderations] = useState([]);
   const [qagentRuns, setQagentRuns] = useState([]);
@@ -2970,18 +3384,35 @@ function DecisionContinuityPanel() {
   const [brainx, setBrainx] = useState(null);
   const [suggestionGovernance, setSuggestionGovernance] = useState(null);
   const [graph, setGraph] = useState(null);
+  const [selectedBranchId, setSelectedBranchId] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const hasSelectedManagedProject = Boolean(selectedProject && !selectedProject.isDefault);
+  const workspaceQuery = hasSelectedManagedProject
+    ? `?workspaceId=${encodeURIComponent(selectedProject.id)}`
+    : "";
 
   async function loadDecisionContinuity({ silent = false } = {}) {
     if (!silent) setLoading(true);
     setError("");
+    if (!hasSelectedManagedProject) {
+      setBranches([]);
+      setReconsiderations([]);
+      setQagentRuns([]);
+      setQagentMetrics(null);
+      setQagentFeature(null);
+      setGraph(null);
+      setBrainx(null);
+      setSuggestionGovernance(null);
+      setLoading(false);
+      return;
+    }
     try {
       const [branchesRes, reconsiderationsRes, qagentRes, graphRes, brainxRes, suggestionsRes] = await Promise.all([
-        authFetch(`${BACKEND_URL}/api/decision-continuity/branches?limit=24`),
-        authFetch(`${BACKEND_URL}/api/decision-continuity/reconsiderations?limit=16`),
-        authFetch(`${BACKEND_URL}/api/decision-continuity/qagent-runs?limit=16`),
-        authFetch(`${BACKEND_URL}/api/decision-continuity/graph`),
+        authFetch(`${BACKEND_URL}/api/decision-continuity/branches?limit=250${workspaceQuery ? `&workspaceId=${encodeURIComponent(selectedProject.id)}` : ""}`),
+        authFetch(`${BACKEND_URL}/api/decision-continuity/reconsiderations?limit=16${workspaceQuery ? `&workspaceId=${encodeURIComponent(selectedProject.id)}` : ""}`),
+        authFetch(`${BACKEND_URL}/api/decision-continuity/qagent-runs?limit=16${workspaceQuery ? `&workspaceId=${encodeURIComponent(selectedProject.id)}` : ""}`),
+        authFetch(`${BACKEND_URL}/api/decision-continuity/graph${workspaceQuery}`),
         authFetch(`${BACKEND_URL}/api/brainx/overview`),
         authFetch(`${BACKEND_URL}/api/suggestions/overview`)
       ]);
@@ -3008,27 +3439,78 @@ function DecisionContinuityPanel() {
   }
 
   useEffect(() => {
+    setSelectedBranchId("");
     loadDecisionContinuity();
     const timer = setInterval(() => loadDecisionContinuity({ silent: true }), 20000);
     return () => clearInterval(timer);
-  }, []);
+  }, [architectureAnalysisRevision, hasSelectedManagedProject, selectedProject?.id]);
 
-  const branchCountByStatus = useMemo(() => branches.reduce((counts, branch) => {
+  const objectiveLedger = useMemo(
+    () => buildDecisionObjectiveLedger({ analysisReport: architectureAnalysisReport, branches }),
+    [architectureAnalysisReport, branches]
+  );
+  const displayedBranches = objectiveLedger.decisionBranches;
+  const branchCountByStatus = useMemo(() => displayedBranches.reduce((counts, branch) => {
     counts[branch.status] = (counts[branch.status] || 0) + 1;
     return counts;
-  }, {}), [branches]);
-  const deferred = branches.filter((branch) => ["deferred", "rejected", "reconsidering"].includes(branch.status));
-  const selected = branches.filter((branch) => branch.status === "selected");
+  }, {}), [displayedBranches]);
+  const deferred = displayedBranches.filter((branch) => ["deferred", "reconsidering"].includes(branch.status));
+  const selected = displayedBranches.filter((branch) => branch.status === "selected");
+  const disabledBranches = displayedBranches.filter(isDisabledDecisionBranch);
+  const workshop = useMemo(() => decisionBranchWorkshopSummary(displayedBranches), [displayedBranches]);
+  const resolvedSelectedBranchId = selectedBranchId || workshop.reviewQueue[0]?.branch?.id || workshop.dormantQueue[0]?.branch?.id || "";
+  const selectedBranch = displayedBranches.find((branch) => branch.id === resolvedSelectedBranchId) || null;
+  const functionalityById = useMemo(
+    () => new Map((architectureAnalysisReport?.majorFunctionalities?.length ? architectureAnalysisReport.majorFunctionalities : architectureAnalysisReport?.functionalities || []).filter((item) => item?.id).map((item) => [item.id, item])),
+    [architectureAnalysisReport]
+  );
+  const assignmentByFunctionalityId = useMemo(
+    () => new Map((architectureAnalysisReport?.assignments || []).filter((item) => item?.functionalityId).map((item) => [item.functionalityId, item])),
+    [architectureAnalysisReport]
+  );
+  const selectedFunctionalityId = String(selectedBranch?.candidate?.functionalityId || selectedBranch?.functionalityId || "").trim();
+  const selectedFunctionality = functionalityById.get(selectedFunctionalityId) || null;
+  const selectedObjective = (architectureAnalysisReport?.objectives || []).find((item) => item.id === selectedFunctionality?.objectiveId) || null;
+  const selectedDecisionRecord = objectiveLedger.functionalities
+    .find((item) => item.functionality.id === selectedFunctionalityId)?.alternatives
+    .find((item) => item.branch.id === selectedBranch?.id)
+    || (objectiveLedger.functionalities.find((item) => item.functionality.id === selectedFunctionalityId)?.selectedPath?.branch?.id === selectedBranch?.id
+      ? { branch: selectedBranch, reason: objectiveLedger.functionalities.find((item) => item.functionality.id === selectedFunctionalityId)?.selectedPath?.reason }
+      : null);
+  const selectedAssignment = assignmentByFunctionalityId.get(selectedFunctionalityId) || null;
+  const selectedBranchSignal = selectedBranch
+    ? decisionBranchReviewSignal(selectedBranch, displayedBranches.filter((branch) => branch.parentBranchId === selectedBranch.id).length)
+    : null;
+
+  if (!hasSelectedManagedProject) {
+    return (
+      <section className="decision-continuity-panel decision-project-required" aria-label="Decision continuity ledger">
+        <header className="self-improvement-header">
+          <div>
+            <span className="eyebrow">Decision continuity</span>
+            <h2>Decision Ledger</h2>
+            <p>Select a managed project to inspect its objectives, major capabilities, and decision paths. Records are never aggregated across projects in this view.</p>
+          </div>
+        </header>
+      </section>
+    );
+  }
 
   return (
     <section className="decision-continuity-panel" aria-label="Decision continuity ledger">
       <header className="self-improvement-header">
         <div>
           <span className="eyebrow">Decision continuity</span>
-          <h2>Branch Ledger</h2>
-          <p>Authoritative, tenant-scoped branch facts. Graph and similarity views are rebuildable projections.</p>
+          <h2>Decision Ledger</h2>
+          <p>Workspace: {selectedProject.name}. Project objectives contain coordinated major functionalities and their source-level features; authoritative branch facts remain tenant-scoped.</p>
         </div>
         <div className="self-improvement-actions">
+          {onAnalyzeArchitecture ? (
+            <button className="ghost-action decision-analyze-action" type="button" onClick={onAnalyzeArchitecture} disabled={analyzingArchitecture}>
+              {analyzingArchitecture ? <Loader2 className="spin" size={16} /> : <Sparkles size={16} />}
+              {analyzingArchitecture ? "Analyzing…" : "Analyze architecture"}
+            </button>
+          ) : null}
           <button className="ghost-action" type="button" onClick={() => loadDecisionContinuity()} disabled={loading}>
             {loading ? <Loader2 className="spin" size={16} /> : <RefreshCcw size={16} />}
             Refresh
@@ -3042,42 +3524,139 @@ function DecisionContinuityPanel() {
         <span>Browser access is read-only for promotion. Trusted services submit condition/evaluation facts; configured operators approve and record bounded canaries.</span>
       </div>
 
-      <div className="self-improvement-grid decision-continuity-grid">
-        <article><span>Branches</span><strong>{compactNumber(branches.length)}</strong><small>{compactNumber(selected.length)} selected · {compactNumber(deferred.length)} blocked or reconsidering</small></article>
-        <article><span>Reconsiderations</span><strong>{compactNumber(reconsiderations.length)}</strong><small>{compactNumber(reconsiderations.filter((item) => item.status === "pending_evaluation").length)} awaiting validation</small></article>
-        <article><span>Projection</span><strong>{compactNumber(graph?.nodes?.length || 0)} nodes</strong><small>{compactNumber(graph?.edges?.length || 0)} rebuildable relationships</small></article>
-        <article><span>QAgent investigations</span><strong>{compactNumber(qagentRuns.length)}</strong><small>{qagentFeature?.enabledForTenant ? "Bounded evidence planning" : "Baseline path active"}</small></article>
-        <article><span>BrainX registry</span><strong>{compactNumber(brainx?.registrations?.length || 0)}</strong><small>{brainx?.feature?.enabledForTenant ? "Fixture-only governed routing" : "Disabled or not authorized"}</small></article>
-        <article><span>Reviewable suggestions</span><strong>{compactNumber(suggestionGovernance?.suggestions?.length || 0)}</strong><small>{suggestionGovernance?.suggestions?.filter((item) => item.remainingBlockers?.length).length || 0} with remaining blockers</small></article>
-        <article><span>Current state</span><strong>{branchCountByStatus.selected ? "Governed" : "No selection"}</strong><small>Unknown or stale evidence cannot clear a blocker</small></article>
-      </div>
+      <section className="decision-workshop-overview" aria-label="Branch decision workshop overview">
+        <div className="decision-workshop-kpis">
+          <article className="decision-workshop-kpi current"><span>Major objectives</span><strong>{compactNumber(objectiveLedger.objectiveCount)}</strong><small>Connected delivery outcomes derived from source relationships</small></article>
+          <article className="decision-workshop-kpi possibility"><span>Major functionalities</span><strong>{compactNumber(objectiveLedger.majorFunctionalityCount)}</strong><small>Capabilities that coordinate features, APIs, services, and data</small></article>
+          <article className="decision-workshop-kpi dormant"><span>Dormant provenance</span><strong>{compactNumber(workshop.dormant.length)}</strong><small>Rejected or retired; never erased</small></article>
+          <article className="decision-workshop-kpi evidence"><span>Coordinated features</span><strong>{compactNumber(objectiveLedger.featureCount)}</strong><small>Retained as evidence beneath major functionality decisions</small></article>
+        </div>
+        <div className="decision-workshop-guidance">
+          <div>
+            <span className="eyebrow">How to read this workspace</span>
+            <strong>Current implementation is evidence, not a historical decision claim.</strong>
+            <p>Each objective groups capabilities that act together. A path is marked selected only when the lifecycle records selection; deferred and rejected paths explain their recorded or evidence-limited reason.</p>
+          </div>
+          <div className="decision-workshop-guidance-stats">
+            <span>{compactNumber(reconsiderations.filter((item) => item.status === "pending_evaluation").length)} awaiting validation</span>
+            <span>{compactNumber(graph?.nodes?.length || 0)} rebuildable graph nodes</span>
+            {objectiveLedger.featureObservationCount ? <span>{compactNumber(objectiveLedger.featureObservationCount)} legacy feature observations collapsed</span> : null}
+          </div>
+        </div>
+      </section>
 
-      <div className="decision-continuity-columns">
-        <section>
-          <header><h3>Branches and provenance</h3><small>Facts from the branch ledger</small></header>
-          {branches.length ? (
-            <ol className="decision-branch-list">
-              {branches.map((branch) => (
-                <li key={branch.id}>
-                  <div className="decision-branch-topline">
-                    <strong>{branch.objective?.summary || branch.id}</strong>
-                    <span className={`decision-status ${branch.status}`}>{branch.status}</span>
-                  </div>
-                  <small>{branch.id} · revision {branch.revision} · {branch.branchType}</small>
-                  <p>{branch.disposition?.reason || "Candidate preserved for governed comparison."}</p>
-                  <details>
-                    <summary>Evidence, constraints, and lineage</summary>
-                    <dl>
-                      <div><dt>Lineage</dt><dd>{branch.parentBranchId ? `${branch.parentBranchId} → ${branch.id}` : `Root ${branch.rootLineageId}`}</dd></div>
-                      <div><dt>Evidence</dt><dd>{branch.evidence?.length || 0} immutable reference{branch.evidence?.length === 1 ? "" : "s"}</dd></div>
-                      <div><dt>Constraints</dt><dd>{branch.constraintDefinitions?.length || branch.revisitTriggers?.length || 0} declared · {branch.autoReconsideration ? "eligible when trusted conditions clear" : "manual reconsideration only"}</dd></div>
-                      <div><dt>Content hash</dt><dd>{branch.contentHash || "recorded in source event"}</dd></div>
-                    </dl>
-                  </details>
+      <DecisionBranchTreeCanvas
+        project={selectedProject}
+        branches={displayedBranches}
+        analysisReport={architectureAnalysisReport}
+        decisionGraph={graph}
+        selectedBranchId={resolvedSelectedBranchId}
+        selectedBranch={selectedBranch}
+        selectedBranchSignal={selectedBranchSignal}
+        selectedFunctionality={selectedFunctionality}
+        selectedObjective={selectedObjective}
+        selectedDecisionRecord={selectedDecisionRecord}
+        selectedFunctionalityId={selectedFunctionalityId}
+        selectedAssignment={selectedAssignment}
+        onSelectBranch={setSelectedBranchId}
+        onResetFocus={() => setSelectedBranchId("")}
+        onAnalyze={onAnalyzeArchitecture}
+        analyzing={analyzingArchitecture}
+        analysisStatus={architectureAnalysisStatus}
+      />
+
+      <details className="decision-objective-ledger" aria-label="Collapsed project objectives and decision reasoning">
+        <summary><span><span className="eyebrow">Objective map</span><strong>Why these paths were selected or not selected</strong></span><small>Expand for detailed rationale, feature composition, and suppressed options.</small></summary>
+        <div className="decision-objective-ledger-content">
+          {objectiveLedger.objectives.length ? objectiveLedger.objectives.map((objective) => (
+            <article key={objective.id}>
+              <div className="decision-objective-heading">
+                <div><span className="eyebrow">Project objective</span><h4>{objective.label}</h4><p>{objective.description}</p></div>
+                <span>{objective.featureCount || 0} features</span>
+              </div>
+              <ol>
+                {objective.functionalities.map((record) => (
+                  <li key={record.functionality.id}>
+                    <div className="decision-objective-functionality">
+                      <div><strong>{record.functionality.label}</strong><small>{record.featureCount} coordinated feature{record.featureCount === 1 ? "" : "s"} · {record.evidenceCount} evidence references</small></div>
+                      <span className={`decision-status ${record.selectedPath?.branch?.status || "candidate"}`}>{record.selectedPath?.confirmed ? "selected" : "current evidence"}</span>
+                    </div>
+                    <p><b>{record.selectedPath?.confirmed ? "Selected because:" : "Current-path rationale:"}</b> {record.selectedPath?.reason || "No source-backed current path is recorded yet."}</p>
+                    {record.alternatives.length || record.suppressedAlternatives.length ? <ul>{record.alternatives.slice(0, 4).map((alternative) => (
+                      <li key={alternative.branch.id}><span className={`decision-status ${alternative.branch.status}`}>{alternative.disposition.replaceAll("_", " ")}</span><div><strong>{alternative.branch.objective?.summary || alternative.branch.id}</strong><small>{alternative.reason}</small></div><button type="button" onClick={() => setSelectedBranchId(alternative.branch.id)}>Inspect</button></li>
+                    ))}{record.suppressedAlternatives.slice(0, 4).map((alternative) => (
+                      <li key={alternative.candidate.id}><span className="decision-status rejected">not published</span><div><strong>{alternative.candidate.title || alternative.candidate.pattern || alternative.candidate.id}</strong><small>{alternative.reason}</small></div></li>
+                    ))}</ul> : <small className="decision-objective-no-alternatives">No evidence-supported alternative has been recorded for this major functionality.</small>}
+                  </li>
+                ))}
+              </ol>
+            </article>
+          )) : <p className="decision-empty">Run architecture analysis to identify project objectives and their coordinated capabilities.</p>}
+        </div>
+      </details>
+
+      <section className="decision-workshop-deck decision-workshop-supporting-deck" aria-label="Branch review deck">
+        <div className="decision-workshop-queue">
+          <header>
+            <div><span className="eyebrow">Prioritised review</span><h3>Important paths</h3></div>
+            <small>Signals are navigational only</small>
+          </header>
+          {workshop.reviewQueue.length ? (
+            <ol>
+              {workshop.reviewQueue.slice(0, 5).map(({ branch, signal }) => (
+                <li key={branch.id} className={`${branch.id === resolvedSelectedBranchId ? "selected" : ""} ${signal.level}`}>
+                  <button type="button" onClick={() => setSelectedBranchId(branch.id)}>
+                    <span className="decision-review-score" aria-label={`${signal.level} review signal`}>{signal.score}</span>
+                    <span><strong>{branch.objective?.summary || branch.id}</strong><small>{signal.label} · {signal.evidenceCount} cited evidence · {signal.childCount} linked path{signal.childCount === 1 ? "" : "s"}</small></span>
+                    <ChevronRight size={15} aria-hidden="true" />
+                  </button>
                 </li>
               ))}
             </ol>
-          ) : <p className="decision-empty">No decision branches are recorded for this tenant yet.</p>}
+          ) : <p className="decision-empty">No live branch record is available to prioritise yet.</p>}
+        </div>
+        <div className="decision-workshop-dormant">
+          <header><div><span className="eyebrow">Retained, not erased</span><h3>Dormant possibilities</h3></div><small>{workshop.dormant.length} disabled records</small></header>
+          {workshop.dormantQueue.length ? <ol>{workshop.dormantQueue.slice(0, 4).map(({ branch, signal }) => (
+            <li key={branch.id} className={branch.id === resolvedSelectedBranchId ? "selected" : ""}>
+              <button type="button" onClick={() => setSelectedBranchId(branch.id)}>
+                <span className="decision-dormant-mark" aria-hidden="true" />
+                <span><strong>{branch.objective?.summary || branch.id}</strong><small>{signal.revisitEligible ? "Reconsiderable when conditions change" : "Disabled provenance"} · {signal.evidenceCount} evidence</small></span>
+              </button>
+            </li>
+          ))}</ol> : <p className="decision-empty">No rejected or retired branch provenance is recorded.</p>}
+        </div>
+      </section>
+
+      <div className="decision-continuity-columns">
+        <section>
+          <header><h3>Major decisions and provenance</h3><small>Authoritative records for {selectedProject.name}; feature observations are kept beneath their capability</small></header>
+          {displayedBranches.length ? (
+            <div className="decision-ledger-table-wrap">
+              <table className="decision-ledger-table">
+                <thead><tr><th>Branch</th><th>Status</th><th>Lineage and provenance</th></tr></thead>
+                <tbody>
+                  {displayedBranches.map((branch) => (
+                    <tr key={branch.id} className={`${resolvedSelectedBranchId === branch.id ? "selected" : ""} ${isDisabledDecisionBranch(branch) ? "disabled" : ""}`} onClick={() => setSelectedBranchId(branch.id)}>
+                      <td><strong>{branch.objective?.summary || branch.id}</strong><small>{branch.id} · revision {branch.revision} · {branch.branchType}</small></td>
+                      <td><span className={`decision-status ${branch.status}`}>{decisionBranchStateLabel(branch)}</span><small>{branch.candidate?.inferenceRole === "observed_current" ? "observed current" : branch.autoReconsideration ? "reconsiderable" : "recorded"}</small></td>
+                      <td>
+                        <p>{branch.disposition?.reason || "Candidate preserved for governed comparison."}</p>
+                        <details>
+                          <summary>{branch.parentBranchId ? `Parent ${branch.parentBranchId}` : `Genesis lineage ${branch.rootLineageId || branch.id}`}</summary>
+                          <dl>
+                            <div><dt>Evidence</dt><dd>{branch.evidence?.length || 0} immutable reference{branch.evidence?.length === 1 ? "" : "s"}</dd></div>
+                            <div><dt>Constraints</dt><dd>{branch.constraintDefinitions?.length || branch.revisitTriggers?.length || 0} declared · {branch.autoReconsideration ? "eligible when trusted conditions clear" : "manual reconsideration only"}</dd></div>
+                            <div><dt>Content hash</dt><dd>{branch.contentHash || "recorded in source event"}</dd></div>
+                          </dl>
+                        </details>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : <p className="decision-empty">No major decision paths are recorded for this project workspace yet.</p>}
         </section>
         <section>
           <header><h3>Reconsideration queue</h3><small>Events create requests, never direct promotion</small></header>
@@ -4436,7 +5015,6 @@ function OrchestrationD3Canvas({ snapshot }) {
       .each(function renderNodeAgent(item) {
         const mount = document.createElement("div");
         mount.className = "d3-agent-icon-mount";
-        mount.title = `Inspect ${visualForAgent(item.agentId).name}`;
         mount.onpointerdown = (event) => event.stopPropagation();
         mount.onclick = (event) => {
           event.stopPropagation();
@@ -4851,7 +5429,6 @@ function FunctionalityGraphWorkspace({ graph, selectedNodeId, onSelectNode, deta
                     }
                   }}
                 >
-                  <title>{node.label}</title>
                   {selected ? <circle className="node-focus-ring" cx={node.x} cy={node.y} r={node.radius + 7} /> : null}
                   {isNodeInProgress(node) ? <circle className="node-progress-ring" cx={node.x} cy={node.y} r={node.radius + 7} /> : null}
                   <circle className="node-body" cx={node.x} cy={node.y} r={node.radius} />
@@ -5528,6 +6105,9 @@ export default function App() {
   const [artifactPreviewError, setArtifactPreviewError] = useState("");
   const [artifactsLoading, setArtifactsLoading] = useState(false);
   const [isImportingProject, setImportingProject] = useState(false);
+  const [architectureBranchReport, setArchitectureBranchReport] = useState(null);
+  const [isAnalyzingArchitecture, setAnalyzingArchitecture] = useState(false);
+  const [architectureBranchError, setArchitectureBranchError] = useState("");
   const [isRebuildingProject, setRebuildingProject] = useState(false);
   const [projectInstanceAction, setProjectInstanceAction] = useState("");
   const [isDeletingProject, setDeletingProject] = useState(false);
@@ -5546,6 +6126,7 @@ export default function App() {
   const [isGoogleSsoReady, setGoogleSsoReady] = useState(false);
   const [googleSignInMessage, setGoogleSignInMessage] = useState("");
   const previewFrameRef = useRef(null);
+  const agenticD3FrameRef = useRef(null);
   const instructionEditorRef = useRef(null);
   const instructionCursorRef = useRef(null);
   const instructionEditorValueRef = useRef("");
@@ -5872,6 +6453,15 @@ export default function App() {
     return () => media.removeEventListener("change", applyTheme);
   }, [themeMode]);
 
+  // The topology is an embedded document. Pass theme changes across the same
+  // origin boundary so a palette toggle never remounts or refetches its graph.
+  useEffect(() => {
+    agenticD3FrameRef.current?.contentWindow?.postMessage(
+      { type: "plutonix:set-theme", theme: resolvedTheme },
+      window.location.origin
+    );
+  }, [resolvedTheme]);
+
   useEffect(() => {
     if (!activityTarget || activeWorkspaceTab !== "builder") return undefined;
     const timer = window.setTimeout(() => {
@@ -6145,6 +6735,27 @@ export default function App() {
     setPickingReference(false);
     setSelectedReferences([]);
   }, [isSystemTarget, selectedProject?.id, selectedProject?.folderName]);
+
+  useEffect(() => {
+    if (!selectedProject) {
+      setArchitectureBranchReport(null);
+      setArchitectureBranchError("");
+      return undefined;
+    }
+    let active = true;
+    authFetch(`${BACKEND_URL}/api/decision-continuity/projects/${encodeURIComponent(selectedProject.id)}/architecture-branches`)
+      .then(async (response) => {
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || "Architecture branch analysis could not be loaded.");
+        if (active) setArchitectureBranchReport(data.report || null);
+      })
+      .catch((error) => {
+        // A project can still be used normally when the user has no Decision
+        // Continuity read membership; surface the detail only in project tools.
+        if (active) setArchitectureBranchError(error.message);
+      });
+    return () => { active = false; };
+  }, [selectedProject?.id, currentUser?.id]);
 
   function sendReferenceMode(enabled) {
     setPickingReference(enabled);
@@ -7159,11 +7770,16 @@ export default function App() {
       };
       setEvents((current) => [errorEvent, ...current].slice(0, 8));
       setRuntimeLogs((current) => mergeRuntimeRows([errorEvent], current));
-      const markFlowFailed = (current) => ({
-        ...(current || runningFlowPath),
+      const markFlowFailed = (current) => {
+        const activeFlow = current || runningFlowPath;
+        const selectedExecutionPath = activeFlow.selectedPath && activeFlow.selectedPath !== "human-choice-review"
+          ? activeFlow.selectedPath
+          : (activeFlow.adaptiveRoute ? "plutonix-global-orchestration" : runningFlowPath.selectedPath);
+        return {
+        ...activeFlow,
         status: "failed",
-        selectedPath: "human-choice-review",
-        summary: "Gotham chat instruction failed. Human Agent review is the next decision point.",
+        selectedPath: selectedExecutionPath,
+        summary: "Gotham chat instruction failed after the selected execution path ran. A recovery choice is now pending.",
         humanInLoop: {
           required: true,
           reason: "A human choice is needed before retrying or changing the development path.",
@@ -7174,7 +7790,8 @@ export default function App() {
           ]
         },
         nextRecommendation: "Choose retry, simplify scope, or change architecture."
-      });
+        };
+      };
       setProjectFlowPath((current) => markFlowFailed(current));
       setProjectResult((current) => ({
         ...(current || {}),
@@ -7456,6 +8073,33 @@ export default function App() {
     } finally {
       setImportingProject(false);
       setGeneratedStatus("ready");
+    }
+  }
+
+  async function analyzeArchitectureBranches() {
+    if (!selectedProject || isAnalyzingArchitecture) return;
+    setAnalyzingArchitecture(true);
+    setArchitectureBranchError("");
+    try {
+      const res = await authFetch(`${BACKEND_URL}/api/decision-continuity/projects/${encodeURIComponent(selectedProject.id)}/architecture-branches`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ requestedFrom: "plutonix-page" })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Architecture branch analysis failed.");
+      const report = data.report || null;
+      setArchitectureBranchReport(report);
+      setProjectResult({
+        status: "succeeded",
+        projectName: selectedProject.name,
+        container: `${report?.functionalities?.length || 0} source-evidenced functionalities · ${report?.publishedBranchCount || 0} deferred alternatives`
+      });
+    } catch (error) {
+      setArchitectureBranchError(error.message);
+      setProjectResult({ status: "failed", projectName: selectedProject.name, error: error.message });
+    } finally {
+      setAnalyzingArchitecture(false);
     }
   }
 
@@ -8092,12 +8736,12 @@ export default function App() {
 	                            disabled={isSystemTarget || selectedProject?.isDefault || isUploadingMedia || isStagingProjectMedia}
 	                          />
 	                        </label>
-	                        <label className="tool-action">
-	                          {isImportingProject ? <Loader2 className="spin" size={16} /> : <FolderUp size={16} />}
-	                          Project
-	                          <input type="file" accept=".zip" onChange={importProject} disabled={isImportingProject} />
-	                        </label>
-	                        <a className={`tool-action ${selectedProject ? "" : "disabled"}`} href={exportUrl}>
+                        <label className="tool-action">
+                          {isImportingProject ? <Loader2 className="spin" size={16} /> : <FolderUp size={16} />}
+                          Project
+                          <input type="file" accept=".zip" onChange={importProject} disabled={isImportingProject} />
+                        </label>
+                        <a className={`tool-action ${selectedProject ? "" : "disabled"}`} href={exportUrl}>
 	                          <Download size={16} />
 	                          Export
 	                        </a>
@@ -8108,10 +8752,10 @@ export default function App() {
 	                          title="Delete selected project"
 	                        >
 	                          {isDeletingProject ? <Loader2 className="spin" size={16} /> : <Trash2 size={16} />}
-	                          Delete
-	                        </button>
-	                      </div>
-	                    </div>
+                          Delete
+                        </button>
+                      </div>
+                    </div>
 	                  </details>
 	                <div className={`instruction-context-action ${isGenerating ? "running" : "idle"}`}>
 	                  <button
@@ -8636,10 +9280,43 @@ export default function App() {
 	              Product Document
 	            </button>
 	          </div>
+	          <section className="plutonix-architecture-toolbar" aria-label="Architecture branch analysis">
+	            <div>
+	              <span>Architecture Branches</span>
+	              <strong>{selectedProject ? selectedProject.name : "Select a project"}</strong>
+	              <small>
+	                {architectureBranchError
+	                  ? `Analysis could not complete: ${architectureBranchError}`
+	                  : architectureBranchReport
+                    ? `${architectureBranchReport.objectives?.length || 0} objectives · ${architectureBranchReport.majorFunctionalities?.length || 0} major functions · ${architectureBranchReport.publishedBranchCount || 0} deferred alternatives · digest ${architectureBranchReport.sourceDigest?.slice(0, 12) || "pending"}`
+	                    : "Analyse allowlisted source to refresh pages, UI elements, features, services, and data relationships."}
+	              </small>
+	            </div>
+	            <button
+	              type="button"
+	              onClick={analyzeArchitectureBranches}
+	              disabled={!selectedProject || isAnalyzingArchitecture}
+	              title="Analyse allowlisted project source and refresh the PlutoniX Architecture Branches graph"
+	            >
+	              {isAnalyzingArchitecture ? <Loader2 className="spin" size={15} /> : <GitBranch size={15} />}
+	              {isAnalyzingArchitecture ? "Analysing…" : "Analyse branches"}
+	            </button>
+	          </section>
 	          {activeAgenticSystemTab === "control-plane" ? (
 	            <SelfImprovementPanel />
-	          ) : activeAgenticSystemTab === "decision-continuity" ? (
-	            <DecisionContinuityPanel />
+          ) : activeAgenticSystemTab === "decision-continuity" ? (
+            <DecisionContinuityPanel
+              selectedProject={selectedProject}
+              onAnalyzeArchitecture={analyzeArchitectureBranches}
+              analyzingArchitecture={isAnalyzingArchitecture}
+              architectureAnalysisStatus={architectureBranchError
+                ? `Analysis could not complete: ${architectureBranchError}`
+                : architectureBranchReport
+                  ? `Last analysis: ${architectureBranchReport.objectives?.length || 0} objectives · ${architectureBranchReport.majorFunctionalities?.length || 0} major functions · ${architectureBranchReport.publishedBranchCount || 0} published possibilities · digest ${architectureBranchReport.sourceDigest?.slice(0, 12) || "pending"}`
+                  : ""}
+              architectureAnalysisRevision={architectureBranchReport?.sourceDigest || ""}
+              architectureAnalysisReport={architectureBranchReport}
+            />
 	          ) : activeAgenticSystemTab === "governed-promotion" ? (
 	            <GovernedPromotionPanel />
 	          ) : activeAgenticSystemTab === "market-vision" ? (
@@ -8651,8 +9328,13 @@ export default function App() {
 	          ) : (
             <section className="agentic-d3-frame">
               <iframe
+                ref={agenticD3FrameRef}
                 title="PlutoniX graphical model"
-                src={`/agentic-system/d3/index.html?embedded=1&theme=${encodeURIComponent(resolvedTheme)}&graphUrl=${encodeURIComponent(`${BACKEND_URL}/api/agentic-system/graph`)}`}
+                src={`/agentic-system/d3/index.html?embedded=1&graphUrl=${encodeURIComponent(`${BACKEND_URL}/api/agentic-system/graph`)}&view=${architectureBranchReport ? "explore" : "overview"}&project=${encodeURIComponent(selectedProject?.name || "")}&revision=${encodeURIComponent(`${selectedProject?.id || "system"}:${architectureBranchReport?.sourceDigest || ""}`)}`}
+                onLoad={() => agenticD3FrameRef.current?.contentWindow?.postMessage(
+                  { type: "plutonix:set-theme", theme: resolvedTheme },
+                  window.location.origin
+                )}
               />
             </section>
           )}

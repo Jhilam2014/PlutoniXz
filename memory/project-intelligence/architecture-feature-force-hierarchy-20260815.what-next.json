@@ -1,0 +1,36 @@
+{
+  "recordedAt": "2026-08-15T17:54:48Z",
+  "source": "plutonix-orchestrator",
+  "projectId": "plutonix",
+  "projectName": "PlutoniX",
+  "instructionSummary": "Correct Architecture Branches so the complete source-backed feature hierarchy is shown chronologically in a force-directed D3 Canvas without hop filtering, using directed relationships and complexity-scaled circular icon nodes.",
+  "candidateDevelopmentPaths": [
+    "retain API-only route projection",
+    "infer presentation-only categories in the frontend",
+    "extend source discovery and preserve explicit application hierarchy end to end"
+  ],
+  "selectedPath": "extend source discovery and preserve explicit application hierarchy end to end",
+  "rejectedPaths": [
+    { "path": "retain API-only route projection", "reason": "It omits user-facing features, services, and persistence relationships." },
+    { "path": "infer presentation-only categories in the frontend", "reason": "It would make hierarchy decorative rather than source-evidenced." }
+  ],
+  "confidenceScore": 96,
+  "evidenceUsed": [
+    "legacy normalization deleted generic UI/data/integration functionality nodes",
+    "route promotion retained only route-shaped functionality",
+    "application entities lacked explicit parent relationships",
+    "Architecture rendering bypassed its existing force simulation"
+  ],
+  "humanInputNeeded": false,
+  "resultingFiles": [
+    "apps/backend/src/projectBranchDiscovery.js",
+    "apps/backend/src/projectAgents.js",
+    "apps/backend/src/server.js",
+    "apps/frontend/public/agentic-system/d3/agentic-system-model.js",
+    "apps/frontend/public/agentic-system/d3/agentic-system-d3.js",
+    "apps/backend/test/projectBranchDiscovery.test.js",
+    "apps/frontend/test/agentic-system-model.test.mjs"
+  ],
+  "validationStatus": "37_targeted_tests_passed_and_frontend_build_passed_browser_bridge_unavailable",
+  "followUpRecommendation": "Restart the backend once after deployment; stale cached topologies refresh to version 5 locally without model calls."
+}

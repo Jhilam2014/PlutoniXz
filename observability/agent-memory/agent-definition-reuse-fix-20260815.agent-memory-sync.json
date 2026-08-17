@@ -1,0 +1,12 @@
+{
+  "workflow_id": "agent-definition-reuse-fix-20260815",
+  "status": "deferred",
+  "deferred_reason": "below_pending_threshold",
+  "pending_sync_count": 2,
+  "min_pending_files": 5,
+  "files_uploaded": 0,
+  "files_failed": 0,
+  "local_memory_written": true,
+  "legacy_definition_safety": "Legacy project-prefixed definitions must be archived by managed topology migration before they become eligible for a future global sync.",
+  "recorded_at": "2026-08-15T16:30:00Z"
+}

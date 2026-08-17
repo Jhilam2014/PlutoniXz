@@ -1,0 +1,55 @@
+{
+  "agent_id": "governance-security-agent",
+  "agent_name": "Governance and Security Agent",
+  "role": "governance-security",
+  "definitionType": "AgentDefinition",
+  "scope": "global_reusable",
+  "version": "1.0.0",
+  "status": "active",
+  "capability_score": {
+    "capabilityScore": 60,
+    "deliverableAccuracyScore": 50,
+    "reliabilityScore": 50,
+    "adaptabilityScore": 70,
+    "reuseConfidenceScore": 40,
+    "successCount": 0,
+    "failureCount": 0,
+    "repeatedCorrectionCount": 0
+  },
+  "projectAssignments": [
+    {
+      "id": "project-agent-assignment:gymx-9JXKDV:governance-security-agent",
+      "projectId": "gymx-9JXKDV",
+      "agentId": "governance-security-agent",
+      "role": "governance-security",
+      "projectResponsibility": "Validate role, permission, approval, audit, compliance, and sensitive-data boundaries.",
+      "status": "active",
+      "contextPath": ".agentic/orchestrator-agent.md",
+      "createdAt": "2026-08-16T08:45:50.365Z"
+    }
+  ],
+  "reuse_decisions": [
+    {
+      "id": "agent-reuse:gymx-9JXKDV:governance-security-agent",
+      "projectExecution": "gymx-9JXKDV",
+      "selectedAgent": "governance-security-agent",
+      "requestedRole": "governance-security",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global governance-security definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:50.365Z"
+    }
+  ],
+  "latest_reuse_decision": {
+    "id": "agent-reuse:gymx-9JXKDV:governance-security-agent",
+    "projectExecution": "gymx-9JXKDV",
+    "selectedAgent": "governance-security-agent",
+    "requestedRole": "governance-security",
+    "decisionType": "exact_reuse",
+    "reuseConfidenceScore": 100,
+    "similarityScore": 1,
+    "reason": "Reused the existing global governance-security definition; project context is stored in a separate assignment.",
+    "createdAt": "2026-08-16T08:45:50.365Z"
+  }
+}

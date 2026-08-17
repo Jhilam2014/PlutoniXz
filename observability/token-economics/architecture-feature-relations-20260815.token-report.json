@@ -1,0 +1,27 @@
+{
+  "workflow_id": "architecture-feature-relations-20260815",
+  "task_size": "medium",
+  "context_budget": "medium_context",
+  "model_provider": "openai",
+  "model_name": "runtime-configured",
+  "agent_id": "project-execution-agent",
+  "phase": "final_response",
+  "input_tokens": 0,
+  "output_tokens": 0,
+  "cached_input_tokens": 0,
+  "reasoning_tokens": 0,
+  "tool_calls_count": 0,
+  "files_read_count": 10,
+  "files_modified_count": 6,
+  "memory_queries_count": 0,
+  "graph_queries_count": 0,
+  "estimated_cost": 0,
+  "currency": "USD",
+  "published_at": "2026-08-15T18:17:00Z",
+  "source": "unavailable",
+  "token_saving_decisions": [
+    "Exact provider token usage was unavailable; zero values are explicitly not measured usage.",
+    "Used targeted source, projection, renderer, and regression-test context.",
+    "Reused the project execution agent and performed no full graph regeneration or live graph write."
+  ]
+}

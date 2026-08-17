@@ -44,7 +44,17 @@ function slugify(value) {
 }
 
 function projectsRoot() {
-  return process.env.PROJECTS_ROOT || "/workspace/money/apps";
+  return process.env.PROJECTS_ROOT || "/workspace/apps";
+}
+
+function migrateLegacyWorkspaceDir(project) {
+  const workspaceDir = String(project?.workspaceDir || "");
+  // Older registry records used the removed /workspace/money mount. Keep the
+  // project identity and migrate only that exact obsolete container prefix.
+  if (!workspaceDir.startsWith("/workspace/money/")) return project;
+  const folderName = String(project?.folderName || path.basename(workspaceDir)).trim();
+  if (!folderName) return project;
+  return { ...project, workspaceDir: path.join(projectsRoot(), folderName) };
 }
 
 function templateDir() {
@@ -118,7 +128,12 @@ async function readRegistry() {
   await fs.ensureDir(path.dirname(registryPath()));
   if (!(await fs.pathExists(registryPath()))) return [];
   const rows = await fs.readJson(registryPath());
-  return Array.isArray(rows) ? rows : [];
+  if (!Array.isArray(rows)) return [];
+  const migratedRows = rows.map(migrateLegacyWorkspaceDir);
+  if (migratedRows.some((row, index) => row.workspaceDir !== rows[index].workspaceDir)) {
+    await writeRegistry(migratedRows);
+  }
+  return migratedRows;
 }
 
 async function writeRegistry(projects) {
@@ -289,7 +304,16 @@ async function publicProjectWithRuntime(project) {
 function canAccessProject(project, user = {}) {
   if (project?.visibility === "shared") return true;
   const ownerUserId = project?.ownerUserId || "anonymous";
-  return ownerUserId === (user.id || "anonymous");
+  const identities = new Set([
+    user.id,
+    user.subject,
+    user.issuer && user.subject ? `${user.issuer}:${user.subject}` : "",
+    ...(Array.isArray(user.aliases) ? user.aliases : [])
+  ].map((value) => String(value || "").trim()).filter(Boolean));
+  // Older local projects were created before external identity binding and
+  // deliberately remain accessible through the legacy anonymous owner.
+  if (!identities.size) identities.add("anonymous");
+  return identities.has(ownerUserId);
 }
 
 async function copyWorkspace(sourceDir, targetDir) {
@@ -656,6 +680,89 @@ export async function getProject(projectId, options = {}) {
   }
   const project = (await readRegistry()).find((row) => row.id === projectId);
   return project && canAccessProject(project, options.user || { id: "anonymous" }) ? publicProjectWithRuntime(project) : null;
+}
+
+/**
+ * Bind a managed project to its first authorized Decision Continuity tenant.
+ * The binding is intentionally project metadata, not a replacement for the
+ * identity-membership boundary: callers must already hold the desired
+ * decision permission before invoking this function.
+ */
+export async function bindProjectDecisionContinuity(projectId, { user = {}, tenantId, principalId } = {}) {
+  if (!projectId || projectId === "default") {
+    const error = new Error("Architecture discovery requires a managed imported or PlutoniX-created project.");
+    error.code = "managed_project_required";
+    error.status = 400;
+    throw error;
+  }
+  if (!tenantId || !principalId) {
+    const error = new Error("An authorized project tenant and principal are required.");
+    error.code = "project_binding_invalid";
+    error.status = 400;
+    throw error;
+  }
+  const projects = await readRegistry();
+  const index = projects.findIndex((row) => row.id === projectId);
+  if (index === -1 || !canAccessProject(projects[index], user)) {
+    const error = new Error("Project not found.");
+    error.code = "project_not_found";
+    error.status = 404;
+    throw error;
+  }
+  const project = projects[index];
+  const existing = project.decisionContinuity || null;
+  if (existing?.tenantId && existing.tenantId !== tenantId) {
+    const error = new Error("This managed project is already bound to a different Decision Continuity tenant.");
+    error.code = "project_tenant_binding_denied";
+    error.status = 403;
+    throw error;
+  }
+  if (existing?.workspaceId && existing.workspaceId !== project.id) {
+    const error = new Error("This managed project has an invalid Decision Continuity workspace binding.");
+    error.code = "project_workspace_binding_invalid";
+    error.status = 409;
+    throw error;
+  }
+  const decisionContinuity = existing || {
+    tenantId,
+    workspaceId: project.id,
+    boundAt: new Date().toISOString(),
+    boundByPrincipalId: principalId
+  };
+  const updated = { ...project, decisionContinuity, updatedAt: new Date().toISOString() };
+  projects[index] = updated;
+  await writeRegistry(projects);
+  return publicProjectWithRuntime(updated);
+}
+
+/** Read-only project access check for the Decision Continuity boundary. */
+export async function getProjectDecisionContinuity(projectId, { user = {}, tenantId } = {}) {
+  if (!projectId || projectId === "default") {
+    const error = new Error("Architecture discovery requires a managed imported or PlutoniX-created project.");
+    error.code = "managed_project_required";
+    error.status = 400;
+    throw error;
+  }
+  const project = (await readRegistry()).find((row) => row.id === projectId);
+  if (!project || !canAccessProject(project, user)) {
+    const error = new Error("Project not found.");
+    error.code = "project_not_found";
+    error.status = 404;
+    throw error;
+  }
+  if (project.decisionContinuity?.tenantId && project.decisionContinuity.tenantId !== tenantId) {
+    const error = new Error("This managed project is already bound to a different Decision Continuity tenant.");
+    error.code = "project_tenant_binding_denied";
+    error.status = 403;
+    throw error;
+  }
+  if (project.decisionContinuity?.workspaceId && project.decisionContinuity.workspaceId !== project.id) {
+    const error = new Error("This managed project has an invalid Decision Continuity workspace binding.");
+    error.code = "project_workspace_binding_invalid";
+    error.status = 409;
+    throw error;
+  }
+  return publicProjectWithRuntime(project);
 }
 
 export async function updateProjectIdentity(projectId, updates = {}, options = {}) {

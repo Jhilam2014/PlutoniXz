@@ -1,0 +1,61 @@
+{
+  "projectId": "bag-commerce-studio-Tj4bB8",
+  "agentModelVersion": "2.0.0",
+  "decisions": [
+    {
+      "id": "agent-reuse:bag-commerce-studio-Tj4bB8:project-orchestrator-agent",
+      "projectExecution": "bag-commerce-studio-Tj4bB8",
+      "selectedAgent": "project-orchestrator-agent",
+      "requestedRole": "project-orchestrator",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global project-orchestrator definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:52.698Z"
+    },
+    {
+      "id": "agent-reuse:bag-commerce-studio-Tj4bB8:qagent-controller",
+      "projectExecution": "bag-commerce-studio-Tj4bB8",
+      "selectedAgent": "qagent-controller",
+      "requestedRole": "qagent-controller",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global qagent-controller definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:52.698Z"
+    },
+    {
+      "id": "agent-reuse:bag-commerce-studio-Tj4bB8:experience-composition-agent",
+      "projectExecution": "bag-commerce-studio-Tj4bB8",
+      "selectedAgent": "experience-composition-agent",
+      "requestedRole": "experience-composition",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global experience-composition definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:52.698Z"
+    },
+    {
+      "id": "agent-reuse:bag-commerce-studio-Tj4bB8:data-contract-agent",
+      "projectExecution": "bag-commerce-studio-Tj4bB8",
+      "selectedAgent": "data-contract-agent",
+      "requestedRole": "data-contract",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global data-contract definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:52.698Z"
+    },
+    {
+      "id": "agent-reuse:bag-commerce-studio-Tj4bB8:runtime-packaging-agent",
+      "projectExecution": "bag-commerce-studio-Tj4bB8",
+      "selectedAgent": "runtime-packaging-agent",
+      "requestedRole": "runtime-packaging",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global runtime-packaging definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:52.698Z"
+    }
+  ]
+}

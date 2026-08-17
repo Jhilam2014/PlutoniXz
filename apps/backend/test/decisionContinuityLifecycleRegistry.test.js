@@ -10,13 +10,13 @@ import { DecisionContinuityWorkflowQueue } from "../src/decisionContinuityWorkfl
 
 test("lifecycle registry inventories every decision-continuity endpoint with classification and test linkage", () => {
   const entries = Object.entries(DECISION_CONTINUITY_LIFECYCLE_ROUTES);
-  assert.equal(entries.length, 19);
-  assert.equal(entries.filter(([, route]) => route.kind === "read_only").length, 10);
+  assert.equal(entries.length, 21);
+  assert.equal(entries.filter(([, route]) => route.kind === "read_only").length, 11);
   assert.equal(entries.filter(([, route]) => route.kind === "durably_asynchronous").length, 8);
-  assert.equal(entries.filter(([, route]) => route.kind === "transactionally_synchronous").length, 1);
-  assert.deepEqual(assertDecisionContinuityLifecycleCoverage(entries.map(([key, route]) => ({ key, method: route.method, path: route.path }))), { inventory: 19, registered: 19 });
+  assert.equal(entries.filter(([, route]) => route.kind === "transactionally_synchronous").length, 2);
+  assert.deepEqual(assertDecisionContinuityLifecycleCoverage(entries.map(([key, route]) => ({ key, method: route.method, path: route.path }))), { inventory: 21, registered: 21 });
   const matrix = decisionContinuityHttpSecurityMatrix();
-  assert.deepEqual(assertDecisionContinuityHttpSecurityCoverage(matrix), { inventory: 19, matrixCases: 19 });
+  assert.deepEqual(assertDecisionContinuityHttpSecurityCoverage(matrix), { inventory: 21, matrixCases: 21 });
   assert.throws(() => assertDecisionContinuityHttpSecurityCoverage(matrix.slice(1)), /missing routes/i);
   assert.throws(() => assertDecisionContinuityHttpSecurityCoverage([...matrix, matrix[0]]), /more than once/i);
   assert.throws(() => assertDecisionContinuityLifecycleCoverage([{ key: "unknown", method: "post", path: "/unknown" }]));

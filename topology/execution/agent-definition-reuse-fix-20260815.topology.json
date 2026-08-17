@@ -1,0 +1,17 @@
+{
+  "workflow_id": "agent-definition-reuse-fix-20260815",
+  "status": "completed",
+  "nodes": [
+    { "id": "diagnose-agent-cloning", "type": "task", "status": "completed" },
+    { "id": "split-definition-assignment", "type": "task", "status": "completed" },
+    { "id": "enforce-reuse-gate", "type": "task", "status": "completed" },
+    { "id": "reconcile-legacy-definitions", "type": "task", "status": "completed" },
+    { "id": "validate-reuse", "type": "validation", "status": "completed" }
+  ],
+  "links": [
+    { "source": "diagnose-agent-cloning", "target": "split-definition-assignment", "type": "informs" },
+    { "source": "split-definition-assignment", "target": "enforce-reuse-gate", "type": "precedes" },
+    { "source": "enforce-reuse-gate", "target": "reconcile-legacy-definitions", "type": "precedes" },
+    { "source": "reconcile-legacy-definitions", "target": "validate-reuse", "type": "precedes" }
+  ]
+}

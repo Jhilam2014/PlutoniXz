@@ -84,3 +84,34 @@ test("separates numbered requirements into distinct functionality nodes", () => 
   });
   assert.equal(graph.nodes.filter((node) => node.type === "functionality").length, 3);
 });
+
+test("preserves major functionality descendants and attaches unmatched actions beneath an implementation branch", () => {
+  const graph = buildFunctionalityGraph({
+    projectName: "Nested product",
+    functionalities: [
+      { id: "product", label: "Build the product" },
+      { id: "catalog", label: "Catalog management", parentFunctionalityId: "product" },
+      { id: "search", label: "Product search", parentFunctionalityId: "catalog" }
+    ],
+    actions: [
+      { id: "search-api", target: "backend/search.js", reason: "Implement product search." },
+      { id: "config", target: "config/runtime.js", reason: "Changed by current Gotham CLI workflow." }
+    ],
+    activeAgents
+  });
+
+  const product = graph.nodes.find((node) => node.sourceId === "product");
+  const catalog = graph.nodes.find((node) => node.sourceId === "catalog");
+  const search = graph.nodes.find((node) => node.sourceId === "search");
+  const implementation = graph.nodes.find((node) => node.sourceId === "implementation-work");
+  const searchAction = graph.nodes.find((node) => node.sourceId === "search-api");
+  const configAction = graph.nodes.find((node) => node.sourceId === "config");
+
+  assert.equal(catalog.parentId, product.id);
+  assert.equal(search.parentId, catalog.id);
+  assert.equal(searchAction.parentId, search.id);
+  assert.equal(implementation.parentId, product.id);
+  assert.equal(configAction.parentId, implementation.id);
+  assert.equal(graph.links.filter((link) => link.source === graph.rootId).length, 1);
+  assert.ok(graph.summary.maximumDepth >= 3);
+});

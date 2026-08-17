@@ -1,0 +1,25 @@
+{
+  "workflow_id": "architecture-feature-relations-20260815",
+  "delivered_at": "2026-08-15T18:17:00Z",
+  "status": "delivered",
+  "deliverables": [
+    { "path": "apps/backend/src/projectBranchDiscovery.js", "summary": "Version-6 discovery follows bounded local import chains and emits source-evidenced UI-to-API, UI-to-service, API-to-service, service-to-service, and data relationships." },
+    { "path": "apps/backend/src/projectAgents.js", "summary": "Neo4j relationship projection recognizes the new UI/service and service/service relationship types." },
+    { "path": "apps/frontend/public/agentic-system/d3/agentic-system-model.js", "summary": "Architecture projection omits project roots, retains only entity-to-entity relationships, and seeds rootless project-scoped force layouts without overlaps." },
+    { "path": "apps/frontend/public/agentic-system/d3/agentic-system-d3.js", "summary": "Architecture Canvas edges are solid, unlabeled, and non-directional; Insight shows relationship direction, type, entity kind, and source evidence." },
+    { "path": "apps/backend/test/projectBranchDiscovery.test.js", "summary": "Regression fixture proves imported page clients and repository services form a complete source-backed dependency chain." },
+    { "path": "apps/frontend/test/agentic-system-model.test.mjs", "summary": "Regression coverage proves project roots are absent, feature relationships remain connected, Canvas relations have no labels/arrows, and layouts do not overlap." }
+  ],
+  "validation": {
+    "syntax_checks": { "status": "passed", "files": 4 },
+    "targeted_tests": { "status": "passed", "passed": 37, "failed": 0 },
+    "frontend_build": { "status": "passed", "note": "Vite reported the existing bundle-size advisory only." },
+    "visual_browser_smoke_test": { "status": "not_run", "reason": "The in-app browser bridge was not available in this execution context." }
+  },
+  "data_handling": {
+    "real_data_source_used": "Allowlisted project source files and literal local import, route, service, cloud-function, and database evidence.",
+    "database_or_api_created": "None",
+    "mock_demo_data_used": false,
+    "production_components_with_hardcoded_business_data": "None"
+  }
+}

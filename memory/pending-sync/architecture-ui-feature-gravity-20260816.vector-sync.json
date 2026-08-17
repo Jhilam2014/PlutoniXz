@@ -1,0 +1,7 @@
+{
+  "workflow_id": "architecture-ui-feature-gravity-20260816",
+  "provider": "chroma_local_generated",
+  "status": "pending_install",
+  "knowledge_path": "memory/agent-knowledge/projects/architecture-ui-feature-gravity-20260816.summary.md",
+  "reason": "The configured local Chroma provider is not currently verified as ready; no external vector write is claimed."
+}

@@ -1,12 +1,18 @@
 import {
   VIEW_MODES,
+  NODE_TYPE_REGISTRY,
+  architectureNodeRadius,
   applyGraphFilters,
   buildClusters,
+  createArchitectureEdgePlan,
   focusNeighborhood,
   humanize,
-  layoutNodeRadius,
+  isHierarchyLink,
+  layoutNodeBounds,
   loadPositions,
   nodeId,
+  nodeTypeLabel,
+  nodeVisualType,
   normalizeGraph,
   relationshipStyle,
   savePositions,
@@ -21,6 +27,8 @@ const lucide = window.lucide;
 const graphEl = document.getElementById("graph");
 const statusEl = document.getElementById("status");
 const legendEl = document.getElementById("legend");
+const architecturePanelEl = document.getElementById("architecture-panel");
+const architectureSelectionEl = document.getElementById("architecture-selection");
 const insightEl = document.getElementById("insight");
 const insightContentEl = document.getElementById("insight-content");
 const countsEl = document.getElementById("result-counts");
@@ -38,9 +46,18 @@ const productVideoDialogEl = document.getElementById("product-video-dialog");
 const productVideoShellEl = productVideoDialogEl?.querySelector(".product-video-shell");
 const productVideoPlayerEl = document.getElementById("product-video-player");
 const params = new URLSearchParams(window.location.search);
+const requestedView = VIEW_MODES[params.get("view")] ? params.get("view") : "overview";
+const requestedProject = params.get("project")?.trim() || "";
 
 if (params.has("embedded")) document.documentElement.classList.add("embedded");
-document.documentElement.dataset.theme = params.get("theme") === "light" ? "light" : "dark";
+function applyTheme(theme) {
+  document.documentElement.dataset.theme = theme === "light" ? "light" : "dark";
+}
+applyTheme(params.get("theme"));
+window.addEventListener("message", (event) => {
+  if (event.origin !== window.location.origin || event.data?.type !== "plutonix:set-theme") return;
+  applyTheme(event.data.theme);
+});
 lucide?.createIcons();
 
 const palette = {
@@ -56,9 +73,27 @@ const palette = {
   service: "#0891b2",
   api: "#f59e0b",
   feature: "#14b8a6",
+  functionality: "#14b8a6",
+  subfunctionality: "#38bdf8",
+  branch: "#f97316",
+  architectureCategory: "#3b82f6",
+  architectureBranchSummary: "#0f766e",
+  deadBranchSummary: "#9ca3af",
   workflow: "#64748b",
   page: "#38bdf8",
   validation: "#64748b",
+  investigation: "#6366f1",
+  knowledge: "#0f766e",
+  milestone: "#a855f7",
+  "approval-gate": "#f59e0b",
+  "monetary-approval": "#d97706",
+  objective: "#6366f1",
+  pattern: "#14b8a6",
+  promotion: "#ec4899",
+  proposal: "#f97316",
+  "research-budget": "#64748b",
+  system: "#334155",
+  "tool-plan": "#0ea5e9",
   artifact: "#64748b"
 };
 
@@ -69,27 +104,39 @@ const statusPalette = {
   idle: "#94a3b8"
 };
 
+const architectureZonePalette = {
+  ui: { stroke: "#38bdf8", fill: "rgba(14, 116, 144, 0.13)" },
+  api: { stroke: "#f59e0b", fill: "rgba(180, 83, 9, 0.13)" },
+  data: { stroke: "#22c55e", fill: "rgba(21, 128, 61, 0.13)" },
+  integration: { stroke: "#a78bfa", fill: "rgba(109, 40, 217, 0.14)" },
+  security: { stroke: "#f472b6", fill: "rgba(190, 24, 93, 0.13)" },
+  test: { stroke: "#2dd4bf", fill: "rgba(15, 118, 110, 0.13)" },
+  runtime: { stroke: "#60a5fa", fill: "rgba(37, 99, 235, 0.13)" },
+  agents: { stroke: "#fbbf24", fill: "rgba(146, 64, 14, 0.13)" },
+  unmapped_evidence: { stroke: "#94a3b8", fill: "rgba(71, 85, 105, 0.14)" },
+  other: { stroke: "#818cf8", fill: "rgba(79, 70, 229, 0.12)" }
+};
+
 const controls = {
   search: document.getElementById("agent-search"),
   project: document.getElementById("project-filter"),
   agentType: document.getElementById("type-filter"),
   status: document.getElementById("status-filter"),
-  relationshipType: document.getElementById("relationship-filter"),
-  depth: document.getElementById("depth-filter")
+  relationshipType: document.getElementById("relationship-filter")
 };
 
 const state = {
   graph: null,
   filters: {
     search: "",
-    project: "all",
+    project: "",
     agentType: "all",
     status: "all",
     relationshipType: "all"
   },
   viewMode: "overview",
-  depth: 1,
   expandedClusters: new Set(),
+  expandedSubfunctionalities: new Set(),
   selectedId: "",
   currentZoom: 1,
   transform: d3.zoomIdentity,
@@ -110,6 +157,11 @@ const state = {
   canvasGraph: null
 };
 
+// Explore now owns the source-backed architecture canvas. Keeping the check
+// centralized prevents the retired Architecture Branches view from gaining a
+// second rendering path again.
+const isExploreArchitecture = () => state.viewMode === "explore";
+
 function escapeHtml(value) {
   return String(value ?? "")
     .replaceAll("&", "&amp;")
@@ -128,6 +180,9 @@ function valueText(value) {
 function nodeDescription(node) {
   return (
     node?.description ||
+    node?.metadata?.observedCurrent?.description ||
+    node?.metadata?.observed_current?.description ||
+    node?.metadata?.functionality?.description ||
     node?.metadata?.description ||
     node?.metadata?.responsibility ||
     `${node?.label || "This item"} participates in the ${humanize(node?.domain || node?.capability || node?.type)} system surface.`
@@ -135,19 +190,44 @@ function nodeDescription(node) {
 }
 
 function agentLabel(node) {
-  if (node?.kind === "cluster") return "Cluster";
+  if (node?.kind === "cluster") return nodeTypeLabel(node);
   if (node?.agentType === "qagent") return "QAgent";
   if (node?.agentType === "reviewer") return "Reviewer";
   if (node?.agentType === "worker") return "Worker agent";
   if (node?.agentType === "memory") return "Memory / database";
   if (node?.agentType === "human") return "Human agent";
-  return humanize(node?.agentType || node?.type);
+  if (node?.agentType === "functionality") return "Application functionality";
+  if (node?.agentType === "subfunctionality") return "Cited code unit";
+  if (node?.agentType === "branch") {
+    if (node?.metadata?.disabled) return "Rejected / disabled architecture branch";
+    if (node?.metadata?.futureEnhancement) return "Future enhancement branch";
+    return node?.metadata?.inferenceRole === "observed_current" ? "Observed implementation" : "Deferred architecture branch";
+  }
+  if (node?.agentType === "architectureCategory") return "Functionality analysis group";
+  if (node?.agentType === "architectureBranchSummary") return "Architecture branch summary";
+  if (node?.agentType === "deadBranchSummary") return "Disabled branch summary";
+  return nodeTypeLabel(node);
 }
 
 function visualType(node) {
-  if (node?.clusterLevel === "project") return "project";
-  if (node?.kind === "cluster") return "cluster";
-  return node?.agentType || node?.type || "artifact";
+  return nodeVisualType(node);
+}
+
+function nodeColor(node) {
+  const type = visualType(node);
+  if (!node?.metadata?.architectureLens || !["orchestrator", "worker", "qagent", "reviewer", "human"].includes(type)) {
+    return palette[type] || "#64748b";
+  }
+  const scope = node.metadata?.assignmentScope;
+  const scopedPalette = {
+    "project-exclusive": {
+      orchestrator: "#7c3aed", worker: "#2563eb", qagent: "#ec4899", reviewer: "#06b6d4", human: "#0f766e"
+    },
+    shared: {
+      orchestrator: "#a855f7", worker: "#0ea5e9", qagent: "#f97316", reviewer: "#14b8a6", human: "#65a30d"
+    }
+  };
+  return scopedPalette[scope]?.[type] || palette[type] || "#64748b";
 }
 
 function statusMark(node) {
@@ -163,6 +243,36 @@ function runtimeStatusLabel(node) {
   return node?.hasRuntimeSignal ? humanize(node.statusGroup) : "No live signal";
 }
 
+function nodeSubtitle(node) {
+  const type = visualType(node);
+  if (node.metadata?.architectureLens && ["orchestrator", "worker", "qagent", "reviewer", "human"].includes(type)) {
+    return `${agentLabel(node)} · ${node.metadata?.assignmentScope === "shared" ? "shared" : "project-exclusive"}`;
+  }
+  if (type === "project" && node.metadata?.architectureLens) {
+    return `${node.metadata?.functionalityCount || 0} functions · complexity ${Math.round(Number(node.metadata?.complexity || 0) * 100)}%`;
+  }
+  if (type === "functionality" && node.metadata?.architectureLens) {
+    const complexity = Number(node.metadata?.cyclomaticComplexity || 0);
+    return complexity
+      ? `CC ${complexity} · ${node.metadata?.branchCount || 0} branches · ${node.metadata?.implementingAgentCount || 0} owners`
+      : `${node.metadata?.branchCount || 0} connected branches · ${node.metadata?.implementingAgentCount || 0} owners`;
+  }
+  if (node.metadata?.architectureLens && node.metadata?.applicationTopology) {
+    const sourceHints = node.metadata?.sourceHints || {};
+    const reference = node.metadata?.sourceReference || "cited source";
+    if (type === "page") return `UI surface · ${reference}`;
+    if (type === "api") return `${sourceHints.route?.method || "API"} route · ${sourceHints.route?.path || reference}`;
+    if (type === "database") return sourceHints.database?.table ? `Database table · ${sourceHints.database.table}` : `Database connection · ${reference}`;
+  }
+  if (type === "subfunctionality" && node.metadata?.architectureLens) {
+    return `${humanize(node.metadata?.sourceKind || "source unit")} · ${node.metadata?.sourceReference || "cited source"}`;
+  }
+  if (type === "branch" && node.metadata?.architectureLens) {
+    return node.metadata?.disabled ? "rejected / disabled" : humanize(node.status || node.statusGroup);
+  }
+  return `${agentLabel(node)} · ${runtimeStatusLabel(node)}`;
+}
+
 function glyphFor(node) {
   const type = visualType(node);
   if (type === "orchestrator") return "O";
@@ -174,7 +284,19 @@ function glyphFor(node) {
   if (type === "cluster") return "C";
   if (type === "project") return "P";
   if (type === "api") return "API";
-  return "N";
+  if (type === "database") return "DB";
+  if (type === "page") return "UI";
+  if (type === "functionality") return "FN";
+  if (type === "subfunctionality") return "CU";
+  if (type === "branch") return "BR";
+  if (type === "architectureCategory") return "FX";
+  if (type === "architectureBranchSummary") return "ALT";
+  if (type === "deadBranchSummary") return "OFF";
+  if (type === "service") return "SVC";
+  if (type === "workflow") return "WF";
+  if (type === "page") return "PG";
+  if (type === "validation") return "OK";
+  return acronymFor(NODE_TYPE_REGISTRY[type]?.label || "Node", 3);
 }
 
 function acronymFor(value, max = 4) {
@@ -196,6 +318,7 @@ function objectiveIconFor(node) {
     node?.cluster_id,
     node?.domain,
     node?.capability,
+    node?.metadata?.category,
     node?.metadata?.role,
     node?.metadata?.responsibility,
     node?.metadata?.description
@@ -204,8 +327,25 @@ function objectiveIconFor(node) {
     .join(" ")
     .toLowerCase();
   const type = visualType(node);
+  const category = String(node?.metadata?.category || "").toLowerCase();
+  const registeredIcon = NODE_TYPE_REGISTRY[type]?.icon;
   if (node?.clusterLevel === "project") return "folder-kanban";
   if (type === "project") return "folder-kanban";
+  if (type === "architectureCategory" || (type === "functionality" && node?.metadata?.architectureLens)) {
+    if (category.includes("ui")) return "panels-top-left";
+    if (category.includes("api")) return "route";
+    if (category.includes("data")) return "database";
+    if (category.includes("integration")) return "plug";
+    if (category.includes("security")) return "shield-check";
+    if (category.includes("test")) return "flask-conical";
+    if (category.includes("runtime") || category.includes("deploy")) return "container";
+    return "boxes";
+  }
+  if (type === "architectureBranchSummary") return "git-fork";
+  if (type === "deadBranchSummary") return "archive-x";
+  if (type === "functionality") return "component";
+  if (type === "branch") return "git-fork";
+  if (type === "service" || type === "api" || type === "workflow" || type === "page" || type === "validation" || type === "database") return registeredIcon;
   if (type === "orchestrator" || text.includes("orchestrator") || text.includes("coordinate")) return "network";
   if (type === "reviewer" || text.includes("qagent") || text.includes("review") || text.includes("validation")) return "badge-check";
   if (type === "memory" || text.includes("memory") || text.includes("vector") || text.includes("database")) return "database";
@@ -220,16 +360,16 @@ function objectiveIconFor(node) {
   if (text.includes("security") || text.includes("auth")) return "shield-check";
   if (text.includes("media") || text.includes("image") || text.includes("ocr")) return "image";
   if (text.includes("test") || text.includes("quality")) return "flask-conical";
-  return "bot";
+  return registeredIcon || "bot";
 }
 
 function appendLucideIcon(group, node, options = {}) {
   const size = options.size || 26;
   group
     .append("foreignObject")
-    .attr("class", "node-icon-object")
-    .attr("x", -size / 2)
-    .attr("y", -size / 2)
+    .attr("class", ["node-icon-object", options.className].filter(Boolean).join(" "))
+    .attr("x", options.x ?? -size / 2)
+    .attr("y", options.y ?? -size / 2)
     .attr("width", size)
     .attr("height", size)
     .append("xhtml:span")
@@ -297,7 +437,7 @@ function populateControls(model) {
   controls.agentType.replaceChildren();
   controls.status.replaceChildren();
   controls.relationshipType.replaceChildren();
-  addOption(controls.project, "all", "All projects");
+  addOption(controls.project, "", "");
   addOption(controls.agentType, "all", "All types");
   addOption(controls.status, "all", "All status");
   addOption(controls.relationshipType, "all", "All relations");
@@ -305,22 +445,24 @@ function populateControls(model) {
   types.forEach((type) => addOption(controls.agentType, type, humanize(type)));
   statuses.forEach((status) => addOption(controls.status, status, status === "idle" ? "No live signal" : humanize(status)));
   relationTypes.forEach((type) => addOption(controls.relationshipType, type, humanize(type)));
-  controls.project.value = projects.includes(state.filters.project) ? state.filters.project : "all";
+  controls.project.value = projects.includes(state.filters.project) ? state.filters.project : "";
   controls.agentType.value = types.includes(state.filters.agentType) ? state.filters.agentType : "all";
   controls.status.value = statuses.includes(state.filters.status) ? state.filters.status : "all";
   controls.relationshipType.value = relationTypes.includes(state.filters.relationshipType) ? state.filters.relationshipType : "all";
 }
 
 function renderLegend() {
-  const nodeLegend = [
-    ["orchestrator", "Orchestrator"],
-    ["worker", "Worker"],
-    ["qagent", "QAgent"],
-    ["reviewer", "Reviewer"],
-    ["human", "Human"],
-    ["memory", "Memory/database"]
-  ];
-  const statusLegend = [
+  const architectureLens = isExploreArchitecture();
+  const dependencyLens = state.viewMode === "dependency";
+  const nodeLegend = Array.from(new Set((state.graph?.nodes || []).map(visualType)))
+    .filter((type) => NODE_TYPE_REGISTRY[type])
+    .sort((left, right) => NODE_TYPE_REGISTRY[left].label.localeCompare(NODE_TYPE_REGISTRY[right].label))
+    .map((type) => [type, NODE_TYPE_REGISTRY[type].label]);
+  const statusLegend = architectureLens ? [
+    ["running", "Current source evidence"],
+    ["waiting", "Deferred alternative"],
+    ["idle", "Disabled provenance"]
+  ] : [
     ["running", "Running"],
     ["waiting", "Waiting"],
     ["failed", "Failed"],
@@ -328,14 +470,70 @@ function renderLegend() {
   ];
   legendEl.innerHTML = `
     <div class="legend-heading"><span>Legend</span><span>${VIEW_MODES[state.viewMode]}</span></div>
+    <div class="legend-subheading">Node type</div>
     <div class="legend-group">${nodeLegend
       .map(([type, label]) => `<span><i class="shape-mark ${type}" style="--mark:${palette[type]}"></i>${escapeHtml(label)}</span>`)
       .join("")}</div>
+    <div class="legend-subheading">Status</div>
     <div class="legend-group">${statusLegend
       .map(([status, label]) => `<span><i class="status-dot ${status}" style="--mark:${statusPalette[status]}">${statusMark({ statusGroup: status })}</i>${escapeHtml(label)}</span>`)
       .join("")}</div>
-    <div class="legend-group relation-legend"><span><i class="line solid"></i>Invocation</span><span><i class="line dashed"></i>Memory/data</span><span><i class="line dotted"></i>Optional</span></div>
+    <div class="legend-subheading">Connection kind</div>
+    <div class="legend-group relation-legend">${architectureLens ? "<span><i class=\"line architecture\"></i>Feature relationship</span><span>Feature clusters group source-backed functionality. Select a node to inspect ownership, evidence, and connection details.</span><span>Thin connectors gain emphasis only for the selected node.</span>" : dependencyLens ? "<span><i class=\"line solid\"></i>Directed dependency</span><span>Left = upstream providers · centre = focus / cycles · right = downstream and descendants</span>" : "<span><i class=\"line solid\"></i>Invocation</span><span><i class=\"line architecture\"></i>Architecture</span><span><i class=\"line dashed\"></i>Memory/data</span><span><i class=\"line dotted\"></i>Optional</span>"}</div>
   `;
+}
+
+function agentProfileHref(agent, context = {}) {
+  const target = agent?.agent_id || agent?.id;
+  if (!target) return "";
+  const url = new URL("/", window.location.href);
+  url.searchParams.set("workspace", "agents");
+  url.searchParams.set("agent", target);
+  Object.entries(context).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && value !== "") url.searchParams.set(key, String(value));
+  });
+  return url.toString();
+}
+
+function renderArchitecturePanel(node) {
+  const active = isExploreArchitecture();
+  architecturePanelEl.hidden = !active;
+  workspaceEl.classList.toggle("architecture-mode", active);
+  if (!active) return;
+  if (!node?.metadata?.architectureLens) {
+    architectureSelectionEl.innerHTML = `<p>Select a circle to inspect its feature hierarchy, chronology, complexity, connectors, owner, and source evidence.</p>`;
+    return;
+  }
+  const assignedAgents = Array.isArray(node.metadata?.assignedAgents) ? node.metadata.assignedAgents : [];
+  const type = node.metadata?.applicationTopology
+      ? nodeTypeLabel(node)
+      : node.agentType === "functionality"
+      ? "Functionality"
+      : node.agentType === "subfunctionality"
+        ? "Cited code unit"
+      : node.metadata?.disabled
+        ? "Rejected branch"
+        : node.metadata?.futureEnhancement
+          ? "Future enhancement"
+        : "Architecture branch";
+  const status = node.metadata?.disabled ? "disabled" : humanize(node.status || node.statusGroup);
+  const surface = node.metadata?.surfaceLabel || node.metadata?.category || "project architecture";
+  const cyclomaticComplexity = Number(node.metadata?.cyclomaticComplexity || 0);
+  architectureSelectionEl.innerHTML = `
+    <div class="architecture-selection-kicker"><span>${escapeHtml(type)}</span><b class="${node.metadata?.disabled ? "disabled" : ""}">${escapeHtml(status)}</b></div>
+    <h2>${escapeHtml(node.label)}</h2>
+    <p>${escapeHtml(nodeDescription(node))}</p>
+    <dl>
+      <div><dt>Surface</dt><dd>${escapeHtml(surface)}</dd></div>
+      <div><dt>Functions</dt><dd>${node.metadata?.surfaceFunctionalityCount || node.metadata?.functionalityCount || 0}</dd></div>
+      ${node.agentType === "functionality" ? `<div><dt>Code units</dt><dd>${node.metadata?.subfunctionalityCount || 0}</dd></div>` : ""}
+      ${node.metadata?.applicationTopology ? `<div><dt>Source</dt><dd>${escapeHtml(node.metadata?.sourceReference || "cited source")}</dd></div>` : ""}
+      ${node.metadata?.applicationTopology ? `<div><dt>Hierarchy depth</dt><dd>${Number(node.metadata?.architectureHierarchyDepth ?? node.metadata?.architectureLevel ?? 1)}</dd></div><div><dt>Chronology</dt><dd>#${Number(node.metadata?.chronologyOrder ?? 0) + 1}</dd></div><div><dt>Connectors</dt><dd>${Number(node.metadata?.connectorCount || 0)}</dd></div>` : ""}
+      ${node.agentType === "subfunctionality" ? `<div><dt>Source</dt><dd>${escapeHtml(node.metadata?.sourceReference || "cited source")}</dd></div><div><dt>Kind</dt><dd>${escapeHtml(humanize(node.metadata?.sourceKind || "source unit"))}</dd></div>` : ""}
+      ${cyclomaticComplexity ? `<div><dt>Code complexity</dt><dd>CC ${cyclomaticComplexity}</dd></div>` : ""}
+      <div><dt>Branches</dt><dd>${node.metadata?.branchCount || 0}</dd></div>
+    </dl>
+    ${assignedAgents.length ? `<div class="architecture-selection-owners"><strong>Assigned</strong><span>${assignedAgents.map((agent) => `<a href="${escapeHtml(agentProfileHref(agent, { agentName: agent.name, agentType: agent.role, project: node.project }))}" target="_blank" rel="noopener">${escapeHtml(agent.name)}</a>`).join(" · ")}</span></div>` : ""}`;
 }
 
 function renderCounts(model, visible, telemetry = {}) {
@@ -343,12 +541,41 @@ function renderCounts(model, visible, telemetry = {}) {
   const agents = filtered.nodes.filter((node) => node.type === "agent");
   const failed = agents.filter((node) => node.statusGroup === "failed").length;
   const warning = agents.filter((node) => node.statusGroup === "waiting").length;
-  countsEl.innerHTML = `
-    <div class="metric"><b>${agents.length}</b><span>Agents</span></div>
-    <div class="metric"><b>${visible.items.length}</b><span>Visible</span></div>
-    <div class="metric critical"><b>${failed}</b><span>Failed</span></div>
-    <div class="metric warning"><b>${warning}</b><span>Warnings</span></div>
-  `;
+  if (isExploreArchitecture()) {
+    const functionalities = visible.items.filter((item) => item.agentType === "functionality" || item.metadata?.applicationTopology);
+    const subfunctionalities = visible.items.filter((item) => item.agentType === "subfunctionality");
+    const active = visible.items
+      .filter((item) => item.agentType === "functionality" || item.metadata?.applicationTopology)
+      .reduce((total, item) => total + Number(item.metadata?.observedCount || 0) + Number(item.metadata?.deferredCount || 0), 0);
+    const disabled = visible.items
+      .filter((item) => item.agentType === "functionality" || item.metadata?.applicationTopology)
+      .reduce((total, item) => total + Number(item.metadata?.disabledCount || 0), 0);
+    countsEl.innerHTML = `
+      <div class="metric"><b>${functionalities.length}</b><span>Project features</span></div>
+      <div class="metric"><b>${subfunctionalities.length}</b><span>Code units shown</span></div>
+      <div class="metric"><b>${active}</b><span>Current / deferred</span></div>
+      <div class="metric warning"><b>${disabled}</b><span>Disabled records</span></div>
+      <div class="metric"><b>${visible.items.length}</b><span>Lens nodes</span></div>
+    `;
+  } else if (state.viewMode === "dependency") {
+    const anchorId = visible.lens?.anchorId || "";
+    const incoming = visible.links.filter((link) => link.target === anchorId).length;
+    const outgoing = visible.links.filter((link) => link.source === anchorId).length;
+    const reachableDepth = Math.max(0, ...visible.items.map((item) => Number.isFinite(item.dependencyDepth) ? item.dependencyDepth : 0));
+    countsEl.innerHTML = `
+      <div class="metric"><b>${visible.items.length}</b><span>Lens entities</span></div>
+      <div class="metric"><b>${incoming}</b><span>Direct inputs</span></div>
+      <div class="metric"><b>${outgoing}</b><span>Direct outputs</span></div>
+      <div class="metric"><b>${reachableDepth}</b><span>Max dependency depth</span></div>
+    `;
+  } else {
+    countsEl.innerHTML = `
+      <div class="metric"><b>${agents.length}</b><span>Agents</span></div>
+      <div class="metric"><b>${visible.items.length}</b><span>Visible</span></div>
+      <div class="metric critical"><b>${failed}</b><span>Failed</span></div>
+      <div class="metric warning"><b>${warning}</b><span>Warnings</span></div>
+    `;
+  }
   const sourceClass = state.source.includes("fallback") ? "warning" : "";
   statusEl.className = sourceClass;
   statusEl.innerHTML = `<i class="connection-dot" aria-hidden="true"></i><span>${escapeHtml(state.source || "System topology")} · ${model.nodes.length} entities · ${model.links.length} relationships</span>`;
@@ -363,16 +590,25 @@ function renderCounts(model, visible, telemetry = {}) {
 }
 
 function renderBreadcrumb(visible) {
+  if (state.viewMode === "dependency" && visible.lens?.anchorId) {
+    const anchor = visible.items.find((item) => item.id === visible.lens.anchorId);
+    breadcrumbEl.innerHTML = `${escapeHtml(VIEW_MODES[state.viewMode])} <span aria-hidden="true">/</span> <span class="crumb-current">${escapeHtml(anchor?.label || "Dependency focus")}</span> <span class="focus-depth">complete reachable dependency chain</span>`;
+    return;
+  }
+  if (isExploreArchitecture()) {
+    breadcrumbEl.innerHTML = `${escapeHtml(VIEW_MODES[state.viewMode])} <span aria-hidden="true">/</span> <span class="crumb-current">Feature clusters &amp; agent ownership</span>`;
+    return;
+  }
   const selectedVisible = visible.items.find((item) => item.id === state.selectedId);
   if (selectedVisible?.kind === "cluster") {
     breadcrumbEl.innerHTML = `${escapeHtml(VIEW_MODES[state.viewMode])} <span aria-hidden="true">/</span> <span class="crumb-current">${escapeHtml(selectedVisible.label)}</span>`;
     return;
   }
   if (!state.selectedId || !visible.focus?.breadcrumb?.length) {
-    breadcrumbEl.innerHTML = `${escapeHtml(VIEW_MODES[state.viewMode])} <span aria-hidden="true">/</span> <span class="crumb-current">${escapeHtml(state.filters.project === "all" ? "All projects" : state.filters.project)}</span>`;
+    breadcrumbEl.innerHTML = `${escapeHtml(VIEW_MODES[state.viewMode])} <span aria-hidden="true">/</span> <span class="crumb-current">${escapeHtml(state.filters.project || "Select project")}</span>`;
     return;
   }
-  breadcrumbEl.innerHTML = `${visible.focus.breadcrumb.map(escapeHtml).join(' <span aria-hidden="true">/</span> ')} <span class="focus-depth">${state.depth} hop focus</span>`;
+  breadcrumbEl.innerHTML = `${visible.focus.breadcrumb.map(escapeHtml).join(' <span aria-hidden="true">/</span> ')} <span class="focus-depth">related nodes</span>`;
 }
 
 function formatFreshness(date) {
@@ -397,6 +633,8 @@ const svg = d3
   .attr("role", "group")
   .attr("aria-label", "Clustered PlutoniX topology");
 const viewport = svg.append("g").attr("class", "graph-viewport");
+const lensLayer = viewport.append("g").attr("class", "lens-scaffold").attr("aria-hidden", "true");
+const perimeterLayer = viewport.append("g").attr("class", "architecture-perimeter").attr("aria-hidden", "true");
 const linkLayer = viewport.append("g").attr("class", "links");
 const nodeLayer = viewport.append("g").attr("class", "nodes");
 const miniSvg = d3.select("#minimap").append("svg").attr("viewBox", [0, 0, 180, 120]).attr("aria-hidden", "true");
@@ -413,7 +651,7 @@ resizeEdgeCanvas();
 
 const zoom = d3
   .zoom()
-  .scaleExtent([0.35, 3.2])
+  .scaleExtent([0.14, 4.2])
   .on("zoom", (event) => {
     state.transform = event.transform;
     state.currentZoom = event.transform.k;
@@ -449,14 +687,358 @@ function zoomLevel(scale) {
   return "detailed";
 }
 
+function architectureZonesFor(items) {
+  const zones = new Map();
+  for (const item of items) {
+    const bounds = item.metadata?.architectureZoneBounds;
+    if (!bounds?.id) continue;
+    const zone = zones.get(bounds.id) || {
+      ...bounds,
+      members: [],
+      colour: architectureZonePalette[bounds.key] || architectureZonePalette.other
+    };
+    zone.members.push(item);
+    zones.set(bounds.id, zone);
+  }
+  return [...zones.values()]
+    .map((zone) => {
+      const padding = 68;
+      const memberBounds = zone.members.reduce(
+        (current, item) => {
+          const visual = layoutNodeBounds(item);
+          return {
+            minX: Math.min(current.minX, item.x - visual.halfWidth - padding),
+            maxX: Math.max(current.maxX, item.x + visual.halfWidth + padding),
+            minY: Math.min(current.minY, item.y - visual.halfHeight - padding),
+            maxY: Math.max(current.maxY, item.y + visual.halfHeight + padding)
+          };
+        },
+        { minX: Infinity, maxX: -Infinity, minY: Infinity, maxY: -Infinity }
+      );
+      const minX = Math.min(zone.x, memberBounds.minX);
+      const maxX = Math.max(zone.x + zone.width, memberBounds.maxX);
+      const minY = Math.min(zone.y, memberBounds.minY);
+      const maxY = Math.max(zone.y + zone.height, memberBounds.maxY);
+      return {
+        ...zone,
+        x: minX,
+        y: minY,
+        width: Math.max(1, maxX - minX),
+        height: Math.max(1, maxY - minY)
+      };
+    })
+    .sort((left, right) => left.index - right.index || left.label.localeCompare(right.label));
+}
+
+function renderArchitectureScaffold(items, edgePlan) {
+  const railByZoneId = new Map(
+    (edgePlan?.visualLinks || [])
+      .filter((link) => link.kind === "zone-rail")
+      .map((link) => [link.zoneId, link])
+  );
+  const zones = isExploreArchitecture()
+    ? architectureZonesFor(items).map((zone) => ({ ...zone, rail: railByZoneId.get(zone.id) }))
+    : [];
+  const selection = perimeterLayer.selectAll("g.architecture-zone-scaffold").data(zones, (zone) => zone.id);
+  selection.exit().remove();
+  const entered = selection.enter().append("g").attr("class", "architecture-zone-scaffold");
+  entered.append("rect").attr("class", "architecture-zone-board");
+  entered.append("path").attr("class", "architecture-zone-gate");
+  entered.append("text").attr("class", "architecture-zone-title");
+  entered.append("text").attr("class", "architecture-zone-caption");
+  entered.append("text").attr("class", "architecture-zone-count");
+  entered.merge(selection)
+    .style("--zone-color", (zone) => zone.colour.stroke)
+    .style("--zone-fill", (zone) => zone.colour.fill)
+    .each(function (zone) {
+      const group = d3.select(this);
+      const inset = 14;
+      const titleX = zone.x + 26;
+      const titleY = zone.y + 34;
+      group.select(".architecture-zone-board")
+        .attr("x", zone.x + inset)
+        .attr("y", zone.y + inset)
+        .attr("width", Math.max(1, zone.width - inset * 2))
+        .attr("height", Math.max(1, zone.height - inset * 2))
+        .attr("rx", 22);
+      const gateTop = zone.y + 62;
+      const gateBottom = zone.y + zone.height - 38;
+      const gateX = zone.x + 28;
+      group.select(".architecture-zone-gate")
+        .attr("d", `M${gateX + 22},${gateTop} C${gateX - 10},${zone.y + zone.height * 0.28} ${gateX - 10},${zone.y + zone.height * 0.72} ${gateX + 22},${gateBottom}M${gateX + 22},${gateTop}H${Math.min(zone.x + zone.width - 34, titleX + 218)}`);
+      group.select(".architecture-zone-title")
+        .attr("x", titleX)
+        .attr("y", titleY)
+        .text(zone.label);
+      group.select(".architecture-zone-caption")
+        .attr("x", titleX)
+        .attr("y", titleY + 18)
+        .text(zone.rail?.metadata?.unresolvedEvidence ? "Retained unresolved evidence" : "Source-backed feature group");
+      group.select(".architecture-zone-count")
+        .attr("x", zone.x + zone.width - 26)
+        .attr("y", titleY)
+        .attr("text-anchor", "end")
+        .text(zone.rail?.label || `${zone.functionalityCount} functions`);
+    });
+}
+
+function renderLensScaffold(items) {
+  lensLayer.selectAll("*").remove();
+  if (state.viewMode === "dependency") {
+    const virtualWidth = Math.max(width, ...items.map((item) => item.dependencyVirtualWidth || 0));
+    const virtualHeight = Math.max(height, ...items.map((item) => item.dependencyVirtualHeight || 0));
+    const fallbackWidth = virtualWidth / 3;
+    const roleDefinition = [
+      ["upstream", "Upstream providers", "What it needs"],
+      ["focus", "Selected focus & cycles", "Inspect an entity"],
+      ["downstream", "Downstream & descendants", "What it enables"]
+    ];
+    const roles = roleDefinition.map(([id, label, note], index) => {
+      const members = items.filter((item) => (item.dependencyColumn || item.dependencyRole || "focus") === id);
+      if (!members.length) return { id, label, note, x: index * fallbackWidth + 12, width: Math.max(132, fallbackWidth - 24) };
+      const minX = Math.min(...members.map((item) => item.x - layoutNodeBounds(item).halfWidth)) - 32;
+      const maxX = Math.max(...members.map((item) => item.x + layoutNodeBounds(item).halfWidth)) + 32;
+      return { id, label, note, x: Math.max(8, minX), width: Math.max(132, maxX - minX) };
+    });
+    const group = lensLayer.append("g").attr("class", "dependency-lanes");
+    const lane = group.selectAll("g.dependency-lane").data(roles).join("g").attr("class", (row) => `dependency-lane ${row.id}`);
+    lane.append("rect").attr("x", (row) => row.x).attr("y", 16).attr("width", (row) => row.width).attr("height", Math.max(0, virtualHeight - 32)).attr("rx", 12);
+    lane.append("text").attr("x", (row) => row.x + 16).attr("y", 42).text((row) => row.label);
+    lane.append("text").attr("x", (row) => row.x + 16).attr("y", 60).attr("class", "dependency-lane-note").text((row) => row.note);
+    return;
+  }
+}
+
+function linkEndpoints(source, target) {
+  const dx = target.x - source.x;
+  const dy = target.y - source.y;
+  const distance = Math.max(1, Math.hypot(dx, dy));
+  const sourceRadius = source.metadata?.architectureLens ? architectureNodeRadius(source) : 0;
+  const targetRadius = target.metadata?.architectureLens ? architectureNodeRadius(target) : 0;
+  return {
+    sourceX: source.x + (dx / distance) * sourceRadius,
+    sourceY: source.y + (dy / distance) * sourceRadius,
+    targetX: target.x - (dx / distance) * targetRadius,
+    targetY: target.y - (dy / distance) * targetRadius
+  };
+}
+
+function clamp(value, minimum, maximum) {
+  return Math.min(maximum, Math.max(minimum, value));
+}
+
+function architectureBoundaryPoint(node, toward) {
+  const dx = toward.x - node.x;
+  const dy = toward.y - node.y;
+  const distance = Math.max(1, Math.hypot(dx, dy));
+  const radius = architectureNodeRadius(node);
+  return {
+    x: node.x + (dx / distance) * radius,
+    y: node.y + (dy / distance) * radius
+  };
+}
+
+function roundedPolyline(points, radius = 12) {
+  const usable = points.filter((point, index, array) => !index || Math.hypot(point.x - array[index - 1].x, point.y - array[index - 1].y) > 0.5);
+  if (!usable.length) return "";
+  if (usable.length === 1) return `M${usable[0].x},${usable[0].y}`;
+  if (usable.length === 2) return `M${usable[0].x},${usable[0].y}L${usable[1].x},${usable[1].y}`;
+  let path = `M${usable[0].x},${usable[0].y}`;
+  for (let index = 1; index < usable.length - 1; index += 1) {
+    const previous = usable[index - 1];
+    const current = usable[index];
+    const next = usable[index + 1];
+    const incoming = Math.max(1, Math.hypot(current.x - previous.x, current.y - previous.y));
+    const outgoing = Math.max(1, Math.hypot(next.x - current.x, next.y - current.y));
+    const corner = Math.min(radius, incoming / 2, outgoing / 2);
+    const start = {
+      x: current.x - ((current.x - previous.x) / incoming) * corner,
+      y: current.y - ((current.y - previous.y) / incoming) * corner
+    };
+    const end = {
+      x: current.x + ((next.x - current.x) / outgoing) * corner,
+      y: current.y + ((next.y - current.y) / outgoing) * corner
+    };
+    path += `L${start.x},${start.y}Q${current.x},${current.y} ${end.x},${end.y}`;
+  }
+  const finalPoint = usable[usable.length - 1];
+  return `${path}L${finalPoint.x},${finalPoint.y}`;
+}
+
+function smoothArchitectureRail(from, to) {
+  const dx = to.x - from.x;
+  const dy = to.y - from.y;
+  const distance = Math.max(1, Math.hypot(dx, dy));
+  const control = Math.min(210, Math.max(56, distance * 0.32));
+  const normal = { x: -dy / distance, y: dx / distance };
+  const bend = Math.min(46, distance * 0.08);
+  return `M${from.x},${from.y}C${from.x + (dx / distance) * control + normal.x * bend},${from.y + (dy / distance) * control + normal.y * bend} ${to.x - (dx / distance) * control + normal.x * bend},${to.y - (dy / distance) * control + normal.y * bend} ${to.x},${to.y}`;
+}
+
+function targetEnvelope(targets, padding = 0) {
+  const left = Math.min(...targets.map((target) => target.x - layoutNodeBounds(target).halfWidth)) - padding;
+  const right = Math.max(...targets.map((target) => target.x + layoutNodeBounds(target).halfWidth)) + padding;
+  const top = Math.min(...targets.map((target) => target.y - layoutNodeBounds(target).halfHeight)) - padding;
+  const bottom = Math.max(...targets.map((target) => target.y + layoutNodeBounds(target).halfHeight)) + padding;
+  return { x: left, y: top, width: Math.max(1, right - left), height: Math.max(1, bottom - top) };
+}
+
+function groupedTargetRails(targets, axis, side) {
+  const grouped = [];
+  const sorted = targets.slice().sort((left, right) => (axis === "vertical" ? left.x - right.x : left.y - right.y) || left.label.localeCompare(right.label));
+  for (const target of sorted) {
+    const coordinate = axis === "vertical" ? target.x : target.y;
+    const previous = grouped[grouped.length - 1];
+    if (!previous || Math.abs(previous.center - coordinate) > 28) grouped.push({ center: coordinate, targets: [target] });
+    else previous.targets.push(target);
+  }
+  return grouped.map((group) => {
+    if (axis === "vertical") {
+      const coordinate = side === "left"
+        ? Math.min(...group.targets.map((target) => target.x - layoutNodeBounds(target).halfWidth - 22))
+        : Math.max(...group.targets.map((target) => target.x + layoutNodeBounds(target).halfWidth + 22));
+      return {
+        ...group,
+        coordinate,
+        start: Math.min(...group.targets.map((target) => target.y - layoutNodeBounds(target).halfHeight - 14)),
+        end: Math.max(...group.targets.map((target) => target.y + layoutNodeBounds(target).halfHeight + 14))
+      };
+    }
+    const coordinate = side === "top"
+      ? Math.min(...group.targets.map((target) => target.y - layoutNodeBounds(target).halfHeight - 22))
+      : Math.max(...group.targets.map((target) => target.y + layoutNodeBounds(target).halfHeight + 22));
+    return {
+      ...group,
+      coordinate,
+      start: Math.min(...group.targets.map((target) => target.x - layoutNodeBounds(target).halfWidth - 14)),
+      end: Math.max(...group.targets.map((target) => target.x + layoutNodeBounds(target).halfWidth + 14))
+    };
+  });
+}
+
+function architectureRailNetwork(source, targets, bounds, options = {}) {
+  if (!source || !targets.length) return { rail: "", spine: "", stubFor: () => "" };
+  const centre = { x: bounds.x + bounds.width / 2, y: bounds.y + bounds.height / 2 };
+  const dx = centre.x - source.x;
+  const dy = centre.y - source.y;
+  const horizontalAccess = Math.abs(dx) >= Math.abs(dy);
+  if (horizontalAccess) {
+    const side = dx >= 0 ? "left" : "right";
+    const minimumY = bounds.y + Math.min(72, Math.max(26, bounds.height * 0.12));
+    const maximumY = bounds.y + bounds.height - Math.min(72, Math.max(26, bounds.height * 0.12));
+    const ingress = {
+      x: side === "left" ? bounds.x + (options.innerInset ?? 30) : bounds.x + bounds.width - (options.innerInset ?? 30),
+      y: clamp(source.y, Math.min(minimumY, maximumY), Math.max(minimumY, maximumY))
+    };
+    const sourcePort = architectureBoundaryPoint(source, ingress);
+    const rails = groupedTargetRails(targets, "vertical", side);
+    const minRail = Math.min(...rails.map((rail) => rail.coordinate));
+    const maxRail = Math.max(...rails.map((rail) => rail.coordinate));
+    const headerStart = { x: ingress.x, y: ingress.y };
+    const headerEnd = { x: side === "left" ? maxRail : minRail, y: ingress.y };
+    const spinePaths = [roundedPolyline([headerStart, headerEnd], 10)];
+    rails.forEach((rail) => {
+      spinePaths.push(roundedPolyline([{ x: rail.coordinate, y: ingress.y }, { x: rail.coordinate, y: rail.start }, { x: rail.coordinate, y: rail.end }], 8));
+    });
+    return {
+      rail: smoothArchitectureRail(sourcePort, ingress),
+      spine: spinePaths.join(""),
+      stubFor(target) {
+        const rail = rails.find((candidate) => candidate.targets.includes(target));
+        if (!rail) return "";
+        const start = { x: rail.coordinate, y: target.y };
+        const end = architectureBoundaryPoint(target, start);
+        return roundedPolyline([start, end], 7);
+      }
+    };
+  }
+  const side = dy >= 0 ? "top" : "bottom";
+  const minimumX = bounds.x + Math.min(72, Math.max(26, bounds.width * 0.12));
+  const maximumX = bounds.x + bounds.width - Math.min(72, Math.max(26, bounds.width * 0.12));
+  const ingress = {
+    x: clamp(source.x, Math.min(minimumX, maximumX), Math.max(minimumX, maximumX)),
+    y: side === "top" ? bounds.y + (options.innerInset ?? 30) : bounds.y + bounds.height - (options.innerInset ?? 30)
+  };
+  const sourcePort = architectureBoundaryPoint(source, ingress);
+  const rails = groupedTargetRails(targets, "horizontal", side);
+  const minRail = Math.min(...rails.map((rail) => rail.coordinate));
+  const maxRail = Math.max(...rails.map((rail) => rail.coordinate));
+  const headerEnd = { x: ingress.x, y: side === "top" ? maxRail : minRail };
+  const spinePaths = [roundedPolyline([ingress, headerEnd], 10)];
+  rails.forEach((rail) => {
+    spinePaths.push(roundedPolyline([{ x: ingress.x, y: rail.coordinate }, { x: rail.start, y: rail.coordinate }, { x: rail.end, y: rail.coordinate }], 8));
+  });
+  return {
+    rail: smoothArchitectureRail(sourcePort, ingress),
+    spine: spinePaths.join(""),
+    stubFor(target) {
+      const rail = rails.find((candidate) => candidate.targets.includes(target));
+      if (!rail) return "";
+      const start = { x: target.x, y: rail.coordinate };
+      const end = architectureBoundaryPoint(target, start);
+      return roundedPolyline([start, end], 7);
+    }
+  };
+}
+
+function localArchitecturePath(source, target) {
+  const endpoints = linkEndpoints(source, target);
+  const dx = endpoints.targetX - endpoints.sourceX;
+  const dy = endpoints.targetY - endpoints.sourceY;
+  if (Math.abs(dy) >= Math.abs(dx)) {
+    const hingeY = endpoints.sourceY + dy / 2;
+    return roundedPolyline([
+      { x: endpoints.sourceX, y: endpoints.sourceY },
+      { x: endpoints.sourceX, y: hingeY },
+      { x: endpoints.targetX, y: hingeY },
+      { x: endpoints.targetX, y: endpoints.targetY }
+    ], 11);
+  }
+  const hingeX = endpoints.sourceX + dx / 2;
+  return roundedPolyline([
+    { x: endpoints.sourceX, y: endpoints.sourceY },
+    { x: hingeX, y: endpoints.sourceY },
+    { x: hingeX, y: endpoints.targetY },
+    { x: endpoints.targetX, y: endpoints.targetY }
+  ], 11);
+}
+
+function evidenceGutterPath(source, target) {
+  const sourceBounds = layoutNodeBounds(source);
+  const targetBounds = layoutNodeBounds(target);
+  const gutterX = Math.max(source.x + sourceBounds.halfWidth, target.x + targetBounds.halfWidth) + 48;
+  const start = architectureBoundaryPoint(source, { x: gutterX, y: source.y });
+  const end = architectureBoundaryPoint(target, { x: gutterX, y: target.y });
+  return roundedPolyline([start, { x: gutterX, y: start.y }, { x: gutterX, y: end.y }, end], 13);
+}
+
 function linkPath(link, nodeById) {
   const source = nodeById.get(nodeId(link.source));
   const target = nodeById.get(nodeId(link.target));
   if (!source || !target) return "";
-  const dx = target.x - source.x;
-  const dy = target.y - source.y;
-  const curve = Math.min(70, Math.hypot(dx, dy) * 0.22);
-  return `M${source.x},${source.y} C${source.x + curve},${source.y} ${target.x - curve},${target.y} ${target.x},${target.y}`;
+  if (source.metadata?.architectureLens && target.metadata?.architectureLens) {
+    if (link.kind === "zone-rail" || link.kind === "zone-spine" || link.kind === "zone-stub") {
+      const targets = (link.targetIds || [link.target]).map((id) => nodeById.get(nodeId(id))).filter(Boolean);
+      const bounds = link.zoneBounds || targetEnvelope(targets, 46);
+      const network = architectureRailNetwork(source, targets, bounds, { innerInset: 34 });
+      if (link.kind === "zone-rail") return network.rail;
+      if (link.kind === "zone-spine") return network.spine;
+      const targetInsideZone = target.x >= bounds.x - 34 && target.x <= bounds.x + bounds.width + 34 && target.y >= bounds.y - 34 && target.y <= bounds.y + bounds.height + 34;
+      return targetInsideZone ? network.stubFor(target) : localArchitecturePath(source, target);
+    }
+    if (link.kind === "fanout-rail" || link.kind === "fanout-spine" || link.kind === "fanout-stub") {
+      const targets = (link.targetIds || [link.target]).map((id) => nodeById.get(nodeId(id))).filter(Boolean);
+      const network = architectureRailNetwork(source, targets, targetEnvelope(targets, 42), { innerInset: -20 });
+      if (link.kind === "fanout-rail") return network.rail;
+      if (link.kind === "fanout-spine") return network.spine;
+      return network.stubFor(target);
+    }
+    if (link.kind === "evidence-flow") return evidenceGutterPath(source, target);
+    return localArchitecturePath(source, target);
+  }
+  const endpoints = linkEndpoints(source, target);
+  const curve = Math.min(84, Math.hypot(endpoints.targetX - endpoints.sourceX, endpoints.targetY - endpoints.sourceY) * 0.24);
+  return `M${endpoints.sourceX},${endpoints.sourceY} C${endpoints.sourceX + curve},${endpoints.sourceY} ${endpoints.targetX - curve},${endpoints.targetY} ${endpoints.targetX},${endpoints.targetY}`;
 }
 
 function drawCanvasLinks(links, nodeById, focusedIds = new Set()) {
@@ -472,42 +1054,105 @@ function drawCanvasLinks(links, nodeById, focusedIds = new Set()) {
     const source = nodeById.get(nodeId(link.source));
     const target = nodeById.get(nodeId(link.target));
     if (!source || !target) continue;
-    const sourceFocused = focusedIds.has(source.id);
-    const targetFocused = focusedIds.has(target.id);
     const isContext = state.selectedId && (source.id === state.selectedId || target.id === state.selectedId);
     const style = relationshipStyle(link).className;
-    const muted = focusedIds.size > 0 && (!sourceFocused || !targetFocused);
     const upstream = state.selectedId && target.id === state.selectedId;
     const downstream = state.selectedId && source.id === state.selectedId;
-    edgeContext.setLineDash(style === "dashed" ? [8, 6] : style === "dotted" ? [2, 6] : []);
-    edgeContext.strokeStyle = muted
-      ? "rgba(100, 116, 139, 0.12)"
+    const architectureLink = isExploreArchitecture() && source.metadata?.architectureLens && target.metadata?.architectureLens;
+    const architectureSelectedLink = architectureLink && isContext;
+    const architecturePrimaryLink = architectureLink && Math.min(
+      Number(source.metadata?.interactionPriority ?? 99),
+      Number(target.metadata?.interactionPriority ?? 99)
+    ) <= 1;
+    const architectureInactive = false;
+    edgeContext.setLineDash(architectureLink ? [] : style === "dashed" ? [8, 6] : style === "dotted" ? [2, 6] : []);
+    edgeContext.strokeStyle = architectureInactive
+      ? "rgba(100, 116, 139, 0.22)"
+      : architectureSelectedLink
+        ? (target.metadata?.disabled ? "rgba(203, 213, 225, 0.96)" : target.agentType === "branch" ? "rgba(94, 234, 212, 0.98)" : "rgba(196, 181, 253, 0.98)")
+      : architecturePrimaryLink
+        ? "rgba(167, 139, 250, 0.8)"
       : upstream
         ? "rgba(245, 158, 11, 0.88)"
         : downstream
           ? "rgba(34, 197, 94, 0.88)"
           : "rgba(148, 163, 184, 0.48)";
     edgeContext.fillStyle = edgeContext.strokeStyle;
-    edgeContext.lineWidth = isContext || upstream || downstream ? 2 : 1;
+    edgeContext.lineWidth = architectureSelectedLink ? 4.2 : architecturePrimaryLink ? 1.35 : isContext || upstream || downstream ? 1.1 : 0.7;
 
-    const dx = target.x - source.x;
-    const dy = target.y - source.y;
-    const curve = Math.min(70, Math.hypot(dx, dy) * 0.22);
+    const endpoints = linkEndpoints(source, target);
+    const dx = endpoints.targetX - endpoints.sourceX;
+    const dy = endpoints.targetY - endpoints.sourceY;
+    const curve = Math.min(84, Math.hypot(dx, dy) * 0.24);
     edgeContext.beginPath();
-    edgeContext.moveTo(source.x, source.y);
-    edgeContext.bezierCurveTo(source.x + curve, source.y, target.x - curve, target.y, target.x, target.y);
+    edgeContext.moveTo(endpoints.sourceX, endpoints.sourceY);
+    let targetControlX = endpoints.targetX - curve;
+    let targetControlY = endpoints.targetY;
+    if (source.metadata?.architectureLens && target.metadata?.architectureLens) {
+      const direction = Math.sign(dx) || 1;
+      const sourceControlX = endpoints.sourceX + direction * curve;
+      targetControlX = endpoints.targetX - direction * curve;
+      targetControlY = endpoints.targetY;
+      edgeContext.bezierCurveTo(sourceControlX, endpoints.sourceY, targetControlX, targetControlY, endpoints.targetX, endpoints.targetY);
+    } else {
+      edgeContext.bezierCurveTo(endpoints.sourceX + curve, endpoints.sourceY, endpoints.targetX - curve, endpoints.targetY, endpoints.targetX, endpoints.targetY);
+    }
     edgeContext.stroke();
 
-    const angle = Math.atan2(dy, dx);
-    const arrowSize = 4.5;
-    edgeContext.beginPath();
-    edgeContext.moveTo(target.x, target.y);
-    edgeContext.lineTo(target.x - Math.cos(angle - Math.PI / 6) * arrowSize, target.y - Math.sin(angle - Math.PI / 6) * arrowSize);
-    edgeContext.lineTo(target.x - Math.cos(angle + Math.PI / 6) * arrowSize, target.y - Math.sin(angle + Math.PI / 6) * arrowSize);
-    edgeContext.closePath();
-    edgeContext.fill();
+    if (!isExploreArchitecture()) {
+      const angle = Math.atan2(endpoints.targetY - targetControlY, endpoints.targetX - targetControlX);
+      const arrowSize = 4.5 / Math.max(0.015, state.transform.k);
+      edgeContext.beginPath();
+      edgeContext.moveTo(endpoints.targetX, endpoints.targetY);
+      edgeContext.lineTo(endpoints.targetX - Math.cos(angle - Math.PI / 6) * arrowSize, endpoints.targetY - Math.sin(angle - Math.PI / 6) * arrowSize);
+      edgeContext.lineTo(endpoints.targetX - Math.cos(angle + Math.PI / 6) * arrowSize, endpoints.targetY - Math.sin(angle + Math.PI / 6) * arrowSize);
+      edgeContext.closePath();
+      edgeContext.fill();
+    }
   }
   edgeContext.restore();
+}
+
+function sourceLinkIdsForVisualLink(link) {
+  if (Array.isArray(link.sourceLinkIds) && link.sourceLinkIds.length) return link.sourceLinkIds;
+  if (link.sourceLinkId) return [link.sourceLinkId];
+  return link.id ? [link.id] : [];
+}
+
+function visualLinkMatchesNode(link, id, sourceLinkById) {
+  if (!id) return false;
+  if (nodeId(link.source) === id || nodeId(link.target) === id) return true;
+  return sourceLinkIdsForVisualLink(link).some((linkId) => {
+    const sourceLink = sourceLinkById.get(linkId);
+    return sourceLink?.source === id || sourceLink?.target === id;
+  });
+}
+
+function visualLinkMatchesFocus(link, focusLinkKeys, sourceLinkById) {
+  const keyFor = (sourceLink) => `${nodeId(sourceLink.source)}->${nodeId(sourceLink.target)}:${sourceLink.type || "relationship"}`;
+  if (focusLinkKeys.has(keyFor(link))) return true;
+  return sourceLinkIdsForVisualLink(link).some((linkId) => {
+    const sourceLink = sourceLinkById.get(linkId);
+    return sourceLink && focusLinkKeys.has(keyFor(sourceLink));
+  });
+}
+
+function visualRelationshipStyle(link, sourceLinkById) {
+  const firstSourceLink = sourceLinkIdsForVisualLink(link)
+    .map((linkId) => sourceLinkById.get(linkId))
+    .find(Boolean);
+  return relationshipStyle(firstSourceLink || link);
+}
+
+function visualLinkDescription(link, sourceLinkById) {
+  const sourceLinkIds = sourceLinkIdsForVisualLink(link);
+  const sourceLink = sourceLinkIds.map((linkId) => sourceLinkById.get(linkId)).find(Boolean);
+  if (link.kind === "zone-rail") return link.metadata?.unresolvedEvidence
+    ? `${link.label}. This rail retains unresolved branch evidence without assigning it to a guessed functionality.`
+    : `${link.label}. ${sourceLinkIds.length} source-backed containment relationships share this zone rail.`;
+  if (link.kind === "fanout-rail") return `${link.label}. Each child relationship remains available from its local stub.`;
+  if (link.kind === "zone-stub" || link.kind === "fanout-stub") return `Source-backed relationship: ${sourceLink?.type || link.type || "architecture relationship"}.`;
+  return `${visualRelationshipStyle(link, sourceLinkById).label}: ${sourceLink?.source || link.source} to ${sourceLink?.target || link.target}.`;
 }
 
 function clusterCard(selection) {
@@ -558,21 +1203,66 @@ function agentShape(selection) {
   selection.each(function (node) {
     const group = d3.select(this);
     const type = visualType(node);
-    if (type === "orchestrator") {
+    if (node.metadata?.architectureLens) {
+      const radius = architectureNodeRadius(node);
+      const iconSize = Math.max(24, Math.min(38, Math.round(radius * 0.48)));
+      const labelY = radius + 18;
+      const subtitleY = radius + 34;
+      // Architecture is a single visual language: the graph communicates
+      // hierarchy through forward flow, radius, icon, rim grammar, and status
+      // rather than mixing folders, hexagons, and chevrons in one tree.
+      group.append("circle").attr("class", "node-shape architecture-tree-shape").attr("r", radius);
+      if (type === "project") {
+        group.append("circle").attr("class", "architecture-node-rim architecture-project-rim").attr("r", Math.max(10, radius - 7));
+      } else if (type === "subfunctionality") {
+        group.append("circle").attr("class", "architecture-node-rim architecture-code-rim").attr("r", Math.max(9, radius - 5));
+      } else if (type === "branch") {
+        group.append("circle").attr("class", "architecture-node-rim architecture-branch-rim").attr("r", Math.max(12, radius - 5));
+      }
+      appendLucideIcon(group, node, { size: iconSize, x: -iconSize / 2, y: -iconSize / 2, className: "architecture-node-icon" });
+      group.append("circle").attr("class", "node-status-halo").attr("cx", radius * 0.7).attr("cy", -radius * 0.68).attr("r", 10);
+      group.append("text").attr("class", "node-status-text").attr("x", radius * 0.7).attr("y", -radius * 0.68 + 4).text(statusMark(node));
+      group.append("text").attr("class", "node-label architecture-tree-label").attr("x", 0).attr("y", labelY).text(shortName(node.label, radius > 76 ? 24 : 18));
+      group.append("text").attr("class", "node-subtitle architecture-tree-subtitle").attr("x", 0).attr("y", subtitleY).text(nodeSubtitle(node));
+      return;
+    }
+    if (type === "project") {
+      group.append("path").attr("class", "node-shape project-folder-shape").attr("d", "M-42,-24H-12L-4,-14H42Q50,-14 50,-6V28Q50,36 42,36H-42Q-50,36 -50,28V-16Q-50,-24 -42,-24Z");
+    } else if (type === "orchestrator" || type === "system") {
       group.append("rect").attr("class", "node-shape").attr("x", -32).attr("y", -22).attr("width", 64).attr("height", 44).attr("rx", 8);
-    } else if (type === "reviewer") {
+    } else if (type === "architectureCategory") {
+      group.append("path").attr("class", "node-shape architecture-category-shape").attr("d", "M-52,-27L-26,-42H26L52,-27V27L26,42H-26L-52,27Z");
+    } else if (type === "architectureBranchSummary" || type === "deadBranchSummary") {
+      group.append("path").attr("class", "node-shape architecture-branch-summary-shape").attr("d", "M-104,-31H78L104,0L78,31H-104L-82,0Z");
+    } else if (["functionality", "subfunctionality", "feature", "api"].includes(type)) {
+      group.append("path").attr("class", "node-shape functionality-shape").attr("d", "M-30,-18L0,-34L30,-18L30,18L0,34L-30,18Z");
+    } else if (["branch", "workflow", "promotion"].includes(type)) {
+      group.append("path").attr("class", "node-shape branch-shape").attr("d", "M-31,-20H12L31,0L12,20H-31L-13,0Z");
+    } else if (type === "qagent" || type === "milestone") {
       group.append("path").attr("class", "node-shape").attr("d", "M0,-31L31,0L0,31L-31,0Z");
-    } else if (type === "memory") {
-      group.append("rect").attr("class", "node-shape").attr("x", -31).attr("y", -22).attr("width", 62).attr("height", 44).attr("rx", 6);
+    } else if (["reviewer", "validation", "approval-gate", "monetary-approval"].includes(type)) {
+      group.append("path").attr("class", "node-shape").attr("d", "M0,-33L28,-21V0C28,19 15,31 0,38C-15,31 -28,19 -28,0V-21Z");
+    } else if (type === "human") {
+      group.append("circle").attr("class", "node-shape").attr("cy", -13).attr("r", 11);
+      group.append("path").attr("class", "node-shape").attr("d", "M-27,31C-25,6 25,6 27,31Z");
+    } else if (["memory", "knowledge", "research-budget"].includes(type)) {
+      group.append("path").attr("class", "node-shape").attr("d", "M-32,-18C-32,-28 32,-28 32,-18V19C32,29 -32,29 -32,19ZM-32,-18C-32,-8 32,-8 32,-18M-32,1C-32,11 32,11 32,1");
+    } else if (type === "service") {
+      group.append("rect").attr("class", "node-shape service-shape").attr("x", -44).attr("y", -21).attr("width", 88).attr("height", 42).attr("rx", 21);
+    } else if (["page", "investigation", "objective", "pattern", "proposal", "tool-plan"].includes(type)) {
+      group.append("rect").attr("class", "node-shape panel-shape").attr("x", -35).attr("y", -25).attr("width", 70).attr("height", 50).attr("rx", 5);
+      group.append("path").attr("class", "node-panel-rule").attr("d", "M-26,-12H26");
     } else {
-      group.append("circle").attr("class", "node-shape").attr("r", type === "human" ? 29 : 30);
+      group.append("circle").attr("class", "node-shape").attr("r", 30);
     }
     appendLucideIcon(group, node);
-    group.append("text").attr("class", "node-acronym").attr("text-anchor", "middle").attr("y", 26).text(acronymFor(node.label, 3));
-    group.append("circle").attr("class", "node-status-halo").attr("cx", 25).attr("cy", -25).attr("r", 10);
-    group.append("text").attr("class", "node-status-text").attr("x", 25).attr("y", -21).text(statusMark(node));
-    group.append("text").attr("class", "node-label").attr("x", 0).attr("y", 48).text(shortName(node.label));
-    group.append("text").attr("class", "node-subtitle").attr("x", 0).attr("y", 63).text(`${agentLabel(node)} · ${runtimeStatusLabel(node)}`);
+    const summary = ["architectureCategory", "architectureBranchSummary", "deadBranchSummary"].includes(type);
+    const wide = summary || type === "service";
+    group.append("text").attr("class", "node-acronym").attr("text-anchor", "middle").attr("y", summary ? 27 : 26).text(acronymFor(node.label, summary ? 4 : 3));
+    group.append("circle").attr("class", "node-status-halo").attr("cx", summary ? 91 : wide ? 39 : 25).attr("cy", summary ? -24 : -25).attr("r", 10);
+    group.append("text").attr("class", "node-status-text").attr("x", summary ? 91 : wide ? 39 : 25).attr("y", summary ? -20 : -21).text(statusMark(node));
+    group.append("text").attr("class", "node-label").attr("x", 0).attr("y", summary ? 58 : 48).text(shortName(node.label, summary ? 31 : wide ? 24 : 18));
+    group.append("text").attr("class", "node-subtitle").attr("x", 0).attr("y", summary ? 73 : 63).text(nodeSubtitle(node));
   });
 }
 
@@ -631,10 +1321,61 @@ function relationLists(model, selected) {
 
 function scoreValue(node, keys, fallback) {
   for (const key of keys) {
-    const value = node?.metadata?.[key];
+    const value = node?.metadata?.[key] ?? node?.metadata?.metrics?.[key] ?? node?.[key];
     if (value !== undefined && value !== null && value !== "") return value;
   }
   return fallback;
+}
+
+function isAgentRecord(node) {
+  return node?.type === "agent" || Boolean(node?.agent_id);
+}
+
+function isFunctionalityRecord(node) {
+  return ["application_functionality", "application_subfunctionality", "page", "api", "database"].includes(node?.type)
+    || ["functionality", "subfunctionality", "page", "api", "database"].includes(node?.agentType)
+    || Boolean(node?.metadata?.applicationTopology);
+}
+
+function uniqueRelationshipRows(rows = []) {
+  const seen = new Set();
+  return rows.filter((row) => {
+    const key = `${row.node?.id || ""}:${row.link?.type || ""}:${row.link?.source || ""}:${row.link?.target || ""}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return Boolean(row.node);
+  });
+}
+
+function inspectorRelationships(model, node) {
+  const { incoming, outgoing } = relationLists(model, node);
+  const all = uniqueRelationshipRows([...incoming, ...outgoing]);
+  const children = outgoing.filter((row) => isHierarchyLink(row.link) && isFunctionalityRecord(row.node));
+  const parents = incoming.filter((row) => isHierarchyLink(row.link) && isFunctionalityRecord(row.node));
+  const connectedAgents = uniqueRelationshipRows(all.filter((row) => isAgentRecord(row.node)));
+  const services = uniqueRelationshipRows(all.filter((row) => ["api", "service", "database"].includes(nodeVisualType(row.node))));
+  return { incoming, outgoing, children, parents, connectedAgents, services };
+}
+
+function efficiencyDetail(node) {
+  const value = scoreValue(node, ["efficiencyScore", "efficiency"], null);
+  if (value === null) return { value: "Efficiency not reported", context: "" };
+  const source = scoreValue(node, ["efficiencySource", "telemetrySource", "source"], "");
+  const freshness = scoreValue(node, ["efficiencyFreshness", "efficiencyUpdatedAt", "lastRunAt", "updatedAt"], "");
+  const context = [source && `source: ${source}`, freshness && `updated: ${freshness}`].filter(Boolean).join(" · ");
+  return { value: valueText(value), context };
+}
+
+function agentProfileLink(agent, label = "Open agent profile") {
+  if (!isAgentRecord(agent)) return "";
+  const href = agentProfileHref(agent, {
+    agentName: agent.label || agent.name,
+    agentType: agentLabel(agent),
+    project: agent.project,
+    domain: agent.domain || agent.capability,
+    description: nodeDescription(agent)
+  });
+  return href ? `<a class="agent-profile-link" href="${escapeHtml(href)}" target="_blank" rel="noopener">${escapeHtml(label)}</a>` : "";
 }
 
 function openWorkspaceDeepLink(workspace, key, target, context = {}) {
@@ -650,6 +1391,50 @@ function openWorkspaceDeepLink(workspace, key, target, context = {}) {
 function renderDetails(model, node) {
   if (!node) {
     insightContentEl.innerHTML = emptyInsightHtml();
+    return;
+  }
+  if (node.metadata?.architectureLens) {
+    const functionalityRows = Array.isArray(node.metadata?.functionalityDetails) ? node.metadata.functionalityDetails : [];
+    const assignedAgents = Array.isArray(node.metadata?.assignedAgents) ? node.metadata.assignedAgents : [];
+    const branchRows = Array.isArray(node.metadata?.branchDetails) ? node.metadata.branchDetails : [];
+    const { incoming, outgoing, children, parents, services } = inspectorRelationships(model, node);
+    const efficiency = efficiencyDetail(node);
+    const nodeType = node.agentType === "functionality"
+      ? "Application functionality"
+      : node.agentType === "branch"
+        ? node.metadata?.disabled ? "Rejected / disabled branch" : "Architecture branch"
+        : "Architecture entity";
+    insightContentEl.innerHTML = `
+      <div class="insight-heading architecture-insight-heading">
+        <span>${escapeHtml(nodeType)}</span>
+        <h2>${escapeHtml(node.label)}</h2>
+        <p>${escapeHtml(nodeDescription(node))}</p>
+        <div class="insight-badges">
+          <b>${escapeHtml(runtimeStatusLabel(node))}</b>
+          <b>${node.metadata?.functionalityCount || 0} functionality node${Number(node.metadata?.functionalityCount || 0) === 1 ? "" : "s"}</b>
+          <b>${node.metadata?.branchCount || 0} branch record${Number(node.metadata?.branchCount || 0) === 1 ? "" : "s"}</b>
+          <b>complexity ${Math.round(Number(node.metadata?.complexity || 0) * 100)}%</b>
+        </div>
+      </div>
+      <section class="insight-section architecture-detail-list">
+        <h3>Exact functionalities <small>${functionalityRows.length}</small></h3>
+        ${functionalityRows.length ? `<ol>${functionalityRows.map((functionality) => `<li><i data-lucide="${objectiveIconFor({ metadata: { category: functionality.category }, label: functionality.label, type: "application_functionality" })}" aria-hidden="true"></i><div><strong>${escapeHtml(functionality.label)}</strong><small>${escapeHtml(functionality.id)} · ${escapeHtml(functionality.category)} · ${functionality.evidenceCount || 0} cited evidence</small><p>${escapeHtml(functionality.description)}</p></div></li>`).join("")}</ol>` : "<p>No active functionality node is attached to this evidence group.</p>"}
+      </section>
+      <section class="insight-section detail-grid">
+        <h3>Functionality hierarchy</h3>
+        <dl><div><dt>Parent functionality</dt><dd>${parents.length}</dd></div><div><dt>Child functionality</dt><dd>${children.length}</dd></div></dl>
+      </section>
+      ${children.length ? `<section class="insight-section connections"><h3>Child functionality <small>${children.length}</small></h3>${connectionButtons(children, "child")}</section>` : ""}
+      ${parents.length ? `<section class="insight-section connections"><h3>Parent functionality <small>${parents.length}</small></h3>${connectionButtons(parents, "parent")}</section>` : ""}
+      <section class="insight-section architecture-detail-list">
+        <h3>Connected agents <small>${assignedAgents.length}</small></h3>
+        ${assignedAgents.length ? `<ol class="architecture-agent-list">${assignedAgents.map((agent) => `<li><i data-lucide="bot" aria-hidden="true"></i><div><a class="agent-profile-link" href="${escapeHtml(agentProfileHref(agent, { agentName: agent.name, agentType: agent.role, project: node.project }))}" target="_blank" rel="noopener">${escapeHtml(agent.name)}</a><small>${escapeHtml(agent.role)}</small></div></li>`).join("")}</ol>` : "<p>No implementation agent is assigned in the current topology.</p>"}
+      </section>
+      <section class="insight-section connections"><h3>Connected APIs, services & data <small>${services.length}</small></h3>${services.length ? connectionButtons(services, "related") : "<p>No direct application dependency is recorded in this topology.</p>"}</section>
+      <section class="insight-section connections"><h3>Relationship details <small>${incoming.length + outgoing.length}</small></h3><h4>Incoming</h4>${connectionButtons(incoming, "from")}<h4>Outgoing</h4>${connectionButtons(outgoing, "to")}</section>
+      <section class="insight-section efficiency-telemetry"><h3>Efficiency & telemetry</h3><div class="score-row" aria-label="Operational scores"><div><span>Efficiency</span><strong>${escapeHtml(efficiency.value)}</strong>${efficiency.context ? `<small>${escapeHtml(efficiency.context)}</small>` : ""}</div></div></section>
+      ${branchRows.length ? `<section class="insight-section architecture-detail-list"><h3>Branch records <small>${branchRows.length}</small></h3><ol>${branchRows.map((branch) => `<li class="${node.metadata?.disabled ? "is-disabled" : ""}"><i data-lucide="git-fork" aria-hidden="true"></i><div><strong>${escapeHtml(branch.label)}</strong><small>${escapeHtml(branch.id)} · ${escapeHtml(humanize(branch.status))} · ${branch.evidenceCount || 0} cited evidence</small></div></li>`).join("")}</ol></section>` : ""}`;
+    lucide?.createIcons({ attrs: { "stroke-width": 2.2, width: 16, height: 16 } });
     return;
   }
   if (node.kind === "cluster") {
@@ -671,7 +1456,7 @@ function renderDetails(model, node) {
         .map((agent) => `<button type="button" data-node-id="${escapeHtml(agent.id)}"><span>${escapeHtml(agentLabel(agent))} · ${escapeHtml(runtimeStatusLabel(agent))}</span><strong>${escapeHtml(agent.label)}</strong></button>`)
         .join("")}</section>`;
   } else {
-    const { incoming, outgoing } = relationLists(model, node);
+    const { incoming, outgoing, children, parents, connectedAgents, services } = inspectorRelationships(model, node);
     const executionRows = node.metadata?.recentExecutions || node.metadata?.executions || [];
     const issueRows = node.metadata?.errors || node.metadata?.warnings || [];
     const executions = Array.isArray(executionRows) ? executionRows : [];
@@ -679,6 +1464,7 @@ function renderDetails(model, node) {
     const capabilityScore = scoreValue(node, ["capabilityScore", "capability"], "—");
     const reliabilityScore = scoreValue(node, ["reliabilityScore", "reliability"], "—");
     const accuracyScore = scoreValue(node, ["accuracyScore", "accuracy"], "—");
+    const efficiency = efficiencyDetail(node);
     const currentTask = node.metadata?.currentTask || node.metadata?.task || "No active task reported";
     const issueSummary =
       Array.isArray(errors) && errors.length
@@ -688,15 +1474,34 @@ function renderDetails(model, node) {
           : "No errors or warnings reported.";
     const tabContent = {
       overview: `
+        <section class="insight-section purpose-summary">
+          <h3>Purpose & functional description</h3>
+          <p>${escapeHtml(nodeDescription(node))}</p>
+        </section>
         <section class="operational-callout">
           <span>Current task</span>
           <strong>${escapeHtml(currentTask)}</strong>
         </section>
-        <div class="score-row" aria-label="Agent scores">
-          <div><span>Capability</span><strong>${escapeHtml(capabilityScore)}</strong></div>
-          <div><span>Reliability</span><strong>${escapeHtml(reliabilityScore)}</strong></div>
-          <div><span>Accuracy</span><strong>${escapeHtml(accuracyScore)}</strong></div>
-        </div>
+        <section class="insight-section detail-grid">
+          <h3>Functionality hierarchy</h3>
+          <dl>
+            <div><dt>Parent functionality</dt><dd>${parents.length}</dd></div>
+            <div><dt>Child functionality</dt><dd>${children.length}</dd></div>
+          </dl>
+        </section>
+        ${children.length ? `<section class="insight-section connections"><h3>Child functionality <small>${children.length}</small></h3>${connectionButtons(children, "child")}</section>` : ""}
+        ${parents.length ? `<section class="insight-section connections"><h3>Parent functionality <small>${parents.length}</small></h3>${connectionButtons(parents, "parent")}</section>` : ""}
+        <section class="insight-section connections"><h3>Connected agents <small>${connectedAgents.length}</small></h3>${connectedAgents.length ? connectionButtons(connectedAgents, "agent") : "<p>No direct agent relationship is recorded in this topology.</p>"}</section>
+        <section class="insight-section connections"><h3>Connected APIs, services & data <small>${services.length}</small></h3>${services.length ? connectionButtons(services, "related") : "<p>No direct application dependency is recorded in this topology.</p>"}</section>
+        <section class="insight-section efficiency-telemetry">
+          <h3>Efficiency & telemetry</h3>
+          <div class="score-row" aria-label="Operational scores">
+            <div><span>Efficiency</span><strong>${escapeHtml(efficiency.value)}</strong>${efficiency.context ? `<small>${escapeHtml(efficiency.context)}</small>` : ""}</div>
+            <div><span>Capability</span><strong>${escapeHtml(capabilityScore)}</strong></div>
+            <div><span>Reliability</span><strong>${escapeHtml(reliabilityScore)}</strong></div>
+            <div><span>Accuracy</span><strong>${escapeHtml(accuracyScore)}</strong></div>
+          </div>
+        </section>
         <section class="insight-section detail-grid">
           <h3>Operational status</h3>
           <dl>
@@ -706,17 +1511,17 @@ function renderDetails(model, node) {
           </dl>
         </section>`,
       relationships: `
-        <section class="insight-section connections"><h3>Incoming <small>${incoming.length}</small></h3>${connectionButtons(incoming, "from")}</section>
-        <section class="insight-section connections"><h3>Outgoing <small>${outgoing.length}</small></h3>${connectionButtons(outgoing, "to")}</section>`,
+        <section class="insight-section connections"><h3>Incoming dependencies <small>${incoming.length}</small></h3>${connectionButtons(incoming, "from")}</section>
+        <section class="insight-section connections"><h3>Outgoing dependencies <small>${outgoing.length}</small></h3>${connectionButtons(outgoing, "to")}</section>`,
       activity: `
         <section class="insight-section"><h3>Recent executions</h3><p>${escapeHtml(Array.isArray(executions) && executions.length ? executions.map(valueText).join(" · ") : "No recent executions reported in graph metadata.")}</p></section>
         <section class="insight-section"><h3>Errors & warnings</h3><p>${escapeHtml(issueSummary)}</p></section>`,
       configuration: `
         <section class="insight-section detail-grid">
-          <h3>Agent configuration</h3>
+          <h3>${isAgentRecord(node) ? "Agent configuration" : "Entity configuration"}</h3>
           <dl>
             <div><dt>Instruction version</dt><dd>${escapeHtml(node.metadata?.instructionVersion || node.metadata?.version || "Current")}</dd></div>
-            <div><dt>Agent type</dt><dd>${escapeHtml(agentLabel(node))}</dd></div>
+            <div><dt>Type</dt><dd>${escapeHtml(agentLabel(node))}</dd></div>
             <div><dt>Project</dt><dd>${escapeHtml(node.project || "Not declared")}</dd></div>
           </dl>
         </section>
@@ -728,6 +1533,7 @@ function renderDetails(model, node) {
         <span>${escapeHtml(agentLabel(node))}</span>
         <h2>${escapeHtml(node.label)}</h2>
         <p>${escapeHtml(nodeDescription(node))}</p>
+        ${agentProfileLink(node)}
         <div class="insight-badges">
           <b>${escapeHtml(humanize(node.status || node.statusGroup))}</b>
           <b class="${node.statusGroup === "failed" ? "fail" : node.statusGroup === "waiting" ? "warn" : ""}">${escapeHtml(statusMark(node))} ${escapeHtml(runtimeStatusLabel(node))}</b>
@@ -743,7 +1549,7 @@ function renderDetails(model, node) {
       <div class="inspector-tab-panel" role="tabpanel" tabindex="0" aria-label="${escapeHtml(humanize(state.inspectorTab))}">
         ${tabContent[state.inspectorTab]}
       </div>
-      <div class="drawer-actions"><button type="button" id="open-logs">Open Logs</button><button type="button" id="inspect-agent">Inspect Agent</button></div>`;
+      <div class="drawer-actions"><button type="button" id="open-logs">Open Logs</button>${isAgentRecord(node) ? `<button type="button" id="inspect-agent">Inspect agent in workspace</button>` : "<button type=\"button\" disabled>Agent profile unavailable</button>"}</div>`;
   }
 
   insightContentEl.querySelectorAll("[data-inspector-tab]").forEach((button, _index, buttons) => {
@@ -790,7 +1596,23 @@ function connectionButtons(rows, direction) {
   if (!rows.length) return "<p>No relationships in this direction.</p>";
   return rows
     .slice(0, 18)
-    .map(({ link, node }) => `<button type="button" data-node-id="${escapeHtml(node.id)}"><span>${escapeHtml(direction)} · ${escapeHtml(humanize(link.type))}</span><strong>${escapeHtml(node.label)}</strong></button>`)
+    .map(({ link, node }) => {
+      const evidence = link.metadata?.evidence || link.evidence || [];
+      const reference = Array.isArray(evidence) ? evidence.find((item) => item?.reference)?.reference : "";
+      const detail = `${direction} · ${humanize(link.type)} · ${nodeTypeLabel(node)}${reference ? ` · ${reference}` : ""}`;
+      const body = `<span>${escapeHtml(detail)}</span><strong>${escapeHtml(node.label)}</strong>`;
+      if (isAgentRecord(node)) {
+        const href = agentProfileHref(node, {
+          agentName: node.label,
+          agentType: agentLabel(node),
+          project: node.project,
+          domain: node.domain || node.capability,
+          description: nodeDescription(node)
+        });
+        return `<a class="connection-agent-link" href="${escapeHtml(href)}" target="_blank" rel="noopener">${body}</a>`;
+      }
+      return `<button type="button" data-node-id="${escapeHtml(node.id)}">${body}</button>`;
+    })
     .join("");
 }
 
@@ -821,7 +1643,7 @@ function setActiveView(viewMode, options = {}) {
   renderLegend();
   if (options.render !== false) {
     render();
-    if (state.viewMode === "explore") window.requestAnimationFrame(() => centerExploreView());
+  if (isExploreArchitecture()) window.requestAnimationFrame(() => fitSelection());
     else window.requestAnimationFrame(() => fitSelection());
   }
   updateAutoRefresh();
@@ -851,9 +1673,9 @@ function selectItem(id) {
     if (cluster) state.expandedClusters.add(cluster.id);
   }
   setInspectorOpen(true, { fit: false });
-  selectionAnnouncementEl.textContent = item ? `${item.label} selected. ${state.depth} hop relationships shown.` : "Selection updated.";
+  selectionAnnouncementEl.textContent = item ? `${item.label} selected. ${state.viewMode === "dependency" ? "Complete reachable dependency chain shown." : "Related nodes highlighted."}` : "Selection updated.";
   render();
-  if (state.viewMode !== "explore") window.requestAnimationFrame(() => fitSelection());
+  window.requestAnimationFrame(() => fitSelection());
 }
 
 function hideTooltip() {
@@ -1000,19 +1822,65 @@ function applyProgressiveWindow(fullVisible, strategy) {
   };
 }
 
+function nodeAccessibilityLabel(node, model) {
+  const links = model?.links || [];
+  const connected = links.filter((link) => link.source === node.id || link.target === node.id);
+  const parentCount = links.filter((link) => link.target === node.id && isHierarchyLink(link)).length;
+  const childCount = Number(node.metadata?.subfunctionalityCount ?? links.filter((link) => link.source === node.id && isHierarchyLink(link)).length);
+  const lane = node.dependencyColumn
+    ? `${humanize(node.dependencyColumn)} dependency lane`
+    : node.exploreLane
+      ? `${humanize(node.exploreLane)} role lane`
+      : "topology canvas";
+  return `${node.label}. Type: ${nodeTypeLabel(node)}. Status: ${runtimeStatusLabel(node)}. ${lane}. ${parentCount} parent and ${childCount} child functionality relationship${childCount === 1 ? "" : "s"}. ${connected.length} connected relationship${connected.length === 1 ? "" : "s"}.`;
+}
+
 function render() {
   const renderStartedAt = performance.now();
   const model = state.graph;
   if (!model) return;
   const fullVisible = visibleGraphForState(model, { ...state, storage: window.localStorage }, width, height, dagre);
-  const strategy = selectRenderStrategy({
+  if (state.viewMode === "dependency" && fullVisible.lens?.anchorId && !fullVisible.items.some((item) => item.id === state.selectedId)) {
+    state.selectedId = fullVisible.lens.anchorId;
+    state.inspectorTab = "overview";
+    render();
+    return;
+  }
+  const baselineStrategy = selectRenderStrategy({
     nodeCount: fullVisible.items.length,
     linkCount: fullVisible.links.length,
     lastFrameMs: state.renderMetrics.lastFrameMs
   });
+  const completeTopologyView = ["explore", "dependency"].includes(state.viewMode);
+  const strategy = completeTopologyView
+    ? {
+        ...baselineStrategy,
+        mode: isExploreArchitecture() ? "force-canvas" : state.viewMode === "dependency" && fullVisible.links.length > 260 ? "hybrid-canvas" : "svg",
+        progressive: false,
+        canvasEdges: isExploreArchitecture() || (state.viewMode === "dependency" && fullVisible.links.length > 260),
+        initialNodeLimit: fullVisible.items.length,
+        batchSize: fullVisible.items.length
+      }
+    : baselineStrategy;
   const visible = applyProgressiveWindow(fullVisible, strategy);
+  if (isExploreArchitecture()) runConstrainedArchitectureLayout(visible.items, visible.links);
   const nodeById = new Map(visible.items.map((item) => [item.id, item]));
-  const focus = state.selectedId ? focusNeighborhood(model, state.selectedId, state.depth) : null;
+  // Force Architecture uses every literal relationship directly. The retained
+  // edge planner remains available to older non-force projections and tests,
+  // but no longer bundles feature ancestry into category rails.
+  let architectureEdgePlan = null;
+  if (architectureEdgePlan) {
+    const zoneById = new Map(architectureZonesFor(visible.items).map((zone) => [zone.id, zone]));
+    architectureEdgePlan = {
+      ...architectureEdgePlan,
+      visualLinks: architectureEdgePlan.visualLinks.map((link) => link.zoneId && zoneById.has(link.zoneId)
+        ? { ...link, zoneBounds: zoneById.get(link.zoneId) }
+        : link)
+    };
+  }
+  const renderLinks = architectureEdgePlan?.visualLinks || visible.links;
+  const sourceLinkById = new Map((architectureEdgePlan?.sourceLinks || visible.links).map((link) => [link.id, link]));
+  const focus = state.selectedId ? focusNeighborhood(model, state.selectedId) : null;
   const selectedRenderable = nodeById.get(state.selectedId) || model.nodeById.get(state.selectedId) || visible.items.find((item) => item.id === state.selectedId);
   const visibleIds = new Set(visible.items.map((item) => item.id));
   const focusedIds = new Set(focus?.ids || []);
@@ -1030,13 +1898,18 @@ function render() {
     });
   }
   const linkKey = (link) => link.id || `${link.source}->${link.target}:${link.type || "relationship"}`;
+  const focusLinkKeys = new Set((focus?.links || []).map((link) => `${nodeId(link.source)}->${nodeId(link.target)}:${link.type || "relationship"}`));
+  renderLensScaffold(visible.items);
+  renderArchitectureScaffold(visible.items, architectureEdgePlan);
 
   if (!visible.items.length) {
     graphStateEl.className = "graph-state";
     graphStateEl.innerHTML =
-      state.viewMode === "live"
+      !state.filters.project
+        ? `<strong>Select a project</strong><span>Choose one managed project from the Project menu to open its PlutoniX topology.</span>`
+        : state.viewMode === "live"
         ? `<strong>No live execution signal</strong><span>The current topology snapshot does not report an active runtime execution. Refresh to check again.</span><button type="button" id="graph-state-action">Refresh runtime</button>`
-        : `<strong>No matching entities</strong><span>Adjust the active filters or clear them to return to the full topology.</span><button type="button" id="graph-state-action">Clear filters</button>`;
+        : `<strong>No matching entities</strong><span>Adjust the active filters or clear them to restore this project's topology.</span><button type="button" id="graph-state-action">Clear filters</button>`;
     graphStateEl.hidden = false;
     graphStateEl.querySelector("#graph-state-action")?.addEventListener("click", () => {
       if (state.viewMode === "live") refreshGraph();
@@ -1054,20 +1927,40 @@ function render() {
   } else {
     edgeCanvas.hidden = true;
     state.canvasGraph = null;
-    const link = linkLayer.selectAll("path.link").data(visible.links, linkKey);
+    const link = linkLayer.selectAll("path.link").data(renderLinks, linkKey);
     link.exit().remove();
     link
       .enter()
       .append("path")
       .attr("class", "link")
-      .attr("marker-end", "url(#arrow)")
       .merge(link)
-      .attr("class", (row) => `link relation-${relationshipStyle(row).className} ${focus?.links?.includes(row) ? "focus-link" : ""}`)
-      .classed("context-link", (row) => state.selectedId && (row.source === state.selectedId || row.target === state.selectedId))
-      .classed("muted", (row) => focusedIds.size && (!focusedIds.has(row.source) || !focusedIds.has(row.target)))
-      .classed("upstream", (row) => state.selectedId && row.target === state.selectedId)
-      .classed("downstream", (row) => state.selectedId && row.source === state.selectedId)
+      .attr("marker-end", (row) => {
+        if (isExploreArchitecture()) return null;
+        return "url(#arrow)";
+      })
+      .attr("class", (row) => `link relation-${visualRelationshipStyle(row, sourceLinkById).className} ${visualLinkMatchesFocus(row, focusLinkKeys, sourceLinkById) ? "focus-link" : ""}`)
+      .classed("explore-link", () => isExploreArchitecture())
+      .classed("dependency-link", () => state.viewMode === "dependency")
+      .classed("context-link", (row) => visualLinkMatchesNode(row, state.selectedId, sourceLinkById))
+      .classed("architecture-selected-link", (row) => isExploreArchitecture() && visualLinkMatchesNode(row, state.selectedId, sourceLinkById))
+      .classed("architecture-zone-rail", (row) => row.kind === "zone-rail")
+      .classed("architecture-zone-spine", (row) => row.kind === "zone-spine")
+      .classed("architecture-zone-stub", (row) => row.kind === "zone-stub")
+      .classed("architecture-fanout-rail", (row) => row.kind === "fanout-rail")
+      .classed("architecture-fanout-spine", (row) => row.kind === "fanout-spine")
+      .classed("architecture-fanout-stub", (row) => row.kind === "fanout-stub")
+      .classed("architecture-local-tree", (row) => isExploreArchitecture() && row.kind === "local-tree")
+      .classed("architecture-evidence-flow", (row) => isExploreArchitecture() && row.kind === "evidence-flow")
+      .classed("dead-branch-link", (row) => Boolean(row.metadata?.disabled))
+      .classed("architecture-inactive", false)
+      .classed("muted", false)
+      .classed("upstream", (row) => state.selectedId && visualLinkMatchesNode(row, state.selectedId, sourceLinkById) && nodeId(row.target) === state.selectedId)
+      .classed("downstream", (row) => state.selectedId && visualLinkMatchesNode(row, state.selectedId, sourceLinkById) && nodeId(row.source) === state.selectedId)
+      .attr("data-link-id", (row) => row.sourceLinkId || sourceLinkIdsForVisualLink(row).join(" "))
+      .attr("data-member-link-ids", (row) => sourceLinkIdsForVisualLink(row).join(" "))
+      .attr("aria-label", (row) => visualLinkDescription(row, sourceLinkById))
       .attr("d", (row) => linkPath(row, nodeById));
+    linkLayer.selectAll("path.link").selectAll("title").data((row) => [row]).join("title").text((row) => visualLinkDescription(row, sourceLinkById));
   }
 
   const node = nodeLayer.selectAll("g.node").data(visible.items, (row) => row.id);
@@ -1078,7 +1971,7 @@ function render() {
     .attr("class", "node")
     .attr("tabindex", -1)
     .attr("role", "button")
-    .attr("aria-label", (row) => `${row.label}, ${agentLabel(row)}, ${runtimeStatusLabel(row)}`);
+    .attr("aria-label", (row) => nodeAccessibilityLabel(row, model));
   entered.filter((row) => row.kind === "cluster").call(clusterCard);
   entered.filter((row) => row.kind !== "cluster").call(agentShape);
 
@@ -1088,13 +1981,24 @@ function render() {
     .classed("project-node", (row) => row.clusterLevel === "project")
     .classed("orbit-anchor", (row) => Boolean(row.orbitAnchor))
     .classed("orbit-peripheral", (row) => Boolean(row.orbitParentId))
+    .classed("dependency-focus", (row) => row.dependencyRole === "focus")
+    .classed("dependency-shared", (row) => row.dependencyRole === "shared")
+    .classed("dependency-upstream", (row) => row.dependencyRole === "upstream")
+    .classed("dependency-downstream", (row) => row.dependencyRole === "downstream")
+    .classed("project-exclusive-agent", (row) => row.metadata?.assignmentScope === "project-exclusive")
+    .classed("shared-agent", (row) => row.metadata?.assignmentScope === "shared")
+    .classed("architecture-observed", (row) => row.metadata?.bucket === "observed")
+    .classed("architecture-deferred", (row) => row.metadata?.bucket === "candidate")
+    .classed("architecture-disabled", (row) => Boolean(row.metadata?.disabled))
+    .classed("architecture-future", (row) => Boolean(row.metadata?.futureEnhancement))
     .classed("selected", (row) => row.id === state.selectedId)
+    .classed("architecture-inactive", false)
     .classed("focus-upstream", (row) => focus?.upstream?.has(row.id))
     .classed("focus-downstream", (row) => focus?.downstream?.has(row.id))
-    .classed("muted", (row) => focusedIds.size && !focusedIds.has(row.id) && row.id !== state.selectedId)
-    .style("--node-color", (row) => palette[visualType(row)] || "#64748b")
+    .style("--node-color", (row) => nodeColor(row))
     .style("--status-color", (row) => statusPalette[row.statusGroup] || statusPalette.idle)
     .attr("transform", (row) => `translate(${row.x},${row.y})`)
+    .attr("aria-label", (row) => nodeAccessibilityLabel(row, model))
     .attr("aria-pressed", (row) => String(row.id === state.selectedId))
     .attr("aria-expanded", (row) => (row.kind === "cluster" ? String(state.expandedClusters.has(row.id)) : null))
     .on("click", (event, row) => {
@@ -1108,14 +2012,23 @@ function render() {
         state.selectedId = row.id;
       }
       setInspectorOpen(true, { fit: false });
-      selectionAnnouncementEl.textContent = `${row.label} selected. ${state.depth} hop relationships shown.`;
+      selectionAnnouncementEl.textContent = isExploreArchitecture()
+        ? `${row.label} selected. Relationship type, evidence, and dependency details are open in Insight.`
+        : `${row.label} selected. ${state.viewMode === "dependency" ? "Complete reachable dependency chain shown." : "Related nodes highlighted."}`;
       try {
         savePositions(window.localStorage, state.filters.project, state.viewMode, visible.items);
       } catch {
         statusEl.className = "warning";
       }
       render();
-      if (state.viewMode !== "explore") window.requestAnimationFrame(() => fitSelection());
+      window.requestAnimationFrame(() => fitSelection());
+    })
+    .on("dblclick", (event) => {
+      // Selection renders synchronously; consuming the follow-up double click
+      // prevents it being interpreted as a new drag/zoom gesture on a fresh
+      // SVG node.
+      event.preventDefault();
+      event.stopPropagation();
     })
     .on("keydown", (event, row) => {
       if (event.key === "Enter" || event.key === " ") {
@@ -1140,8 +2053,9 @@ function render() {
           d3.select(this).raise().classed("dragging", true);
         })
         .on("drag", function (event, row) {
-          row.x = event.x;
-          row.y = event.y;
+          const constrained = constrainNodeDrag(row, event.x, event.y, visible.items);
+          row.x = constrained.x;
+          row.y = constrained.y;
           d3.select(this).attr("transform", `translate(${row.x},${row.y})`);
           nodeById.set(row.id, row);
           linkLayer.selectAll("path.link").attr("d", (linkRow) => linkPath(linkRow, nodeById));
@@ -1155,22 +2069,26 @@ function render() {
           } catch {
             statusEl.className = "warning";
           }
+          // Rebuild visual-only zone bounds after a drag so their open gates
+          // and bundled rails continue to describe the saved node positions.
+          if (isExploreArchitecture()) render();
         })
     );
 
   if (state.selectedId && selectedRenderable) renderDetails(model, selectedRenderable);
   else renderDetails(model, null);
+  renderArchitecturePanel(selectedRenderable?.metadata?.architectureLens ? selectedRenderable : null);
   renderBreadcrumb(visible);
   drawMinimap(visible.items, visible.links);
   renderEntityList(visible.items);
   graphEl.dataset.zoomLevel = zoomLevel(state.currentZoom);
   graphEl.dataset.viewMode = state.viewMode;
+  document.documentElement.dataset.viewMode = state.viewMode;
   graphEl.dataset.large = strategy.progressive ? "true" : "false";
   graphEl.dataset.renderEngine = strategy.mode;
 
-  if (state.viewMode === "explore" && !strategy.progressive && visible.items.length <= 180) {
-    runLightExploreLayout(visible.items, visible.links);
-  }
+  // Architecture coordinates have already been settled by the bounded D3
+  // force pass before the Canvas edges and accessible SVG nodes are rendered.
   lucide?.createIcons({
     attrs: {
       "stroke-width": 2.2,
@@ -1187,9 +2105,14 @@ function render() {
 
 function focusGraphItem(current, key, items) {
   if (!items.length) return;
+  const navigationItems = state.viewMode === "dependency"
+    ? items.slice().sort((left, right) => ({ upstream: 0, focus: 1, downstream: 2 }[left.dependencyColumn || left.dependencyRole] ?? 1) - ({ upstream: 0, focus: 1, downstream: 2 }[right.dependencyColumn || right.dependencyRole] ?? 1) || left.y - right.y || left.x - right.x)
+    : state.viewMode === "explore"
+      ? items.slice().sort((left, right) => left.y - right.y || left.x - right.x)
+      : items;
   let target;
-  if (key === "Home") target = items[0];
-  else if (key === "End") target = items[items.length - 1];
+  if (key === "Home") target = navigationItems[0];
+  else if (key === "End") target = navigationItems[navigationItems.length - 1];
   else {
     const direction = {
       ArrowLeft: [-1, 0],
@@ -1217,21 +2140,99 @@ function focusGraphItem(current, key, items) {
     ?.focus();
 }
 
-function runLightExploreLayout(items, links) {
+function constrainNodeDrag(node, x, y, items = []) {
+  // Dragging uses the same visual-bounds contract as initial layout. Nodes are
+  // free to cross lanes, but their glyph, status dot, and labels stay clear.
+  const candidate = { ...node, x, y };
+  const clearance = 12;
+  for (let pass = 0; pass < 8; pass += 1) {
+    let moved = false;
+    for (const peer of items) {
+      if (!peer || peer.id === node.id) continue;
+      const candidateBounds = layoutNodeBounds(candidate);
+      const peerBounds = layoutNodeBounds(peer);
+      let dx = candidate.x - peer.x;
+      let dy = candidate.y - peer.y;
+      if (!dx && !dy) {
+        const seed = String(candidate.id).split("").reduce((total, character) => total + character.charCodeAt(0), 0);
+        dx = seed % 2 ? 1 : -1;
+        dy = seed % 3 ? 1 : -1;
+      }
+      const requiredX = candidateBounds.halfWidth + peerBounds.halfWidth + clearance;
+      const requiredY = candidateBounds.halfHeight + peerBounds.halfHeight + clearance;
+      const overlapX = requiredX - Math.abs(dx);
+      const overlapY = requiredY - Math.abs(dy);
+      if (overlapX <= 0 || overlapY <= 0) continue;
+      if (overlapX <= overlapY) candidate.x += (dx >= 0 ? 1 : -1) * (overlapX + 1);
+      else candidate.y += (dy >= 0 ? 1 : -1) * (overlapY + 1);
+      moved = true;
+    }
+    if (!moved) break;
+  }
+  return { x: candidate.x, y: candidate.y };
+}
+
+/**
+ * A bounded force-directed layout lets recorded relationships and category
+ * gravity form the architecture space. Saved user positions stay fixed;
+ * chronology and hierarchy never become positional constraints.
+ */
+function architectureClusterGravity(strength = 0.1) {
+  let nodes = [];
+  let centerByCluster = new Map();
+  const initialize = (nextNodes = []) => {
+    nodes = nextNodes;
+    const accumulators = new Map();
+    for (const node of nodes) {
+      const projectId = node.metadata?.projectId || node.project || "project";
+      const zone = node.metadata?.architectureZone || node.type || "other";
+      const key = `${projectId}:${zone}`;
+      const current = accumulators.get(key) || { x: 0, y: 0, count: 0 };
+      current.x += Number(node.targetX ?? node.x ?? 0);
+      current.y += Number(node.targetY ?? node.y ?? 0);
+      current.count += 1;
+      accumulators.set(key, current);
+      node.architectureGravityCluster = key;
+    }
+    centerByCluster = new Map([...accumulators].map(([key, value]) => [key, {
+      x: value.x / Math.max(1, value.count),
+      y: value.y / Math.max(1, value.count)
+    }]));
+  };
+  const force = (alpha) => {
+    for (const node of nodes) {
+      if (node.fx != null || node.fy != null) continue;
+      const center = centerByCluster.get(node.architectureGravityCluster);
+      if (!center) continue;
+      node.vx += (center.x - node.x) * strength * alpha;
+      node.vy += (center.y - node.y) * strength * alpha;
+    }
+  };
+  force.initialize = initialize;
+  return force;
+}
+
+function runConstrainedArchitectureLayout(items, links) {
   const degree = new Map(items.map((item) => [item.id, 0]));
   links.forEach((link) => {
-    if (degree.has(link.source)) degree.set(link.source, (degree.get(link.source) || 0) + 1);
-    if (degree.has(link.target)) degree.set(link.target, (degree.get(link.target) || 0) + 1);
+    const source = nodeId(link.source);
+    const target = nodeId(link.target);
+    if (degree.has(source)) degree.set(source, (degree.get(source) || 0) + 1);
+    if (degree.has(target)) degree.set(target, (degree.get(target) || 0) + 1);
   });
   const nodes = items.map((item) => ({
     ...item,
-    targetX: item.x,
-    targetY: item.y,
-    fx: item.projectClusterCenter ? item.x : null,
-    fy: item.projectClusterCenter ? item.y : null
+    fx: item.saved ? item.x : null,
+    fy: item.saved ? item.y : null
   }));
   const simNodeById = new Map(nodes.map((node) => [node.id, node]));
-  const simLinks = links.filter((link) => simNodeById.has(link.source) && simNodeById.has(link.target)).map((link) => ({ ...link }));
+  const forceCenter = nodes.reduce((center, node) => ({ x: center.x + Number(node.x || 0), y: center.y + Number(node.y || 0) }), { x: 0, y: 0 });
+  forceCenter.x /= Math.max(1, nodes.length);
+  forceCenter.y /= Math.max(1, nodes.length);
+  const simLinks = links
+    .filter((link) => simNodeById.has(link.source) && simNodeById.has(link.target))
+    .map((link) => ({ ...link }));
+  const nodeForLink = (value) => typeof value === "object" ? value : simNodeById.get(value);
   const simulation = d3
     .forceSimulation(nodes)
     .force(
@@ -1239,15 +2240,24 @@ function runLightExploreLayout(items, links) {
       d3
         .forceLink(simLinks)
         .id((node) => node.id)
-        .distance((link) => (simNodeById.get(link.source.id || link.source)?.orbitAnchor || simNodeById.get(link.target.id || link.target)?.orbitAnchor ? 230 : 285))
-        .strength(0.18)
+        .distance((link) => {
+          const source = nodeForLink(link.source);
+          const target = nodeForLink(link.target);
+          return architectureNodeRadius(source) + architectureNodeRadius(target) + (link.metadata?.hierarchy ? 105 : 150);
+        })
+        .strength((link) => {
+          const source = nodeForLink(link.source);
+          const target = nodeForLink(link.target);
+          return link.metadata?.hierarchy ? 0.55 : String(link.type || "").includes("static_inferred") ? 0.08 : 0.24;
+        })
     )
-    .force("charge", d3.forceManyBody().strength((node) => (node.orbitAnchor ? -920 : -330 - Math.min(5, degree.get(node.id) || 0) * 34)))
-    .force("x", d3.forceX((node) => node.targetX).strength((node) => (node.projectClusterCenter ? 1 : node.orbitAnchor ? 0.6 : 0.2)))
-    .force("y", d3.forceY((node) => node.targetY).strength((node) => (node.projectClusterCenter ? 1 : node.orbitAnchor ? 0.6 : 0.2)))
-    .force("collision", d3.forceCollide().radius((node) => layoutNodeRadius(node) + 20).iterations(6))
+    .force("charge", d3.forceManyBody().strength((node) => -190 - architectureNodeRadius(node) * 5 - Math.min(10, degree.get(node.id) || 0) * 26))
+    .force("clusterGravity", architectureClusterGravity(0.14))
+    .force("collision", d3.forceCollide().radius((node) => Math.hypot(layoutNodeBounds(node).halfWidth, layoutNodeBounds(node).halfHeight) + 22).iterations(10))
+    .force("center", d3.forceCenter(forceCenter.x, forceCenter.y).strength(0.035))
     .stop();
-  for (let index = 0; index < 96; index += 1) simulation.tick();
+  const iterations = Math.max(96, Math.min(220, 80 + items.length * 2));
+  for (let index = 0; index < iterations; index += 1) simulation.tick();
   const positionById = new Map(nodes.map((node) => [node.id, node]));
   items.forEach((item) => {
     const next = positionById.get(item.id);
@@ -1256,43 +2266,18 @@ function runLightExploreLayout(items, links) {
       item.y = next.y;
     }
   });
-  nodeLayer.selectAll("g.node").data(items, (row) => row.id).attr("transform", (row) => `translate(${row.x},${row.y})`);
-  const nodeById = new Map(items.map((item) => [item.id, item]));
-  linkLayer.selectAll("path.link").attr("d", (row) => linkPath(row, nodeById));
-  if (state.canvasGraph) {
-    state.canvasGraph.nodeById = nodeById;
-    drawCanvasLinks(state.canvasGraph.links, nodeById, state.canvasGraph.focusedIds);
-  }
-  drawMinimap(items, links);
-}
-
-function centerExploreView(duration = 260) {
-  const visible = currentVisible();
-  if (!visible.items.length) return;
-  const center = visible.items.reduce(
-    (acc, item) => ({ x: acc.x + item.x, y: acc.y + item.y }),
-    { x: 0, y: 0 }
-  );
-  center.x /= visible.items.length;
-  center.y /= visible.items.length;
-  const scale = Math.min(1, Math.max(0.72, state.currentZoom || 1));
-  const x = width / 2 - scale * center.x;
-  const y = height / 2 - scale * center.y;
-  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  svg.transition().duration(reduceMotion ? 0 : duration).call(zoom.transform, d3.zoomIdentity.translate(x, y).scale(scale));
+  return items;
 }
 
 function fitAfterPassiveUpdate() {
-  if (state.viewMode === "explore") centerExploreView();
-  else fitSelection();
+  fitSelection();
 }
 
 function fitItems(items, duration = 420) {
   if (!items?.length) return;
   const bounds = items.reduce(
     (acc, item) => {
-      const halfWidth = item.kind === "cluster" ? 102 : 42;
-      const halfHeight = item.kind === "cluster" ? 56 : 48;
+      const { halfWidth, halfHeight } = layoutNodeBounds(item);
       return {
         minX: Math.min(acc.minX, item.x - halfWidth),
         maxX: Math.max(acc.maxX, item.x + halfWidth),
@@ -1305,9 +2290,13 @@ function fitItems(items, duration = 420) {
   const padding = 52;
   const contentWidth = Math.max(1, bounds.maxX - bounds.minX + padding);
   const contentHeight = Math.max(1, bounds.maxY - bounds.minY + padding);
-  const reservedRight = width > 900 ? 212 : width > 560 ? 164 : 124;
+  // Explore architecture uses a dedicated feature inspector, so the canvas
+  // can use its full rendered width.
+  const reservedRight = isExploreArchitecture() ? 0 : width > 900 ? 212 : width > 560 ? 164 : 124;
   const availableWidth = Math.max(220, width - reservedRight);
-  const scale = Math.min(1.05, availableWidth / contentWidth, height / contentHeight);
+  const fittedScale = Math.min(1.05, availableWidth / contentWidth, height / contentHeight);
+  // Explore opens as a complete feature map, including its agent clusters.
+  const scale = isExploreArchitecture() ? Math.max(0.015, fittedScale) : fittedScale;
   const x = availableWidth / 2 - scale * ((bounds.minX + bounds.maxX) / 2);
   const y = height / 2 - scale * ((bounds.minY + bounds.maxY) / 2);
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -1318,10 +2307,32 @@ function currentVisible() {
   return visibleGraphForState(state.graph, { ...state, storage: window.localStorage }, width, height, dagre);
 }
 
+function focusArchitectureRoot(items, duration = 420) {
+  const root = items.find((item) => item.metadata?.architectureLens && (item.type === "project" || item.agentType === "project"));
+  if (!root) return fitItems(items, duration);
+  const availableWidth = Math.max(220, width);
+  const scale = Math.min(0.76, Math.max(0.46, state.currentZoom || 0.62));
+  const x = availableWidth / 2 - scale * root.x;
+  const y = height / 2 - scale * root.y;
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  svg.transition().duration(reduceMotion ? 0 : duration).call(zoom.transform, d3.zoomIdentity.translate(x, y).scale(scale));
+}
+
 function fitSelection() {
   const visible = currentVisible();
+  if (state.viewMode === "dependency") {
+    fitItems(visible.items);
+    return;
+  }
   if (state.selectedId) {
-    const focus = focusNeighborhood(state.graph, state.selectedId, state.depth);
+    const architectureRoot = isExploreArchitecture()
+      ? visible.items.find((item) => item.id === state.selectedId && (item.type === "project" || item.agentType === "project"))
+      : null;
+    if (architectureRoot) {
+      fitItems(visible.items);
+      return;
+    }
+    const focus = focusNeighborhood(state.graph, state.selectedId);
     const itemById = new Map(visible.items.map((item) => [item.id, item]));
     const isDescendant = (item) => {
       let parentId = item.clusterParentId;
@@ -1333,6 +2344,8 @@ function fitSelection() {
     };
     const selectedItems = visible.items.filter((item) => focus.ids.has(item.id) || item.id === state.selectedId || isDescendant(item));
     fitItems(selectedItems.length ? selectedItems : visible.items);
+  } else if (isExploreArchitecture()) {
+    fitItems(visible.items);
   } else {
     fitItems(visible.items);
   }
@@ -1340,21 +2353,20 @@ function fitSelection() {
 
 function resetView() {
   state.filters.search = "";
-  state.filters.project = "all";
+  state.filters.project = "";
   state.filters.agentType = "all";
   state.filters.status = "all";
   state.filters.relationshipType = "all";
   state.viewMode = "overview";
-  state.depth = 1;
   state.selectedId = "";
   state.expandedClusters.clear();
+  state.expandedSubfunctionalities.clear();
   setInspectorOpen(false, { fit: false });
   controls.search.value = "";
-  controls.project.value = "all";
+  controls.project.value = "";
   controls.agentType.value = "all";
   controls.status.value = "all";
   controls.relationshipType.value = "all";
-  controls.depth.value = "1";
   closeSearchResults();
   setActiveView("overview", { render: false });
   updateFilterCount();
@@ -1364,11 +2376,10 @@ function resetView() {
 
 function updateFilterCount() {
   const count = [
-    state.filters.project !== "all",
+    Boolean(state.filters.project),
     state.filters.agentType !== "all",
     state.filters.status !== "all",
-    state.filters.relationshipType !== "all",
-    state.depth !== 1
+    state.filters.relationshipType !== "all"
   ].filter(Boolean).length;
   const countEl = document.getElementById("filter-count");
   countEl.textContent = String(count);
@@ -1377,16 +2388,12 @@ function updateFilterCount() {
 
 function clearFilters() {
   resetProgressiveRender();
-  state.filters.project = "all";
   state.filters.agentType = "all";
   state.filters.status = "all";
   state.filters.relationshipType = "all";
-  state.depth = 1;
-  controls.project.value = "all";
   controls.agentType.value = "all";
   controls.status.value = "all";
   controls.relationshipType.value = "all";
-  controls.depth.value = "1";
   updateFilterCount();
   render();
   window.requestAnimationFrame(() => fitAfterPassiveUpdate());
@@ -1416,6 +2423,9 @@ async function refreshGraph(options = {}) {
   try {
     const result = await loadGraph();
     state.graph = normalizeGraph(result.data);
+    if (requestedProject && !state.filters.project && state.graph.nodes.some((node) => node.project === requestedProject)) {
+      state.filters.project = requestedProject;
+    }
     resetProgressiveRender();
     state.source = result.source;
     state.loadedAt = result.loadedAt;
@@ -1491,13 +2501,6 @@ function bindControls() {
     updateFilterCount();
     render();
   });
-  controls.depth.addEventListener("change", () => {
-    state.depth = Number(controls.depth.value);
-    updateFilterCount();
-    render();
-    window.requestAnimationFrame(() => fitAfterPassiveUpdate());
-  });
-
   document.querySelectorAll("[data-view-mode]").forEach((button) => {
     button.addEventListener("click", () => setActiveView(button.dataset.viewMode));
     button.addEventListener("keydown", (event) => {
@@ -1561,7 +2564,7 @@ function bindControls() {
     }
   });
   document.getElementById("zoom-in").addEventListener("click", () => svg.transition().duration(180).call(zoom.scaleBy, 1.25));
-  document.getElementById("zoom-out").addEventListener("click", () => svg.transition().duration(180).call(zoom.scaleBy, 0.8));
+  document.getElementById("zoom-out").addEventListener("click", () => svg.transition().duration(180).call(zoom.scaleBy, 0.68));
   graphEl.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
       if (state.inspectorOpen) setInspectorOpen(false);
@@ -1607,5 +2610,5 @@ const resizeObserver = new ResizeObserver(() => {
 resizeObserver.observe(graphEl);
 
 bindControls();
-setActiveView("overview", { render: false });
+setActiveView(requestedView, { render: false });
 refreshGraph();

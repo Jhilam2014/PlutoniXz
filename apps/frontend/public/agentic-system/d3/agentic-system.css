@@ -730,6 +730,185 @@ h1 {
   grid-template-columns: minmax(0, 1fr) clamp(330px, 25vw, 380px);
 }
 
+.architecture-panel {
+  min-width: 0;
+  min-height: 0;
+  padding: 12px 10px;
+  border-right: 1px solid var(--line);
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+  overflow: hidden;
+  background: #0d1520;
+}
+
+.graph-workspace.architecture-mode {
+  grid-template-columns: clamp(236px, 15vw, 292px) minmax(0, 1fr);
+}
+
+.graph-workspace.architecture-mode.inspector-open {
+  grid-template-columns: clamp(236px, 15vw, 292px) minmax(0, 1fr);
+}
+
+.graph-workspace.architecture-mode .architecture-panel {
+  display: flex;
+}
+
+.graph-workspace.architecture-mode .insight-panel {
+  display: none !important;
+}
+
+.architecture-panel-header {
+  padding: 1px 4px 8px;
+  border-bottom: 1px solid var(--line-subtle);
+  display: grid;
+  gap: 3px;
+}
+
+.architecture-panel-header span {
+  color: #9c92ff;
+  font-size: 8px;
+  font-weight: 850;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.architecture-panel-header strong {
+  color: #e8edf5;
+  font-size: 12px;
+}
+
+.architecture-panel .graph-legend {
+  position: static;
+  width: auto;
+  padding: 0 4px 9px;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background: transparent;
+  backdrop-filter: none;
+}
+
+.architecture-panel .legend-heading {
+  display: none;
+}
+
+.architecture-panel .legend-group {
+  grid-template-columns: 1fr;
+  gap: 5px;
+}
+
+.architecture-panel .legend-group span,
+.architecture-selection > p,
+.architecture-selection dt,
+.architecture-selection-owners span {
+  color: #d7e1ee;
+}
+
+.architecture-panel .legend-group + .legend-group {
+  margin-top: 8px;
+}
+
+.architecture-panel .legend-group:nth-of-type(3) {
+  display: none;
+}
+
+.architecture-selection {
+  min-height: 0;
+  padding: 10px 4px 0;
+  border-top: 1px solid var(--line-subtle);
+  overflow: auto;
+}
+
+.architecture-selection > p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.architecture-selection-kicker {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  color: #9c92ff;
+  font-size: 8px;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.architecture-selection-kicker b {
+  padding: 3px 5px;
+  border-radius: 999px;
+  color: #99f6e4;
+  background: rgba(13, 148, 136, 0.16);
+  font-size: 8px;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.architecture-selection-kicker b.disabled {
+  color: #cbd5e1;
+  background: rgba(100, 116, 139, 0.3);
+}
+
+.architecture-selection h2 {
+  margin: 8px 0 0;
+  color: #edf2f7;
+  font-size: 13px;
+  line-height: 1.3;
+}
+
+.architecture-selection > p,
+.architecture-selection h2 + p {
+  margin-top: 7px;
+}
+
+.architecture-selection dl {
+  margin: 10px 0 0;
+  display: grid;
+  gap: 5px;
+}
+
+.architecture-selection dl div {
+  padding: 6px 7px;
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  border-radius: 6px;
+  display: flex;
+  justify-content: space-between;
+  gap: 7px;
+  background: rgba(30, 41, 59, 0.42);
+}
+
+.architecture-selection dt,
+.architecture-selection dd {
+  margin: 0;
+  font-size: 9px;
+}
+
+.architecture-selection dt { color: var(--text-muted); }
+.architecture-selection dd { color: #dbe7f3; text-align: right; overflow-wrap: anywhere; }
+
+.architecture-selection-owners {
+  margin-top: 9px;
+  display: grid;
+  gap: 4px;
+}
+
+.architecture-selection-owners strong {
+  color: #a5b4fc;
+  font-size: 9px;
+  text-transform: uppercase;
+}
+
+.architecture-selection-owners span {
+  color: #cbd5e1;
+  font-size: 9px;
+  line-height: 1.45;
+}
+
 .graph-main {
   min-width: 0;
   min-height: 0;
@@ -908,9 +1087,35 @@ h1 {
   border-radius: 7px;
   display: grid;
   gap: 8px;
+  max-height: calc(100% - 24px);
+  overflow: auto;
   background: rgba(13, 19, 29, 0.92);
   box-shadow: 0 12px 34px rgba(0, 0, 0, 0.24);
   backdrop-filter: blur(10px);
+}
+
+:root[data-view-mode="explore"] .product-bar {
+  min-height: 46px;
+  padding-block: 4px;
+}
+
+:root[data-view-mode="explore"] .command-surface {
+  padding-block: 5px;
+}
+
+:root[data-view-mode="explore"] .view-tabs,
+:root[data-view-mode="explore"] .search-control input,
+:root[data-view-mode="explore"] .compact-select select,
+:root[data-view-mode="explore"] .toolbar-actions .icon-button {
+  height: 32px;
+}
+
+:root[data-view-mode="explore"] .view-tabs button {
+  padding-inline: 8px;
+}
+
+:root[data-view-mode="explore"] .context-bar {
+  height: 24px;
 }
 
 .legend-heading {
@@ -920,6 +1125,15 @@ h1 {
   color: var(--text-secondary);
   font-size: 9px;
   font-weight: 800;
+  text-transform: uppercase;
+}
+
+.legend-subheading {
+  margin: 8px 0 5px;
+  color: var(--text-muted);
+  font-size: 8px;
+  font-weight: 820;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
@@ -965,8 +1179,95 @@ h1 {
   border-radius: 50%;
 }
 
+.shape-mark.functionality {
+  transform: rotate(30deg) scale(0.82);
+  border-radius: 2px;
+}
+
+.shape-mark.subfunctionality {
+  border-radius: 50%;
+  transform: scale(0.76);
+}
+
+.shape-mark.branch {
+  clip-path: polygon(0 0, 70% 0, 100% 50%, 70% 100%, 0 100%, 30% 50%);
+  border: 0;
+}
+
+.shape-mark.architectureCategory {
+  clip-path: polygon(25% 0, 75% 0, 100% 25%, 100% 75%, 75% 100%, 25% 100%, 0 75%, 0 25%);
+  border: 0;
+}
+
+.shape-mark.architectureBranchSummary,
+.shape-mark.deadBranchSummary {
+  width: 13px;
+  clip-path: polygon(0 0, 76% 0, 100% 50%, 76% 100%, 0 100%, 20% 50%);
+  border: 0;
+}
+
 .shape-mark.reviewer {
+  clip-path: polygon(50% 0, 94% 18%, 94% 54%, 50% 100%, 6% 54%, 6% 18%);
+  border: 0;
+}
+
+.shape-mark.qagent,
+.shape-mark.milestone {
   transform: rotate(45deg) scale(0.78);
+}
+
+.shape-mark.project {
+  border-radius: 2px 2px 3px 3px;
+  clip-path: polygon(0 18%, 38% 18%, 48% 0, 100% 0, 100% 100%, 0 100%);
+  border: 0;
+}
+
+.shape-mark.service {
+  width: 14px;
+  border-radius: 999px;
+}
+
+.shape-mark.api,
+.shape-mark.feature,
+.shape-mark.subfunctionality {
+  clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%);
+  border: 0;
+}
+
+.shape-mark.workflow,
+.shape-mark.promotion {
+  clip-path: polygon(0 0, 68% 0, 100% 50%, 68% 100%, 0 100%, 24% 50%);
+  border: 0;
+}
+
+.shape-mark.page,
+.shape-mark.investigation,
+.shape-mark.objective,
+.shape-mark.pattern,
+.shape-mark.proposal,
+.shape-mark.tool-plan {
+  border-radius: 2px;
+}
+
+.shape-mark.validation,
+.shape-mark.approval-gate,
+.shape-mark.monetary-approval {
+  clip-path: polygon(50% 0, 92% 18%, 92% 58%, 50% 100%, 8% 58%, 8% 18%);
+  border: 0;
+}
+
+/* The architecture rail is a compact key, not a second node-shape system. */
+.architecture-panel .shape-mark,
+.architecture-panel .shape-mark.functionality,
+.architecture-panel .shape-mark.branch,
+.architecture-panel .shape-mark.architectureBranchSummary,
+.architecture-panel .shape-mark.deadBranchSummary {
+  width: 12px;
+  height: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.78);
+  border-radius: 2px;
+  clip-path: none;
+  transform: none;
 }
 
 .status-dot {
@@ -998,6 +1299,11 @@ h1 {
 
 .line.dotted {
   border-top-style: dotted;
+}
+
+.line.architecture {
+  border-top-color: #fb923c;
+  border-top-width: 3px;
 }
 
 .minimap {
@@ -1120,9 +1426,152 @@ body.dialog-open {
   stroke-dasharray: 7 5;
 }
 
+.link.relation-application-flow {
+  stroke: #7c9eff;
+  stroke-width: 1.8px;
+  stroke-opacity: 0.9;
+}
+
+.link.relation-application-data {
+  stroke: #39c6ad;
+  stroke-width: 1.8px;
+  stroke-opacity: 0.9;
+}
+
 .link.relation-optional {
   stroke: #a799ea;
   stroke-dasharray: 2 6;
+}
+
+.link.relation-architecture {
+  stroke: #fb923c;
+  stroke-width: 2px;
+  stroke-opacity: 0.82;
+}
+
+.link.relation-static-inferred {
+  stroke: #38bdf8;
+  stroke-width: 1.6px;
+  stroke-dasharray: 8 5;
+  stroke-opacity: 0.9;
+}
+
+.link.relation-architecture-category {
+  stroke: #60a5fa;
+  stroke-width: 2.25px;
+  stroke-opacity: 0.9;
+}
+
+.link.relation-architecture-observed {
+  stroke: #2dd4bf;
+  stroke-width: 2.25px;
+  stroke-opacity: 0.92;
+}
+
+.link.relation-architecture-deferred {
+  stroke: #fb923c;
+  stroke-width: 2.25px;
+  stroke-opacity: 0.92;
+}
+
+.link.relation-architecture-disabled {
+  stroke: #9ca3af;
+  stroke-dasharray: 6 5;
+  stroke-width: 2px;
+  stroke-opacity: 0.8;
+}
+
+.link.dead-branch-link {
+  stroke: #9ca3af;
+  stroke-dasharray: 6 5;
+  stroke-opacity: 0.8;
+}
+
+/* Architecture is a forward circular hierarchy. Open sector gates establish
+ * reading order while labelled ancestor rails keep the graph factual without
+ * burying it under rectangular containers. */
+.architecture-perimeter {
+  pointer-events: none;
+}
+
+.architecture-zone-board {
+  fill: none;
+  stroke: none;
+}
+
+.architecture-zone-gate {
+  fill: none;
+  stroke: var(--zone-color);
+  stroke-opacity: 0.72;
+  stroke-width: 2px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.architecture-zone-title,
+.architecture-zone-caption,
+.architecture-zone-count {
+  paint-order: stroke;
+  stroke: rgba(9, 15, 23, 0.7);
+  stroke-width: 3px;
+  stroke-linejoin: round;
+}
+
+.architecture-zone-title {
+  fill: #eff5fb;
+  font-size: 13px;
+  font-weight: 860;
+  letter-spacing: 0.025em;
+}
+
+.architecture-zone-caption {
+  fill: #9eabbc;
+  font-size: 10px;
+  font-weight: 720;
+  letter-spacing: 0.015em;
+}
+
+.architecture-zone-count {
+  fill: #d2dbe7;
+  font-size: 10px;
+  font-weight: 790;
+  letter-spacing: 0.025em;
+}
+
+#graph[data-view-mode="explore"] .link.architecture-zone-rail,
+#graph[data-view-mode="explore"] .link.architecture-fanout-rail {
+  stroke: #aebcd0;
+  stroke-width: 1.2px;
+  stroke-opacity: 0.88;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+#graph[data-view-mode="explore"] .link.architecture-zone-spine,
+#graph[data-view-mode="explore"] .link.architecture-fanout-spine {
+  stroke: #8292a8;
+  stroke-width: 0.85px;
+  stroke-opacity: 0.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+#graph[data-view-mode="explore"] .link.architecture-zone-stub,
+#graph[data-view-mode="explore"] .link.architecture-fanout-stub,
+#graph[data-view-mode="explore"] .link.architecture-local-tree {
+  stroke: #74859a;
+  stroke-width: 0.7px;
+  stroke-opacity: 0.72;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+#graph[data-view-mode="explore"] .link.architecture-evidence-flow {
+  stroke: #38bdf8;
+  stroke-width: 0.8px;
+  stroke-dasharray: 7 5;
+  stroke-opacity: 0.78;
 }
 
 .link.upstream {
@@ -1137,9 +1586,90 @@ body.dialog-open {
   stroke-opacity: 0.94;
 }
 
-.link.muted,
-.node.muted {
-  opacity: 0.1;
+/* Dependency is a causal lens, so the only strong links are the directed
+ * paths around the selected entity. Explore retains links as context but
+ * never lets them overpower the semantic project × role matrix. */
+#graph[data-view-mode="dependency"] .link.dependency-link {
+  stroke-opacity: 0.78;
+  stroke-width: 1.9px;
+}
+
+.lens-scaffold {
+  pointer-events: none;
+}
+
+.dependency-lane rect {
+  fill: rgba(71, 85, 105, 0.08);
+  stroke: rgba(148, 163, 184, 0.18);
+  stroke-width: 1px;
+  vector-effect: non-scaling-stroke;
+}
+
+.dependency-lane.focus rect {
+  fill: rgba(117, 63, 217, 0.14);
+  stroke: rgba(167, 139, 250, 0.44);
+}
+
+.dependency-lane text {
+  fill: #dce5f2;
+  font-size: 12px;
+  font-weight: 820;
+  letter-spacing: 0.035em;
+}
+
+.dependency-lane .dependency-lane-note {
+  fill: #8391a5;
+  font-size: 10px;
+  font-weight: 650;
+  letter-spacing: 0;
+}
+
+.node.dependency-focus .node-shape,
+.node.dependency-focus .cluster-card {
+  stroke: #f3efff;
+  stroke-width: 3px;
+  filter: drop-shadow(0 0 15px rgba(167, 139, 250, 0.66));
+}
+
+.node.dependency-shared .node-shape,
+.node.dependency-shared .cluster-card {
+  stroke: #f0abfc;
+  stroke-width: 2.3px;
+  stroke-dasharray: 5 3;
+}
+
+.node.dependency-upstream .node-shape {
+  stroke: rgba(251, 191, 36, 0.92);
+}
+
+.node.dependency-downstream .node-shape {
+  stroke: rgba(74, 222, 128, 0.92);
+}
+
+#graph[data-view-mode="explore"] .link.architecture-selected-link {
+  stroke: #c4b5fd;
+  stroke-width: 3px;
+  stroke-opacity: 1;
+  filter: drop-shadow(0 0 4px rgba(196, 181, 253, 0.62));
+}
+
+#graph[data-view-mode="explore"] .link.architecture-selected-link.architecture-zone-spine,
+#graph[data-view-mode="explore"] .link.architecture-selected-link.architecture-fanout-spine {
+  stroke-width: 2.35px;
+}
+
+#graph[data-view-mode="explore"] .link.architecture-selected-link.downstream {
+  stroke: #5eead4;
+  filter: drop-shadow(0 0 5px rgba(94, 234, 212, 0.62));
+}
+
+#graph[data-view-mode="explore"] .link.architecture-selected-link.dead-branch-link {
+  stroke: #cbd5e1;
+  filter: drop-shadow(0 0 4px rgba(203, 213, 225, 0.48));
+}
+
+.link.muted {
+  opacity: 0.5;
 }
 
 .node {
@@ -1160,6 +1690,13 @@ body.dialog-open {
   vector-effect: non-scaling-stroke;
   filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.3));
   transition: stroke 140ms ease, stroke-width 140ms ease, filter 140ms ease;
+}
+
+.node-panel-rule {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.76);
+  stroke-width: 1.2px;
+  vector-effect: non-scaling-stroke;
 }
 
 .cluster-card {
@@ -1198,6 +1735,144 @@ body.dialog-open {
   stroke-opacity: 0.82;
 }
 
+.type-functionality .node-shape {
+  filter: drop-shadow(0 8px 14px rgba(20, 184, 166, 0.28));
+}
+
+.type-branch .node-shape {
+  filter: drop-shadow(0 8px 14px rgba(249, 115, 22, 0.34));
+}
+
+.type-architectureCategory .node-shape {
+  filter: drop-shadow(0 9px 16px rgba(59, 130, 246, 0.3));
+}
+
+.type-architectureBranchSummary .node-shape {
+  filter: drop-shadow(0 9px 16px rgba(15, 118, 110, 0.3));
+}
+
+.node.architecture-observed .node-shape {
+  fill: #0f766e;
+  stroke: #99f6e4;
+}
+
+.node.project-exclusive-agent .architecture-tree-shape {
+  stroke: #a7f3d0;
+}
+
+.node.shared-agent .architecture-tree-shape {
+  stroke: #fde68a;
+  stroke-dasharray: 5 3;
+  filter: drop-shadow(0 0 13px rgba(251, 191, 36, 0.42));
+}
+
+.node.architecture-deferred .node-shape {
+  fill: #c2410c;
+  stroke: #fed7aa;
+  filter: drop-shadow(0 9px 16px rgba(234, 88, 12, 0.34));
+}
+
+.type-deadBranchSummary .node-shape {
+  fill: #64748b;
+  stroke: #cbd5e1;
+  stroke-dasharray: 6 4;
+  filter: none;
+}
+
+.architecture-tree-shape {
+  stroke-width: 2px;
+  filter: drop-shadow(0 12px 20px rgba(34, 211, 238, 0.2));
+}
+
+.architecture-node-rim {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.8);
+  stroke-width: 1.25px;
+  pointer-events: none;
+}
+
+.architecture-project-rim {
+  stroke-width: 1.8px;
+  stroke-opacity: 0.9;
+}
+
+.architecture-code-rim {
+  stroke-opacity: 0.58;
+}
+
+.architecture-branch-rim {
+  stroke-dasharray: 5 4;
+  stroke-opacity: 0.8;
+}
+
+.type-project .architecture-tree-shape {
+  fill: #753fd9;
+  stroke: #ddd6fe;
+  filter: drop-shadow(0 14px 24px rgba(117, 63, 217, 0.42));
+}
+
+.type-functionality .architecture-tree-shape {
+  fill: #0f766e;
+  stroke: #99f6e4;
+}
+
+.type-subfunctionality .architecture-tree-shape {
+  fill: #075985;
+  stroke: #7dd3fc;
+  stroke-width: 1.7px;
+  filter: drop-shadow(0 8px 14px rgba(56, 189, 248, 0.22));
+}
+
+.type-branch .architecture-tree-shape {
+  fill: #c2410c;
+  stroke: #fed7aa;
+}
+
+/* Deferred branches represent governed future enhancement possibilities. */
+.node.architecture-future .architecture-tree-shape {
+  fill: #6d4ed6;
+  stroke: #ddd6fe;
+  filter: drop-shadow(0 10px 18px rgba(109, 78, 214, 0.42));
+}
+
+.type-deadBranchSummary .architecture-tree-shape {
+  fill: #64748b;
+  stroke: #cbd5e1;
+  stroke-dasharray: 6 4;
+  filter: none;
+}
+
+.node.architecture-disabled .architecture-tree-shape {
+  fill: #64748b;
+  stroke: #cbd5e1;
+  stroke-dasharray: 6 4;
+  filter: none;
+}
+
+.node.architecture-inactive {
+  opacity: 0.3;
+  filter: grayscale(1);
+}
+
+.node.architecture-inactive .architecture-tree-shape {
+  fill: #475569;
+  stroke: #94a3b8;
+  filter: none;
+}
+
+.link.architecture-inactive {
+  stroke: #64748b;
+  stroke-opacity: 0.26;
+}
+
+.architecture-tree-label {
+  font-weight: 800;
+}
+
+.architecture-tree-subtitle {
+  fill: #9fb0c3;
+}
+
 .node.focus-upstream .node-shape,
 .node.focus-upstream .cluster-card {
   stroke: var(--amber);
@@ -1226,6 +1901,11 @@ body.dialog-open {
   height: 20px;
   display: block;
   stroke: currentColor;
+}
+
+.architecture-node-icon .node-icon svg {
+  width: 72%;
+  height: 72%;
 }
 
 .type-reviewer .node-icon,
@@ -1348,16 +2028,16 @@ body.dialog-open {
 }
 
 #graph[data-zoom-level="overview"] .node-subtitle {
-  opacity: 0;
+  opacity: 0.74;
 }
 
 #graph[data-zoom-level="overview"] .node-label,
 #graph[data-zoom-level="overview"] .project-node-label {
-  opacity: 0.82;
+  opacity: 0.9;
 }
 
 #graph[data-zoom-level="intermediate"] .node-subtitle {
-  display: none;
+  display: block;
 }
 
 #graph[data-zoom-level="intermediate"] .link {
@@ -1554,6 +2234,21 @@ body.dialog-open {
   line-height: 1.5;
 }
 
+.agent-profile-link {
+  width: fit-content;
+  margin-top: 8px;
+  color: #bdb5ff;
+  font-size: 10px;
+  font-weight: 760;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.agent-profile-link:hover,
+.agent-profile-link:focus-visible {
+  color: #e2dfff;
+}
+
 .insight-badges {
   margin-top: 11px;
   display: flex;
@@ -1686,6 +2381,65 @@ body.dialog-open {
   line-height: 1.55;
 }
 
+.architecture-detail-list ol {
+  margin: 10px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+  list-style: none;
+}
+
+.architecture-detail-list li {
+  min-width: 0;
+  padding: 9px;
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr);
+  gap: 8px;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 8px;
+  background: rgba(30, 41, 59, 0.38);
+}
+
+.architecture-detail-list li > i,
+.architecture-detail-list li > svg {
+  width: 16px;
+  height: 16px;
+  color: #5eead4;
+}
+
+.architecture-detail-list li > div {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+
+.architecture-detail-list li strong {
+  color: #e8eef7;
+  font-size: 11px;
+}
+
+.architecture-detail-list li small {
+  color: var(--text-muted);
+  font-size: 9px;
+  overflow-wrap: anywhere;
+}
+
+.architecture-detail-list li p {
+  margin: 2px 0 0;
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+.architecture-detail-list li.is-disabled {
+  border-style: dashed;
+  opacity: 0.7;
+}
+
+.architecture-detail-list li.is-disabled > i,
+.architecture-detail-list li.is-disabled > svg {
+  color: #94a3b8;
+}
+
 .insight-section dl {
   margin: 10px 0 0;
   display: grid;
@@ -1712,7 +2466,8 @@ body.dialog-open {
   line-height: 1.45;
 }
 
-.connections button {
+.connections button,
+.connections .connection-agent-link {
   width: 100%;
   min-height: 48px;
   margin-top: 7px;
@@ -1725,14 +2480,21 @@ body.dialog-open {
   text-align: left;
 }
 
-.connections button span {
+.connections .connection-agent-link {
+  border: 1px solid var(--line);
+  text-decoration: none;
+}
+
+.connections button span,
+.connections .connection-agent-link span {
   color: var(--text-muted);
   font-size: 8px;
   font-weight: 700;
   text-transform: uppercase;
 }
 
-.connections button strong {
+.connections button strong,
+.connections .connection-agent-link strong {
   color: var(--text);
   font-size: 10px;
 }
@@ -1740,7 +2502,7 @@ body.dialog-open {
 .score-row {
   margin-top: 10px;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(94px, 1fr));
   gap: 6px;
 }
 
@@ -1766,6 +2528,13 @@ body.dialog-open {
   margin-top: 3px;
   color: var(--text);
   font-size: 13px;
+}
+
+.score-row small {
+  margin-top: 4px;
+  color: var(--text-muted);
+  font-size: 8px;
+  line-height: 1.35;
 }
 
 .drawer-actions {
@@ -1824,6 +2593,96 @@ body.dialog-open {
 :root[data-theme="light"] .drawer-actions,
 :root[data-theme="light"] .inspector-tabs {
   background: #ffffff;
+}
+
+:root[data-theme="light"] .architecture-panel {
+  background: #f8fafc;
+}
+
+:root[data-theme="light"] .architecture-panel-header strong,
+:root[data-theme="light"] .architecture-selection h2 {
+  color: #1e293b;
+}
+
+:root[data-theme="light"] .architecture-panel .legend-group span,
+:root[data-theme="light"] .architecture-selection > p,
+:root[data-theme="light"] .architecture-selection dt,
+:root[data-theme="light"] .architecture-selection-owners span {
+  color: #334155;
+}
+
+:root[data-theme="light"] .agent-profile-link,
+:root[data-theme="light"] .architecture-selection-owners a {
+  color: #5144a3;
+}
+
+:root[data-theme="light"] .architecture-panel .shape-mark,
+:root[data-theme="light"] .architecture-panel .shape-mark.functionality,
+:root[data-theme="light"] .architecture-panel .shape-mark.branch,
+:root[data-theme="light"] .architecture-panel .shape-mark.architectureBranchSummary,
+:root[data-theme="light"] .architecture-panel .shape-mark.deadBranchSummary {
+  border-color: rgba(30, 41, 59, 0.34);
+}
+
+:root[data-theme="light"] .architecture-selection-kicker b {
+  color: #0f4c5c;
+  background: #c8f4ed;
+}
+
+:root[data-theme="light"] .architecture-selection-kicker b.disabled {
+  color: #334155;
+  background: #e2e8f0;
+}
+
+:root[data-theme="light"] .architecture-selection dl div {
+  background: #ffffff;
+}
+
+:root[data-theme="light"] .architecture-zone-title {
+  fill: #1e293b;
+  stroke: rgba(255, 255, 255, 0.92);
+}
+
+:root[data-theme="light"] .architecture-zone-caption,
+:root[data-theme="light"] .architecture-zone-count {
+  fill: #526176;
+  stroke: rgba(255, 255, 255, 0.92);
+}
+
+:root[data-theme="light"] .architecture-zone-board {
+  fill: none;
+  stroke: none;
+}
+
+:root[data-theme="light"] #graph[data-view-mode="explore"] .link.architecture-zone-rail,
+:root[data-theme="light"] #graph[data-view-mode="explore"] .link.architecture-fanout-rail {
+  stroke: #52657d;
+}
+
+:root[data-theme="light"] #graph[data-view-mode="explore"] .link.architecture-zone-spine,
+:root[data-theme="light"] #graph[data-view-mode="explore"] .link.architecture-fanout-spine,
+:root[data-theme="light"] #graph[data-view-mode="explore"] .link.architecture-zone-stub,
+:root[data-theme="light"] #graph[data-view-mode="explore"] .link.architecture-fanout-stub,
+:root[data-theme="light"] #graph[data-view-mode="explore"] .link.architecture-local-tree {
+  stroke: #60758d;
+}
+
+:root[data-theme="light"] .dependency-lane rect {
+  fill: rgba(255, 255, 255, 0.42);
+  stroke: rgba(71, 85, 105, 0.2);
+}
+
+:root[data-theme="light"] .dependency-lane.focus rect {
+  fill: rgba(117, 63, 217, 0.09);
+  stroke: rgba(117, 63, 217, 0.35);
+}
+
+:root[data-theme="light"] .dependency-lane text {
+  fill: #1e293b;
+}
+
+:root[data-theme="light"] .dependency-lane .dependency-lane-note {
+  fill: #526176;
 }
 
 :root[data-theme="light"] .operational-callout {
@@ -1889,6 +2748,21 @@ body.dialog-open {
 :root[data-theme="light"] .node-subtitle,
 :root[data-theme="light"] .cluster-desc {
   fill: #526176;
+}
+
+/* Deferred labels sit outside their lavender circles, so they need a darker
+ * light-mode ink than the generic subtitle colour. */
+:root[data-theme="light"] .node.architecture-future .architecture-tree-label,
+:root[data-theme="light"] .node.architecture-deferred .architecture-tree-label {
+  fill: #3b0764;
+  stroke: #f8fafc;
+}
+
+:root[data-theme="light"] .node.architecture-future .architecture-tree-subtitle,
+:root[data-theme="light"] .node.architecture-deferred .architecture-tree-subtitle {
+  fill: #581c87;
+  stroke: #f8fafc;
+  font-weight: 800;
 }
 
 :root[data-theme="light"] .cluster-counts {
@@ -2011,6 +2885,15 @@ body.dialog-open {
     grid-template-columns: minmax(0, 1fr);
   }
 
+  .graph-workspace.architecture-mode,
+  .graph-workspace.architecture-mode.inspector-open {
+    grid-template-columns: 184px minmax(0, 1fr);
+  }
+
+  .architecture-panel {
+    padding-inline: 8px;
+  }
+
   .insight-panel {
     position: fixed;
     z-index: 30;
@@ -2076,6 +2959,28 @@ body.dialog-open {
 }
 
 @media (max-width: 560px) {
+  .graph-workspace.architecture-mode,
+  .graph-workspace.architecture-mode.inspector-open {
+    grid-template-columns: 152px minmax(0, 1fr);
+  }
+
+  .architecture-panel {
+    padding: 8px 6px;
+  }
+
+  .architecture-panel-header strong {
+    font-size: 10px;
+  }
+
+  .architecture-selection h2 {
+    font-size: 11px;
+  }
+
+  .architecture-selection dl div {
+    display: grid;
+    gap: 2px;
+  }
+
   .graph-watermark {
     width: 220px;
     min-width: 0;

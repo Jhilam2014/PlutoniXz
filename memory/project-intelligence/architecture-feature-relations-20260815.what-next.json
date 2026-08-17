@@ -1,0 +1,35 @@
+{
+  "recordedAt": "2026-08-15T18:17:00Z",
+  "source": "plutonix-orchestrator",
+  "projectId": "plutonix",
+  "projectName": "PlutoniX",
+  "instructionSummary": "Connect Architecture pages to their real service and data dependencies, simplify visible connections to relation-only lines, move semantics into Insight, and remove Project genesis from the feature graph.",
+  "candidateDevelopmentPaths": [
+    "add presentation-only page spokes",
+    "keep direct-file discovery and manually link disconnected pages",
+    "follow bounded local imports and render only evidenced entity relationships"
+  ],
+  "selectedPath": "follow bounded local imports and render only evidenced entity relationships",
+  "rejectedPaths": [
+    { "path": "add presentation-only page spokes", "reason": "It would fabricate dependency evidence." },
+    { "path": "keep direct-file discovery and manually link disconnected pages", "reason": "It would fail whenever requests or persistence logic are implemented in imported clients, hooks, services, or repositories." }
+  ],
+  "confidenceScore": 97,
+  "evidenceUsed": [
+    "page scanning previously inspected direct fetch and Axios calls only",
+    "local import traversal stopped before imported client request evidence",
+    "Architecture projected project membership as a visible feature node",
+    "Canvas renderer exposed arrows and selected relationship labels"
+  ],
+  "humanInputNeeded": false,
+  "resultingFiles": [
+    "apps/backend/src/projectBranchDiscovery.js",
+    "apps/backend/src/projectAgents.js",
+    "apps/frontend/public/agentic-system/d3/agentic-system-model.js",
+    "apps/frontend/public/agentic-system/d3/agentic-system-d3.js",
+    "apps/backend/test/projectBranchDiscovery.test.js",
+    "apps/frontend/test/agentic-system-model.test.mjs"
+  ],
+  "validationStatus": "37_targeted_tests_passed_and_frontend_build_passed",
+  "followUpRecommendation": "Restart the backend once after deployment so cached version-5 architecture analyses refresh to version 6."
+}

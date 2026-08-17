@@ -1,0 +1,72 @@
+{
+  "projectId": "researchanddevx-xF8SDs",
+  "agentModelVersion": "2.0.0",
+  "decisions": [
+    {
+      "id": "agent-reuse:researchanddevx-xF8SDs:project-orchestrator-agent",
+      "projectExecution": "researchanddevx-xF8SDs",
+      "selectedAgent": "project-orchestrator-agent",
+      "requestedRole": "project-orchestrator",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global project-orchestrator definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:40.857Z"
+    },
+    {
+      "id": "agent-reuse:researchanddevx-xF8SDs:qagent-controller",
+      "projectExecution": "researchanddevx-xF8SDs",
+      "selectedAgent": "qagent-controller",
+      "requestedRole": "qagent-controller",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global qagent-controller definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:40.857Z"
+    },
+    {
+      "id": "agent-reuse:researchanddevx-xF8SDs:experience-composition-agent",
+      "projectExecution": "researchanddevx-xF8SDs",
+      "selectedAgent": "experience-composition-agent",
+      "requestedRole": "experience-composition",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global experience-composition definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:40.857Z"
+    },
+    {
+      "id": "agent-reuse:researchanddevx-xF8SDs:data-contract-agent",
+      "projectExecution": "researchanddevx-xF8SDs",
+      "selectedAgent": "data-contract-agent",
+      "requestedRole": "data-contract",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global data-contract definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:40.857Z"
+    },
+    {
+      "id": "agent-reuse:researchanddevx-xF8SDs:runtime-packaging-agent",
+      "projectExecution": "researchanddevx-xF8SDs",
+      "selectedAgent": "runtime-packaging-agent",
+      "requestedRole": "runtime-packaging",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global runtime-packaging definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:40.857Z"
+    },
+    {
+      "id": "agent-reuse:researchanddevx-xF8SDs:design-workshop-review-agent",
+      "projectExecution": "researchanddevx-xF8SDs",
+      "selectedAgent": "design-workshop-review-agent",
+      "requestedRole": "design-workshop-review",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global design-workshop-review definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:40.857Z"
+    }
+  ]
+}

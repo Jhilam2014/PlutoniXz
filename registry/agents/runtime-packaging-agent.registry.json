@@ -1,0 +1,391 @@
+{
+  "agent_id": "runtime-packaging-agent",
+  "agent_name": "Runtime Packaging Agent",
+  "role": "runtime-packaging",
+  "definitionType": "AgentDefinition",
+  "scope": "global_reusable",
+  "version": "1.0.0",
+  "status": "active",
+  "capability_score": {
+    "capabilityScore": 60,
+    "deliverableAccuracyScore": 50,
+    "reliabilityScore": 50,
+    "adaptabilityScore": 70,
+    "reuseConfidenceScore": 40,
+    "successCount": 0,
+    "failureCount": 0,
+    "repeatedCorrectionCount": 0
+  },
+  "projectAssignments": [
+    {
+      "id": "project-agent-assignment:mapex-M6rGkR:runtime-packaging-agent",
+      "projectId": "mapex-M6rGkR",
+      "agentId": "runtime-packaging-agent",
+      "role": "runtime-packaging",
+      "projectResponsibility": "Maintain only the runtime, dependency, export, and container assets justified by the selected artifact and product shape.",
+      "status": "active",
+      "contextPath": ".agentic/orchestrator-agent.md",
+      "createdAt": "2026-08-17T13:01:34.403Z"
+    },
+    {
+      "id": "project-agent-assignment:geofinderx-2yFsDY:runtime-packaging-agent",
+      "projectId": "geofinderx-2yFsDY",
+      "agentId": "runtime-packaging-agent",
+      "role": "runtime-packaging",
+      "projectResponsibility": "Maintain only the runtime, dependency, export, and container assets justified by the selected artifact and product shape.",
+      "status": "active",
+      "contextPath": ".agentic/orchestrator-agent.md",
+      "createdAt": "2026-08-16T08:45:24.010Z"
+    },
+    {
+      "id": "project-agent-assignment:agenticongen-9TUSjQ:runtime-packaging-agent",
+      "projectId": "agenticongen-9TUSjQ",
+      "agentId": "runtime-packaging-agent",
+      "role": "runtime-packaging",
+      "projectResponsibility": "Maintain only the runtime, dependency, export, and container assets justified by the selected artifact and product shape.",
+      "status": "active",
+      "contextPath": ".agentic/orchestrator-agent.md",
+      "createdAt": "2026-08-16T08:45:26.988Z"
+    },
+    {
+      "id": "project-agent-assignment:investmentfinderx-z8rTq_:runtime-packaging-agent",
+      "projectId": "investmentfinderx-z8rTq_",
+      "agentId": "runtime-packaging-agent",
+      "role": "runtime-packaging",
+      "projectResponsibility": "Maintain only the runtime, dependency, export, and container assets justified by the selected artifact and product shape.",
+      "status": "active",
+      "contextPath": ".agentic/orchestrator-agent.md",
+      "createdAt": "2026-08-16T08:45:29.282Z"
+    },
+    {
+      "id": "project-agent-assignment:whatsappmediaanalyser-oAeSvn:runtime-packaging-agent",
+      "projectId": "whatsappmediaanalyser-oAeSvn",
+      "agentId": "runtime-packaging-agent",
+      "role": "runtime-packaging",
+      "projectResponsibility": "Maintain only the runtime, dependency, export, and container assets justified by the selected artifact and product shape.",
+      "status": "active",
+      "contextPath": ".agentic/orchestrator-agent.md",
+      "createdAt": "2026-08-16T08:45:32.873Z"
+    },
+    {
+      "id": "project-agent-assignment:spydash-qkWtmJ:runtime-packaging-agent",
+      "projectId": "spydash-qkWtmJ",
+      "agentId": "runtime-packaging-agent",
+      "role": "runtime-packaging",
+      "projectResponsibility": "Maintain only the runtime, dependency, export, and container assets justified by the selected artifact and product shape.",
+      "status": "active",
+      "contextPath": ".agentic/orchestrator-agent.md",
+      "createdAt": "2026-08-16T08:45:36.701Z"
+    },
+    {
+      "id": "project-agent-assignment:webforbusinesses-xu7qsM:runtime-packaging-agent",
+      "projectId": "webforbusinesses-xu7qsM",
+      "agentId": "runtime-packaging-agent",
+      "role": "runtime-packaging",
+      "projectResponsibility": "Maintain only the runtime, dependency, export, and container assets justified by the selected artifact and product shape.",
+      "status": "active",
+      "contextPath": ".agentic/orchestrator-agent.md",
+      "createdAt": "2026-08-16T08:45:38.494Z"
+    },
+    {
+      "id": "project-agent-assignment:researchanddevx-xF8SDs:runtime-packaging-agent",
+      "projectId": "researchanddevx-xF8SDs",
+      "agentId": "runtime-packaging-agent",
+      "role": "runtime-packaging",
+      "projectResponsibility": "Maintain only the runtime, dependency, export, and container assets justified by the selected artifact and product shape.",
+      "status": "active",
+      "contextPath": ".agentic/orchestrator-agent.md",
+      "createdAt": "2026-08-16T08:45:40.857Z"
+    },
+    {
+      "id": "project-agent-assignment:bag-commerce-studio-y2obrr:runtime-packaging-agent",
+      "projectId": "bag-commerce-studio-y2obrr",
+      "agentId": "runtime-packaging-agent",
+      "role": "runtime-packaging",
+      "projectResponsibility": "Maintain only the runtime, dependency, export, and container assets justified by the selected artifact and product shape.",
+      "status": "active",
+      "contextPath": ".agentic/orchestrator-agent.md",
+      "createdAt": "2026-08-16T08:45:42.840Z"
+    },
+    {
+      "id": "project-agent-assignment:mentalheathcounselor-PJ1N2o:runtime-packaging-agent",
+      "projectId": "mentalheathcounselor-PJ1N2o",
+      "agentId": "runtime-packaging-agent",
+      "role": "runtime-packaging",
+      "projectResponsibility": "Maintain only the runtime, dependency, export, and container assets justified by the selected artifact and product shape.",
+      "status": "active",
+      "contextPath": ".agentic/orchestrator-agent.md",
+      "createdAt": "2026-08-16T08:45:44.270Z"
+    },
+    {
+      "id": "project-agent-assignment:videopresentationforproductx-GtDUxv:runtime-packaging-agent",
+      "projectId": "videopresentationforproductx-GtDUxv",
+      "agentId": "runtime-packaging-agent",
+      "role": "runtime-packaging",
+      "projectResponsibility": "Maintain only the runtime, dependency, export, and container assets justified by the selected artifact and product shape.",
+      "status": "active",
+      "contextPath": ".agentic/orchestrator-agent.md",
+      "createdAt": "2026-08-16T08:45:46.095Z"
+    },
+    {
+      "id": "project-agent-assignment:brushx-zHXT8q:runtime-packaging-agent",
+      "projectId": "brushx-zHXT8q",
+      "agentId": "runtime-packaging-agent",
+      "role": "runtime-packaging",
+      "projectResponsibility": "Maintain only the runtime, dependency, export, and container assets justified by the selected artifact and product shape.",
+      "status": "active",
+      "contextPath": ".agentic/orchestrator-agent.md",
+      "createdAt": "2026-08-16T08:45:47.622Z"
+    },
+    {
+      "id": "project-agent-assignment:voicex-4q9G58:runtime-packaging-agent",
+      "projectId": "voicex-4q9G58",
+      "agentId": "runtime-packaging-agent",
+      "role": "runtime-packaging",
+      "projectResponsibility": "Maintain only the runtime, dependency, export, and container assets justified by the selected artifact and product shape.",
+      "status": "active",
+      "contextPath": ".agentic/orchestrator-agent.md",
+      "createdAt": "2026-08-16T08:45:48.738Z"
+    },
+    {
+      "id": "project-agent-assignment:gymx-9JXKDV:runtime-packaging-agent",
+      "projectId": "gymx-9JXKDV",
+      "agentId": "runtime-packaging-agent",
+      "role": "runtime-packaging",
+      "projectResponsibility": "Maintain only the runtime, dependency, export, and container assets justified by the selected artifact and product shape.",
+      "status": "active",
+      "contextPath": ".agentic/orchestrator-agent.md",
+      "createdAt": "2026-08-16T15:38:43.936Z"
+    },
+    {
+      "id": "project-agent-assignment:bag-commerce-studio-Tj4bB8:runtime-packaging-agent",
+      "projectId": "bag-commerce-studio-Tj4bB8",
+      "agentId": "runtime-packaging-agent",
+      "role": "runtime-packaging",
+      "projectResponsibility": "Maintain only the runtime, dependency, export, and container assets justified by the selected artifact and product shape.",
+      "status": "active",
+      "contextPath": ".agentic/orchestrator-agent.md",
+      "createdAt": "2026-08-16T08:45:52.698Z"
+    },
+    {
+      "id": "project-agent-assignment:databricksx-n7lCNf:runtime-packaging-agent",
+      "projectId": "databricksx-n7lCNf",
+      "agentId": "runtime-packaging-agent",
+      "role": "runtime-packaging",
+      "projectResponsibility": "Maintain only the runtime, dependency, export, and container assets justified by the selected artifact and product shape.",
+      "status": "active",
+      "contextPath": ".agentic/orchestrator-agent.md",
+      "createdAt": "2026-08-17T19:20:04.752Z"
+    },
+    {
+      "id": "project-agent-assignment:cvmakerx-e4XAzI:runtime-packaging-agent",
+      "projectId": "cvmakerx-e4XAzI",
+      "agentId": "runtime-packaging-agent",
+      "role": "runtime-packaging",
+      "projectResponsibility": "Maintain only the runtime, dependency, export, and container assets justified by the selected artifact and product shape.",
+      "status": "active",
+      "contextPath": ".agentic/orchestrator-agent.md",
+      "createdAt": "2026-08-16T08:45:56.199Z"
+    }
+  ],
+  "reuse_decisions": [
+    {
+      "id": "agent-reuse:mapex-M6rGkR:runtime-packaging-agent",
+      "projectExecution": "mapex-M6rGkR",
+      "selectedAgent": "runtime-packaging-agent",
+      "requestedRole": "runtime-packaging",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global runtime-packaging definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-17T13:01:34.403Z"
+    },
+    {
+      "id": "agent-reuse:geofinderx-2yFsDY:runtime-packaging-agent",
+      "projectExecution": "geofinderx-2yFsDY",
+      "selectedAgent": "runtime-packaging-agent",
+      "requestedRole": "runtime-packaging",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global runtime-packaging definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:24.009Z"
+    },
+    {
+      "id": "agent-reuse:agenticongen-9TUSjQ:runtime-packaging-agent",
+      "projectExecution": "agenticongen-9TUSjQ",
+      "selectedAgent": "runtime-packaging-agent",
+      "requestedRole": "runtime-packaging",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global runtime-packaging definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:26.988Z"
+    },
+    {
+      "id": "agent-reuse:investmentfinderx-z8rTq_:runtime-packaging-agent",
+      "projectExecution": "investmentfinderx-z8rTq_",
+      "selectedAgent": "runtime-packaging-agent",
+      "requestedRole": "runtime-packaging",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global runtime-packaging definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:29.282Z"
+    },
+    {
+      "id": "agent-reuse:whatsappmediaanalyser-oAeSvn:runtime-packaging-agent",
+      "projectExecution": "whatsappmediaanalyser-oAeSvn",
+      "selectedAgent": "runtime-packaging-agent",
+      "requestedRole": "runtime-packaging",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global runtime-packaging definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:32.872Z"
+    },
+    {
+      "id": "agent-reuse:spydash-qkWtmJ:runtime-packaging-agent",
+      "projectExecution": "spydash-qkWtmJ",
+      "selectedAgent": "runtime-packaging-agent",
+      "requestedRole": "runtime-packaging",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global runtime-packaging definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:36.701Z"
+    },
+    {
+      "id": "agent-reuse:webforbusinesses-xu7qsM:runtime-packaging-agent",
+      "projectExecution": "webforbusinesses-xu7qsM",
+      "selectedAgent": "runtime-packaging-agent",
+      "requestedRole": "runtime-packaging",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global runtime-packaging definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:38.494Z"
+    },
+    {
+      "id": "agent-reuse:researchanddevx-xF8SDs:runtime-packaging-agent",
+      "projectExecution": "researchanddevx-xF8SDs",
+      "selectedAgent": "runtime-packaging-agent",
+      "requestedRole": "runtime-packaging",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global runtime-packaging definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:40.857Z"
+    },
+    {
+      "id": "agent-reuse:bag-commerce-studio-y2obrr:runtime-packaging-agent",
+      "projectExecution": "bag-commerce-studio-y2obrr",
+      "selectedAgent": "runtime-packaging-agent",
+      "requestedRole": "runtime-packaging",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global runtime-packaging definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:42.840Z"
+    },
+    {
+      "id": "agent-reuse:mentalheathcounselor-PJ1N2o:runtime-packaging-agent",
+      "projectExecution": "mentalheathcounselor-PJ1N2o",
+      "selectedAgent": "runtime-packaging-agent",
+      "requestedRole": "runtime-packaging",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global runtime-packaging definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:44.270Z"
+    },
+    {
+      "id": "agent-reuse:videopresentationforproductx-GtDUxv:runtime-packaging-agent",
+      "projectExecution": "videopresentationforproductx-GtDUxv",
+      "selectedAgent": "runtime-packaging-agent",
+      "requestedRole": "runtime-packaging",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global runtime-packaging definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:46.094Z"
+    },
+    {
+      "id": "agent-reuse:brushx-zHXT8q:runtime-packaging-agent",
+      "projectExecution": "brushx-zHXT8q",
+      "selectedAgent": "runtime-packaging-agent",
+      "requestedRole": "runtime-packaging",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global runtime-packaging definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:47.622Z"
+    },
+    {
+      "id": "agent-reuse:voicex-4q9G58:runtime-packaging-agent",
+      "projectExecution": "voicex-4q9G58",
+      "selectedAgent": "runtime-packaging-agent",
+      "requestedRole": "runtime-packaging",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global runtime-packaging definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:48.738Z"
+    },
+    {
+      "id": "agent-reuse:gymx-9JXKDV:runtime-packaging-agent",
+      "projectExecution": "gymx-9JXKDV",
+      "selectedAgent": "runtime-packaging-agent",
+      "requestedRole": "runtime-packaging",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global runtime-packaging definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T15:38:43.936Z"
+    },
+    {
+      "id": "agent-reuse:bag-commerce-studio-Tj4bB8:runtime-packaging-agent",
+      "projectExecution": "bag-commerce-studio-Tj4bB8",
+      "selectedAgent": "runtime-packaging-agent",
+      "requestedRole": "runtime-packaging",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global runtime-packaging definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:52.698Z"
+    },
+    {
+      "id": "agent-reuse:databricksx-n7lCNf:runtime-packaging-agent",
+      "projectExecution": "databricksx-n7lCNf",
+      "selectedAgent": "runtime-packaging-agent",
+      "requestedRole": "runtime-packaging",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global runtime-packaging definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-17T19:20:04.752Z"
+    },
+    {
+      "id": "agent-reuse:cvmakerx-e4XAzI:runtime-packaging-agent",
+      "projectExecution": "cvmakerx-e4XAzI",
+      "selectedAgent": "runtime-packaging-agent",
+      "requestedRole": "runtime-packaging",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global runtime-packaging definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:56.199Z"
+    }
+  ],
+  "latest_reuse_decision": {
+    "id": "agent-reuse:databricksx-n7lCNf:runtime-packaging-agent",
+    "projectExecution": "databricksx-n7lCNf",
+    "selectedAgent": "runtime-packaging-agent",
+    "requestedRole": "runtime-packaging",
+    "decisionType": "exact_reuse",
+    "reuseConfidenceScore": 100,
+    "similarityScore": 1,
+    "reason": "Reused the existing global runtime-packaging definition; project context is stored in a separate assignment.",
+    "createdAt": "2026-08-17T19:20:04.752Z"
+  }
+}

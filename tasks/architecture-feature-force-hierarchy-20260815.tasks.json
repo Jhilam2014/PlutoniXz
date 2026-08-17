@@ -1,0 +1,13 @@
+{
+  "workflow_id": "architecture-feature-force-hierarchy-20260815",
+  "tasks": [
+    { "task_id": "diagnose-api-only-projection", "description": "Trace feature extraction, graph projection, and Architecture rendering behavior.", "status": "completed" },
+    { "task_id": "extract-source-features", "description": "Detect source-backed pages, services, cloud functions, APIs, databases, and their chronology.", "status": "completed" },
+    { "task_id": "build-feature-hierarchy", "description": "Derive explicit parent-child application relationships and hierarchy depth.", "status": "completed" },
+    { "task_id": "render-force-canvas", "description": "Apply a constrained D3 force layout with chronological and hierarchical anchors and complexity-aware radii.", "status": "completed" },
+    { "task_id": "remove-hop-filtering", "description": "Remove depth controls and retain the complete filtered topology while highlighting direct relationships only.", "status": "completed" },
+    { "task_id": "render-directed-relationships", "description": "Draw Canvas arrowheads and selection-scoped relationship labels between source-backed parent and child features.", "status": "completed" },
+    { "task_id": "standardize-architecture-nodes", "description": "Render Architecture features as complexity-scaled circles with centered category icons and no acronym.", "status": "completed" },
+    { "task_id": "validate-architecture-view", "description": "Run syntax checks, focused backend/frontend tests, and the frontend production build.", "status": "completed" }
+  ]
+}

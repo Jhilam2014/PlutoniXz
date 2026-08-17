@@ -1,0 +1,72 @@
+{
+  "projectId": "gymx-9JXKDV",
+  "agentModelVersion": "2.0.0",
+  "decisions": [
+    {
+      "id": "agent-reuse:gymx-9JXKDV:project-orchestrator-agent",
+      "projectExecution": "gymx-9JXKDV",
+      "selectedAgent": "project-orchestrator-agent",
+      "requestedRole": "project-orchestrator",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global project-orchestrator definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T15:38:43.936Z"
+    },
+    {
+      "id": "agent-reuse:gymx-9JXKDV:qagent-controller",
+      "projectExecution": "gymx-9JXKDV",
+      "selectedAgent": "qagent-controller",
+      "requestedRole": "qagent-controller",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global qagent-controller definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T15:38:43.936Z"
+    },
+    {
+      "id": "agent-reuse:gymx-9JXKDV:experience-composition-agent",
+      "projectExecution": "gymx-9JXKDV",
+      "selectedAgent": "experience-composition-agent",
+      "requestedRole": "experience-composition",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global experience-composition definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T15:38:43.936Z"
+    },
+    {
+      "id": "agent-reuse:gymx-9JXKDV:data-contract-agent",
+      "projectExecution": "gymx-9JXKDV",
+      "selectedAgent": "data-contract-agent",
+      "requestedRole": "data-contract",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global data-contract definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T15:38:43.936Z"
+    },
+    {
+      "id": "agent-reuse:gymx-9JXKDV:runtime-packaging-agent",
+      "projectExecution": "gymx-9JXKDV",
+      "selectedAgent": "runtime-packaging-agent",
+      "requestedRole": "runtime-packaging",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global runtime-packaging definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T15:38:43.936Z"
+    },
+    {
+      "id": "agent-reuse:gymx-9JXKDV:design-workshop-review-agent",
+      "projectExecution": "gymx-9JXKDV",
+      "selectedAgent": "design-workshop-review-agent",
+      "requestedRole": "design-workshop-review",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global design-workshop-review definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T15:38:43.936Z"
+    }
+  ]
+}

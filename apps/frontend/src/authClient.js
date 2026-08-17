@@ -1,8 +1,19 @@
 // Deliberately memory-only: a bearer credential must not be persisted in
 // localStorage, sessionStorage, indexedDB, or a client-readable cookie.
-let currentUser = null;
-let bearerToken = "";
-let developmentSubject = "";
+const hotAuthState = import.meta.hot?.data?.authState;
+let currentUser = hotAuthState?.currentUser || null;
+let bearerToken = hotAuthState?.bearerToken || "";
+let developmentSubject = hotAuthState?.developmentSubject || "";
+
+// Vite replaces this module during development without remounting the whole
+// React tree. Carry credentials through that in-memory replacement so the UI
+// cannot appear signed in while authFetch has silently lost its headers. This
+// remains process-memory state and is never persisted in browser storage.
+if (import.meta.hot) {
+  import.meta.hot.dispose((data) => {
+    data.authState = { currentUser, bearerToken, developmentSubject };
+  });
+}
 
 const developmentAuthEnabled = import.meta.env.VITE_PLUTONIX_DEV_AUTH_ENABLED === "true";
 

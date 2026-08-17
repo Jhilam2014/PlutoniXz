@@ -1,0 +1,72 @@
+{
+  "projectId": "webforbusinesses-xu7qsM",
+  "agentModelVersion": "2.0.0",
+  "decisions": [
+    {
+      "id": "agent-reuse:webforbusinesses-xu7qsM:project-orchestrator-agent",
+      "projectExecution": "webforbusinesses-xu7qsM",
+      "selectedAgent": "project-orchestrator-agent",
+      "requestedRole": "project-orchestrator",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global project-orchestrator definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:38.494Z"
+    },
+    {
+      "id": "agent-reuse:webforbusinesses-xu7qsM:qagent-controller",
+      "projectExecution": "webforbusinesses-xu7qsM",
+      "selectedAgent": "qagent-controller",
+      "requestedRole": "qagent-controller",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global qagent-controller definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:38.494Z"
+    },
+    {
+      "id": "agent-reuse:webforbusinesses-xu7qsM:experience-composition-agent",
+      "projectExecution": "webforbusinesses-xu7qsM",
+      "selectedAgent": "experience-composition-agent",
+      "requestedRole": "experience-composition",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global experience-composition definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:38.494Z"
+    },
+    {
+      "id": "agent-reuse:webforbusinesses-xu7qsM:data-contract-agent",
+      "projectExecution": "webforbusinesses-xu7qsM",
+      "selectedAgent": "data-contract-agent",
+      "requestedRole": "data-contract",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global data-contract definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:38.494Z"
+    },
+    {
+      "id": "agent-reuse:webforbusinesses-xu7qsM:runtime-packaging-agent",
+      "projectExecution": "webforbusinesses-xu7qsM",
+      "selectedAgent": "runtime-packaging-agent",
+      "requestedRole": "runtime-packaging",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global runtime-packaging definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:38.494Z"
+    },
+    {
+      "id": "agent-reuse:webforbusinesses-xu7qsM:design-workshop-review-agent",
+      "projectExecution": "webforbusinesses-xu7qsM",
+      "selectedAgent": "design-workshop-review-agent",
+      "requestedRole": "design-workshop-review",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global design-workshop-review definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:38.494Z"
+    }
+  ]
+}

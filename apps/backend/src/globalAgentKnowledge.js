@@ -11,7 +11,9 @@ const protectedAgentIds = new Set([
   "plutonix-fullstack-agent",
   "plutonix-independent-reviewer",
   "human-controller",
-  "project-execution-agent"
+  "project-execution-agent",
+  "project-orchestrator-agent",
+  "qagent-controller"
 ]);
 
 export function plutonixRoot() {
@@ -26,7 +28,7 @@ export function plutonixRoot() {
 
 export function workspaceRoot() {
   if (process.env.PLUTONIX_WORKSPACE_ROOT) return process.env.PLUTONIX_WORKSPACE_ROOT;
-  if (fs.existsSync("/workspace/money/apps")) return "/workspace/money";
+  if (fs.existsSync("/workspace/apps")) return "/workspace";
   return process.env.PLUTONIX_WORKSPACE_ROOT || path.resolve(plutonixRoot(), "..");
 }
 
@@ -74,8 +76,8 @@ function candidateOpenAiEnvFiles(root) {
     path.join(builder, "..", "apps", "geofinderx", ".env"),
     path.join(builder, "..", "..", "apps", "geofinderx", ".env.example"),
     path.join(builder, "..", "..", "apps", "geofinderx", ".env"),
-    "/workspace/money/apps/geofinderx/.env.example",
-    "/workspace/money/apps/geofinderx/.env",
+    "/workspace/apps/geofinderx/.env.example",
+    "/workspace/apps/geofinderx/.env",
     "/workspace/project/.env.example",
     "/workspace/project/.env"
   ]);
@@ -205,7 +207,7 @@ function candidateProjectRoots() {
     .map((entry) => entry.trim())
     .filter(Boolean);
   return uniquePaths([...explicit, builder, path.join(root, "apps", "geofinderx"), path.join(root, "orchestrator-agent-001")]
-    .concat(["/workspace/project", "/workspace/money/apps/geofinderx", "/workspace/money/orchestrator-agent-001"])
+    .concat(["/workspace/project", "/workspace/apps/geofinderx"])
     .map((entry) => path.resolve(entry)));
 }
 
@@ -362,6 +364,8 @@ async function normalizeAgentFromMarkdown({ projectRoot, projectName, filePath, 
     project: prettyProjectName(meta.project_name || projectName),
     role,
     domain,
+    definitionType: meta.definition_type || "",
+    scope: meta.scope || "",
     status: meta.status || vector?.status || "active",
     version: meta.version || "",
     objective,
@@ -460,13 +464,16 @@ function mergeVectorFileIntoAgent(agent, file, vectorStoreId) {
   };
 }
 
-const singletonAgentIds = new Set(["project-execution-agent", "human-controller"]);
+const singletonAgentIds = new Set(["project-execution-agent", "project-orchestrator-agent", "qagent-controller", "human-controller"]);
 
 function collapseDisplayDuplicates(agents) {
   const byKey = new Map();
   for (const agent of agents) {
-    const key = singletonAgentIds.has(agent.id) ? `singleton:${agent.id}` : `${agent.project}:${agent.id}`;
-    const candidate = singletonAgentIds.has(agent.id)
+    const isReusableDefinition = singletonAgentIds.has(agent.id)
+      || agent.scope === "global_reusable"
+      || agent.definitionType === "AgentDefinition";
+    const key = isReusableDefinition ? `singleton:${agent.id}` : `${agent.project}:${agent.id}`;
+    const candidate = isReusableDefinition
       ? { ...agent, project: "Shared Orchestrator Runtime" }
       : agent;
     const existing = byKey.get(key);

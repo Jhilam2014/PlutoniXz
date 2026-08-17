@@ -1,0 +1,25 @@
+{
+  "workflow_id": "agentic-system-architecture-rails-20260814",
+  "tasks": [
+    {
+      "task_id": "connector-audit",
+      "description": "Measure the Architecture projection and identify the root-spoke and high-fanout routing sources of visual clutter.",
+      "status": "completed"
+    },
+    {
+      "task_id": "rail-routing-model",
+      "description": "Create a presentation-only rail plan that conserves every source relationship and keeps local child links addressable.",
+      "status": "completed"
+    },
+    {
+      "task_id": "architecture-renderer",
+      "description": "Render contained source zones, ancestry rails, local twigs, and an explicit unmapped-evidence fanout rail.",
+      "status": "completed"
+    },
+    {
+      "task_id": "regression-validation",
+      "description": "Add semantic-conservation tests and run frontend model tests, syntax checks, and the production build.",
+      "status": "completed"
+    }
+  ]
+}

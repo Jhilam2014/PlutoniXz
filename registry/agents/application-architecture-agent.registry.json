@@ -1,0 +1,55 @@
+{
+  "agent_id": "application-architecture-agent",
+  "agent_name": "Application Architecture Agent",
+  "role": "application-architecture",
+  "definitionType": "AgentDefinition",
+  "scope": "global_reusable",
+  "version": "1.0.0",
+  "status": "active",
+  "capability_score": {
+    "capabilityScore": 60,
+    "deliverableAccuracyScore": 50,
+    "reliabilityScore": 50,
+    "adaptabilityScore": 70,
+    "reuseConfidenceScore": 40,
+    "successCount": 0,
+    "failureCount": 0,
+    "repeatedCorrectionCount": 0
+  },
+  "projectAssignments": [
+    {
+      "id": "project-agent-assignment:gymx-9JXKDV:application-architecture-agent",
+      "projectId": "gymx-9JXKDV",
+      "agentId": "application-architecture-agent",
+      "role": "application-architecture",
+      "projectResponsibility": "Implement durable workflow, persistence, integration, and recovery boundaries required by the Product Shape Contract.",
+      "status": "active",
+      "contextPath": ".agentic/orchestrator-agent.md",
+      "createdAt": "2026-08-16T08:45:50.365Z"
+    }
+  ],
+  "reuse_decisions": [
+    {
+      "id": "agent-reuse:gymx-9JXKDV:application-architecture-agent",
+      "projectExecution": "gymx-9JXKDV",
+      "selectedAgent": "application-architecture-agent",
+      "requestedRole": "application-architecture",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global application-architecture definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:50.365Z"
+    }
+  ],
+  "latest_reuse_decision": {
+    "id": "agent-reuse:gymx-9JXKDV:application-architecture-agent",
+    "projectExecution": "gymx-9JXKDV",
+    "selectedAgent": "application-architecture-agent",
+    "requestedRole": "application-architecture",
+    "decisionType": "exact_reuse",
+    "reuseConfidenceScore": 100,
+    "similarityScore": 1,
+    "reason": "Reused the existing global application-architecture definition; project context is stored in a separate assignment.",
+    "createdAt": "2026-08-16T08:45:50.365Z"
+  }
+}

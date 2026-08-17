@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "projectId", "agentId", "role", "projectResponsibility", "status", "contextPath", "createdAt"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^project-agent-assignment:" },
+    "projectId": { "type": "string", "minLength": 1 },
+    "agentId": { "type": "string", "minLength": 1 },
+    "role": { "type": "string", "minLength": 1 },
+    "projectResponsibility": { "type": "string", "minLength": 1 },
+    "status": { "enum": ["active", "paused", "disabled", "archived"] },
+    "contextPath": { "type": "string" },
+    "createdAt": { "type": "string", "format": "date-time" }
+  }
+}

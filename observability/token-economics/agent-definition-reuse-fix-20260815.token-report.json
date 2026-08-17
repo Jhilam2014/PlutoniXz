@@ -1,0 +1,27 @@
+{
+  "workflow_id": "agent-definition-reuse-fix-20260815",
+  "task_size": "medium",
+  "context_budget": "medium_context",
+  "model_provider": "openai",
+  "model_name": "codex",
+  "agent_id": "project-execution-agent",
+  "phase": "final_response",
+  "input_tokens": 0,
+  "output_tokens": 0,
+  "cached_input_tokens": 0,
+  "reasoning_tokens": 0,
+  "tool_calls_count": 0,
+  "files_read_count": 12,
+  "files_modified_count": 9,
+  "memory_queries_count": 1,
+  "graph_queries_count": 1,
+  "estimated_cost": 0,
+  "currency": "USD",
+  "published_at": "2026-08-15T16:30:00Z",
+  "source": "unavailable",
+  "token_saving_decisions": [
+    "Exact provider token usage was unavailable; zero values are explicitly not measured usage.",
+    "Used a targeted agent-generation path review instead of a full repository scan.",
+    "Reused the existing project execution agent and added no specialist agents."
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "projectId": "geofinderx-2yFsDY",
+  "agentModelVersion": "2.0.0",
+  "decisions": [
+    {
+      "id": "agent-reuse:geofinderx-2yFsDY:project-orchestrator-agent",
+      "projectExecution": "geofinderx-2yFsDY",
+      "selectedAgent": "project-orchestrator-agent",
+      "requestedRole": "project-orchestrator",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global project-orchestrator definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:24.009Z"
+    },
+    {
+      "id": "agent-reuse:geofinderx-2yFsDY:qagent-controller",
+      "projectExecution": "geofinderx-2yFsDY",
+      "selectedAgent": "qagent-controller",
+      "requestedRole": "qagent-controller",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global qagent-controller definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:24.009Z"
+    },
+    {
+      "id": "agent-reuse:geofinderx-2yFsDY:experience-composition-agent",
+      "projectExecution": "geofinderx-2yFsDY",
+      "selectedAgent": "experience-composition-agent",
+      "requestedRole": "experience-composition",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global experience-composition definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:24.009Z"
+    },
+    {
+      "id": "agent-reuse:geofinderx-2yFsDY:data-contract-agent",
+      "projectExecution": "geofinderx-2yFsDY",
+      "selectedAgent": "data-contract-agent",
+      "requestedRole": "data-contract",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global data-contract definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:24.009Z"
+    },
+    {
+      "id": "agent-reuse:geofinderx-2yFsDY:runtime-packaging-agent",
+      "projectExecution": "geofinderx-2yFsDY",
+      "selectedAgent": "runtime-packaging-agent",
+      "requestedRole": "runtime-packaging",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global runtime-packaging definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:24.009Z"
+    },
+    {
+      "id": "agent-reuse:geofinderx-2yFsDY:design-workshop-review-agent",
+      "projectExecution": "geofinderx-2yFsDY",
+      "selectedAgent": "design-workshop-review-agent",
+      "requestedRole": "design-workshop-review",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global design-workshop-review definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:24.009Z"
+    }
+  ]
+}

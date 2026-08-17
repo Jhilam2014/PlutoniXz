@@ -1,0 +1,28 @@
+{
+  "workflow_id": "architecture-feature-force-hierarchy-20260815",
+  "task_size": "medium",
+  "context_budget": "medium_context",
+  "model_provider": "openai",
+  "model_name": "runtime-configured",
+  "agent_id": "project-execution-agent",
+  "phase": "final_response",
+  "input_tokens": 0,
+  "output_tokens": 0,
+  "cached_input_tokens": 0,
+  "reasoning_tokens": 0,
+  "tool_calls_count": 0,
+  "files_read_count": 10,
+  "files_modified_count": 9,
+  "memory_queries_count": 0,
+  "graph_queries_count": 1,
+  "estimated_cost": 0,
+  "currency": "USD",
+  "published_at": "2026-08-15T17:54:48Z",
+  "source": "unavailable",
+  "token_saving_decisions": [
+    "Exact provider token usage was unavailable; zero values are explicitly not measured usage.",
+    "Inspected the extraction, graph projection, D3 model, renderer, and focused tests instead of scanning unrelated application modules.",
+    "Reused the project execution agent and performed no full graph regeneration or live graph write.",
+    "Removed hop state and reused the existing direct-neighborhood and full dependency traversals."
+  ]
+}

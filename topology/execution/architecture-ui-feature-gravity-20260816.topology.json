@@ -1,0 +1,8 @@
+{
+  "workflow_id": "architecture-ui-feature-gravity-20260816",
+  "mode": "single_agent",
+  "agent_id": "project-execution-agent",
+  "sequence": ["source discovery", "relationship projection", "D3 model", "Canvas force renderer", "PlutoniX UI", "tests and build"],
+  "approval_gates": [],
+  "live_graph_write_performed": false
+}

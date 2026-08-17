@@ -75,6 +75,30 @@ function requirementSegments(value) {
   return segments.length > 1 ? segments.slice(0, 10) : [source];
 }
 
+function functionalityParentSourceId(item = {}) {
+  return String(item.parentSourceId || item.parentFunctionalityId || item.parentId || "").trim();
+}
+
+function flattenFunctionalities(items = [], inheritedParentSourceId = "") {
+  return items.flatMap((item) => {
+    if (!item || typeof item !== "object") return [];
+    const parentSourceId = functionalityParentSourceId(item) || inheritedParentSourceId;
+    const sourceId = String(item.id || "").trim();
+    const children = Array.isArray(item.children)
+      ? item.children
+      : Array.isArray(item.subfunctionalities)
+        ? item.subfunctionalities
+        : [];
+    const current = {
+      ...item,
+      parentSourceId,
+      subfunctionalities: undefined,
+      children: undefined
+    };
+    return [current, ...flattenFunctionalities(children, sourceId || parentSourceId)];
+  });
+}
+
 function uniqueFunctionalities(functionalities = [], structuredRequest = {}) {
   const candidates = functionalities.length
     ? functionalities
@@ -112,8 +136,9 @@ function uniqueFunctionalities(functionalities = [], structuredRequest = {}) {
       detail: "Recorded requirement selected for implementation."
     }));
   });
+  const flattenedCandidates = flattenFunctionalities(expandedCandidates);
   const seen = new Set();
-  return expandedCandidates.filter((item) => {
+  return flattenedCandidates.filter((item) => {
     const key = compact(item?.label).toLowerCase();
     if (!key || seen.has(key)) return false;
     seen.add(key);
@@ -177,15 +202,47 @@ export function buildFunctionalityGraph({
       item.detail || ""
     ].filter(Boolean)
   }));
+  const functionalityIdBySourceId = new Map(
+    functionalityNodes
+      .filter((node) => node.sourceId)
+      .map((node) => [node.sourceId, node.id])
+  );
+  functionalityNodes.forEach((node, index) => {
+    const parentSourceId = functionalityParentSourceId(sourceFunctionalities[index]);
+    const parentId = functionalityIdBySourceId.get(parentSourceId);
+    if (parentId && parentId !== node.id) {
+      node.parentId = parentId;
+      node.type = "subfunctionality";
+    }
+  });
   nodes.push(...functionalityNodes);
 
-  const fallbackParentId = functionalityNodes[0]?.id || rootId;
-  const specificFunctionalities = functionalityNodes.slice(1);
+  const primaryFunctionality = functionalityNodes.find((node) => node.parentId === rootId);
+  const fallbackParentId = primaryFunctionality?.id || rootId;
+  const specificFunctionalities = functionalityNodes.filter((node) => node.id !== fallbackParentId);
+  const hasNestedFunctionalities = functionalityNodes.some((node) => node.parentId !== rootId);
+  const implementationNode = hasNestedFunctionalities && actions.length
+    ? {
+        id: "subfunction-group-implementation",
+        sourceId: "implementation-work",
+        type: "subfunctionality",
+        label: "Implementation work",
+        detail: "Recorded implementation actions that do not map to a more specific child functionality.",
+        state: status,
+        parentId: fallbackParentId,
+        responsibleAgentIds: [ownership.executorId].filter(Boolean),
+        evidence: ["Derived from recorded implementation actions"]
+      }
+    : null;
+  if (implementationNode) nodes.push(implementationNode);
   const actionNodes = actions.map((action, index) => {
     const scored = specificFunctionalities
       .map((node) => ({ node, score: matchingScore(action, node) }))
       .sort((left, right) => right.score - left.score);
-    const parentId = scored[0]?.score > 0 ? scored[0].node.id : fallbackParentId;
+    const explicitParentId = functionalityIdBySourceId.get(
+      String(action.parentSourceId || action.parentFunctionalityId || action.parentId || "").trim()
+    );
+    const parentId = explicitParentId || (scored[0]?.score > 0 ? scored[0].node.id : implementationNode?.id || fallbackParentId);
     const needsReviewer = /review|validate|verification|quality|test/i.test(
       `${action.label || ""} ${action.reason || ""} ${action.target || ""}`
     );
@@ -241,8 +298,19 @@ export function buildFunctionalityGraph({
       action: agent.action || ""
     })),
     summary: {
-      functionalityCount: functionalityNodes.length,
-      subfunctionalityCount: actionNodes.length,
+      functionalityCount: functionalityNodes.filter((node) => node.type === "functionality").length,
+      subfunctionalityCount: nodes.filter((node) => node.type === "subfunctionality").length,
+      maximumDepth: nodes.reduce((maximum, node) => {
+        let depth = 0;
+        let parentId = node.parentId;
+        const visited = new Set([node.id]);
+        while (parentId && !visited.has(parentId)) {
+          visited.add(parentId);
+          depth += 1;
+          parentId = nodes.find((candidate) => candidate.id === parentId)?.parentId || "";
+        }
+        return Math.max(maximum, depth);
+      }, 0),
       assignedNodeCount: nodes.filter((node) => node.responsibleAgentIds.length).length
     }
   };

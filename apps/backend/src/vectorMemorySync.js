@@ -42,8 +42,7 @@ function syncCandidateRoots() {
     path.join(workspace, "apps", "geofinderx"),
     path.join(workspace, "orchestrator-agent-001"),
     "/workspace/project",
-    "/workspace/money/apps/geofinderx",
-    "/workspace/money/orchestrator-agent-001"
+    "/workspace/apps/geofinderx"
   ]);
 }
 

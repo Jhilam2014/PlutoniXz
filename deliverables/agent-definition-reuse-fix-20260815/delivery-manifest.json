@@ -1,0 +1,24 @@
+{
+  "workflow_id": "agent-definition-reuse-fix-20260815",
+  "delivered_at": "2026-08-15T16:30:00Z",
+  "status": "delivered",
+  "deliverables": [
+    { "path": "apps/backend/src/projectAgents.js", "summary": "Reusable definitions, project assignments, enforced reuse decisions, registries, legacy reconciliation, and graph projection." },
+    { "path": "apps/backend/src/globalAgentKnowledge.js", "summary": "Global reusable definitions collapse to one catalog identity across project overlays." },
+    { "path": "apps/backend/src/server.js", "summary": "Project creation now reports reusable agent bindings instead of project-scoped agent creation." },
+    { "path": "apps/backend/test/projectAgentReuse.test.js", "summary": "Behavioral regression coverage for identity reuse, task-size gating, context separation, and migration." },
+    { "path": "schemas/agent-definition.schema.json", "summary": "Global reusable definition contract." },
+    { "path": "schemas/project-agent-assignment.schema.json", "summary": "Project-specific agent binding contract." }
+  ],
+  "validation": {
+    "targeted_tests": { "status": "passed", "passed": 8, "failed": 0 },
+    "backend_suite": { "status": "partial", "passed": 160, "failed": 2, "note": "Unrelated existing failures: OIDC rejection and runtime-exit message assertion." },
+    "syntax_and_schema_parse": { "status": "passed" }
+  },
+  "data_handling": {
+    "real_data_source_used": "Existing local agent registries, project runtime topologies, and generated definition files.",
+    "database_or_api_created": "None",
+    "mock_demo_data_used": false,
+    "production_components_with_hardcoded_business_data": "None"
+  }
+}

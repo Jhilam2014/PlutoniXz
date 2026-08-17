@@ -1,3 +1,5 @@
+name: plutonix
+
 services:
   frontend:
     image: plutonix-frontend:latest
@@ -29,6 +31,11 @@ services:
     container_name: plutonix-backend
     ports:
       - "${BACKEND_PORT:-8080}:8080"
+    # Docker's built-in seccomp policy blocks Bubblewrap namespace setup.
+    # This checked-in derivative retains the default policy and adds only the
+    # namespace/mount syscalls Bubblewrap needs; it is never unconfined.
+    security_opt:
+      - seccomp=./configs/seccomp/gotham-bwrap.json
     environment:
       - PORT=8080
       - GENERATED_SITE_DIR=/workspace/generated-site
@@ -38,10 +45,12 @@ services:
       - RESTART_GENERATED_CONTAINER=${RESTART_GENERATED_CONTAINER:-false}
       - DOCKER_SOCKET_PATH=/var/run/docker.sock
       - WORKFLOW_RUNTIME_LOG_PATH=/workspace/runtime/workflow-runtime-log.jsonl
-      - PROJECTS_ROOT=/workspace/money/apps
-      - PROJECTS_REGISTRY_PATH=/workspace/project/runtime/projects.json
-      - PROJECT_EXPORTS_ROOT=/workspace/project/runtime/exports
-      - PROJECTS_GITIGNORE_PATH=/workspace/money/.gitignore
+      # PlutoniXz is mounted at /workspace/project. Generated projects live in
+      # the sibling host apps/ directory, mounted narrowly at /workspace/apps.
+      - PROJECTS_ROOT=${PROJECTS_ROOT:-/workspace/apps}
+      - PROJECTS_REGISTRY_PATH=${PROJECTS_REGISTRY_PATH:-/workspace/project/runtime/projects.json}
+      - PROJECT_EXPORTS_ROOT=${PROJECT_EXPORTS_ROOT:-/workspace/project/runtime/exports}
+      - PROJECTS_GITIGNORE_PATH=${PROJECTS_GITIGNORE_PATH:-/workspace/.gitignore}
       - PROJECT_PORT_START=${PROJECT_PORT_START:-5300}
       - PROJECT_PORT_END=${PROJECT_PORT_END:-5399}
       - PROJECT_PREVIEW_PORT_RETRY_TIMEOUT_MS=${PROJECT_PREVIEW_PORT_RETRY_TIMEOUT_MS:-120000}
@@ -51,19 +60,24 @@ services:
       - PROJECT_RUNTIME_IMAGE=${PROJECT_RUNTIME_IMAGE:-}
       - PROJECT_RUNTIME_NETWORK=${PROJECT_RUNTIME_NETWORK:-}
       - PLUTONIX_PROJECT_ROOT=/workspace/project
-      - PLUTONIX_WORKSPACE_ROOT=/workspace/money
+      - PLUTONIX_WORKSPACE_ROOT=/workspace
       - PLUTONIX_BACKEND_CONTAINER=plutonix-backend
       - CODEX_HOME=/workspace/codex-home
       - CODEX_BIN=${CODEX_BIN:-/usr/local/bin/codex}
       - CODEX_WORKFLOW_TIMEOUT_MS=${CODEX_WORKFLOW_TIMEOUT_MS:-600000}
       - GOTHAM_RUNTIME_PROBE=true
-      - GOTHAM_FALLBACK_MODEL=${GOTHAM_FALLBACK_MODEL:-}
+      - GOTHAM_SANDBOX_PREFLIGHT=${GOTHAM_SANDBOX_PREFLIGHT:-true}
+      - GOTHAM_SANDBOX_PREFLIGHT_TIMEOUT_MS=${GOTHAM_SANDBOX_PREFLIGHT_TIMEOUT_MS:-8000}
+      - GOTHAM_USE_LEGACY_LANDLOCK_FALLBACK=${GOTHAM_USE_LEGACY_LANDLOCK_FALLBACK:-false}
+      - GOTHAM_FALLBACK_MODEL=${GOTHAM_FALLBACK_MODEL:-gpt-5}
       - ORCHESTRATOR_ARCHIVE_PATH=${ORCHESTRATOR_ARCHIVE_PATH:-/workspace/project/orchestrator-temp/orchestrator-agent-001-main.zip}
       - ORCHESTRATOR_INSTALL_ENABLED=${ORCHESTRATOR_INSTALL_ENABLED:-true}
       - ORCHESTRATOR_BOOTSTRAP_ENABLED=${ORCHESTRATOR_BOOTSTRAP_ENABLED:-true}
       - ORCHESTRATOR_BOOTSTRAP_TIMEOUT_MS=${ORCHESTRATOR_BOOTSTRAP_TIMEOUT_MS:-900000}
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID:-}
       - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET:-}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - OPENAI_DEFAULT_MODEL=${OPENAI_DEFAULT_MODEL:-gpt-5}
       - PLUTONIX_AUTH_MODE=${PLUTONIX_AUTH_MODE:-oidc}
       - PLUTONIX_CORS_ORIGINS=${PLUTONIX_CORS_ORIGINS:-}
       - OIDC_ISSUER=${OIDC_ISSUER:-}
@@ -116,6 +130,10 @@ services:
       - BRAINX_LIVE_PROVIDER_ENABLED=${BRAINX_LIVE_PROVIDER_ENABLED:-false}
       - BRAINX_LIVE_PROVIDER_MAX_COST_USD=${BRAINX_LIVE_PROVIDER_MAX_COST_USD:-0}
       - DECISION_CONTINUITY_RECONSIDERATION_COOLDOWN_MS=${DECISION_CONTINUITY_RECONSIDERATION_COOLDOWN_MS:-1800000}
+      - PROJECT_BRANCH_DISCOVERY_MODEL_ASSIST_ENABLED=${PROJECT_BRANCH_DISCOVERY_MODEL_ASSIST_ENABLED:-true}
+      - PROJECT_BRANCH_DISCOVERY_MODEL=${PROJECT_BRANCH_DISCOVERY_MODEL:-}
+      - PROJECT_BRANCH_DISCOVERY_MAX_MODEL_CALLS=${PROJECT_BRANCH_DISCOVERY_MAX_MODEL_CALLS:-8}
+      - PROJECT_BRANCH_DISCOVERY_MODEL_TIMEOUT_MS=${PROJECT_BRANCH_DISCOVERY_MODEL_TIMEOUT_MS:-15000}
       - DECISION_CONTINUITY_DURABLE_WORKFLOWS=${DECISION_CONTINUITY_DURABLE_WORKFLOWS:-false}
       - DECISION_CONTINUITY_WORKER_CONCURRENCY=${DECISION_CONTINUITY_WORKER_CONCURRENCY:-8}
       - DECISION_CONTINUITY_WORKER_TENANT_CONCURRENCY=${DECISION_CONTINUITY_WORKER_TENANT_CONCURRENCY:-2}
@@ -128,7 +146,8 @@ services:
       - DECISION_CONTINUITY_WORKER_PRINCIPAL_ID=${DECISION_CONTINUITY_WORKER_PRINCIPAL_ID:-}
     volumes:
       - .:/workspace/project
-      - ..:/workspace/money
+      - ../apps:/workspace/apps
+      - ../.gitignore:/workspace/.gitignore
       - ./apps/generated-site:/workspace/generated-site
       - ./runtime:/workspace/runtime
       - ${HOME}/.codex:/workspace/codex-home
@@ -252,11 +271,10 @@ services:
 
 networks:
   plutonix:
-    name: plutonix
     driver: bridge
 
 volumes:
   generated_site_node_modules:
-    name: plutonix-generated-site-node-modules
+    name: plutonix-generated-site-node-modules-v2
   decision_continuity_postgres:
-    name: plutonix-decision-continuity-postgres
+    name: plutonixz-decision-continuity-postgres

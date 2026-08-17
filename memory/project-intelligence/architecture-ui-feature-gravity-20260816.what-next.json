@@ -1,0 +1,12 @@
+{
+  "workflow_id": "architecture-ui-feature-gravity-20260816",
+  "selected_path": "incremental existing-product graph correction",
+  "rejected_paths": [
+    {"path": "full topology regeneration", "reason": "The affected discovery, projection, renderer, and UI boundaries were already identifiable."},
+    {"path": "invent UI-to-service edges", "reason": "Relationships must remain backed by local import and source evidence."}
+  ],
+  "confidence": 0.94,
+  "human_input_needed": false,
+  "validation_status": "passed",
+  "follow_up": "Re-run Analyse branches for managed projects so cached version-6 reports are refreshed to version 7."
+}

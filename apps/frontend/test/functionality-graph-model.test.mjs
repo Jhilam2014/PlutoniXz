@@ -224,3 +224,50 @@ test("spreads dense functionality graphs across a larger force canvas", () => {
     }
   }
 });
+
+test("keeps nested functionality chains away from genesis and lays out every descendant", () => {
+  const graph = normalizeFunctionalityGraph({
+    projectName: "Nested workflow",
+    functionalityGraph: {
+      rootId: "root",
+      nodes: [
+        { id: "root", type: "project", label: "Nested workflow", parentId: "" },
+        { id: "major", type: "functionality", label: "Commerce", parentId: "root" },
+        { id: "catalog", type: "subfunctionality", label: "Catalog", parentId: "major" },
+        { id: "search", type: "subfunctionality", label: "Search", parentId: "catalog" },
+        { id: "index", type: "subfunctionality", label: "Search index", parentId: "search" },
+        { id: "filters", type: "subfunctionality", label: "Search filters", parentId: "search" }
+      ],
+      links: []
+    }
+  });
+  const byId = new Map(graph.nodes.map((node) => [node.id, node]));
+  const layout = layoutFunctionalityGraph(graph);
+  const positioned = new Map(layout.nodes.map((node) => [node.id, node]));
+
+  assert.equal(byId.get("catalog").parentId, "major");
+  assert.equal(byId.get("search").parentId, "catalog");
+  assert.equal(graph.links.filter((link) => link.source === "root").length, 1);
+  assert.ok(layout.nodes.every((node) => Number.isFinite(node.x) && Number.isFinite(node.y)));
+  assert.ok(Math.hypot(positioned.get("catalog").x - positioned.get("major").x, positioned.get("catalog").y - positioned.get("major").y) > 100);
+  assert.ok(Math.hypot(positioned.get("search").x - positioned.get("root").x, positioned.get("search").y - positioned.get("root").y) > 260);
+});
+
+test("upgrades recorded flat route and section nodes into the major functionality hierarchy", () => {
+  const graph = normalizeFunctionalityGraph({
+    projectName: "Recorded workflow",
+    functionalityGraph: {
+      rootId: "root",
+      nodes: [
+        { id: "root", type: "project", label: "Recorded workflow", parentId: "" },
+        { id: "objective", sourceId: "functionality-1", type: "functionality", label: "Build a product", parentId: "root", detail: "Requested project functionality selected for implementation." },
+        { id: "catalog", sourceId: "functionality-2", type: "functionality", label: "Section: catalog", parentId: "root", detail: "Included by the PlutoniX feature and route plan." },
+        { id: "search", sourceId: "functionality-3", type: "functionality", label: "Route: Search", parentId: "root", detail: "Included by the PlutoniX feature and route plan." }
+      ]
+    }
+  });
+
+  assert.equal(graph.nodes.find((node) => node.id === "catalog").parentId, "objective");
+  assert.equal(graph.nodes.find((node) => node.id === "search").parentId, "objective");
+  assert.equal(graph.links.filter((link) => link.source === "root").length, 1);
+});

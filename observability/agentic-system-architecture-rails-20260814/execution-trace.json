@@ -1,0 +1,23 @@
+{
+  "workflow_id": "agentic-system-architecture-rails-20260814",
+  "status": "completed",
+  "task_size": "medium",
+  "product_shape": "existing_product_change",
+  "context_budget": "medium_context",
+  "agents_reused": [
+    "plutonix-fullstack-agent",
+    "architecture_review",
+    "design_review",
+    "data_science_review"
+  ],
+  "agent_creation": "skipped",
+  "review_verdict": "approved_for_implementation_with_truth-preserving rails and local twigs",
+  "graph_update": "presentation-only; source topology retained",
+  "vector_memory": "local sanitized summaries queued for ChromaDB fallback; provider remains pending_install",
+  "validation": [
+    "node --check renderer and model",
+    "npm --prefix apps/frontend test",
+    "npm --prefix apps/frontend run build"
+  ],
+  "completed_at": "2026-08-14T21:33:30Z"
+}

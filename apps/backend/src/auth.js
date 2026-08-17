@@ -241,6 +241,19 @@ export function userFromRequest(req) {
   const userId = String(req.get("x-plutonix-user-id") || req.query?.userId || "").trim();
   const userName = String(req.get("x-plutonix-user-name") || req.query?.userName || "").trim();
   const userEmail = String(req.get("x-plutonix-user-email") || req.query?.userEmail || "").trim();
+  if (!userId && developmentAuthEnabled()) {
+    const subject = String(req.get("x-plutonix-dev-subject") || "").trim();
+    if (subject && subject.length <= 200) {
+      return {
+        id: subject.slice(0, 160),
+        name: String(req.get("x-plutonix-dev-name") || "Local PlutoniX User").slice(0, 120),
+        email: "",
+        authProvider: "development",
+        // Retain access to pre-identity local projects created as anonymous.
+        aliases: ["anonymous"]
+      };
+    }
+  }
   if (!userId) return { id: "anonymous", name: "Local user", email: "", authProvider: "local" };
   return { id: userId.slice(0, 160), name: userName.slice(0, 120) || "PlutoniX user", email: userEmail.slice(0, 160), authProvider: "legacy" };
 }

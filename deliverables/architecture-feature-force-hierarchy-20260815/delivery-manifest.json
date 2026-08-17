@@ -1,0 +1,30 @@
+{
+  "workflow_id": "architecture-feature-force-hierarchy-20260815",
+  "delivered_at": "2026-08-15T17:54:48Z",
+  "status": "delivered",
+  "deliverables": [
+    { "path": "apps/backend/src/projectBranchDiscovery.js", "summary": "Version-5 source scanner now emits chronological pages, services, cloud functions, APIs, databases, and explicit hierarchy links." },
+    { "path": "apps/backend/src/projectAgents.js", "summary": "Application hierarchy, chronology, connector metrics, and service entities are retained in D3 and Neo4j projections; stale cached project topologies refresh locally at startup." },
+    { "path": "apps/backend/src/server.js", "summary": "Architecture analysis cache acceptance now follows the current analysis version." },
+    { "path": "apps/frontend/public/agentic-system/d3/index.html", "summary": "Removed the Architecture neighborhood-depth selector." },
+    { "path": "apps/frontend/public/agentic-system/d3/agentic-system-model.js", "summary": "Architecture projection preserves source-backed non-API features, hierarchy, chronology, and complexity-scaled radius; selection focus is direct-only while the dependency lens remains complete." },
+    { "path": "apps/frontend/public/agentic-system/d3/agentic-system-d3.js", "summary": "Architecture Branches uses a constrained force-directed Canvas-edge layout with arrowheads, selection-scoped relationship labels, centered icons, and no hop state." },
+    { "path": "apps/frontend/public/agentic-system/d3/agentic-system.css", "summary": "Architecture category icons are centered within their circular nodes." },
+    { "path": "apps/backend/test/projectBranchDiscovery.test.js", "summary": "Regression coverage for page-to-subpage-to-API-to-service-to-database hierarchy." },
+    { "path": "apps/frontend/test/agentic-system-model.test.mjs", "summary": "Regression coverage for non-API feature visibility, chronology, hierarchy, anchors, and radius scaling." }
+  ],
+  "validation": {
+    "syntax_checks": { "status": "passed" },
+    "targeted_tests": { "status": "passed", "passed": 37, "failed": 0 },
+    "database_integration_test": { "status": "skipped", "reason": "DECISION_CONTINUITY_TEST_DATABASE_URL is not configured." },
+    "frontend_build": { "status": "passed", "note": "Vite reported the existing bundle-size advisory only." },
+    "stale_topology_refresh_smoke_test": { "status": "passed", "note": "A version-4 fixture refreshed to version 5 with page, API, service, and hierarchy relationships without model calls." },
+    "visual_browser_smoke_test": { "status": "not_run", "reason": "The required in-app browser JavaScript bridge was unavailable in this session." }
+  },
+  "data_handling": {
+    "real_data_source_used": "Allowlisted project source files and source-evidenced imports, routes, services, and database declarations.",
+    "database_or_api_created": "None",
+    "mock_demo_data_used": false,
+    "production_components_with_hardcoded_business_data": "None"
+  }
+}

@@ -200,8 +200,10 @@ test("deletes an agent definition, local memory, registry references, and topolo
 });
 
 test("refuses deletion of required PlutoniX system agents", async () => {
-  await assert.rejects(
-    deleteGlobalAgent({ agentId: "plutonix-fullstack-agent" }),
-    /required PlutoniX system agent cannot be deleted/i
-  );
+  for (const agentId of ["plutonix-fullstack-agent", "project-execution-agent", "project-orchestrator-agent", "qagent-controller"]) {
+    await assert.rejects(
+      deleteGlobalAgent({ agentId }),
+      /required PlutoniX system agent cannot be deleted/i
+    );
+  }
 });

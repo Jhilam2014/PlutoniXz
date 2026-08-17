@@ -1,0 +1,18 @@
+{
+  "workflow_id": "agentic-system-architecture-rails-20260814",
+  "name": "Agentic System Architecture rail redesign",
+  "workflow_class": [
+    "software_engineering",
+    "dashboard_ui",
+    "topology_visualization",
+    "testing_quality"
+  ],
+  "task_size": "medium",
+  "objective": "Replace visually clumsy Architecture Branches connector spaghetti with a professional, truth-preserving rail-and-twig hierarchy.",
+  "status": "completed",
+  "created_at": "2026-08-14T21:33:30Z",
+  "updated_at": "2026-08-14T21:33:30Z",
+  "agent_id": "plutonix-fullstack-agent",
+  "reuse_decision": "exact_reuse_with_independent_review",
+  "review_mode": "architecture_design_data_read_only_review"
+}

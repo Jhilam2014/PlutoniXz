@@ -1,0 +1,370 @@
+{
+  "agent_id": "experience-composition-agent",
+  "agent_name": "Experience Composition Agent",
+  "role": "experience-composition",
+  "definitionType": "AgentDefinition",
+  "scope": "global_reusable",
+  "version": "1.0.0",
+  "status": "active",
+  "capability_score": {
+    "capabilityScore": 60,
+    "deliverableAccuracyScore": 50,
+    "reliabilityScore": 50,
+    "adaptabilityScore": 70,
+    "reuseConfidenceScore": 40,
+    "successCount": 0,
+    "failureCount": 0,
+    "repeatedCorrectionCount": 0
+  },
+  "projectAssignments": [
+    {
+      "id": "project-agent-assignment:mapex-M6rGkR:experience-composition-agent",
+      "projectId": "mapex-M6rGkR",
+      "agentId": "experience-composition-agent",
+      "role": "experience-composition",
+      "projectResponsibility": "Implement the workflow application using domain-specific information density, navigation, controls, and responsive states.",
+      "status": "active",
+      "contextPath": ".agentic/orchestrator-agent.md",
+      "createdAt": "2026-08-17T13:01:34.403Z"
+    },
+    {
+      "id": "project-agent-assignment:geofinderx-2yFsDY:experience-composition-agent",
+      "projectId": "geofinderx-2yFsDY",
+      "agentId": "experience-composition-agent",
+      "role": "experience-composition",
+      "projectResponsibility": "Implement the workflow application using domain-specific information density, navigation, controls, and responsive states.",
+      "status": "active",
+      "contextPath": ".agentic/orchestrator-agent.md",
+      "createdAt": "2026-08-16T08:45:24.009Z"
+    },
+    {
+      "id": "project-agent-assignment:agenticongen-9TUSjQ:experience-composition-agent",
+      "projectId": "agenticongen-9TUSjQ",
+      "agentId": "experience-composition-agent",
+      "role": "experience-composition",
+      "projectResponsibility": "Implement the workflow application using domain-specific information density, navigation, controls, and responsive states.",
+      "status": "active",
+      "contextPath": ".agentic/orchestrator-agent.md",
+      "createdAt": "2026-08-16T08:45:26.988Z"
+    },
+    {
+      "id": "project-agent-assignment:investmentfinderx-z8rTq_:experience-composition-agent",
+      "projectId": "investmentfinderx-z8rTq_",
+      "agentId": "experience-composition-agent",
+      "role": "experience-composition",
+      "projectResponsibility": "Implement the workflow application using domain-specific information density, navigation, controls, and responsive states.",
+      "status": "active",
+      "contextPath": ".agentic/orchestrator-agent.md",
+      "createdAt": "2026-08-16T08:45:29.282Z"
+    },
+    {
+      "id": "project-agent-assignment:whatsappmediaanalyser-oAeSvn:experience-composition-agent",
+      "projectId": "whatsappmediaanalyser-oAeSvn",
+      "agentId": "experience-composition-agent",
+      "role": "experience-composition",
+      "projectResponsibility": "Implement the workflow application using domain-specific information density, navigation, controls, and responsive states.",
+      "status": "active",
+      "contextPath": ".agentic/orchestrator-agent.md",
+      "createdAt": "2026-08-16T08:45:32.873Z"
+    },
+    {
+      "id": "project-agent-assignment:spydash-qkWtmJ:experience-composition-agent",
+      "projectId": "spydash-qkWtmJ",
+      "agentId": "experience-composition-agent",
+      "role": "experience-composition",
+      "projectResponsibility": "Implement the workflow application using domain-specific information density, navigation, controls, and responsive states.",
+      "status": "active",
+      "contextPath": ".agentic/orchestrator-agent.md",
+      "createdAt": "2026-08-16T08:45:36.701Z"
+    },
+    {
+      "id": "project-agent-assignment:webforbusinesses-xu7qsM:experience-composition-agent",
+      "projectId": "webforbusinesses-xu7qsM",
+      "agentId": "experience-composition-agent",
+      "role": "experience-composition",
+      "projectResponsibility": "Implement the workflow application using domain-specific information density, navigation, controls, and responsive states.",
+      "status": "active",
+      "contextPath": ".agentic/orchestrator-agent.md",
+      "createdAt": "2026-08-16T08:45:38.494Z"
+    },
+    {
+      "id": "project-agent-assignment:researchanddevx-xF8SDs:experience-composition-agent",
+      "projectId": "researchanddevx-xF8SDs",
+      "agentId": "experience-composition-agent",
+      "role": "experience-composition",
+      "projectResponsibility": "Implement the workflow application using domain-specific information density, navigation, controls, and responsive states.",
+      "status": "active",
+      "contextPath": ".agentic/orchestrator-agent.md",
+      "createdAt": "2026-08-16T08:45:40.857Z"
+    },
+    {
+      "id": "project-agent-assignment:bag-commerce-studio-y2obrr:experience-composition-agent",
+      "projectId": "bag-commerce-studio-y2obrr",
+      "agentId": "experience-composition-agent",
+      "role": "experience-composition",
+      "projectResponsibility": "Implement the workflow application using domain-specific information density, navigation, controls, and responsive states.",
+      "status": "active",
+      "contextPath": ".agentic/orchestrator-agent.md",
+      "createdAt": "2026-08-16T08:45:42.840Z"
+    },
+    {
+      "id": "project-agent-assignment:mentalheathcounselor-PJ1N2o:experience-composition-agent",
+      "projectId": "mentalheathcounselor-PJ1N2o",
+      "agentId": "experience-composition-agent",
+      "role": "experience-composition",
+      "projectResponsibility": "Implement the workflow application using domain-specific information density, navigation, controls, and responsive states.",
+      "status": "active",
+      "contextPath": ".agentic/orchestrator-agent.md",
+      "createdAt": "2026-08-16T08:45:44.270Z"
+    },
+    {
+      "id": "project-agent-assignment:videopresentationforproductx-GtDUxv:experience-composition-agent",
+      "projectId": "videopresentationforproductx-GtDUxv",
+      "agentId": "experience-composition-agent",
+      "role": "experience-composition",
+      "projectResponsibility": "Implement the workflow application using domain-specific information density, navigation, controls, and responsive states.",
+      "status": "active",
+      "contextPath": ".agentic/orchestrator-agent.md",
+      "createdAt": "2026-08-16T08:45:46.094Z"
+    },
+    {
+      "id": "project-agent-assignment:brushx-zHXT8q:experience-composition-agent",
+      "projectId": "brushx-zHXT8q",
+      "agentId": "experience-composition-agent",
+      "role": "experience-composition",
+      "projectResponsibility": "Implement the workflow application using domain-specific information density, navigation, controls, and responsive states.",
+      "status": "active",
+      "contextPath": ".agentic/orchestrator-agent.md",
+      "createdAt": "2026-08-16T08:45:47.622Z"
+    },
+    {
+      "id": "project-agent-assignment:voicex-4q9G58:experience-composition-agent",
+      "projectId": "voicex-4q9G58",
+      "agentId": "experience-composition-agent",
+      "role": "experience-composition",
+      "projectResponsibility": "Implement the conversation_workspace using domain-specific information density, navigation, controls, and responsive states.",
+      "status": "active",
+      "contextPath": ".agentic/orchestrator-agent.md",
+      "createdAt": "2026-08-16T08:45:48.738Z"
+    },
+    {
+      "id": "project-agent-assignment:gymx-9JXKDV:experience-composition-agent",
+      "projectId": "gymx-9JXKDV",
+      "agentId": "experience-composition-agent",
+      "role": "experience-composition",
+      "projectResponsibility": "Implement the workflow application using domain-specific information density, navigation, controls, and responsive states.",
+      "status": "active",
+      "contextPath": ".agentic/orchestrator-agent.md",
+      "createdAt": "2026-08-16T15:38:43.936Z"
+    },
+    {
+      "id": "project-agent-assignment:bag-commerce-studio-Tj4bB8:experience-composition-agent",
+      "projectId": "bag-commerce-studio-Tj4bB8",
+      "agentId": "experience-composition-agent",
+      "role": "experience-composition",
+      "projectResponsibility": "Implement the workflow application using domain-specific information density, navigation, controls, and responsive states.",
+      "status": "active",
+      "contextPath": ".agentic/orchestrator-agent.md",
+      "createdAt": "2026-08-16T08:45:52.698Z"
+    },
+    {
+      "id": "project-agent-assignment:databricksx-n7lCNf:experience-composition-agent",
+      "projectId": "databricksx-n7lCNf",
+      "agentId": "experience-composition-agent",
+      "role": "experience-composition",
+      "projectResponsibility": "Implement the workflow application using domain-specific information density, navigation, controls, and responsive states.",
+      "status": "active",
+      "contextPath": ".agentic/orchestrator-agent.md",
+      "createdAt": "2026-08-17T19:20:04.752Z"
+    }
+  ],
+  "reuse_decisions": [
+    {
+      "id": "agent-reuse:mapex-M6rGkR:experience-composition-agent",
+      "projectExecution": "mapex-M6rGkR",
+      "selectedAgent": "experience-composition-agent",
+      "requestedRole": "experience-composition",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global experience-composition definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-17T13:01:34.403Z"
+    },
+    {
+      "id": "agent-reuse:geofinderx-2yFsDY:experience-composition-agent",
+      "projectExecution": "geofinderx-2yFsDY",
+      "selectedAgent": "experience-composition-agent",
+      "requestedRole": "experience-composition",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global experience-composition definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:24.009Z"
+    },
+    {
+      "id": "agent-reuse:agenticongen-9TUSjQ:experience-composition-agent",
+      "projectExecution": "agenticongen-9TUSjQ",
+      "selectedAgent": "experience-composition-agent",
+      "requestedRole": "experience-composition",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global experience-composition definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:26.988Z"
+    },
+    {
+      "id": "agent-reuse:investmentfinderx-z8rTq_:experience-composition-agent",
+      "projectExecution": "investmentfinderx-z8rTq_",
+      "selectedAgent": "experience-composition-agent",
+      "requestedRole": "experience-composition",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global experience-composition definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:29.282Z"
+    },
+    {
+      "id": "agent-reuse:whatsappmediaanalyser-oAeSvn:experience-composition-agent",
+      "projectExecution": "whatsappmediaanalyser-oAeSvn",
+      "selectedAgent": "experience-composition-agent",
+      "requestedRole": "experience-composition",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global experience-composition definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:32.872Z"
+    },
+    {
+      "id": "agent-reuse:spydash-qkWtmJ:experience-composition-agent",
+      "projectExecution": "spydash-qkWtmJ",
+      "selectedAgent": "experience-composition-agent",
+      "requestedRole": "experience-composition",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global experience-composition definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:36.701Z"
+    },
+    {
+      "id": "agent-reuse:webforbusinesses-xu7qsM:experience-composition-agent",
+      "projectExecution": "webforbusinesses-xu7qsM",
+      "selectedAgent": "experience-composition-agent",
+      "requestedRole": "experience-composition",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global experience-composition definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:38.494Z"
+    },
+    {
+      "id": "agent-reuse:researchanddevx-xF8SDs:experience-composition-agent",
+      "projectExecution": "researchanddevx-xF8SDs",
+      "selectedAgent": "experience-composition-agent",
+      "requestedRole": "experience-composition",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global experience-composition definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:40.857Z"
+    },
+    {
+      "id": "agent-reuse:bag-commerce-studio-y2obrr:experience-composition-agent",
+      "projectExecution": "bag-commerce-studio-y2obrr",
+      "selectedAgent": "experience-composition-agent",
+      "requestedRole": "experience-composition",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global experience-composition definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:42.840Z"
+    },
+    {
+      "id": "agent-reuse:mentalheathcounselor-PJ1N2o:experience-composition-agent",
+      "projectExecution": "mentalheathcounselor-PJ1N2o",
+      "selectedAgent": "experience-composition-agent",
+      "requestedRole": "experience-composition",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global experience-composition definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:44.270Z"
+    },
+    {
+      "id": "agent-reuse:videopresentationforproductx-GtDUxv:experience-composition-agent",
+      "projectExecution": "videopresentationforproductx-GtDUxv",
+      "selectedAgent": "experience-composition-agent",
+      "requestedRole": "experience-composition",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global experience-composition definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:46.094Z"
+    },
+    {
+      "id": "agent-reuse:brushx-zHXT8q:experience-composition-agent",
+      "projectExecution": "brushx-zHXT8q",
+      "selectedAgent": "experience-composition-agent",
+      "requestedRole": "experience-composition",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global experience-composition definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:47.622Z"
+    },
+    {
+      "id": "agent-reuse:voicex-4q9G58:experience-composition-agent",
+      "projectExecution": "voicex-4q9G58",
+      "selectedAgent": "experience-composition-agent",
+      "requestedRole": "experience-composition",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global experience-composition definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:48.738Z"
+    },
+    {
+      "id": "agent-reuse:gymx-9JXKDV:experience-composition-agent",
+      "projectExecution": "gymx-9JXKDV",
+      "selectedAgent": "experience-composition-agent",
+      "requestedRole": "experience-composition",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global experience-composition definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T15:38:43.936Z"
+    },
+    {
+      "id": "agent-reuse:bag-commerce-studio-Tj4bB8:experience-composition-agent",
+      "projectExecution": "bag-commerce-studio-Tj4bB8",
+      "selectedAgent": "experience-composition-agent",
+      "requestedRole": "experience-composition",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global experience-composition definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:52.698Z"
+    },
+    {
+      "id": "agent-reuse:databricksx-n7lCNf:experience-composition-agent",
+      "projectExecution": "databricksx-n7lCNf",
+      "selectedAgent": "experience-composition-agent",
+      "requestedRole": "experience-composition",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global experience-composition definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-17T19:20:04.751Z"
+    }
+  ],
+  "latest_reuse_decision": {
+    "id": "agent-reuse:databricksx-n7lCNf:experience-composition-agent",
+    "projectExecution": "databricksx-n7lCNf",
+    "selectedAgent": "experience-composition-agent",
+    "requestedRole": "experience-composition",
+    "decisionType": "exact_reuse",
+    "reuseConfidenceScore": 100,
+    "similarityScore": 1,
+    "reason": "Reused the existing global experience-composition definition; project context is stored in a separate assignment.",
+    "createdAt": "2026-08-17T19:20:04.751Z"
+  }
+}

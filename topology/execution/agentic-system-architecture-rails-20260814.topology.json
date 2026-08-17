@@ -1,0 +1,43 @@
+{
+  "workflow_id": "agentic-system-architecture-rails-20260814",
+  "status": "completed",
+  "nodes": [
+    {
+      "id": "connector-audit",
+      "type": "task",
+      "status": "completed"
+    },
+    {
+      "id": "rail-routing-model",
+      "type": "task",
+      "status": "completed"
+    },
+    {
+      "id": "architecture-renderer",
+      "type": "task",
+      "status": "completed"
+    },
+    {
+      "id": "regression-validation",
+      "type": "task",
+      "status": "completed"
+    }
+  ],
+  "links": [
+    {
+      "source": "connector-audit",
+      "target": "rail-routing-model",
+      "type": "informs"
+    },
+    {
+      "source": "rail-routing-model",
+      "target": "architecture-renderer",
+      "type": "precedes"
+    },
+    {
+      "source": "architecture-renderer",
+      "target": "regression-validation",
+      "type": "precedes"
+    }
+  ]
+}

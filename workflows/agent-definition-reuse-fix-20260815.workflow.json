@@ -1,0 +1,13 @@
+{
+  "workflow_id": "agent-definition-reuse-fix-20260815",
+  "name": "Reusable agent definition and project assignment correction",
+  "workflow_class": ["software_engineering", "ai_agent_system", "graph_systems", "testing_quality"],
+  "task_size": "medium",
+  "objective": "Stop project creation from cloning semantically identical agents and bind reusable global definitions through project-specific assignments.",
+  "product_shape": "existing_product_change",
+  "status": "completed",
+  "created_at": "2026-08-15T16:30:00Z",
+  "updated_at": "2026-08-15T16:30:00Z",
+  "agent_id": "project-execution-agent",
+  "reuse_decision": "exact_reuse"
+}

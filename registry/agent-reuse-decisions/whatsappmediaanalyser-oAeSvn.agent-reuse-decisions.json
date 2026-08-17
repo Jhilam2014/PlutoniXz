@@ -1,0 +1,72 @@
+{
+  "projectId": "whatsappmediaanalyser-oAeSvn",
+  "agentModelVersion": "2.0.0",
+  "decisions": [
+    {
+      "id": "agent-reuse:whatsappmediaanalyser-oAeSvn:project-orchestrator-agent",
+      "projectExecution": "whatsappmediaanalyser-oAeSvn",
+      "selectedAgent": "project-orchestrator-agent",
+      "requestedRole": "project-orchestrator",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global project-orchestrator definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:32.872Z"
+    },
+    {
+      "id": "agent-reuse:whatsappmediaanalyser-oAeSvn:qagent-controller",
+      "projectExecution": "whatsappmediaanalyser-oAeSvn",
+      "selectedAgent": "qagent-controller",
+      "requestedRole": "qagent-controller",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global qagent-controller definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:32.872Z"
+    },
+    {
+      "id": "agent-reuse:whatsappmediaanalyser-oAeSvn:experience-composition-agent",
+      "projectExecution": "whatsappmediaanalyser-oAeSvn",
+      "selectedAgent": "experience-composition-agent",
+      "requestedRole": "experience-composition",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global experience-composition definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:32.872Z"
+    },
+    {
+      "id": "agent-reuse:whatsappmediaanalyser-oAeSvn:data-contract-agent",
+      "projectExecution": "whatsappmediaanalyser-oAeSvn",
+      "selectedAgent": "data-contract-agent",
+      "requestedRole": "data-contract",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global data-contract definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:32.872Z"
+    },
+    {
+      "id": "agent-reuse:whatsappmediaanalyser-oAeSvn:runtime-packaging-agent",
+      "projectExecution": "whatsappmediaanalyser-oAeSvn",
+      "selectedAgent": "runtime-packaging-agent",
+      "requestedRole": "runtime-packaging",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global runtime-packaging definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:32.872Z"
+    },
+    {
+      "id": "agent-reuse:whatsappmediaanalyser-oAeSvn:design-workshop-review-agent",
+      "projectExecution": "whatsappmediaanalyser-oAeSvn",
+      "selectedAgent": "design-workshop-review-agent",
+      "requestedRole": "design-workshop-review",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global design-workshop-review definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:32.872Z"
+    }
+  ]
+}

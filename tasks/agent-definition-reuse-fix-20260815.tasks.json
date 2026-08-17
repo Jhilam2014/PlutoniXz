@@ -1,0 +1,10 @@
+{
+  "workflow_id": "agent-definition-reuse-fix-20260815",
+  "tasks": [
+    { "task_id": "diagnose-agent-cloning", "description": "Trace project agent identity generation, discovery, persistence, and duplicate sync behavior.", "status": "completed" },
+    { "task_id": "split-definition-assignment", "description": "Introduce reusable AgentDefinition identities and project-local ProjectAgentAssignment bindings.", "status": "completed" },
+    { "task_id": "enforce-reuse-gate", "description": "Require and persist one AgentReuseDecision for every selected agent.", "status": "completed" },
+    { "task_id": "reconcile-legacy-definitions", "description": "Archive managed legacy project-prefixed definitions during topology migration.", "status": "completed" },
+    { "task_id": "validate-reuse", "description": "Prove equivalent projects share definitions while retaining distinct assignment IDs.", "status": "completed" }
+  ]
+}

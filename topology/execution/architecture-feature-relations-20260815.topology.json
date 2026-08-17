@@ -1,0 +1,19 @@
+{
+  "workflow_id": "architecture-feature-relations-20260815",
+  "status": "completed",
+  "nodes": [
+    { "id": "trace-page-dependencies", "type": "task", "status": "completed" },
+    { "id": "discover-imported-relations", "type": "task", "status": "completed" },
+    { "id": "remove-project-feature-node", "type": "task", "status": "completed" },
+    { "id": "simplify-canvas-relations", "type": "task", "status": "completed" },
+    { "id": "move-details-to-insight", "type": "task", "status": "completed" },
+    { "id": "validate-correction", "type": "validation", "status": "completed" }
+  ],
+  "links": [
+    { "source": "trace-page-dependencies", "target": "discover-imported-relations", "type": "informs" },
+    { "source": "discover-imported-relations", "target": "remove-project-feature-node", "type": "precedes" },
+    { "source": "remove-project-feature-node", "target": "simplify-canvas-relations", "type": "precedes" },
+    { "source": "simplify-canvas-relations", "target": "move-details-to-insight", "type": "precedes" },
+    { "source": "move-details-to-insight", "target": "validate-correction", "type": "precedes" }
+  ]
+}

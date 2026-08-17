@@ -1,0 +1,72 @@
+{
+  "projectId": "spydash-qkWtmJ",
+  "agentModelVersion": "2.0.0",
+  "decisions": [
+    {
+      "id": "agent-reuse:spydash-qkWtmJ:project-orchestrator-agent",
+      "projectExecution": "spydash-qkWtmJ",
+      "selectedAgent": "project-orchestrator-agent",
+      "requestedRole": "project-orchestrator",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global project-orchestrator definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:36.701Z"
+    },
+    {
+      "id": "agent-reuse:spydash-qkWtmJ:qagent-controller",
+      "projectExecution": "spydash-qkWtmJ",
+      "selectedAgent": "qagent-controller",
+      "requestedRole": "qagent-controller",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global qagent-controller definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:36.701Z"
+    },
+    {
+      "id": "agent-reuse:spydash-qkWtmJ:experience-composition-agent",
+      "projectExecution": "spydash-qkWtmJ",
+      "selectedAgent": "experience-composition-agent",
+      "requestedRole": "experience-composition",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global experience-composition definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:36.701Z"
+    },
+    {
+      "id": "agent-reuse:spydash-qkWtmJ:data-contract-agent",
+      "projectExecution": "spydash-qkWtmJ",
+      "selectedAgent": "data-contract-agent",
+      "requestedRole": "data-contract",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global data-contract definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:36.701Z"
+    },
+    {
+      "id": "agent-reuse:spydash-qkWtmJ:runtime-packaging-agent",
+      "projectExecution": "spydash-qkWtmJ",
+      "selectedAgent": "runtime-packaging-agent",
+      "requestedRole": "runtime-packaging",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global runtime-packaging definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:36.701Z"
+    },
+    {
+      "id": "agent-reuse:spydash-qkWtmJ:design-workshop-review-agent",
+      "projectExecution": "spydash-qkWtmJ",
+      "selectedAgent": "design-workshop-review-agent",
+      "requestedRole": "design-workshop-review",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global design-workshop-review definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-16T08:45:36.701Z"
+    }
+  ]
+}

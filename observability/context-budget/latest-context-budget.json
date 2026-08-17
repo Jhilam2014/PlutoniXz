@@ -1,16 +1,19 @@
 {
-  "task_size": "large",
-  "context_budget": "large_context",
-  "reason": "Security-sensitive R2 equality preservation, deterministic candidate-semantic triage, R4 external-queue supersession, and conditional 08A1D gating cross multiple evidence boundaries.",
+  "workflow_id": "architecture-feature-force-hierarchy-20260815",
+  "task_size": "medium",
+  "context_budget": "medium_context",
+  "reason": "The correction crosses source discovery, application hierarchy projection, D3 force layout, cache versioning, and focused regression tests.",
   "files_read": [
-    "AGENTS.md",
-    "docs/agent-instruction-quality.md",
-    "docs/production-readiness/evidence/08a1b-r2-logical-credential-inventory.sanitized.json",
-    "docs/production-readiness/evidence/08a1c-external-r4/",
-    "docs/production-readiness/evidence/08a1b-r3-semantic-classification.sanitized.json",
-    "scripts/reconstruct-08a1b-r2.mjs",
-    "scripts/run-08a1b-r3-semantic-triage.mjs",
-    "scripts/scan-08a1d-artifacts.mjs"
+    "apps/backend/src/projectBranchDiscovery.js",
+    "apps/backend/src/projectAgents.js",
+    "apps/backend/src/server.js",
+    "apps/backend/test/projectBranchDiscovery.test.js",
+    "apps/frontend/public/agentic-system/d3/agentic-system-model.js",
+    "apps/frontend/public/agentic-system/d3/agentic-system-d3.js",
+    "apps/frontend/public/agentic-system/d3/agentic-system.css",
+    "apps/frontend/public/agentic-system/d3/index.html",
+    "apps/frontend/test/agentic-system-model.test.mjs",
+    "topology/d3/agentic-system-graph.json"
   ],
-  "created_at": "2026-08-12T21:42:44Z"
+  "created_at": "2026-08-15T17:54:48Z"
 }

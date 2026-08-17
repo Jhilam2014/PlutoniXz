@@ -1,8 +1,48 @@
 import fs from "fs-extra";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { ANALYSIS_VERSION, analyzeProjectArchitecture } from "./projectBranchDiscovery.js";
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../..");
+const agentModelVersion = "2.0.0";
+
+const reusableInfrastructureAgents = Object.freeze([
+  {
+    id: "project-orchestrator-agent",
+    name: "Project Orchestrator Agent",
+    role: "project-orchestrator",
+    responsibility: "Read the project instruction, decide required specialist bindings, and coordinate Gotham workflow handoff."
+  },
+  {
+    id: "project-execution-agent",
+    name: "Project Execution Agent",
+    role: "project-execution",
+    responsibility: "Execute a bounded project change using verified local context, the smallest safe patch, and proportional validation."
+  },
+  {
+    id: "qagent-controller",
+    name: "QAgent Controller",
+    role: "qagent-controller",
+    responsibility: "Evaluate end-of-response objective gaps and produce stop decisions or strict next-instruction packets without directly implementing code."
+  }
+]);
+
+const reusableRoleResponsibilities = Object.freeze({
+  "artifact-production": "Produce and validate artifact-native deliverables without substituting an unrelated application shell.",
+  "service-runtime": "Implement service and automation entrypoints, contracts, configuration, and failure behavior.",
+  "service-validation": "Validate inputs, outputs, schemas, executable behavior, and task-appropriate packaging.",
+  "experience-composition": "Implement domain-appropriate information architecture, controls, responsive states, and interaction behavior.",
+  "data-contract": "Define real data sources, persistence boundaries, provenance, and explicit empty, loading, and error states.",
+  "runtime-packaging": "Maintain justified runtime, dependency, export, and standalone container assets.",
+  "application-architecture": "Own durable application boundaries, integration contracts, and cross-surface architecture.",
+  "design-workshop-review": "Review design strategy, workflow clarity, accessibility, responsiveness, and visual hierarchy without removing behavior.",
+  "governance-security": "Review governance, security, privacy, approval, and audit boundaries.",
+  "commerce-catalog": "Own catalog, commerce, and transaction-oriented application contracts.",
+  "pricing-conversion": "Own pricing, conversion, and purchase-flow behavior using source-backed data.",
+  "analytics-dashboard": "Own monitoring and analytical surfaces backed by real aggregation sources.",
+  "media-asset": "Own supplied media provenance, processing, placement, and output validation.",
+  "ui-functionality-mapper": "Map referenced UI nodes to concrete behavior, state, data contracts, and validation evidence."
+});
 
 function projectRoot() {
   return process.env.PLUTONIX_PROJECT_ROOT || repoRoot;
@@ -18,6 +58,18 @@ function deletedAgentsPath() {
 
 function generatedAgentsRoot() {
   return process.env.PROJECT_AGENT_MARKDOWN_ROOT || path.join(projectRoot(), "agents", "generated");
+}
+
+function archivedAgentsRoot() {
+  return process.env.PROJECT_AGENT_ARCHIVE_ROOT || path.join(projectRoot(), "agents", "archived", "legacy-project-scoped");
+}
+
+function reuseDecisionRoot() {
+  return process.env.PROJECT_AGENT_REUSE_DECISION_ROOT || path.join(projectRoot(), "registry", "agent-reuse-decisions");
+}
+
+function agentRegistryRoot() {
+  return process.env.PROJECT_AGENT_REGISTRY_ROOT || path.join(projectRoot(), "registry", "agents");
 }
 
 function generatedGraphPath() {
@@ -70,6 +122,77 @@ function titleCase(value) {
     .join(" ");
 }
 
+function reusableAgentDefinition(agent) {
+  const role = agent.role || agent.key;
+  return {
+    id: agent.id || `${sanitizeAgentId(role)}-agent`,
+    name: agent.name || `${titleCase(role)} Agent`,
+    role,
+    responsibility: reusableRoleResponsibilities[role] || agent.responsibility,
+    source: agent.source || "instruction-derived",
+    definitionType: "AgentDefinition",
+    scope: "global_reusable",
+    version: agent.version || "1.0.0"
+  };
+}
+
+function uniqueAgentDefinitions(rows = []) {
+  const definitions = new Map();
+  for (const row of rows) {
+    if (!row?.id || !row?.role) continue;
+    const isReusable = row.scope === "global_reusable" || row.definitionType === "AgentDefinition" || !row.projectId;
+    if (!isReusable) continue;
+    if (!definitions.has(row.id)) definitions.set(row.id, reusableAgentDefinition(row));
+  }
+  return [...definitions.values()];
+}
+
+function resolveAgent(requested, candidates, project) {
+  const candidate = candidates.find((agent) => agent.id === requested.id)
+    || candidates.find((agent) => agent.role === requested.role && agent.scope === "global_reusable");
+  const selected = reusableAgentDefinition(candidate || requested);
+  const decisionType = candidate ? "exact_reuse" : "create_new_agent";
+  return {
+    agent: selected,
+    decision: {
+      id: `agent-reuse:${project.id}:${selected.id}`,
+      projectExecution: project.id,
+      selectedAgent: selected.id,
+      requestedRole: requested.role,
+      decisionType,
+      reuseConfidenceScore: candidate ? 100 : 60,
+      similarityScore: candidate ? 1 : 0,
+      reason: candidate
+        ? `Reused the existing global ${selected.role} definition; project context is stored in a separate assignment.`
+        : `Created the first reusable ${selected.role} definition because no compatible local definition was available.`,
+      createdAt: new Date().toISOString()
+    }
+  };
+}
+
+function taskSizeFor(structuredRequest = {}) {
+  return String(structuredRequest.taskSize || structuredRequest.taskType || "medium").trim().toLowerCase();
+}
+
+function assignmentFor(project, agent, projectResponsibility = "") {
+  return {
+    id: `project-agent-assignment:${project.id}:${agent.id}`,
+    projectId: project.id,
+    agentId: agent.id,
+    role: agent.role,
+    projectResponsibility: projectResponsibility || agent.responsibility,
+    status: "active",
+    contextPath: project.workspaceDir ? ".agentic/orchestrator-agent.md" : "",
+    createdAt: new Date().toISOString()
+  };
+}
+
+function assertReuseDecisionCoverage(agents, decisions) {
+  const covered = new Set((decisions || []).map((decision) => decision.selectedAgent));
+  const missing = (agents || []).filter((agent) => !covered.has(agent.id)).map((agent) => agent.id);
+  if (missing.length) throw new Error(`Agent topology rejected: missing AgentReuseDecision for ${missing.join(", ")}`);
+}
+
 function needsDesignWorkshopAgent(structuredRequest = {}, productDecision = {}) {
   const text = [
     structuredRequest.instruction,
@@ -110,8 +233,9 @@ async function writeManagedEntryFile(filePath, title) {
 async function writeProjectLocalOrchestrator(topology) {
   const workspaceDir = topology.project.workspaceDir;
   if (!workspaceDir) return;
-  const orchestrator = topology.agents.find((agent) => agent.role === "project-orchestrator");
-  const specialists = topology.agents.filter((agent) => !["project-orchestrator", "qagent-controller"].includes(agent.role));
+  const orchestrator = topology.agents.find((agent) => agent.role === "project-orchestrator")
+    || topology.agents.find((agent) => agent.role === "project-execution");
+  const specialists = topology.agents.filter((agent) => !["project-orchestrator", "project-execution", "qagent-controller"].includes(agent.role));
   const supportAgents = topology.agents.filter((agent) => agent.role === "qagent-controller");
   const qagenticContract = supportAgents.length
     ? [
@@ -296,16 +420,31 @@ async function writeProjectLocalOrchestrator(topology) {
     );
   }
 
+  const activeLocalFiles = new Set(topology.agents.map((agent) => `${agent.id}.agent.md`));
+  const existingLocalFiles = (await fs.readdir(localAgentsDir)).filter((file) => file.endsWith(".agent.md"));
+  for (const file of existingLocalFiles) {
+    if (activeLocalFiles.has(file)) continue;
+    const sourcePath = path.join(localAgentsDir, file);
+    const source = await fs.readFile(sourcePath, "utf8").catch(() => "");
+    if (!source.includes(`project_id: ${topology.project.id}`)) continue;
+    const archiveDir = path.join(localAgentsDir, "archive");
+    await fs.ensureDir(archiveDir);
+    await fs.move(sourcePath, path.join(archiveDir, file), { overwrite: true });
+  }
+
   for (const agent of topology.agents) {
+    const assignment = (topology.agentAssignments || []).find((item) => item.agentId === agent.id);
     const body = [
-      `# ${agent.name}`,
+      `# ${topology.project.name} · ${agent.name}`,
       "",
       `agent_id: ${agent.id}`,
+      `assignment_id: ${assignment?.id || "unassigned"}`,
       `project_id: ${topology.project.id}`,
       `role: ${agent.role}`,
+      "definition_scope: global_reusable",
       "",
       "## Responsibility",
-      agent.responsibility,
+      assignment?.projectResponsibility || agent.responsibility,
       "",
       "## Governing Policy",
       "Follow `../orchestrator-agent.md`. Return concise evidence, changed contracts, validation results, and unresolved risk to the project orchestrator.",
@@ -422,41 +561,152 @@ function requiredSpecialists(structuredRequest = {}) {
   return agents;
 }
 
-export function buildProjectAgentTopology(project, structuredRequest = {}) {
-  const projectSlug = sanitizeAgentId(project.folderName || project.name || project.id);
-  const projectDisplayName = titleCase(project.name || projectSlug);
-  const orchestratorAgentId = `${projectSlug}-orchestrator-agent`;
-  const specialistAgents = requiredSpecialists(structuredRequest).map((agent) => ({
-    id: `${projectSlug}-${agent.key}-agent`,
-    name: `${projectDisplayName} ${agent.name}`,
-    role: agent.key,
-    responsibility: agent.responsibility,
-    source: "instruction-derived",
-    projectId: project.id,
-    projectName: project.name
-  }));
+function functionalityRole(category) {
+  return {
+    ui: "experience-composition",
+    api: "application-architecture",
+    service: "application-architecture",
+    data: "data-contract",
+    integration: "application-architecture",
+    security: "governance-security",
+    test: "service-validation",
+    runtime: "runtime-packaging"
+  }[category] || "";
+}
 
-  const orchestrator = {
-    id: orchestratorAgentId,
-    name: `${projectDisplayName} Orchestrator Agent`,
-    role: "project-orchestrator",
-    responsibility: "Read the project instruction, decide required specialist agents, and coordinate Gotham workflow handoff.",
-    source: "project-create",
-    projectId: project.id,
-    projectName: project.name
+function sourceFunctionalityTopology(project, structuredRequest, baseAgents, existingTopology, agentAssignments = []) {
+  const requested = Array.isArray(structuredRequest.discoveredFunctionalities) ? structuredRequest.discoveredFunctionalities : [];
+  if (!requested.length) return { agents: baseAgents, functionalities: [], subfunctionalities: [], applicationLinks: [], inferredChains: [], assignments: [], relationships: [] };
+  const allAgents = [...baseAgents];
+  const agentById = new Map(allAgents.map((agent) => [agent.id, agent]));
+  const assignments = [];
+  const functionalityIdMap = new Map();
+  const functionalities = requested.map((functionality, index) => {
+    const id = sanitizeAgentId(functionality.id || `${functionality.category || "function"}-${index + 1}`);
+    functionalityIdMap.set(functionality.id || id, id);
+    const expectedRole = functionalityRole(functionality.category);
+    const existingAssignment = (existingTopology?.functionalityAssignments || []).find((assignment) => assignment.functionalityId === id);
+    let owner = existingAssignment ? agentById.get(existingAssignment.agentId) : null;
+    if (!owner && expectedRole) owner = allAgents.find((agent) => agent.role === expectedRole);
+    if (!owner) owner = allAgents.find((agent) => agent.role === "project-execution")
+      || allAgents.find((agent) => agent.role === "project-orchestrator")
+      || allAgents[0];
+    if (!owner) throw new Error(`No reusable agent can own functionality ${id}.`);
+    const projectAssignment = agentAssignments.find((item) => item.agentId === owner.id);
+    const assignment = {
+      functionalityId: id,
+      agentId: owner.id,
+      projectAgentAssignmentId: projectAssignment?.id || "",
+      assignment: "reused",
+      responsibilityMatch: expectedRole || "project-execution-fallback"
+    };
+    assignments.push(assignment);
+    return {
+      id,
+      label: String(functionality.label || id).slice(0, 240),
+      category: String(functionality.category || "other").slice(0, 80),
+      entityType: String(functionality.entityType || "functionality").slice(0, 80),
+      evidence: Array.isArray(functionality.evidence) ? functionality.evidence.slice(0, 20) : [],
+      observedCurrent: functionality.observedCurrent || null,
+      sourceHints: functionality.sourceHints || {},
+      chronology: functionality.chronology || null,
+      parentEntityId: String(functionality.parentEntityId || "").slice(0, 180),
+      parentRelationshipType: String(functionality.parentRelationshipType || "").slice(0, 80),
+      hierarchyDepth: Math.max(1, Number(functionality.hierarchyDepth || 1)),
+      metrics: functionality.metrics || null,
+      sourceDigest: functionality.sourceDigest || structuredRequest.analysis?.sourceDigest || "",
+      assignedAgentId: owner.id
+    };
+  });
+  for (const functionality of functionalities) {
+    functionality.parentEntityId = functionalityIdMap.get(functionality.parentEntityId) || functionality.parentEntityId;
+  }
+  const subfunctionalities = requested.flatMap((functionality) => {
+    const parentFunctionalityId = functionalityIdMap.get(functionality.id) || functionality.id;
+    const parent = functionalities.find((item) => item.id === parentFunctionalityId);
+    return (functionality.subfunctionalities || []).map((subfunctionality, index) => ({
+      id: String(subfunctionality.id || `subfunctionality:${parentFunctionalityId}:${index + 1}`).slice(0, 180),
+      parentFunctionalityId,
+      label: String(subfunctionality.label || `Source unit ${index + 1}`).slice(0, 240),
+      kind: String(subfunctionality.kind || "source_unit").slice(0, 80),
+      sourcePath: String(subfunctionality.sourcePath || "").slice(0, 500),
+      sourceOffset: Number(subfunctionality.sourceOffset || 0),
+      reference: String(subfunctionality.reference || "").slice(0, 600),
+      evidence: Array.isArray(subfunctionality.evidence) ? subfunctionality.evidence.slice(0, 20) : [],
+      parentEvidenceIds: Array.isArray(subfunctionality.parentEvidenceIds) ? subfunctionality.parentEvidenceIds.slice(0, 20) : [],
+      sourceDigest: subfunctionality.sourceDigest || parent?.sourceDigest || "",
+      assignedAgentId: parent?.assignedAgentId || ""
+    }));
+  });
+  const inferredChains = (structuredRequest.inferredChains || []).map((chain) => ({
+    ...chain,
+    id: String(chain.id || "").slice(0, 180),
+    sourceSubfunctionalityId: String(chain.sourceSubfunctionalityId || "").slice(0, 180),
+    targetSubfunctionalityId: String(chain.targetSubfunctionalityId || "").slice(0, 180),
+    kind: String(chain.kind || "static_inferred").slice(0, 80),
+    confidence: Math.max(0, Math.min(1, Number(chain.confidence || 0))),
+    evidenceIds: Array.isArray(chain.evidenceIds) ? chain.evidenceIds.slice(0, 20) : []
+  })).filter((chain) => chain.id && chain.sourceSubfunctionalityId && chain.targetSubfunctionalityId);
+  const applicationLinks = (structuredRequest.applicationLinks || []).map((link) => ({
+    id: String(link.id || "").slice(0, 180),
+    sourceEntityId: functionalityIdMap.get(link.sourceEntityId) || String(link.sourceEntityId || "").slice(0, 180),
+    targetEntityId: functionalityIdMap.get(link.targetEntityId) || String(link.targetEntityId || "").slice(0, 180),
+    type: String(link.type || "connected_to").slice(0, 80),
+    confidence: Math.max(0, Math.min(1, Number(link.confidence ?? 1))),
+    hierarchy: Boolean(link.hierarchy),
+    evidence: Array.isArray(link.evidence) ? link.evidence.slice(0, 20) : []
+  })).filter((link) => link.id && link.sourceEntityId && link.targetEntityId && link.sourceEntityId !== link.targetEntityId);
+  return {
+    agents: allAgents,
+    functionalities,
+    subfunctionalities,
+    applicationLinks,
+    inferredChains,
+    assignments,
+    relationships: assignments.map((assignment) => ({
+      source: assignment.agentId,
+      target: `functionality:${project.id}:${assignment.functionalityId}`,
+      type: "IMPLEMENTS"
+    }))
   };
+}
 
-  const qagentController = {
-    id: `${projectSlug}-qagent-controller`,
-    name: `${projectDisplayName} QAgent Controller`,
-    role: "qagent-controller",
-    responsibility: "Evaluate end-of-response objective gaps and produce stop decisions or strict next-instruction packets without directly implementing code.",
-    source: "project-create-qagentic",
-    projectId: project.id,
-    projectName: project.name
-  };
+export function buildProjectAgentTopology(project, structuredRequest = {}, existingTopology = null, availableDefinitions = []) {
+  const taskSize = taskSizeFor(structuredRequest);
+  const compactExecution = taskSize === "tiny" || taskSize === "small";
+  const infrastructure = compactExecution
+    ? reusableInfrastructureAgents.filter((agent) => ["project-execution", "qagent-controller"].includes(agent.role))
+    : reusableInfrastructureAgents.filter((agent) => ["project-orchestrator", "qagent-controller"].includes(agent.role));
+  const specialistSpecs = compactExecution ? [] : requiredSpecialists(structuredRequest);
+  const specialistRequests = specialistSpecs.map((agent) => reusableAgentDefinition({
+        id: `${agent.key}-agent`,
+        name: agent.name,
+        role: agent.key,
+        responsibility: agent.responsibility,
+        source: "instruction-derived"
+      }));
+  const requestedDefinitions = [...infrastructure.map(reusableAgentDefinition), ...specialistRequests];
+  const candidates = uniqueAgentDefinitions([
+    ...availableDefinitions,
+    ...(existingTopology?.agentModelVersion === agentModelVersion ? existingTopology.agents || [] : [])
+  ]);
+  const resolutions = requestedDefinitions.map((requested) => resolveAgent(requested, candidates, project));
+  const agents = resolutions.map((resolution) => resolution.agent);
+  const agentReuseDecisions = resolutions.map((resolution) => resolution.decision);
+  assertReuseDecisionCoverage(agents, agentReuseDecisions);
+  const requestedResponsibilityByRole = new Map([
+    ...infrastructure.map((agent) => [agent.role, agent.responsibility]),
+    ...specialistSpecs.map((agent) => [agent.key, agent.responsibility])
+  ]);
+  const agentAssignments = agents.map((agent) => assignmentFor(project, agent, requestedResponsibilityByRole.get(agent.role)));
+  const orchestrator = agents.find((agent) => agent.role === "project-orchestrator")
+    || agents.find((agent) => agent.role === "project-execution");
+  const qagentController = agents.find((agent) => agent.role === "qagent-controller");
+  const specialistAgents = agents.filter((agent) => !["project-orchestrator", "project-execution", "qagent-controller"].includes(agent.role));
+  const sourceTopology = sourceFunctionalityTopology(project, structuredRequest, agents, existingTopology, agentAssignments);
 
   return {
+    agentModelVersion,
     project: {
       id: project.id,
       name: project.name,
@@ -474,9 +724,18 @@ export function buildProjectAgentTopology(project, structuredRequest = {}) {
       siteStructure: structuredRequest.siteStructure,
       routePlan: structuredRequest.routePlan || [],
       complexityScaling: structuredRequest.complexityScaling || null,
-      productDecision: structuredRequest.productDecision || null
+      productDecision: structuredRequest.productDecision || null,
+      architectureAnalysis: structuredRequest.analysis || null
     },
-    agents: [orchestrator, qagentController, ...specialistAgents],
+    agents: sourceTopology.agents,
+    agentAssignments,
+    agentReuseDecisions,
+    functionalities: sourceTopology.functionalities,
+    subfunctionalities: sourceTopology.subfunctionalities,
+    applicationLinks: sourceTopology.applicationLinks,
+    inferredChains: sourceTopology.inferredChains,
+    functionalityAssignments: sourceTopology.assignments,
+    architectureBranches: Array.isArray(structuredRequest.architectureBranches) ? structuredRequest.architectureBranches.slice(0, 200) : [],
     relationships: [
       {
         source: "plutonix-fullstack-agent",
@@ -497,9 +756,11 @@ export function buildProjectAgentTopology(project, structuredRequest = {}) {
         source: orchestrator.id,
         target: agent.id,
         type: "DELEGATES_TO"
-      }))
+      })),
+      ...sourceTopology.relationships
     ],
-    createdAt: new Date().toISOString()
+    createdAt: existingTopology?.createdAt || new Date().toISOString(),
+    updatedAt: new Date().toISOString()
   };
 }
 
@@ -518,6 +779,33 @@ async function readProjectAgentTopologies() {
   return topologies;
 }
 
+async function readRegisteredAgentDefinitions() {
+  if (!(await fs.pathExists(agentRegistryRoot()))) return [];
+  const files = (await fs.readdir(agentRegistryRoot())).filter((file) => file.endsWith(".registry.json"));
+  const infrastructureById = new Map(reusableInfrastructureAgents.map((agent) => [agent.id, agent]));
+  const definitions = [];
+  for (const file of files) {
+    const registry = await fs.readJson(path.join(agentRegistryRoot(), file)).catch(() => null);
+    if (!registry) continue;
+    const rows = registry.agent_id ? [registry] : (registry.agents || []);
+    for (const row of rows) {
+      const id = row.agent_id || row.id;
+      const infrastructure = infrastructureById.get(id);
+      const role = row.role || infrastructure?.role;
+      if (!id || !role) continue;
+      definitions.push(reusableAgentDefinition({
+        id,
+        name: row.agent_name || row.name || infrastructure?.name,
+        role,
+        responsibility: row.responsibility || infrastructure?.responsibility || row.objective || `Reusable ${role} agent.`,
+        source: "local-agent-registry",
+        version: row.version || "1.0.0"
+      }));
+    }
+  }
+  return uniqueAgentDefinitions(definitions);
+}
+
 async function readDeletedAgentIds() {
   if (!(await fs.pathExists(deletedAgentsPath()))) return new Set();
   const rows = await fs.readJson(deletedAgentsPath()).catch(() => []);
@@ -529,6 +817,8 @@ function withoutDeletedAgents(topology, deletedAgentIds) {
   return {
     ...topology,
     agents: (topology.agents || []).filter((agent) => !deletedAgentIds.has(agent.id)),
+    agentAssignments: (topology.agentAssignments || []).filter((assignment) => !deletedAgentIds.has(assignment.agentId)),
+    agentReuseDecisions: (topology.agentReuseDecisions || []).filter((decision) => !deletedAgentIds.has(decision.selectedAgent)),
     relationships: (topology.relationships || []).filter(
       (relationship) => !deletedAgentIds.has(relationship.source) && !deletedAgentIds.has(relationship.target)
     )
@@ -560,26 +850,102 @@ async function refreshProjectAgentGraphs() {
   await fs.writeJson(frontendGraphPath(), graph, { spaces: 2 });
 }
 
-async function writeAgentMarkdown(topology) {
+function isLegacyProjectAgent(agent, project) {
+  if (!agent?.id) return false;
+  if (agent.scope === "global_reusable" || agent.definitionType === "AgentDefinition") return false;
+  const projectSlug = sanitizeAgentId(project?.folderName || project?.name || project?.id);
+  return Boolean(agent.projectId || agent.id.startsWith(`${projectSlug}-`));
+}
+
+async function archiveLegacyAgentDefinitions(existingTopology, topology) {
+  const currentIds = new Set((topology.agents || []).map((agent) => agent.id));
+  const legacyAgents = (existingTopology?.agents || []).filter(
+    (agent) => !currentIds.has(agent.id) && isLegacyProjectAgent(agent, existingTopology?.project || topology.project)
+  );
+  if (!legacyAgents.length) return [];
+  await fs.ensureDir(archivedAgentsRoot());
+  const archived = [];
+  for (const agent of legacyAgents) {
+    const sourcePath = path.join(generatedAgentsRoot(), `${agent.id}.agent.md`);
+    if (!(await fs.pathExists(sourcePath))) continue;
+    const destinationPath = path.join(archivedAgentsRoot(), `${agent.id}.agent.md`);
+    await fs.move(sourcePath, destinationPath, { overwrite: true });
+    archived.push(destinationPath);
+  }
+  return archived;
+}
+
+async function writeAgentReuseDecisions(topology) {
+  assertReuseDecisionCoverage(topology.agents, topology.agentReuseDecisions);
+  await fs.ensureDir(reuseDecisionRoot());
+  await fs.writeJson(
+    path.join(reuseDecisionRoot(), `${topology.project.id}.agent-reuse-decisions.json`),
+    {
+      projectId: topology.project.id,
+      agentModelVersion: topology.agentModelVersion,
+      decisions: topology.agentReuseDecisions
+    },
+    { spaces: 2 }
+  );
+}
+
+async function writeAgentRegistries(topology) {
+  await fs.ensureDir(agentRegistryRoot());
+  for (const agent of topology.agents || []) {
+    const registryPath = path.join(agentRegistryRoot(), `${agent.id}.registry.json`);
+    const existing = (await fs.pathExists(registryPath)) ? await fs.readJson(registryPath).catch(() => ({})) : {};
+    const assignments = new Map((existing.projectAssignments || []).map((item) => [item.id, item]));
+    const decisions = new Map((existing.reuse_decisions || []).map((item) => [item.id, item]));
+    for (const assignment of (topology.agentAssignments || []).filter((item) => item.agentId === agent.id)) {
+      assignments.set(assignment.id, assignment);
+    }
+    const currentDecision = (topology.agentReuseDecisions || []).find((item) => item.selectedAgent === agent.id);
+    if (currentDecision) decisions.set(currentDecision.id, currentDecision);
+    await fs.writeJson(registryPath, {
+      ...existing,
+      agent_id: agent.id,
+      agent_name: agent.name,
+      role: agent.role,
+      definitionType: "AgentDefinition",
+      scope: "global_reusable",
+      version: agent.version || "1.0.0",
+      status: existing.status || "active",
+      capability_score: existing.capability_score || {
+        capabilityScore: 60,
+        deliverableAccuracyScore: 50,
+        reliabilityScore: 50,
+        adaptabilityScore: 70,
+        reuseConfidenceScore: 40,
+        successCount: 0,
+        failureCount: 0,
+        repeatedCorrectionCount: 0
+      },
+      projectAssignments: [...assignments.values()],
+      reuse_decisions: [...decisions.values()],
+      latest_reuse_decision: currentDecision || existing.latest_reuse_decision || null
+    }, { spaces: 2 });
+  }
+}
+
+async function writeAgentMarkdown(topology, existingTopology = null) {
+  await archiveLegacyAgentDefinitions(existingTopology, topology);
   await fs.ensureDir(generatedAgentsRoot());
   for (const agent of topology.agents) {
     const body = [
       `# ${agent.name}`,
       "",
       `agent_id: "${agent.id}"`,
-      `project_id: "${topology.project.id}"`,
-      `project_name: "${topology.project.name}"`,
       `role: "${agent.role}"`,
       `source: "${agent.source}"`,
+      'definition_type: "AgentDefinition"',
+      'scope: "global_reusable"',
+      `version: "${agent.version || "1.0.0"}"`,
       "",
       "## Responsibility",
       agent.responsibility,
       "",
-      "## Instruction Context",
-      `Objective: ${topology.instruction.objective || "Not specified"}`,
-      `Page type: ${topology.instruction.pageType || "unknown"}`,
-      `Topic: ${topology.instruction.topic || "unknown"}`,
-      `Sections: ${(topology.instruction.sections || []).join(", ") || "none"}`,
+      "## Reuse Contract",
+      "This is a project-neutral agent definition. Bind project objectives, workspace paths, and runtime context through a ProjectAgentAssignment and the project-local `.agentic/` overlay.",
       ""
     ].join("\n");
     await fs.writeFile(path.join(generatedAgentsRoot(), `${agent.id}.agent.md`), body);
@@ -590,7 +956,7 @@ async function writeGeneratedNeo4jSeed(topologies) {
   await fs.ensureDir(path.dirname(generatedGraphPath()));
   const lines = [
     "// Generated by PlutoniX project-agent registry.",
-    "// This file keeps managed app projects related to their project-scoped agents.",
+    "// Reusable Agent definitions are global; ProjectAgentAssignment nodes carry project context.",
     "MERGE (:Agent {id: 'plutonix-fullstack-agent', name: 'PlutoniX Fullstack Agent', role: 'global-orchestrator', status: 'active'})",
     "MERGE (:Agent {id: 'plutonix-independent-reviewer', name: 'PlutoniX Independent Reviewer', role: 'reviewer', status: 'available', read_only: true})",
     "MATCH (o:Agent {id: 'plutonix-fullstack-agent'}), (r:Agent {id: 'plutonix-independent-reviewer'}) MERGE (o)-[:MAY_REQUEST_REVIEW_FROM {adaptive: true}]->(r)",
@@ -603,11 +969,90 @@ async function writeGeneratedNeo4jSeed(topologies) {
       `SET p.name = ${JSON.stringify(topology.project.name)}, p.folder_name = ${JSON.stringify(topology.project.folderName)}, p.workspace_dir = ${JSON.stringify(topology.project.workspaceDir)}, p.port = ${Number(topology.project.port || 0)}`
     );
     for (const agent of topology.agents) {
+      const assignment = (topology.agentAssignments || []).find((item) => item.agentId === agent.id)
+        || assignmentFor(topology.project, agent);
       lines.push(
         `MERGE (a:Agent {id: ${JSON.stringify(agent.id)}})`,
-        `SET a.name = ${JSON.stringify(agent.name)}, a.role = ${JSON.stringify(agent.role)}, a.project_id = ${JSON.stringify(topology.project.id)}, a.status = 'active'`,
-        "MERGE (p)-[:OWNS]->(a)"
+        `SET a.name = ${JSON.stringify(agent.name)}, a.role = ${JSON.stringify(agent.role)}, a.definition_type = 'AgentDefinition', a.scope = 'global_reusable', a.status = 'active'`,
+        `MERGE (pa:ProjectAgentAssignment {id: ${JSON.stringify(assignment.id)}})`,
+        `SET pa.project_id = ${JSON.stringify(topology.project.id)}, pa.agent_id = ${JSON.stringify(agent.id)}, pa.role = ${JSON.stringify(agent.role)}, pa.status = ${JSON.stringify(assignment.status || "active")}`,
+        "MERGE (p)-[:HAS_AGENT_ASSIGNMENT]->(pa)",
+        "MERGE (pa)-[:ASSIGNS_AGENT]->(a)"
       );
+    }
+    const entityById = new Map((topology.functionalities || []).map((entity) => [entity.id, entity]));
+    const neo4jLabelForEntity = (entity) => {
+      if (entity?.entityType === "ui_surface") return entity?.sourceHints?.ui?.role === "component" ? "UIElement" : "Page";
+      if (entity?.entityType === "ui_element") return "UIElement";
+      if (entity?.entityType === "ui_feature") return "Feature";
+      if (entity?.entityType === "api_route") return "API";
+      if (String(entity?.entityType || "").startsWith("database_")) return "Database";
+      if (["service", "cloud_function"].includes(entity?.entityType)) return "Service";
+      return "ApplicationFunctionality";
+    };
+    for (const functionality of topology.functionalities || []) {
+      const functionalityId = `functionality:${topology.project.id}:${functionality.id}`;
+      const nodeLabel = neo4jLabelForEntity(functionality);
+      const membership = nodeLabel === "ApplicationFunctionality" ? "CONTAINS_FUNCTIONALITY" : "CONTAINS_APPLICATION_ENTITY";
+      lines.push(
+        `MERGE (f:${nodeLabel} {id: ${JSON.stringify(functionalityId)}})`,
+        `SET f.name = ${JSON.stringify(functionality.label)}, f.category = ${JSON.stringify(functionality.category)}, f.entity_type = ${JSON.stringify(functionality.entityType || "functionality")}, f.project_id = ${JSON.stringify(topology.project.id)}, f.source_digest = ${JSON.stringify(functionality.sourceDigest || "")}`,
+        `MATCH (p:Project {id: '${projectId}'}), (f:${nodeLabel} {id: ${JSON.stringify(functionalityId)}}) MERGE (p)-[:${membership}]->(f)`,
+        `MATCH (a:Agent {id: ${JSON.stringify(functionality.assignedAgentId)}}), (f:${nodeLabel} {id: ${JSON.stringify(functionalityId)}}) MERGE (a)-[:IMPLEMENTS]->(f)`
+      );
+    }
+    for (const link of topology.applicationLinks || []) {
+      const sourceEntity = entityById.get(link.sourceEntityId);
+      const targetEntity = entityById.get(link.targetEntityId);
+      if (!sourceEntity || !targetEntity) continue;
+      const sourceId = `functionality:${topology.project.id}:${sourceEntity.id}`;
+      const targetId = `functionality:${topology.project.id}:${targetEntity.id}`;
+      const relationship = {
+        contains_feature: "CONTAINS_FEATURE",
+        contains_subpage: "CONTAINS_SUBPAGE",
+        contains_ui_element: "CONTAINS_UI_ELEMENT",
+        has_ui_feature: "HAS_UI_FEATURE",
+        ui_calls_api: "UI_CALLS_API",
+        ui_uses_service: "UI_USES_SERVICE",
+        api_calls_service: "API_CALLS_SERVICE",
+        service_uses_service: "SERVICE_USES_SERVICE",
+        api_uses_database: "API_USES_DATABASE",
+        service_uses_database: "SERVICE_USES_DATABASE",
+        database_contains_table: "DATABASE_CONTAINS_TABLE"
+      }[link.type] || "CONNECTED_TO";
+      lines.push(`MATCH (a:${neo4jLabelForEntity(sourceEntity)} {id: ${JSON.stringify(sourceId)}}), (b:${neo4jLabelForEntity(targetEntity)} {id: ${JSON.stringify(targetId)}}) MERGE (a)-[:${relationship} {confidence: ${Number(link.confidence ?? 1)}}]->(b)`);
+    }
+    for (const subfunctionality of topology.subfunctionalities || []) {
+      const subfunctionalityNodeId = `subfunctionality:${topology.project.id}:${subfunctionality.id}`;
+      const functionalityId = `functionality:${topology.project.id}:${subfunctionality.parentFunctionalityId}`;
+      lines.push(
+        `MERGE (s:Subfunctionality {id: ${JSON.stringify(subfunctionalityNodeId)}})`,
+        `SET s.name = ${JSON.stringify(subfunctionality.label)}, s.kind = ${JSON.stringify(subfunctionality.kind)}, s.source_path = ${JSON.stringify(subfunctionality.sourcePath || "")}, s.project_id = ${JSON.stringify(topology.project.id)}, s.source_digest = ${JSON.stringify(subfunctionality.sourceDigest || "")}`,
+        `MATCH (f:ApplicationFunctionality {id: ${JSON.stringify(functionalityId)}}), (s:Subfunctionality {id: ${JSON.stringify(subfunctionalityNodeId)}}) MERGE (f)-[:CONTAINS_SUBFUNCTIONALITY]->(s)`
+      );
+    }
+    for (const branch of topology.architectureBranches || []) {
+      const branchNodeId = `branch:${branch.id}`;
+      const functionalityId = `functionality:${topology.project.id}:${branch.functionalityId}`;
+      const matchingSubfunctionalities = (topology.subfunctionalities || []).filter((subfunctionality) =>
+        subfunctionality.parentFunctionalityId === branch.functionalityId &&
+        (subfunctionality.parentEvidenceIds || []).some((id) => (branch.evidenceIds || []).includes(id))
+      );
+      const supportingSubfunctionality = matchingSubfunctionalities.length === 1 ? matchingSubfunctionalities[0] : null;
+      const sourceNodeId = supportingSubfunctionality
+        ? `subfunctionality:${topology.project.id}:${supportingSubfunctionality.id}`
+        : functionalityId;
+      const sourceLabel = supportingSubfunctionality ? "Subfunctionality" : neo4jLabelForEntity(entityById.get(branch.functionalityId));
+      lines.push(
+        `MERGE (b:Branch {id: ${JSON.stringify(branchNodeId)}})`,
+        `SET b.ledger_id = ${JSON.stringify(branch.id)}, b.status = ${JSON.stringify(branch.status || "deferred")}, b.inference_role = ${JSON.stringify(branch.inferenceRole || "deferred_alternative")}, b.score = ${Number(branch.score || 0)}`,
+        `MATCH (f:${sourceLabel} {id: ${JSON.stringify(sourceNodeId)}}), (b:Branch {id: ${JSON.stringify(branchNodeId)}}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)`
+      );
+    }
+    for (const chain of topology.inferredChains || []) {
+      const source = `subfunctionality:${topology.project.id}:${chain.sourceSubfunctionalityId}`;
+      const target = `subfunctionality:${topology.project.id}:${chain.targetSubfunctionalityId}`;
+      lines.push(`MATCH (a:Subfunctionality {id: ${JSON.stringify(source)}}), (b:Subfunctionality {id: ${JSON.stringify(target)}}) MERGE (a)-[:STATIC_INFERRED_FLOW {kind: ${JSON.stringify(chain.kind)}, confidence: ${Number(chain.confidence || 0)}}]->(b)`);
     }
     for (const relationship of topology.relationships) {
       if (relationship.type === "RUNTIME_DELEGATES_TO") {
@@ -622,10 +1067,24 @@ async function writeGeneratedNeo4jSeed(topologies) {
       if (relationship.type === "USES_QAGENT_CONTROLLER") {
         lines.push(`MATCH (a:Agent {id: ${JSON.stringify(relationship.source)}}), (b:Agent {id: ${JSON.stringify(relationship.target)}}) MERGE (a)-[:USES_QAGENT_CONTROLLER]->(b)`);
       }
+      if (relationship.type === "IMPLEMENTS") {
+        const functionalityId = String(relationship.target || "").replace(`functionality:${topology.project.id}:`, "");
+        lines.push(`MATCH (a:Agent {id: ${JSON.stringify(relationship.source)}}), (f:${neo4jLabelForEntity(entityById.get(functionalityId))} {id: ${JSON.stringify(relationship.target)}}) MERGE (a)-[:IMPLEMENTS]->(f)`);
+      }
     }
     lines.push("");
   }
   await fs.writeFile(generatedGraphPath(), `${lines.join("\n")}\n`);
+}
+
+function graphTypeForApplicationEntity(entity = {}) {
+  if (entity.entityType === "ui_surface") return entity?.sourceHints?.ui?.role === "component" ? "ui_element" : "page";
+  if (entity.entityType === "ui_element") return "ui_element";
+  if (entity.entityType === "ui_feature") return "feature";
+  if (entity.entityType === "api_route") return "api";
+  if (String(entity.entityType || "").startsWith("database_")) return "database";
+  if (["service", "cloud_function"].includes(entity.entityType)) return "service";
+  return "application_functionality";
 }
 
 function graphRowsForTopology(topology) {
@@ -660,6 +1119,7 @@ function graphRowsForTopology(topology) {
       metadata: {
         dynamicProjectGraph: true,
         projectId: topology.project.id,
+        projectName: topology.project.name,
         folderName: topology.project.folderName,
         workspaceDir: topology.project.workspaceDir,
         port: topology.project.port,
@@ -682,18 +1142,117 @@ function graphRowsForTopology(topology) {
       id: `agent:${agent.id}`,
       type: "agent",
       label: agent.name,
-      group: agent.role === "qagent-controller" ? "system-support-agent" : "project-agent",
+      group: agent.role === "qagent-controller" ? "system-support-agent" : "reusable-agent",
       risk_level: agent.role === "project-orchestrator" ? "medium" : "low",
       status: "active",
       agent_id: agent.id,
       cluster_id: agent.role,
       metadata: {
         dynamicProjectGraph: true,
-        projectId: topology.project.id,
-        projectName: topology.project.name,
+        definitionType: "AgentDefinition",
+        scope: "global_reusable",
+        projectIds: [topology.project.id],
+        projectAssignments: (topology.agentAssignments || []).filter((item) => item.agentId === agent.id),
         supportAgent: agent.role === "qagent-controller",
         responsibility: agent.responsibility,
         description: agent.responsibility
+      }
+    })),
+    ...(topology.agentAssignments || []).map((assignment) => {
+      const agent = topology.agents.find((item) => item.id === assignment.agentId);
+      return {
+        id: assignment.id,
+        type: "agent_assignment",
+        label: `${topology.project.name} · ${agent?.name || assignment.agentId}`,
+        group: "project-agent-assignment",
+        risk_level: agent?.role === "project-orchestrator" ? "medium" : "low",
+        status: assignment.status || "active",
+        agent_id: assignment.agentId,
+        cluster_id: agent?.role || assignment.role,
+        metadata: {
+          dynamicProjectGraph: true,
+          definitionType: "ProjectAgentAssignment",
+          projectId: topology.project.id,
+          projectName: topology.project.name,
+          agentId: assignment.agentId,
+          contextPath: assignment.contextPath || "",
+          description: `Binds the reusable ${agent?.name || assignment.agentId} definition to ${topology.project.name}.`
+        }
+      };
+    }),
+    ...(topology.functionalities || []).map((functionality) => ({
+      id: `functionality:${topology.project.id}:${functionality.id}`,
+      type: graphTypeForApplicationEntity(functionality),
+      label: functionality.label,
+      group: `application-${functionality.entityType || functionality.category || "other"}`,
+      risk_level: functionality.category === "security" ? "high" : "low",
+      status: "observed_current",
+      agent_id: functionality.assignedAgentId || "",
+      cluster_id: functionality.category || "other",
+      metadata: {
+        dynamicProjectGraph: true,
+        projectId: topology.project.id,
+        projectName: topology.project.name,
+        category: functionality.category,
+        applicationTopology: functionality.entityType && functionality.entityType !== "functionality",
+        applicationEntityType: functionality.entityType || "functionality",
+        sourceHints: functionality.sourceHints || {},
+        chronology: functionality.chronology || null,
+        chronologyOrder: Number(functionality.chronology?.order ?? 0),
+        chronologyBasis: functionality.chronology?.basis || "",
+        parentEntityId: functionality.parentEntityId || "",
+        parentEntityNodeId: functionality.parentEntityId ? `functionality:${topology.project.id}:${functionality.parentEntityId}` : "",
+        parentRelationshipType: functionality.parentRelationshipType || "",
+        hierarchyDepth: Math.max(1, Number(functionality.hierarchyDepth || 1)),
+        sourceDigest: functionality.sourceDigest || "",
+        evidence: functionality.evidence || [],
+        observedCurrent: functionality.observedCurrent || null,
+        metrics: functionality.metrics || null,
+        cyclomaticComplexity: Number(functionality.metrics?.cyclomaticComplexity || 0),
+        relativeCyclomaticComplexity: Number(functionality.metrics?.relativeCyclomaticComplexity || 0)
+      }
+    })),
+    ...(topology.subfunctionalities || []).map((subfunctionality) => ({
+      id: `subfunctionality:${topology.project.id}:${subfunctionality.id}`,
+      type: "application_subfunctionality",
+      label: subfunctionality.label,
+      group: "subfunctionality-source",
+      risk_level: "low",
+      status: "observed_current",
+      agent_id: subfunctionality.assignedAgentId || "",
+      cluster_id: "source-unit",
+      metadata: {
+        dynamicProjectGraph: true,
+        projectId: topology.project.id,
+        projectName: topology.project.name,
+        parentFunctionalityId: subfunctionality.parentFunctionalityId,
+        kind: subfunctionality.kind,
+        sourcePath: subfunctionality.sourcePath,
+        sourceOffset: subfunctionality.sourceOffset,
+        reference: subfunctionality.reference,
+        evidence: subfunctionality.evidence || [],
+        parentEvidenceIds: subfunctionality.parentEvidenceIds || [],
+        sourceDigest: subfunctionality.sourceDigest || ""
+      }
+    })),
+    ...(topology.architectureBranches || []).map((branch) => ({
+      id: `branch:${branch.id}`,
+      type: "branch",
+      label: branch.title || branch.id,
+      group: "architecture-branch",
+      risk_level: branch.blockingConflict ? "high" : "low",
+      status: branch.status || "deferred",
+      agent_id: "",
+      cluster_id: "decision-continuity",
+      metadata: {
+        dynamicProjectGraph: true,
+        projectId: topology.project.id,
+        projectName: topology.project.name,
+        functionalityId: branch.functionalityId,
+        inferenceRole: branch.inferenceRole || "deferred_alternative",
+        score: branch.score,
+        autoReconsideration: Boolean(branch.autoReconsideration),
+        sourceDigest: branch.sourceDigest || ""
       }
     }))
   ];
@@ -712,12 +1271,86 @@ function graphRowsForTopology(topology) {
       weight: 1,
       metadata: { dynamicProjectGraph: true, adaptive: true, readOnly: true }
     },
+    ...(topology.agentAssignments || []).flatMap((assignment) => [
+      {
+        source: projectNodeId,
+        target: assignment.id,
+        type: "has_agent_assignment",
+        weight: 2,
+        metadata: { dynamicProjectGraph: true, projectId: topology.project.id }
+      },
+      {
+        source: assignment.id,
+        target: `agent:${assignment.agentId}`,
+        type: "assigns_agent",
+        weight: 2,
+        metadata: { dynamicProjectGraph: true, projectId: topology.project.id }
+      }
+    ]),
     ...topology.relationships.map((relationship) => ({
       source: relationship.type === "HAS_ORCHESTRATOR" ? projectNodeId : `agent:${relationship.source}`,
-      target: `agent:${relationship.target}`,
+      target: relationship.type === "IMPLEMENTS" ? relationship.target : `agent:${relationship.target}`,
       type: relationship.type.toLowerCase(),
-      weight: relationship.type === "HAS_ORCHESTRATOR" ? 2 : 1,
+      weight: relationship.type === "HAS_ORCHESTRATOR" || relationship.type === "IMPLEMENTS" ? 2 : 1,
       metadata: { dynamicProjectGraph: true, projectId: topology.project.id }
+    })),
+    ...(topology.functionalities || []).filter((functionality) => !functionality.parentEntityId).map((functionality) => ({
+      source: projectNodeId,
+      target: `functionality:${topology.project.id}:${functionality.id}`,
+      type: functionality.entityType && functionality.entityType !== "functionality" ? "contains_application_entity" : "contains_functionality",
+      weight: 2,
+      metadata: { dynamicProjectGraph: true, projectId: topology.project.id, sourceDigest: functionality.sourceDigest || "" }
+    })),
+    ...(topology.applicationLinks || []).map((link) => ({
+      id: link.id,
+      source: `functionality:${topology.project.id}:${link.sourceEntityId}`,
+      target: `functionality:${topology.project.id}:${link.targetEntityId}`,
+      type: link.type,
+      weight: 2,
+      metadata: {
+        dynamicProjectGraph: true,
+        projectId: topology.project.id,
+        confidence: link.confidence,
+        hierarchy: Boolean(link.hierarchy),
+        evidence: link.evidence || [],
+        relationshipBasis: "literal_source_evidence"
+      }
+    })),
+    ...(topology.functionalities || []).flatMap((functionality) => {
+      const source = `functionality:${topology.project.id}:${functionality.id}`;
+      const subfunctionalities = (topology.subfunctionalities || []).filter((subfunctionality) => subfunctionality.parentFunctionalityId === functionality.id);
+      const containmentLinks = subfunctionalities.map((subfunctionality) => ({
+        source,
+        target: `subfunctionality:${topology.project.id}:${subfunctionality.id}`,
+        type: "contains_subfunctionality",
+        weight: 2,
+        metadata: { dynamicProjectGraph: true, projectId: topology.project.id, sourceDigest: subfunctionality.sourceDigest || "" }
+      }));
+      const branchLinks = (topology.architectureBranches || [])
+        .filter((branch) => branch.functionalityId === functionality.id)
+        .map((branch) => ({
+          source: (() => {
+            const matches = subfunctionalities.filter((subfunctionality) =>
+              (subfunctionality.parentEvidenceIds || []).some((id) => (branch.evidenceIds || []).includes(id))
+            );
+            const supporting = matches.length === 1 ? matches[0] : null;
+            return supporting ? `subfunctionality:${topology.project.id}:${supporting.id}` : source;
+          })(),
+          target: `branch:${branch.id}`,
+          type: subfunctionalities.filter((subfunctionality) => (subfunctionality.parentEvidenceIds || []).some((id) => (branch.evidenceIds || []).includes(id))).length === 1
+            ? "supports_architecture_branch"
+            : "has_architecture_branch",
+          weight: 1,
+          metadata: { dynamicProjectGraph: true, projectId: topology.project.id, sourceDigest: branch.sourceDigest || "" }
+        }));
+      return [...containmentLinks, ...branchLinks];
+    }),
+    ...(topology.inferredChains || []).map((chain) => ({
+      source: `subfunctionality:${topology.project.id}:${chain.sourceSubfunctionalityId}`,
+      target: `subfunctionality:${topology.project.id}:${chain.targetSubfunctionalityId}`,
+      type: "static_inferred_flow",
+      weight: 1,
+      metadata: { dynamicProjectGraph: true, projectId: topology.project.id, kind: chain.kind, confidence: chain.confidence, evidenceIds: chain.evidenceIds || [] }
     }))
   ];
   return { nodes, links };
@@ -728,7 +1361,25 @@ function mergeNodesById(nodes) {
   for (const node of nodes) {
     if (!node?.id) continue;
     const current = merged.get(node.id);
-    merged.set(node.id, current ? { ...current, ...node, metadata: { ...(current.metadata || {}), ...(node.metadata || {}) } } : node);
+    if (!current) {
+      merged.set(node.id, node);
+      continue;
+    }
+    const projectIds = [...new Set([...(current.metadata?.projectIds || []), ...(node.metadata?.projectIds || [])])];
+    const assignments = new Map(
+      [...(current.metadata?.projectAssignments || []), ...(node.metadata?.projectAssignments || [])]
+        .map((assignment) => [assignment.id, assignment])
+    );
+    merged.set(node.id, {
+      ...current,
+      ...node,
+      metadata: {
+        ...(current.metadata || {}),
+        ...(node.metadata || {}),
+        ...(projectIds.length ? { projectIds } : {}),
+        ...(assignments.size ? { projectAssignments: [...assignments.values()] } : {})
+      }
+    });
   }
   return Array.from(merged.values());
 }
@@ -748,8 +1399,8 @@ async function selfImprovementGraphRows() {
     readJsonLineRecords(path.join(runtimeRoot, "research", "research-agent-usage.jsonl"), 12),
     readJsonLineRecords(path.join(runtimeRoot, "tools", "tool-incorporation-plans.jsonl"), 12),
     readJsonLineRecords(path.join(runtimeRoot, "approvals", "monetary-approvals.jsonl"), 12),
-    fs.pathExists(path.join(runtimeRoot, "market-vision", "agentic-builderx-market-differentiation.json"))
-      .then((exists) => exists ? fs.readJson(path.join(runtimeRoot, "market-vision", "agentic-builderx-market-differentiation.json")) : null)
+    fs.pathExists(path.join(runtimeRoot, "market-vision", "plutonix-market-differentiation.json"))
+      .then((exists) => exists ? fs.readJson(path.join(runtimeRoot, "market-vision", "plutonix-market-differentiation.json")) : null)
       .catch(() => null),
     fs.pathExists(path.join(projectRoot(), "observability", "model-pool", "huggingface-latest.json"))
       .then((exists) => exists ? fs.readJson(path.join(projectRoot(), "observability", "model-pool", "huggingface-latest.json")) : null)
@@ -1246,11 +1897,29 @@ export async function syncProjectAgentTopology(project, structuredRequest = {}) 
     claudeEntryPath: "CLAUDE.md",
     coreObjective: "Highest implementation accuracy at the lowest justified token and tool cost."
   };
-  const topology = withoutDeletedAgents(buildProjectAgentTopology(project, structuredRequest), await readDeletedAgentIds());
+  const existingTopologyPath = path.join(agentRuntimeRoot(), `${project.id}.agents.json`);
+  const existingTopology = (await fs.pathExists(existingTopologyPath))
+    ? await fs.readJson(existingTopologyPath).catch(() => null)
+    : null;
+  const [existingTopologies, registeredDefinitions] = await Promise.all([
+    readProjectAgentTopologies(),
+    readRegisteredAgentDefinitions()
+  ]);
+  const availableDefinitions = uniqueAgentDefinitions([
+    ...registeredDefinitions,
+    ...existingTopologies.flatMap((item) => item.agents || [])
+  ]);
+  const topology = withoutDeletedAgents(
+    buildProjectAgentTopology(project, structuredRequest, existingTopology, availableDefinitions),
+    await readDeletedAgentIds()
+  );
+  assertReuseDecisionCoverage(topology.agents, topology.agentReuseDecisions);
+  await writeAgentReuseDecisions(topology);
+  await writeAgentRegistries(topology);
   await writeProjectLocalOrchestrator(topology);
   await fs.ensureDir(agentRuntimeRoot());
   await fs.writeJson(path.join(agentRuntimeRoot(), `${project.id}.agents.json`), topology, { spaces: 2 });
-  await writeAgentMarkdown(topology);
+  await writeAgentMarkdown(topology, existingTopology);
   const topologies = await readProjectAgentTopologies();
   await writeGeneratedNeo4jSeed(topologies);
   const graph = await buildAgenticSystemGraph();
@@ -1313,7 +1982,33 @@ export async function ensureProjectAgentTopologies(projects) {
   for (const project of projects) {
     if (!project || project.isDefault) continue;
     if (existing.has(project.id)) {
-      await writeProjectLocalOrchestrator(existing.get(project.id));
+      const current = existing.get(project.id);
+      const currentAnalysisVersion = Number(current.instruction?.architectureAnalysis?.version || 0);
+      if (current.agentModelVersion !== agentModelVersion || currentAnalysisVersion < ANALYSIS_VERSION) {
+        const refreshedAnalysis = currentAnalysisVersion < ANALYSIS_VERSION
+          ? await analyzeProjectArchitecture({ project, skipModel: true }).catch(() => null)
+          : null;
+        const useRefreshedAnalysis = refreshedAnalysis && (refreshedAnalysis.functionalities.length > 0 || !(current.functionalities || []).length);
+        const migrated = await syncProjectAgentTopology(project, {
+          ...(current.instruction || {}),
+          objective: current.instruction?.objective || `Maintain the managed app project ${project.name}.`,
+          discoveredFunctionalities: useRefreshedAnalysis ? refreshedAnalysis.functionalities : current.functionalities || [],
+          applicationLinks: useRefreshedAnalysis ? refreshedAnalysis.applicationLinks : current.applicationLinks || [],
+          inferredChains: useRefreshedAnalysis ? refreshedAnalysis.inferredChains : current.inferredChains || [],
+          architectureBranches: current.architectureBranches || [],
+          analysis: useRefreshedAnalysis
+            ? {
+                version: refreshedAnalysis.version,
+                sourceDigest: refreshedAnalysis.sourceDigest,
+                analyzedAt: refreshedAnalysis.analyzedAt,
+                modelAssist: refreshedAnalysis.modelAssist
+              }
+            : current.instruction?.architectureAnalysis || null
+        });
+        created.push(migrated);
+      } else {
+        await writeProjectLocalOrchestrator(current);
+      }
       continue;
     }
     const topology = await syncProjectAgentTopology(project, {
@@ -1340,8 +2035,16 @@ export async function removeProjectAgentTopology(project) {
     }
   }
   await fs.remove(topologyPath);
-  for (const agent of topology?.agents || []) {
-    await fs.remove(path.join(generatedAgentsRoot(), `${agent.id}.agent.md`));
+  await fs.remove(path.join(reuseDecisionRoot(), `${project.id}.agent-reuse-decisions.json`));
+  for (const assignment of topology?.agentAssignments || []) {
+    const registryPath = path.join(agentRegistryRoot(), `${assignment.agentId}.registry.json`);
+    if (!(await fs.pathExists(registryPath))) continue;
+    const registry = await fs.readJson(registryPath).catch(() => null);
+    if (!registry) continue;
+    await fs.writeJson(registryPath, {
+      ...registry,
+      projectAssignments: (registry.projectAssignments || []).filter((item) => item.id !== assignment.id)
+    }, { spaces: 2 });
   }
   await refreshProjectAgentGraphs();
 }

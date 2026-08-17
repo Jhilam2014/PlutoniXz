@@ -304,11 +304,28 @@ function initialInstructionGraph(flowPath = {}, projectId = "") {
   };
 }
 
+function restoreRecordedPlanHierarchy(nodes = [], rootId = "") {
+  const primary = nodes.find((node) =>
+    node.parentId === rootId &&
+    node.type === "functionality" &&
+    (node.sourceId === "functionality-1" || /requested project functionality/i.test(node.detail || ""))
+  );
+  if (!primary) return nodes;
+  return nodes.map((node) => {
+    const plannedChild =
+      node.id !== primary.id &&
+      node.parentId === rootId &&
+      node.type === "functionality" &&
+      (/^(?:section|route):/i.test(node.label || "") || /included by the plutonix feature and route plan/i.test(node.detail || ""));
+    return plannedChild ? { ...node, type: "subfunctionality", parentId: primary.id } : node;
+  });
+}
+
 function normalizedProvidedGraph(flowPath = {}, projectId = "") {
   const source = flowPath.functionalityGraph;
   if (!source?.nodes?.length) return legacyGraph(flowPath, projectId);
   const nodeIds = new Set(source.nodes.map((node) => node?.id).filter(Boolean));
-  const nodes = source.nodes
+  const rawNodes = source.nodes
     .filter((node) => node?.id)
     .map((node) => ({
       ...node,
@@ -321,11 +338,24 @@ function normalizedProvidedGraph(flowPath = {}, projectId = "") {
       evidence: Array.isArray(node.evidence) ? node.evidence.map((item) => compact(item, 280)).filter(Boolean) : [],
       origin: node.origin || "execution"
     }));
+  const rootId = source.rootId || rawNodes.find((node) => node.type === "project")?.id || "";
+  const nodes = restoreRecordedPlanHierarchy(rawNodes, rootId);
+  const treeLinks = nodes
+    .filter((node) => node.parentId)
+    .map((node) => ({
+      id: `${node.parentId}->${node.id}`,
+      source: node.parentId,
+      target: node.id,
+      type: node.type === "subfunctionality" ? "contains_subfunctionality" : "contains_functionality"
+    }));
+  const suppliedLinks = (source.links || []).filter((link) => nodeIds.has(link.source) && nodeIds.has(link.target));
   return {
     ...source,
     projectId: source.projectId || projectId,
     nodes,
-    links: (source.links || []).filter((link) => nodeIds.has(link.source) && nodeIds.has(link.target)),
+    links: [...treeLinks, ...suppliedLinks].filter((link, index, rows) =>
+      rows.findIndex((item) => item.source === link.source && item.target === link.target && item.type === link.type) === index
+    ),
     agents: normalizedAgents(source.agents || flowPath.activeAgents || [])
   };
 }
@@ -348,14 +378,8 @@ function mergeFunctionalityGraphs(baseline, current) {
       .map((node) => [`${node.type}:${normalizedLabel(node.label)}`, node.id])
   );
   const idMap = new Map([[current.rootId, rootId]]);
-  const currentNodes = (current.nodes || [])
-    .filter((node) => node.type !== "project")
-    .sort((left, right) => {
-      const order = { functionality: 1, subfunctionality: 2 };
-      return (order[left.type] || 3) - (order[right.type] || 3);
-    });
-
-  for (const sourceNode of currentNodes) {
+  const pendingNodes = (current.nodes || []).filter((node) => node.type !== "project");
+  const applyCurrentNode = (sourceNode) => {
     const duplicateId = labelIndex.get(`${sourceNode.type}:${normalizedLabel(sourceNode.label)}`);
     if (duplicateId) {
       const duplicate = nodesById.get(duplicateId);
@@ -366,7 +390,7 @@ function mergeFunctionalityGraphs(baseline, current) {
       if (sourceNode.state) duplicate.state = sourceNode.state;
       duplicate.changeKind = sourceNode.origin === "previous_execution" ? "updated_previous" : "updated_latest";
       idMap.set(sourceNode.id, duplicateId);
-      continue;
+      return;
     }
     let nextId = sourceNode.id;
     if (nodesById.has(nextId)) nextId = `execution-${nextId}`;
@@ -382,6 +406,17 @@ function mergeFunctionalityGraphs(baseline, current) {
     nodesById.set(nextId, nextNode);
     labelIndex.set(`${nextNode.type}:${normalizedLabel(nextNode.label)}`, nextId);
     idMap.set(sourceNode.id, nextId);
+  };
+  // Preserve parentage even when a supplied graph lists a child before its
+  // parent. Older merging sorted only by node type, which flattened deeper
+  // descendants back to the project root.
+  while (pendingNodes.length) {
+    const readyIndex = pendingNodes.findIndex((node) => !node.parentId || idMap.has(node.parentId));
+    if (readyIndex < 0) {
+      applyCurrentNode(pendingNodes.shift());
+      continue;
+    }
+    applyCurrentNode(pendingNodes.splice(readyIndex, 1)[0]);
   }
 
   const agentsById = new Map(
@@ -478,52 +513,65 @@ function collisionRadiusForNode(node) {
   return 74;
 }
 
+function nodeDepths(nodes = [], rootId = "") {
+  const nodesById = new Map(nodes.map((node) => [node.id, node]));
+  const depths = new Map();
+  const depthFor = (node, trail = new Set()) => {
+    if (!node || node.id === rootId || node.type === "project") return 0;
+    if (depths.has(node.id)) return depths.get(node.id);
+    if (!node.parentId || trail.has(node.id)) return 1;
+    const parent = nodesById.get(node.parentId);
+    const nextTrail = new Set(trail);
+    nextTrail.add(node.id);
+    const depth = parent ? depthFor(parent, nextTrail) + 1 : 1;
+    depths.set(node.id, depth);
+    return depth;
+  };
+  nodes.forEach((node) => depths.set(node.id, depthFor(node)));
+  return depths;
+}
+
 function initialFunctionalityPositions(nodes, graph, width, height) {
   const center = { x: width / 2, y: height / 2 };
   const positions = new Map();
   const root = nodes.find((node) => node.id === graph.rootId || node.type === "project");
-  const functionalities = nodes.filter((node) => node.type === "functionality");
-  const subfunctionalities = nodes.filter((node) => node.type === "subfunctionality");
-  if (root) positions.set(root.id, { ...root, x: center.x, y: center.y, vx: 0, vy: 0, radius: radiusForNode(root), angle: 0, fixed: true });
-
-  const innerRadius = Math.max(220, Math.min(width, height) * 0.24);
-  const outerStep = 150;
-  functionalities.forEach((node, index) => {
-    const angle = -Math.PI / 2 + (Math.PI * 2 * index) / Math.max(1, functionalities.length);
-    positions.set(node.id, {
-      ...node,
-      x: center.x + Math.cos(angle) * innerRadius,
-      y: center.y + Math.sin(angle) * innerRadius,
-      vx: 0,
-      vy: 0,
-      radius: radiusForNode(node),
-      angle
-    });
-  });
-
   const childrenByParent = new Map();
-  subfunctionalities.forEach((node) => {
-    const siblings = childrenByParent.get(node.parentId) || [];
+  nodes.filter((node) => node.id !== root?.id).forEach((node) => {
+    const parentId = nodes.some((candidate) => candidate.id === node.parentId) ? node.parentId : root?.id;
+    if (!parentId) return;
+    const siblings = childrenByParent.get(parentId) || [];
     siblings.push(node);
-    childrenByParent.set(node.parentId, siblings);
+    childrenByParent.set(parentId, siblings);
   });
-  subfunctionalities.forEach((node, index) => {
-    const parent = positions.get(node.parentId) || positions.get(root?.id);
-    const siblings = childrenByParent.get(node.parentId) || subfunctionalities;
-    const siblingIndex = Math.max(0, siblings.findIndex((item) => item.id === node.id));
-    const angle = parent?.angle ?? (-Math.PI / 2 + (Math.PI * 2 * index) / Math.max(1, subfunctionalities.length));
-    const fan = siblings.length === 1 ? 0 : (-0.9 + (1.8 * siblingIndex) / Math.max(1, siblings.length - 1));
-    const radius = outerStep + Math.floor(siblingIndex / 5) * 120;
-    positions.set(node.id, {
-      ...node,
-      x: (parent?.x || center.x) + Math.cos(angle + fan) * radius,
-      y: (parent?.y || center.y) + Math.sin(angle + fan) * radius,
-      vx: 0,
-      vy: 0,
-      radius: radiusForNode(node),
-      angle: angle + fan
+  const depths = nodeDepths(nodes, root?.id || graph.rootId);
+  if (root) positions.set(root.id, { ...root, x: center.x, y: center.y, vx: 0, vy: 0, radius: radiusForNode(root), angle: -Math.PI / 2, depth: 0, fixed: true });
+
+  const placeChildren = (parent) => {
+    const children = childrenByParent.get(parent.id) || [];
+    const parentDepth = depths.get(parent.id) || 0;
+    const isRoot = parent.id === root?.id;
+    children.forEach((node, index) => {
+      const spread = isRoot ? Math.PI * 2 : Math.min(1.9, 0.62 + children.length * 0.23);
+      const offset = children.length === 1 ? 0 : -spread / 2 + (spread * index) / (children.length - 1);
+      const angle = (parent.angle ?? -Math.PI / 2) + offset;
+      const branchDistance = isRoot
+        ? Math.max(235, Math.min(width, height) * 0.26)
+        : Math.max(158, 214 - Math.min(parentDepth, 3) * 13) + Math.floor(index / 5) * 62;
+      const positioned = {
+        ...node,
+        x: parent.x + Math.cos(angle) * branchDistance,
+        y: parent.y + Math.sin(angle) * branchDistance,
+        vx: 0,
+        vy: 0,
+        radius: radiusForNode(node),
+        angle,
+        depth: depths.get(node.id) || parentDepth + 1
+      };
+      positions.set(node.id, positioned);
+      placeChildren(positioned);
     });
-  });
+  };
+  if (root) placeChildren(positions.get(root.id));
   return positions;
 }
 
@@ -566,7 +614,7 @@ function runFunctionalityForceSimulation(items, links, width, height) {
     .map((link) => ({
       source: items.find((node) => node.id === link.source),
       target: items.find((node) => node.id === link.target),
-      distance: link.type === "contains_subfunctionality" ? 190 : 250
+      distance: link.type === "contains_subfunctionality" ? 180 : 250
     }))
     .filter((link) => link.source && link.target);
 
@@ -617,7 +665,7 @@ function runFunctionalityForceSimulation(items, links, width, height) {
       const parent = items.find((item) => item.id === node.parentId) || root;
       const targetX = parent ? parent.x : center.x;
       const targetY = parent ? parent.y : center.y;
-      const strength = node.type === "functionality" ? 0.012 : 0.018;
+      const strength = node.depth > 1 ? 0.02 : node.type === "functionality" ? 0.012 : 0.018;
       node.x += (targetX - node.x) * strength * alpha;
       node.y += (targetY - node.y) * strength * alpha;
     }

@@ -1,0 +1,10 @@
+{
+  "workflow_id": "architecture-ui-feature-gravity-20260816",
+  "tasks": [
+    {"id": "locate", "status": "completed", "summary": "Locate branch-analysis ownership, discovery classification, relationship projection, and force simulation."},
+    {"id": "move-control", "status": "completed", "summary": "Move Analyse branches from Project Tools to the PlutoniX workspace."},
+    {"id": "discover-ui-features", "status": "completed", "summary": "Emit source-backed Page, UIElement, Feature, API, service, and data hierarchy."},
+    {"id": "cluster-force", "status": "completed", "summary": "Add project-and-zone gravity to the D3 force simulation."},
+    {"id": "validate", "status": "completed", "summary": "Run syntax checks, targeted model/backend tests, and the frontend production build."}
+  ]
+}
