@@ -1,0 +1,44 @@
+{
+  "workflow_id": "gotham-studio-control-plane-20260827",
+  "scanned_at": "2026-08-27T17:40:51Z",
+  "task_size": "large",
+  "product_shape": "existing_product_change",
+  "scope": "PlutoniX Gotham Builder frontend, backend API, identity boundary, persistence, provider integrations, tests, graph, memory, and documentation",
+  "inspected": [
+    "AGENTS.md",
+    ".codex/prompts/bootstrap-orchestrator.md",
+    "ROOT_WORKSPACE_GENERATION_POLICY.md",
+    "apps/frontend/src/App.jsx",
+    "apps/frontend/src/studioAccessModel.js",
+    "apps/backend/src/server.js",
+    "apps/backend/src/auth.js",
+    "apps/backend/src/decisionContinuity.js",
+    "apps/backend/src/projectAgents.js",
+    "apps/backend/src/vectorMemorySync.js",
+    "registry/agents",
+    "graph",
+    "topology/d3",
+    "memory/agent-knowledge"
+  ],
+  "existing_capabilities_reused": [
+    "strict identity and project RBAC",
+    "Gotham activity event stream",
+    "Functionality Graph projection",
+    "atomic repository conventions",
+    "project-execution-agent",
+    "global agent memory and vector sync"
+  ],
+  "gaps_confirmed": [
+    "no provider-neutral ML execution domain",
+    "no Databricks Jobs or Azure ML provider adapter",
+    "no project-scoped ML execution workspace",
+    "no normalized ML job lifecycle persistence"
+  ],
+  "agent_decision": {
+    "selected_agent": "project-execution-agent",
+    "decision_type": "exact_reuse",
+    "reuse_confidence_score": 96,
+    "new_agent_created": false,
+    "reason": "The existing project execution role covers an additive full-stack control-plane implementation; provider adapters are code extension points, not durable agent roles."
+  }
+}

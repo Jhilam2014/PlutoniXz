@@ -1,37 +1,44 @@
 {
-  "workflow_id": "architecture-feature-relations-20260815",
+  "workflow_id": "delivery-decision-graph-compact-dialog-20260822",
   "task_size": "medium",
   "context_budget": "medium_context",
   "files_read": [
+    "apps/frontend/src/components/agentic-system/ApplicationDecisionMappingCanvas.jsx",
+    "apps/frontend/src/components/agentic-system/applicationDecisionMappingCanvas.css",
+    "apps/frontend/src/PlutonixAnalysisWorkspace.jsx",
+    "apps/frontend/src/App.jsx",
+    "apps/frontend/test/application-decision-map-model.test.mjs",
     "AGENTS.md",
-    ".codex/prompts/bootstrap-orchestrator.md",
-    "docs/agent-instruction-quality.md",
-    "apps/backend/src/projectBranchDiscovery.js",
-    "apps/backend/src/projectAgents.js",
-    "apps/backend/test/projectBranchDiscovery.test.js",
-    "apps/frontend/public/agentic-system/d3/agentic-system-model.js",
-    "apps/frontend/public/agentic-system/d3/agentic-system-d3.js",
-    "apps/frontend/test/agentic-system-model.test.mjs",
-    "topology/d3/agentic-system-graph.json"
+    "schemas/token-observability.schema.json",
+    "runtime/observability/token-publisher.service.ts",
+    "observability/token-economics/latest-token-plan.json"
   ],
   "files_modified": [
-    "apps/backend/src/projectBranchDiscovery.js",
-    "apps/backend/src/projectAgents.js",
-    "apps/backend/test/projectBranchDiscovery.test.js",
-    "apps/frontend/public/agentic-system/d3/agentic-system-model.js",
-    "apps/frontend/public/agentic-system/d3/agentic-system-d3.js",
-    "apps/frontend/test/agentic-system-model.test.mjs"
+    "apps/frontend/src/components/agentic-system/ApplicationDecisionMappingCanvas.jsx",
+    "apps/frontend/src/components/agentic-system/applicationDecisionMappingCanvas.css",
+    "observability/context-budget/latest-context-budget.json",
+    "observability/token-economics/latest-token-plan.json",
+    "observability/token-economics/token-events.jsonl",
+    "observability/token-economics/delivery-decision-graph-compact-dialog-20260822.token-report.json",
+    "workflows/delivery-decision-graph-compact-dialog-20260822.workflow.json",
+    "tasks/delivery-decision-graph-compact-dialog-20260822.tasks.json",
+    "topology/execution/delivery-decision-graph-compact-dialog-20260822.topology.json",
+    "registry/workflows/delivery-decision-graph-compact-dialog-20260822.registry.json",
+    "deliverables/delivery-decision-graph-compact-dialog-20260822/delivery-manifest.json",
+    "observability/delivery-decision-graph-compact-dialog-20260822/execution-trace.json"
   ],
   "memory_queries_count": 0,
   "graph_queries_count": 0,
-  "agents_invoked": ["project-execution-agent"],
-  "agent_creation_skipped_reason": "The existing project execution agent matched this bounded correction; no specialist agent was justified.",
+  "agents_invoked": [
+    "delivery-graph-dialog-audit",
+    "delivery-dialog-test-review"
+  ],
+  "agent_creation_skipped_reason": "Existing project execution ownership and focused read-only UI reviews covered the bounded frontend redesign; no new agent definition, backend service, or topology contract was needed.",
   "full_project_scan_performed": false,
   "full_graph_regeneration_performed": false,
   "token_saving_decisions": [
-    "Inspected only source discovery, graph projection, Canvas rendering, and focused tests.",
-    "Used bounded local import traversal rather than a whole-repository dependency scan.",
-    "Updated relationship projection incrementally and performed no live Neo4j write.",
-    "Reused the existing execution agent."
+    "Reused the existing delivery timeline, decision-branch, and provenance contract instead of creating a parallel graph data model.",
+    "Mounted the D3 canvas only inside the detail dialog so the default brief view does not run a background simulation or observer.",
+    "Used bounded component inspection, the existing full frontend suite, a production build, and independent review without regenerating global topology."
   ]
 }

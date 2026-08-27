@@ -25,7 +25,7 @@
       "projectResponsibility": "Produce and validate the requested document as the primary deliverable without substituting an app shell.",
       "status": "active",
       "contextPath": ".agentic/orchestrator-agent.md",
-      "createdAt": "2026-08-16T08:45:56.199Z"
+      "createdAt": "2026-08-18T04:27:11.104Z"
     }
   ],
   "reuse_decisions": [
@@ -38,7 +38,7 @@
       "reuseConfidenceScore": 100,
       "similarityScore": 1,
       "reason": "Reused the existing global artifact-production definition; project context is stored in a separate assignment.",
-      "createdAt": "2026-08-16T08:45:56.199Z"
+      "createdAt": "2026-08-18T04:27:11.104Z"
     }
   ],
   "latest_reuse_decision": {
@@ -50,6 +50,6 @@
     "reuseConfidenceScore": 100,
     "similarityScore": 1,
     "reason": "Reused the existing global artifact-production definition; project context is stored in a separate assignment.",
-    "createdAt": "2026-08-16T08:45:56.199Z"
+    "createdAt": "2026-08-18T04:27:11.104Z"
   }
 }

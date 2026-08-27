@@ -42,8 +42,8 @@
           <button type="button" role="tab" data-view-mode="dependency" aria-selected="false">
             <i data-lucide="git-fork" aria-hidden="true"></i><span>Dependencies</span>
           </button>
-          <button type="button" role="tab" data-view-mode="live" aria-selected="false">
-            <i data-lucide="activity" aria-hidden="true"></i><span>Live execution</span>
+          <button type="button" role="tab" data-view-mode="flow" aria-selected="false">
+            <i data-lucide="workflow" aria-hidden="true"></i><span>Functionality flow</span>
           </button>
           <button type="button" role="tab" data-view-mode="explore" aria-selected="false">
             <i data-lucide="compass" aria-hidden="true"></i><span>Explore architecture</span>
@@ -103,6 +103,20 @@
             </button>
           </div>
         </div>
+
+        <section id="flow-feature-controls" class="flow-feature-controls" aria-label="Functionality flow feature explorer" hidden>
+          <button id="flow-feature-previous" class="icon-button" type="button" aria-label="Previous major feature" title="Previous major feature">
+            <i data-lucide="chevron-left" aria-hidden="true"></i>
+          </button>
+          <label class="compact-select flow-feature-select">
+            <span>Major feature</span>
+            <select id="flow-feature-select" aria-label="Select major feature"></select>
+          </label>
+          <span id="flow-feature-position" class="flow-feature-position" aria-live="polite"></span>
+          <button id="flow-feature-next" class="icon-button" type="button" aria-label="Next major feature" title="Next major feature">
+            <i data-lucide="chevron-right" aria-hidden="true"></i>
+          </button>
+        </section>
 
         <div id="advanced-filters" class="advanced-filters" hidden>
           <label>
@@ -220,6 +234,7 @@
           poster="/media/product-video/plutonix-product-video-poster.png"
         >
           <source src="/media/product-video/plutonix-product-video.mp4" type="video/mp4" />
+          <track kind="captions" src="/media/product-video/plutonix-product-video.vtt" srclang="en" label="English" default />
         </video>
       </section>
     </div>

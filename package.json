@@ -8,6 +8,8 @@
     "dev:backend": "npm --prefix apps/backend run dev",
     "dev:generated": "npm --prefix apps/generated-site run dev",
     "validate": "python3 scripts/validate_project.py",
+    "memory:sync": "node --env-file-if-exists=.env scripts/sync-agent-knowledge-to-vector-store.mjs",
+    "memory:verify": "node --env-file-if-exists=.env scripts/verify-openai-vector-store.mjs",
     "compose:config": "docker compose config",
     "secret:scan": "sh scripts/secret-scan.sh scan",
     "secret:scan:verify-fixture": "sh scripts/secret-scan.sh verify-fixture",

@@ -1,31 +1,48 @@
 {
-  "id": "si_cycle_3aaa7451-2724-4b0a-8aeb-41204080200b",
+  "id": "si_cycle_624217cd-8984-4533-9878-0a2c7eb97ac8",
   "reason": "service-startup",
   "manual": false,
   "mode": "sandbox",
-  "startedAt": "2026-08-17T19:00:24.781Z",
+  "startedAt": "2026-08-27T18:56:59.320Z",
   "status": "completed",
   "summary": {
-    "signalCount": 61,
-    "patternCount": 36,
-    "triggerCount": 0,
-    "proposalCount": 0,
+    "signalCount": 64,
+    "patternCount": 39,
+    "triggerCount": 4,
+    "proposalCount": 2,
     "candidateCount": 0,
     "promotionDecisions": []
   },
   "runIndicator": {
     "state": "completed",
     "phase": "cycle_completed",
-    "cycleId": "si_cycle_3aaa7451-2724-4b0a-8aeb-41204080200b",
+    "cycleId": "si_cycle_624217cd-8984-4533-9878-0a2c7eb97ac8",
     "reason": "service-startup",
     "manual": false,
     "mode": "sandbox",
-    "message": "Self-improvement cycle completed with 0 proposals.",
-    "startedAt": "2026-08-17T19:00:24.781Z",
-    "completedAt": "2026-08-17T19:00:29.407Z",
+    "message": "Self-improvement cycle completed with 2 proposals.",
+    "startedAt": "2026-08-27T18:56:59.320Z",
+    "completedAt": "2026-08-27T18:57:05.789Z",
     "nextRunAt": "",
-    "updatedAt": "2026-08-17T19:00:29.457Z"
+    "updatedAt": "2026-08-27T18:57:05.797Z"
   },
-  "completedAt": "2026-08-17T19:00:29.407Z",
-  "results": []
+  "completedAt": "2026-08-27T18:57:05.789Z",
+  "results": [
+    {
+      "triggerId": "si_trigger_ba155b5f-041d-4f5d-bf21-e83e42cd38bd",
+      "proposalId": "si_prop_086781de-261d-4c20-b847-8a055b838827",
+      "proposalStatus": "rejected",
+      "candidateId": "",
+      "reviewDecision": "",
+      "promotionDecision": ""
+    },
+    {
+      "triggerId": "si_trigger_56b35fb3-eee3-4bfd-8a99-ae3a3e4d1cb1",
+      "proposalId": "si_prop_0094c8d0-9899-4a07-a60d-fbad8936c93b",
+      "proposalStatus": "rejected",
+      "candidateId": "",
+      "reviewDecision": "",
+      "promotionDecision": ""
+    }
+  ]
 }

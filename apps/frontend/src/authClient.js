@@ -16,6 +16,7 @@ if (import.meta.hot) {
 }
 
 const developmentAuthEnabled = import.meta.env.VITE_PLUTONIX_DEV_AUTH_ENABLED === "true";
+const developmentAuthSubject = String(import.meta.env.VITE_PLUTONIX_DEV_AUTH_SUBJECT || "local:local-plutonix-user").trim();
 
 function publicUser(user = {}) {
   if (!user || typeof user !== "object") return null;
@@ -23,6 +24,7 @@ function publicUser(user = {}) {
     id: String(user.id || "").slice(0, 240),
     name: String(user.name || "Verified user").slice(0, 160),
     email: String(user.email || "").slice(0, 254),
+    picture: String(user.picture || "").slice(0, 2048),
     authProvider: String(user.authProvider || "oidc").slice(0, 48)
   };
 }
@@ -40,7 +42,10 @@ export function storeUser(user, { token } = {}) {
   if (!next?.id || !token) throw new Error("A verified identity profile and bearer token are required.");
   currentUser = next;
   bearerToken = String(token);
-  developmentSubject = "";
+  // A local deployment may deliberately use its pre-provisioned development
+  // membership after Google has verified the browser identity. Production
+  // builds cannot enable this path and continue to send the bearer token.
+  developmentSubject = developmentAuthEnabled ? developmentAuthSubject : "";
   notify();
 }
 
@@ -63,8 +68,8 @@ export function clearUser() {
 }
 
 export function authHeaders() {
-  if (bearerToken) return { authorization: `Bearer ${bearerToken}` };
   if (developmentAuthEnabled && developmentSubject) return { "x-plutonix-dev-subject": developmentSubject };
+  if (bearerToken) return { authorization: `Bearer ${bearerToken}` };
   return {};
 }
 

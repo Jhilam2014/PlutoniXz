@@ -5467,3 +5467,52 @@ For generated projects, the project orchestrator must create or preserve the sam
 
 Do not silently switch to paid remote inference providers when the user asked for local Hugging Face models. Keep `HF_TOKEN` in environment variables only; never write tokens, private Hub URLs, or credentials into manifests, source, logs, prompts, graph files, or memory.
 <!-- huggingface-model-workspace:end -->
+
+<!-- gotham-studio-control-plane:start -->
+# GOTHAM STUDIO AI/ML EXECUTION CONTRACT
+
+Gotham Studio is an additive, protected workspace inside Gotham Builder. It is the provider-neutral control plane for project-scoped AI/ML pipelines, jobs, experiments, models, provider health, lifecycle evidence, and links back to Gotham chat and the Functionality Graph. It must not replace the public Studio landing workspace or remove any existing Builder, PlutoniX, Agents, Hosting, memory, graph, or observability behavior.
+
+## Routing and execution authority
+
+- Route real AI/ML execution objectives to Gotham Studio when they request training, tuning, evaluation, batch inference, experiment comparison, or provider job operation. Do not misroute requests to implement or repair Studio itself.
+- Planner and Debugger may inspect, diagnose, and propose Studio work. They must never submit physical compute.
+- Only Executor may submit provider work, and Gotham natural-language routing must still stop at a durable draft until a complete provider specification is present and the user explicitly submits it.
+- Automatic model deployment remains disabled unless a later governed contract adds an explicit approval gate. A request to train or compare a model is not deployment authority.
+
+## Provider-neutral boundary
+
+Every execution backend must implement the `MLExecutionProvider` contract and register through `ProviderRegistry`. UI code and Gotham intent routing must depend on normalized provider capabilities and logical job state, not provider-specific endpoints.
+
+Required adapter behaviors are connection status, job submission, job lookup, state normalization, and sanitized errors. Cancellation, logs, metrics, artifacts, experiments, model registry, cost estimates, and provider deep links are capability flags. A control or claim must not appear when the selected adapter does not support it.
+
+Databricks and Azure Machine Learning are first-party adapters. New providers must be additive registrations with focused provider-boundary and normalization tests; they must not introduce provider conditionals throughout the UI or core service.
+
+## Persistence, identity, and safety
+
+- Persist logical pipelines, jobs, lifecycle events, provider checks, experiments, and models in tenant/workspace/project scope. Persist external provider job/run references separately from logical IDs.
+- Every Studio API requires authenticated project access through the existing identity/RBAC boundary. Cross-tenant or cross-project lookups must resolve as unavailable and must not reveal whether another record exists.
+- Provider credentials are backend-only. Reject credential-shaped keys in job parameters and provider configuration, sanitize provider responses/errors, and never return tokens, authorization headers, signatures, or private keys to the frontend, activity stream, graph, logs, or memory.
+- Job creation and retries require idempotency keys. Provider submission must also use a stable provider-side idempotency mechanism where the provider supports one.
+- Enforce maximum runs, runtime, allowed providers, allowed compute classes, GPU policy, deployment policy, and verifiable cost ceilings before submission. If cost cannot be estimated or proven by a provider policy reference, label it unavailable and reject a requested ceiling rather than inventing a value.
+- Reconciliation must be bounded, retry-aware, and non-flooding. Store and emit lifecycle events when logical state changes or a user action occurs; do not emit repeated no-change polling events.
+
+## Honest data and traceability
+
+Use only persisted control-plane data or fresh provider responses. Do not add sample jobs, fabricated progress, placeholder metrics, fictional costs, mock experiments, or made-up model registry entries. Empty states and unavailable evidence must be explicit.
+
+Every Studio job should retain project, pipeline, functionality, trigger, retry, and provider references when available. Gotham activity events that carry a Studio job ID must link back to that job. Studio's command bar must return the selected resource context to Gotham Builder. Functionality-linked work must remain discoverable in the Functionality Graph and architecture artifacts.
+
+## Required validation
+
+Changes to Gotham Studio must verify, in proportion to scope:
+
+1. provider registration and capability reporting;
+2. provider-native to logical-state normalization;
+3. create, idempotency, submit, refresh, success, failure, cancel, and bounded retry behavior;
+4. Planner submission rejection and compute/deployment/cost policy enforcement;
+5. tenant/project isolation and provider-secret rejection;
+6. capability-dependent UI actions, honest empty/unavailable states, and protected workspace access;
+7. production frontend compilation and focused backend/provider tests;
+8. additive AGENTS, workflow/task, registry, graph/topology, memory, and observability records for material Studio changes.
+<!-- gotham-studio-control-plane:end -->

@@ -11,7 +11,7 @@ const reusableInfrastructureAgents = Object.freeze([
     id: "project-orchestrator-agent",
     name: "Project Orchestrator Agent",
     role: "project-orchestrator",
-    responsibility: "Read the project instruction, decide required specialist bindings, and coordinate Gotham workflow handoff."
+    responsibility: "Read the project instruction, enforce app-private and agreement-gated enterprise context, record checkpoint alternatives, decide required specialist bindings, and coordinate Gotham workflow handoff."
   },
   {
     id: "project-execution-agent",
@@ -267,6 +267,8 @@ async function writeProjectLocalOrchestrator(topology) {
     `project_name: ${topology.project.name}`,
     `workspace: ${topology.project.workspaceDir}`,
     `preview_port: ${topology.project.port}`,
+    `enterprise_id: ${topology.project.enterpriseId || "unassigned"}`,
+    `enterprise_name: ${topology.project.enterpriseName || "Unassigned"}`,
     "authority: plutonix-delegated-project-context",
     "",
     "## Core Objective",
@@ -303,6 +305,16 @@ async function writeProjectLocalOrchestrator(topology) {
     "- Prefer local project resources before remote retrieval. Verify external results against current files before editing.",
     "- Keep credentials and secrets out of prompts, logs, memory, graph artifacts, and generated source.",
     "- Require approval before destructive data changes, production deployment, credential mutation, or irreversible migration.",
+    "",
+    "## Enterprise And Application Information Boundary",
+    "- Treat this project's App BrainX context as application-private by default. A shared tenant, project visibility flag, common agent, or common owner is not permission to read another application's information.",
+    "- Resolve the authenticated tenant, explicit enterprise tag, source application, recipient application, purpose, and data classification before requesting cross-application context.",
+    "- Permit cross-application information only when both applications have the same explicit enterprise ID and the enforced agreement gate covers the producer, recipient, requested purpose, and current time. Classification, transformation, or region requirements need an authoritative enforcement path and access receipt; until one exists, treat that context as unavailable and deny.",
+    "- Deny access when an enterprise tag or agreement is missing, expired, suspended, revoked, directionally mismatched, or insufficient for the requested purpose. Never silently fall back to raw source, prompts, vector memory, or another app's BrainX.",
+    "- App BrainX may read its private app context and agreement-authorized, curated Enterprise Brain publications. The Enterprise Brain is a governed portfolio publication layer, not a mirror of every application's private memory.",
+    "- Preserve provenance and the applicable agreement revision or access receipt in delegated context and decision evidence. Sharing approval and decision resolution remain human or policy-authorized actions; BrainX and QAgents are advisory only.",
+    "- Record each build checkpoint with its options, selected/deferred/rejected disposition when authoritative, rationale, constraints, evidence, actor, and time. Source-observed implementation is evidence of what exists, never proof that it was selected historically.",
+    "- When a recorded constraint or agreement changes, create a reviewable reconsideration suggestion for affected deferred branches. Do not silently activate a branch, rerun implementation, or rewrite the earlier checkpoint.",
     "",
     "## Product Shape Contract",
     "- Before selecting stack, routes, components, agents, or styling, consume the server-owned Product Shape Contract.",
@@ -713,7 +725,10 @@ export function buildProjectAgentTopology(project, structuredRequest = {}, exist
       folderName: project.folderName,
       workspaceDir: project.workspaceDir,
       port: project.port,
-      previewUrl: project.previewUrl
+      previewUrl: project.previewUrl,
+      origin: project.provenance?.origin || project.origin || existingTopology?.project?.origin || (project.status === "imported" ? "imported" : "unknown_legacy"),
+      enterpriseId: project.enterprise?.id || "",
+      enterpriseName: project.enterprise?.name || ""
     },
     instruction: {
       hash: structuredRequest.instructionHash,
@@ -1033,16 +1048,17 @@ async function writeGeneratedNeo4jSeed(topologies) {
     }
     for (const branch of topology.architectureBranches || []) {
       const branchNodeId = `branch:${branch.id}`;
-      const functionalityId = `functionality:${topology.project.id}:${branch.functionalityId}`;
+      const sourceEntityId = branch.sourceEntityId || branch.functionalityId;
+      const functionalityId = `functionality:${topology.project.id}:${sourceEntityId}`;
       const matchingSubfunctionalities = (topology.subfunctionalities || []).filter((subfunctionality) =>
-        subfunctionality.parentFunctionalityId === branch.functionalityId &&
+        subfunctionality.parentFunctionalityId === sourceEntityId &&
         (subfunctionality.parentEvidenceIds || []).some((id) => (branch.evidenceIds || []).includes(id))
       );
       const supportingSubfunctionality = matchingSubfunctionalities.length === 1 ? matchingSubfunctionalities[0] : null;
       const sourceNodeId = supportingSubfunctionality
         ? `subfunctionality:${topology.project.id}:${supportingSubfunctionality.id}`
         : functionalityId;
-      const sourceLabel = supportingSubfunctionality ? "Subfunctionality" : neo4jLabelForEntity(entityById.get(branch.functionalityId));
+      const sourceLabel = supportingSubfunctionality ? "Subfunctionality" : neo4jLabelForEntity(entityById.get(sourceEntityId));
       lines.push(
         `MERGE (b:Branch {id: ${JSON.stringify(branchNodeId)}})`,
         `SET b.ledger_id = ${JSON.stringify(branch.id)}, b.status = ${JSON.stringify(branch.status || "deferred")}, b.inference_role = ${JSON.stringify(branch.inferenceRole || "deferred_alternative")}, b.score = ${Number(branch.score || 0)}`,
@@ -1124,6 +1140,9 @@ function graphRowsForTopology(topology) {
         workspaceDir: topology.project.workspaceDir,
         port: topology.project.port,
         previewUrl: topology.project.previewUrl,
+        origin: topology.project.origin || "plutonix_created",
+        enterpriseId: topology.project.enterpriseId || "",
+        enterpriseName: topology.project.enterpriseName || "",
         description: topology.instruction.objective || `Managed PlutoniX project for ${topology.project.name}.`
       }
     },
@@ -1200,6 +1219,12 @@ function graphRowsForTopology(topology) {
         chronology: functionality.chronology || null,
         chronologyOrder: Number(functionality.chronology?.order ?? 0),
         chronologyBasis: functionality.chronology?.basis || "",
+        deliveryOrder: Number(functionality.chronology?.deliveryOrder ?? functionality.chronology?.order ?? 0) || 0,
+        deliveryPhase: functionality.chronology?.deliveryPhase || "",
+        deliveryPhaseRank: Number(functionality.chronology?.deliveryPhaseRank ?? 0),
+        timelineInferred: Boolean(functionality.chronology?.inferred),
+        timelineConfidence: Number(functionality.chronology?.confidence ?? 0),
+        projectOrigin: topology.project.origin || "plutonix_created",
         parentEntityId: functionality.parentEntityId || "",
         parentEntityNodeId: functionality.parentEntityId ? `functionality:${topology.project.id}:${functionality.parentEntityId}` : "",
         parentRelationshipType: functionality.parentRelationshipType || "",
@@ -1249,6 +1274,7 @@ function graphRowsForTopology(topology) {
         projectId: topology.project.id,
         projectName: topology.project.name,
         functionalityId: branch.functionalityId,
+        sourceEntityId: branch.sourceEntityId || branch.functionalityId,
         inferenceRole: branch.inferenceRole || "deferred_alternative",
         score: branch.score,
         autoReconsideration: Boolean(branch.autoReconsideration),
@@ -1327,7 +1353,7 @@ function graphRowsForTopology(topology) {
         metadata: { dynamicProjectGraph: true, projectId: topology.project.id, sourceDigest: subfunctionality.sourceDigest || "" }
       }));
       const branchLinks = (topology.architectureBranches || [])
-        .filter((branch) => branch.functionalityId === functionality.id)
+        .filter((branch) => (branch.sourceEntityId || branch.functionalityId) === functionality.id)
         .map((branch) => ({
           source: (() => {
             const matches = subfunctionalities.filter((subfunctionality) =>
@@ -1928,6 +1954,55 @@ export async function syncProjectAgentTopology(project, structuredRequest = {}) 
   await fs.ensureDir(path.dirname(frontendGraphPath()));
   await fs.writeJson(frontendGraphPath(), graph, { spaces: 2 });
   return topology;
+}
+
+/**
+ * Refresh project identity fields without discarding previously discovered
+ * application topology or decision branches. Identity edits are metadata
+ * changes; an explicit architecture analysis is the only operation that may
+ * replace this evidence with a newer source-backed snapshot.
+ */
+export async function syncProjectAgentIdentity(project) {
+  const existingTopologyPath = path.join(agentRuntimeRoot(), `${project.id}.agents.json`);
+  const existingTopology = (await fs.pathExists(existingTopologyPath))
+    ? await fs.readJson(existingTopologyPath).catch(() => null)
+    : null;
+  if (!existingTopology) {
+    return syncProjectAgentTopology(project, {
+      objective: `Maintain the managed app project ${project.name}.`,
+      pageType: "managed_app_project",
+      topic: project.name,
+      sections: ["project", "runtime", "playground"],
+      media: []
+    });
+  }
+  const updatedTopology = {
+    ...existingTopology,
+    project: {
+      ...(existingTopology.project || {}),
+      id: project.id,
+      name: project.name,
+      folderName: project.folderName,
+      workspaceDir: project.workspaceDir,
+      port: project.port,
+      previewUrl: project.previewUrl,
+      origin: project.provenance?.origin || project.origin || existingTopology.project?.origin || "unknown_legacy",
+      enterpriseId: project.enterprise?.id || "",
+      enterpriseName: project.enterprise?.name || ""
+    },
+    updatedAt: new Date().toISOString()
+  };
+  // Preserve the exact agents, assignments, source topology, application
+  // links, and branch ledger. An identity edit must not re-run routing or
+  // architecture classification.
+  assertReuseDecisionCoverage(updatedTopology.agents || [], updatedTopology.agentReuseDecisions || []);
+  await writeAgentReuseDecisions(updatedTopology);
+  await writeAgentRegistries(updatedTopology);
+  await writeProjectLocalOrchestrator(updatedTopology);
+  await fs.ensureDir(agentRuntimeRoot());
+  await fs.writeJson(existingTopologyPath, updatedTopology, { spaces: 2 });
+  await refreshProjectAgentGraphs();
+  return updatedTopology;
 }
 
 export async function removeAgentFromProjectTopologies(agentId, metadata = {}) {

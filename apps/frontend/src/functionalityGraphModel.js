@@ -388,6 +388,7 @@ function mergeFunctionalityGraphs(baseline, current) {
         ...new Set([...(duplicate.responsibleAgentIds || []), ...(sourceNode.responsibleAgentIds || [])])
       ];
       if (sourceNode.state) duplicate.state = sourceNode.state;
+      if (sourceNode.studioResource) duplicate.studioResource = sourceNode.studioResource;
       duplicate.changeKind = sourceNode.origin === "previous_execution" ? "updated_previous" : "updated_latest";
       idMap.set(sourceNode.id, duplicateId);
       return;

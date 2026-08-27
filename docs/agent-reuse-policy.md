@@ -22,3 +22,11 @@ Tiny and small tasks bind the canonical `project-execution-agent` and shared `qa
 ## Reconciliation
 
 Managed project-prefixed definitions from the legacy model are archived under `agents/archived/legacy-project-scoped/` during migration. Removing a project removes its assignment records, not a shared definition still available to other projects.
+
+## AgenticX enterprise knowledge gateway
+
+Agent definitions and AgenticX knowledge are related but not interchangeable. Global reusable definitions still follow the resolution gate above. AgenticX adds a tenant-scoped retrieval gateway before agent selection and prompt assembly so eligible prior knowledge can improve an assigned agent without copying raw project material into a global definition.
+
+The gateway accepts only sanitized summaries and metadata. Registration stays private to its source workspace, while an authorization-first Enterprise Brain gateway may retrieve an eligible summary for another application in the same tenant and enterprise only after target-policy, evidence, classification, region, purpose, retention, and transformation checks. It never enumerates cross-workspace candidates or shares secrets, credentials, raw attachments, or restricted content. Cross-tenant retrieval is denied. Every allowed or denied retrieval persists an access receipt, so reuse can be audited without treating a vector/graph result as authorization.
+
+`AGENTICX_KNOWLEDGE_ENABLED=false` is the rollout default. Enabling it requires named tenant configuration and the relevant Enterprise BrainX policy evidence; a blank allowlist never bypasses the record-level controls. See [Enterprise BrainX governance](enterprise-brainx-governance.md).

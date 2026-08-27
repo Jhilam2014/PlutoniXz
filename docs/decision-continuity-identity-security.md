@@ -1,6 +1,6 @@
 # Decision Continuity identity and authorization
 
-Decision Continuity is a bearer-token API. Every one of its 19 lifecycle routes authenticates before reading a route body, resolves the verified external identity to a PostgreSQL principal, and resolves tenant/workspace authority from an active PostgreSQL membership. Client-provided tenant and workspace values are selectors only; they never create authority.
+Decision Continuity is a bearer-token API. Every Decision Continuity lifecycle route authenticates before reading a route body, resolves the verified external identity to a PostgreSQL principal, and resolves tenant/workspace authority from an active PostgreSQL membership. Client-provided tenant and workspace values are selectors only; they never create authority.
 
 ## Request and worker flow
 
@@ -56,6 +56,8 @@ Human permissions are role-derived. A service ignores human roles and can receiv
 
 `brainx:read` is available to reviewed human operator/auditor roles; `brainx:admin` is human-only and governs registrations, policy, health, and kill controls; `brainx:execute` is a separately provisioned service scope for the isolated fixture boundary. Migration 009 rejects service `brainx:admin` and rejects `brainx:execute` combined with final Decision Continuity/promotion evaluation, policy, approval, canary, or operation authority. BrainX has no browser execution route and does not grant model output lifecycle authority. See [the BrainX registry policy](brainx-model-registry.md).
 
+The strict `/api/enterprise-brain/*` family uses the same verified OIDC membership boundary. Read-only policy/budget/decision/research/route/reuse projections require reviewed human BrainX read authority; binding, policy, budget, source, and high-impact administration require human-only BrainX administration authority. A legacy portfolio tag, sharing-agreement JSON record, model output, prompt, or query/body tenant selector cannot create enterprise authority. The independent ResearchX worker must use its own least-privilege service identity and can record only its scoped research effects; it cannot gain policy, approval, promotion, deployment, or code-writing authority.
+
 Route permission is declared in [the lifecycle registry](../apps/backend/src/decisionContinuityLifecycleRegistry.js). Human routes accept human principals; condition ingestion, policy, canary outcomes, and readiness require service principals. Evaluation permits either a service with `decision:evaluate` or an independently provisioned human `evaluator_reviewer`. A service principal can never approve. Identifiers associated with QAgent or BrainX cannot administer policy even if an erroneous scope is provisioned.
 
 The QAgent operator endpoint is read-only and uses existing `decision:read`. It returns only tenant/workspace-scoped, redacted run metadata. It cannot use an HTTP body to activate a tenant, select a collector, supply a tool, or execute an investigation.
@@ -95,6 +97,14 @@ PLUTONIX_CORS_ORIGINS=https://app.example
 PLUTONIX_DEV_AUTH_ENABLED=false
 
 DECISION_CONTINUITY_WORKER_PRINCIPAL_ID=workflow-worker-prod-01
+
+# Only when the explicitly opt-in ResearchX profile is deployed.
+RESEARCHX_WORKER_PRINCIPAL_ID=researchx-worker-prod-01
+RESEARCHX_ENABLED=true
+RESEARCHX_WORKER_ENABLED=true
+RESEARCHX_NETWORK_ENABLED=true
+RESEARCHX_ENABLED_TENANTS=tenant-id
+RESEARCHX_ALLOWED_DOMAINS=docs.example.com
 ```
 
 Production startup fails closed when the PostgreSQL authority, OIDC issuer/audience, browser origin allowlist, or worker principal requirement is absent, when the development bypass is enabled, or when test-only `OIDC_JWKS_JSON` is supplied. `OIDC_JWKS_JSON` exists solely for non-production deterministic tests.
@@ -103,6 +113,6 @@ Provision the API-facing service principals and the worker principal before roll
 
 ## Audit, operations, and validation
 
-Audit records include principal ID, tenant/workspace, route/action, outcome, safe code, request ID, and minimal non-secret metadata. They intentionally exclude bearer tokens, authorization headers, credentials, and claims. Alerts should cover issuer/JWKS unavailability, repeated authentication/authorization denials, unknown principals, revocation activity, worker scope denials, and authorization dead letters.
+Audit records include principal ID, tenant/workspace, route/action, outcome, safe code, request ID, and minimal non-secret metadata. They intentionally exclude bearer tokens, authorization headers, credentials, and claims. Enterprise Brain receipts retain bounded policy/budget/evidence references, candidate exclusions, citation metadata, and sanitized reuse metadata rather than raw prompts, source bodies, secrets, or restricted records. Alerts should cover issuer/JWKS unavailability, repeated authentication/authorization denials, unknown principals, revocation activity, worker scope denials, stale-evidence/policy denials, budget exhaustion, and authorization dead letters.
 
 The executable HTTP test covers every registered route with unauthenticated, insufficient-role/scope, cross-tenant, conflicting tenant selector, authorized, header/query/body tenant-tampering, and resource-path cross-tenant cases. Additional cases verify human evaluator access, auditor read-only behavior, self-approval denial, QAgent policy denial, service approval schema rejection, revocation, audit redaction, worker capability scoping, and worker-time revocation rechecks. See [the threat model](threat-model-decision-continuity-identity.md) for residual risks and owners.

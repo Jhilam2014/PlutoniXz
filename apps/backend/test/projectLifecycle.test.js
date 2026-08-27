@@ -9,7 +9,50 @@ import { classifyGothamWorkflowFailure, isGothamWorkspaceSandboxUnavailable, pro
 import { createPlutoniXOrchestrationEnvelope } from "../src/plutonixAuthority.js";
 import { formatProjectOrchestratorInstruction, inferGothamRequestIntent } from "../src/orchestratorAgent.js";
 import { runProjectOrchestratorBootstrap } from "../src/projectBootstrap.js";
-import { createProject, deleteProject, getProject, shouldSkipProjectArtifact } from "../src/projectManager.js";
+import { buildProjectAgentTopology, syncProjectAgentTopology } from "../src/projectAgents.js";
+import { createProject, deleteProject, getProject, projectProvenance, shouldSkipProjectArtifact, updateProjectIdentity } from "../src/projectManager.js";
+
+test("project provenance survives runtime status and topology refreshes", () => {
+  const created = {
+    id: "created-project",
+    name: "Created project",
+    folderName: "created-project",
+    status: "running",
+    provenance: { origin: "plutonix_created", recordedAt: "2026-08-20T00:00:00.000Z", source: "plutonix_project_creation" }
+  };
+  const imported = {
+    id: "imported-project",
+    name: "Imported project",
+    folderName: "imported-project",
+    status: "stopped",
+    provenance: { origin: "imported", recordedAt: "2026-08-20T00:00:00.000Z", source: "plutonix_project_import" }
+  };
+
+  assert.equal(projectProvenance(created).origin, "plutonix_created");
+  assert.equal(projectProvenance(imported).origin, "imported");
+  assert.equal(projectProvenance({ id: "legacy-project", status: "running" }).origin, "unknown_legacy");
+  assert.deepEqual(projectProvenance({
+    id: "legacy-created-project",
+    status: "stopped",
+    createdAt: "2026-01-01T00:00:00.000Z",
+    productDecision: { productShape: "web_app" }
+  }), {
+    origin: "plutonix_created",
+    recordedAt: "2026-01-01T00:00:00.000Z",
+    source: "legacy_plutonix_product_decision"
+  });
+
+  const topology = buildProjectAgentTopology(imported, { objective: "Inspect imported application" });
+  assert.equal(topology.project.origin, "imported");
+  assert.equal(buildProjectAgentTopology(created, { objective: "Inspect created application" }).project.origin, "plutonix_created");
+
+  const refreshedTopology = buildProjectAgentTopology(
+    { ...imported, provenance: undefined, status: "running" },
+    { objective: "Refresh imported application" },
+    topology
+  );
+  assert.equal(refreshedTopology.project.origin, "imported");
+});
 
 test("creates a project-local orchestrator and deletes the complete managed project", async (context) => {
   const temporaryRoot = await fs.mkdtemp(path.join(os.tmpdir(), "plutonix-lifecycle-"));
@@ -66,6 +109,10 @@ test("creates a project-local orchestrator and deletes the complete managed proj
   const policy = await fs.readFile(policyPath, "utf8");
   assert.match(policy, /highest achievable implementation accuracy with the lowest justified token/i);
   assert.match(policy, /MCP Task Control/);
+  assert.match(policy, /Enterprise And Application Information Boundary/);
+  assert.match(policy, /same explicit enterprise ID and the enforced agreement gate/i);
+  assert.match(policy, /Source-observed implementation is evidence of what exists, never proof that it was selected historically/i);
+  assert.match(policy, /create a reviewable reconsideration suggestion/i);
   const projectAgentsPolicy = await fs.readFile(path.join(project.workspaceDir, "AGENTS.md"), "utf8");
   assert.match(projectAgentsPolicy, /canonical-agent-policy/);
   assert.match(projectAgentsPolicy, /Hugging Face Model Workspace/);
@@ -77,6 +124,76 @@ test("creates a project-local orchestrator and deletes the complete managed proj
   assert.equal(sourceManifest.archivePath, orchestratorArchive);
   assert.equal(sourceManifest.archiveComment, "test-archive");
   assert.match(await fs.readFile(path.join(project.workspaceDir, ".env"), "utf8"), /FRONTEND_PORT=5390/);
+
+  await syncProjectAgentTopology(project, {
+    objective: "Build a precise analytics workspace.",
+    pageType: "dashboard_landing_page",
+    topic: "analytics",
+    sections: ["hero", "metrics"],
+    discoveredFunctionalities: [{
+      id: "source-backed-insight",
+      label: "Source-backed insight",
+      category: "ui",
+      entityType: "ui_feature",
+      evidence: [{ id: "source-1", reference: "src/App.jsx:1" }]
+    }],
+    architectureBranches: [{
+      id: "branch-source-backed-insight",
+      functionalityId: "source-backed-insight",
+      status: "candidate",
+      inferenceRole: "observed_current",
+      evidenceIds: ["source-1"]
+    }]
+  });
+
+  const enterpriseTaggedProject = await updateProjectIdentity(project.id, {
+    enterpriseId: "northwind-platform",
+    enterpriseName: "Northwind Platform"
+  });
+  assert.deepEqual(enterpriseTaggedProject.enterprise, {
+    id: "northwind-platform",
+    name: "Northwind Platform",
+    taggedAt: enterpriseTaggedProject.enterprise.taggedAt,
+    taggedByUserId: "anonymous"
+  });
+  assert.match(enterpriseTaggedProject.enterprise.taggedAt, /^\d{4}-\d{2}-\d{2}T/);
+  const persistedProject = JSON.parse(await fs.readFile(process.env.PROJECTS_REGISTRY_PATH, "utf8"))[0];
+  assert.equal(persistedProject.enterprise.id, "northwind-platform");
+  assert.equal(persistedProject.enterprise.name, "Northwind Platform");
+  const preservedTopology = JSON.parse(await fs.readFile(path.join(process.env.PROJECT_AGENT_RUNTIME_ROOT, `${project.id}.agents.json`), "utf8"));
+  assert.deepEqual(preservedTopology.functionalities.map((functionality) => functionality.id), ["source-backed-insight"]);
+  assert.deepEqual(preservedTopology.architectureBranches.map((branch) => branch.id), ["branch-source-backed-insight"]);
+  assert.equal(preservedTopology.project.enterpriseId, "northwind-platform");
+  assert.equal(preservedTopology.project.origin, "plutonix_created");
+
+  const sameEnterpriseProject = await updateProjectIdentity(project.id, {
+    enterpriseId: "northwind-platform",
+    enterpriseName: "Northwind Platform"
+  });
+  assert.equal(sameEnterpriseProject.enterprise.taggedAt, enterpriseTaggedProject.enterprise.taggedAt, "a repeat assignment keeps the original enterprise-tag record");
+  assert.equal(sameEnterpriseProject.provenance.origin, "plutonix_created", "enterprise assignment never reclassifies project provenance");
+  const repeatTopology = JSON.parse(await fs.readFile(path.join(process.env.PROJECT_AGENT_RUNTIME_ROOT, `${project.id}.agents.json`), "utf8"));
+  assert.equal(repeatTopology.project.enterpriseId, "northwind-platform");
+  assert.equal(repeatTopology.project.origin, "plutonix_created");
+  assert.deepEqual(repeatTopology.architectureBranches.map((branch) => branch.id), ["branch-source-backed-insight"], "identity refresh preserves the decision branch ledger");
+
+  const idOnlyEnterpriseProject = await updateProjectIdentity(project.id, { enterpriseId: "northwind-platform-v2" });
+  assert.deepEqual(
+    { id: idOnlyEnterpriseProject.enterprise.id, name: idOnlyEnterpriseProject.enterprise.name },
+    { id: "northwind-platform-v2", name: "northwind-platform-v2" },
+    "an ID-only PATCH never carries a stale enterprise display name into a new enterprise boundary"
+  );
+  const nameOnlyEnterpriseProject = await updateProjectIdentity(project.id, { enterpriseName: "Northwind Platform v2" });
+  assert.deepEqual(
+    { id: nameOnlyEnterpriseProject.enterprise.id, name: nameOnlyEnterpriseProject.enterprise.name },
+    { id: "northwind-platform-v2", name: "Northwind Platform v2" },
+    "a name-only PATCH updates the label without silently moving the application to another enterprise"
+  );
+  const partialUpdateTopology = JSON.parse(await fs.readFile(path.join(process.env.PROJECT_AGENT_RUNTIME_ROOT, `${project.id}.agents.json`), "utf8"));
+  assert.equal(partialUpdateTopology.project.enterpriseId, "northwind-platform-v2");
+  assert.equal(partialUpdateTopology.project.enterpriseName, "Northwind Platform v2");
+  assert.equal(partialUpdateTopology.project.origin, "plutonix_created");
+  assert.deepEqual(partialUpdateTopology.architectureBranches.map((branch) => branch.id), ["branch-source-backed-insight"]);
 
   const fakeCodex = path.join(temporaryRoot, "fake-codex");
   await fs.writeFile(
@@ -395,6 +512,8 @@ test("renews the Codex timeout while the workflow is producing output", async (c
     fakeCodex,
     [
       "#!/bin/sh",
+      "if [ \"$1\" = \"--version\" ]; then printf 'codex-cli test\\n'; exit 0; fi",
+      "for argument in \"$@\"; do if [ \"$argument\" = \"sandbox\" ]; then exit 0; fi; done",
       "for count in 1 2 3 4 5 6 7 8 9; do",
       "  printf '{\"type\":\"item.completed\",\"message\":\"progress %s\"}\\n' \"$count\"",
       "  sleep 0.25",
@@ -436,6 +555,8 @@ test("suppresses recoverable Codex model cache schema warnings from Gotham progr
     fakeCodex,
     [
       "#!/bin/sh",
+      "if [ \"$1\" = \"--version\" ]; then printf 'codex-cli test\\n'; exit 0; fi",
+      "for argument in \"$@\"; do if [ \"$argument\" = \"sandbox\" ]; then exit 0; fi; done",
       "printf '2026-08-03T17:59:07.049142Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `supports_reasoning_summaries` at line 86 column 5\\n' >&2",
       "printf '{\"type\":\"item.completed\",\"message\":\"generation complete\"}\\n'",
       "printf 'export default function Page() { return <main>Generated cleanly</main>; }\\n' > src/generated/generatedPage.jsx",
@@ -571,6 +692,7 @@ test("runs the configured Gotham fallback with an explicit model and records run
   await fs.writeFile(fakeCodex, [
     "#!/bin/sh",
     "if [ \"$1\" = \"--version\" ]; then printf 'codex-cli 0.147.0\\n'; exit 0; fi",
+    "for argument in \"$@\"; do if [ \"$argument\" = \"sandbox\" ]; then exit 0; fi; done",
     "printf '%s\\n' \"$@\" > codex-args.txt",
     "printf '{\\\"type\\\":\\\"item.completed\\\",\\\"message\\\":\\\"generation complete\\\"}\\n'",
     "printf 'export default function Page() { return <main>Fallback</main>; }\\n' > src/generated/generatedPage.jsx",

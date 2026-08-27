@@ -1,0 +1,147 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://plutonix.local/schemas/gotham-studio.schema.json",
+  "title": "Gotham Studio provider-neutral domain records",
+  "oneOf": [
+    { "$ref": "#/$defs/pipeline" },
+    { "$ref": "#/$defs/job" },
+    { "$ref": "#/$defs/experiment" },
+    { "$ref": "#/$defs/model" }
+  ],
+  "$defs": {
+    "identifier": { "type": "string", "minLength": 1, "maxLength": 180 },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "constraints": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["maxRuns", "currency", "maxRuntimeMinutes", "allowedProviders", "allowedComputeClasses", "allowGpu", "allowDeployment"],
+      "properties": {
+        "maxRuns": { "type": "integer", "minimum": 1, "maximum": 50 },
+        "maxEstimatedCost": { "type": ["number", "null"], "minimum": 0 },
+        "currency": { "type": "string", "minLength": 3, "maxLength": 3 },
+        "maxRuntimeMinutes": { "type": "integer", "minimum": 1, "maximum": 43200 },
+        "allowedProviders": { "type": "array", "items": { "type": "string" }, "maxItems": 12 },
+        "allowedComputeClasses": { "type": "array", "items": { "type": "string" }, "maxItems": 40 },
+        "allowGpu": { "type": "boolean" },
+        "allowDeployment": { "type": "boolean" }
+      }
+    },
+    "pipeline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "workspaceId", "projectId", "name", "version", "objective", "stages", "createdAt", "updatedAt"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^PX-PIPELINE-" },
+        "workspaceId": { "$ref": "#/$defs/identifier" },
+        "projectId": { "$ref": "#/$defs/identifier" },
+        "name": { "type": "string", "minLength": 2, "maxLength": 160 },
+        "version": { "type": "integer", "minimum": 1 },
+        "objective": { "type": "string", "minLength": 4, "maxLength": 4000 },
+        "providerPreference": { "type": "string" },
+        "functionalityId": { "type": "string" },
+        "stages": { "type": "array", "minItems": 1, "maxItems": 100, "items": { "$ref": "#/$defs/pipelineStage" } },
+        "providerConfiguration": { "type": "object" },
+        "createdAt": { "$ref": "#/$defs/timestamp" },
+        "updatedAt": { "$ref": "#/$defs/timestamp" }
+      }
+    },
+    "pipelineStage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "type"],
+      "properties": {
+        "id": { "type": "string" },
+        "type": { "type": "string" },
+        "name": { "type": "string" },
+        "dependsOn": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "job": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "workspaceId", "projectId", "name", "objective", "provider", "logicalState", "constraints", "createdAt", "updatedAt"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^PX-ML-" },
+        "workspaceId": { "$ref": "#/$defs/identifier" },
+        "projectId": { "$ref": "#/$defs/identifier" },
+        "pipelineId": { "type": "string" },
+        "functionalityId": { "type": "string" },
+        "name": { "type": "string", "minLength": 2, "maxLength": 180 },
+        "objective": { "type": "string", "minLength": 4, "maxLength": 6000 },
+        "provider": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+        "providerJobId": { "type": "string" },
+        "providerRunId": { "type": "string" },
+        "providerUrl": { "type": "string" },
+        "logicalState": { "enum": ["DRAFT", "QUEUED", "SUBMITTED", "STARTING", "RUNNING", "PAUSED", "SUCCEEDED", "FAILED", "CANCELLING", "CANCELLED", "UNKNOWN"] },
+        "providerState": { "type": "string" },
+        "providerStatusMessage": { "type": "string" },
+        "currentStage": { "type": "string" },
+        "progress": { "type": ["number", "null"], "minimum": 0, "maximum": 100 },
+        "parameters": { "type": "object" },
+        "providerConfiguration": { "type": "object" },
+        "constraints": { "$ref": "#/$defs/constraints" },
+        "estimatedCost": { "type": ["number", "null"], "minimum": 0 },
+        "actualCost": { "type": ["number", "null"], "minimum": 0 },
+        "costCurrency": { "type": "string" },
+        "computeDurationSeconds": { "type": ["number", "null"], "minimum": 0 },
+        "resourceType": { "type": "string" },
+        "error": { "type": ["object", "null"] },
+        "retry": { "type": "object" },
+        "experimentReferences": { "type": "array", "items": { "type": "object" } },
+        "modelReferences": { "type": "array", "items": { "type": "object" } },
+        "artifactReferences": { "type": "array", "items": { "type": "object" } },
+        "triggeredBy": { "type": ["object", "null"] },
+        "triggerSource": { "type": "string" },
+        "workflowMode": { "enum": ["planner", "debugger", "executor"] },
+        "createdAt": { "$ref": "#/$defs/timestamp" },
+        "submittedAt": { "type": "string" },
+        "startedAt": { "type": "string" },
+        "completedAt": { "type": "string" },
+        "updatedAt": { "$ref": "#/$defs/timestamp" }
+      }
+    },
+    "experiment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "workspaceId", "projectId", "provider", "providerRunId", "name", "metrics", "createdAt", "updatedAt"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^PX-EXP-" },
+        "workspaceId": { "$ref": "#/$defs/identifier" },
+        "projectId": { "$ref": "#/$defs/identifier" },
+        "pipelineId": { "type": "string" },
+        "jobId": { "type": "string" },
+        "provider": { "type": "string" },
+        "providerRunId": { "type": "string" },
+        "name": { "type": "string" },
+        "metrics": { "type": "array", "items": { "type": "object" } },
+        "primaryMetric": { "type": ["object", "null"] },
+        "status": { "type": "string" },
+        "isBest": { "type": "boolean" },
+        "createdAt": { "$ref": "#/$defs/timestamp" },
+        "updatedAt": { "$ref": "#/$defs/timestamp" }
+      }
+    },
+    "model": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "workspaceId", "projectId", "provider", "providerModelId", "name", "createdAt", "updatedAt"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^PX-MODEL-" },
+        "workspaceId": { "$ref": "#/$defs/identifier" },
+        "projectId": { "$ref": "#/$defs/identifier" },
+        "pipelineId": { "type": "string" },
+        "jobId": { "type": "string" },
+        "experimentId": { "type": "string" },
+        "provider": { "type": "string" },
+        "providerModelId": { "type": "string" },
+        "name": { "type": "string" },
+        "version": { "type": "string" },
+        "stage": { "type": "string" },
+        "metrics": { "type": "array", "items": { "type": "object" } },
+        "isBest": { "type": "boolean" },
+        "createdAt": { "$ref": "#/$defs/timestamp" },
+        "updatedAt": { "$ref": "#/$defs/timestamp" }
+      }
+    }
+  }
+}

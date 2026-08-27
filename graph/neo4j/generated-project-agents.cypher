@@ -5,7 +5,7 @@ MERGE (:Agent {id: 'plutonix-independent-reviewer', name: 'PlutoniX Independent 
 MATCH (o:Agent {id: 'plutonix-fullstack-agent'}), (r:Agent {id: 'plutonix-independent-reviewer'}) MERGE (o)-[:MAY_REQUEST_REVIEW_FROM {adaptive: true}]->(r)
 
 MERGE (p:Project {id: 'project:agenticongen-9TUSjQ'})
-SET p.name = "AgentIconGen", p.folder_name = "agenticongen", p.workspace_dir = "/workspace/money/apps/agenticongen", p.port = 5302
+SET p.name = "AgentIconGen", p.folder_name = "agenticongen", p.workspace_dir = "/workspace/apps/agenticongen", p.port = 5302
 MERGE (a:Agent {id: "project-orchestrator-agent"})
 SET a.name = "Project Orchestrator Agent", a.role = "project-orchestrator", a.definition_type = 'AgentDefinition', a.scope = 'global_reusable', a.status = 'active'
 MERGE (pa:ProjectAgentAssignment {id: "project-agent-assignment:agenticongen-9TUSjQ:project-orchestrator-agent"})
@@ -269,7 +269,7 @@ MATCH (a:Agent {id: "experience-composition-agent"}), (f:Page {id: "functionalit
 MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:agenticongen-9TUSjQ:ui-src-plutonixreferencebridge-jsx-plutonixreferencebridge"}) MERGE (a)-[:IMPLEMENTS]->(f)
 
 MERGE (p:Project {id: 'project:bag-commerce-studio-Tj4bB8'})
-SET p.name = "adX", p.folder_name = "adx", p.workspace_dir = "/workspace/money/apps/adx", p.port = 5316
+SET p.name = "adX", p.folder_name = "adx", p.workspace_dir = "/workspace/apps/adx", p.port = 5316
 MERGE (a:Agent {id: "project-orchestrator-agent"})
 SET a.name = "Project Orchestrator Agent", a.role = "project-orchestrator", a.definition_type = 'AgentDefinition', a.scope = 'global_reusable', a.status = 'active'
 MERGE (pa:ProjectAgentAssignment {id: "project-agent-assignment:bag-commerce-studio-Tj4bB8:project-orchestrator-agent"})
@@ -1286,7 +1286,7 @@ MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functio
 MATCH (a:Agent {id: "data-contract-agent"}), (f:Database {id: "functionality:bag-commerce-studio-Tj4bB8:data-tests-huggingface-local-i2v-test-mjs-table-directory"}) MERGE (a)-[:IMPLEMENTS]->(f)
 
 MERGE (p:Project {id: 'project:bag-commerce-studio-y2obrr'})
-SET p.name = "VirtuX", p.folder_name = "virtux", p.workspace_dir = "/workspace/money/apps/virtux", p.port = 5310
+SET p.name = "VirtuX", p.folder_name = "virtux", p.workspace_dir = "/workspace/apps/virtux", p.port = 5310
 MERGE (a:Agent {id: "project-orchestrator-agent"})
 SET a.name = "Project Orchestrator Agent", a.role = "project-orchestrator", a.definition_type = 'AgentDefinition', a.scope = 'global_reusable', a.status = 'active'
 MERGE (pa:ProjectAgentAssignment {id: "project-agent-assignment:bag-commerce-studio-y2obrr:project-orchestrator-agent"})
@@ -1750,7 +1750,7 @@ MATCH (a:Agent {id: "experience-composition-agent"}), (f:Page {id: "functionalit
 MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:bag-commerce-studio-y2obrr:ui-src-plutonixreferencebridge-jsx-plutonixreferencebridge"}) MERGE (a)-[:IMPLEMENTS]->(f)
 
 MERGE (p:Project {id: 'project:brushx-zHXT8q'})
-SET p.name = "BrushX", p.folder_name = "brushx", p.workspace_dir = "/workspace/money/apps/brushx", p.port = 5313
+SET p.name = "BrushX", p.folder_name = "brushx", p.workspace_dir = "/workspace/apps/brushx", p.port = 5313
 MERGE (a:Agent {id: "project-orchestrator-agent"})
 SET a.name = "Project Orchestrator Agent", a.role = "project-orchestrator", a.definition_type = 'AgentDefinition', a.scope = 'global_reusable', a.status = 'active'
 MERGE (pa:ProjectAgentAssignment {id: "project-agent-assignment:brushx-zHXT8q:project-orchestrator-agent"})
@@ -2491,7 +2491,7 @@ MATCH (a:Agent {id: "experience-composition-agent"}), (f:Page {id: "functionalit
 MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:brushx-zHXT8q:ui-src-plutonixreferencebridge-jsx-plutonixreferencebridge"}) MERGE (a)-[:IMPLEMENTS]->(f)
 
 MERGE (p:Project {id: 'project:cvmakerx-e4XAzI'})
-SET p.name = "CVMakerX", p.folder_name = "cvmakerx", p.workspace_dir = "/workspace/money/apps/cvmakerx", p.port = 5300
+SET p.name = "CVMakerX", p.folder_name = "cvmakerx", p.workspace_dir = "/workspace/apps/cvmakerx", p.port = 5300
 MERGE (a:Agent {id: "project-orchestrator-agent"})
 SET a.name = "Project Orchestrator Agent", a.role = "project-orchestrator", a.definition_type = 'AgentDefinition', a.scope = 'global_reusable', a.status = 'active'
 MERGE (pa:ProjectAgentAssignment {id: "project-agent-assignment:cvmakerx-e4XAzI:project-orchestrator-agent"})
@@ -4003,7 +4003,7 @@ MATCH (a:Agent {id: "experience-composition-agent"}), (f:Page {id: "functionalit
 MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:databricksx-n7lCNf:ui-src-plutonixreferencebridge-jsx-plutonixreferencebridge"}) MERGE (a)-[:IMPLEMENTS]->(f)
 
 MERGE (p:Project {id: 'project:geofinderx-2yFsDY'})
-SET p.name = "GeoFinderX", p.folder_name = "geofinderx", p.workspace_dir = "/workspace/money/apps/geofinderx", p.port = 5306
+SET p.name = "GeoFinderX", p.folder_name = "geofinderx", p.workspace_dir = "/workspace/apps/geofinderx", p.port = 5306
 MERGE (a:Agent {id: "project-orchestrator-agent"})
 SET a.name = "Project Orchestrator Agent", a.role = "project-orchestrator", a.definition_type = 'AgentDefinition', a.scope = 'global_reusable', a.status = 'active'
 MERGE (pa:ProjectAgentAssignment {id: "project-agent-assignment:geofinderx-2yFsDY:project-orchestrator-agent"})
@@ -4453,7 +4453,7 @@ MATCH (a:Agent {id: "experience-composition-agent"}), (f:Page {id: "functionalit
 MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:geofinderx-2yFsDY:ui-src-plutonixreferencebridge-jsx-plutonixreferencebridge"}) MERGE (a)-[:IMPLEMENTS]->(f)
 
 MERGE (p:Project {id: 'project:gymx-9JXKDV'})
-SET p.name = "GymX", p.folder_name = "gymx", p.workspace_dir = "/workspace/money/apps/gymx", p.port = 5315
+SET p.name = "GymX", p.folder_name = "gymx", p.workspace_dir = "/workspace/apps/gymx", p.port = 5315
 MERGE (a:Agent {id: "project-orchestrator-agent"})
 SET a.name = "Project Orchestrator Agent", a.role = "project-orchestrator", a.definition_type = 'AgentDefinition', a.scope = 'global_reusable', a.status = 'active'
 MERGE (pa:ProjectAgentAssignment {id: "project-agent-assignment:gymx-9JXKDV:project-orchestrator-agent"})
@@ -4829,337 +4829,337 @@ MATCH (a:UIElement {id: "functionality:gymx-9JXKDV:ui-src-generated-generatedpag
 MATCH (a:Page {id: "functionality:gymx-9JXKDV:ui-src-generated-pages-healthprogresspage-jsx-healthprogresspage"}), (b:UIElement {id: "functionality:gymx-9JXKDV:ui-src-generated-pages-healthprogresspage-jsx-input-6517"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
 MERGE (b:Branch {id: "branch:branch_30bbfdfa-ffcd-4972-9db6-466e07fbe29d"})
 SET b.ledger_id = "branch_30bbfdfa-ffcd-4972-9db6-466e07fbe29d", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:ui-src-generated-pages-adminauditpage-jsx-adminauditpage"}), (b:Branch {id: "branch:branch_30bbfdfa-ffcd-4972-9db6-466e07fbe29d"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:Page {id: "functionality:gymx-9JXKDV:ui-src-generated-pages-adminauditpage-jsx-adminauditpage"}), (b:Branch {id: "branch:branch_30bbfdfa-ffcd-4972-9db6-466e07fbe29d"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_1fc5da5b-84fe-4ff1-b0bb-4c12f2320afe"})
 SET b.ledger_id = "branch_1fc5da5b-84fe-4ff1-b0bb-4c12f2320afe", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:ui-src-generated-pages-adminauditpage-jsx-adminauditpage"}), (b:Branch {id: "branch:branch_1fc5da5b-84fe-4ff1-b0bb-4c12f2320afe"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:Page {id: "functionality:gymx-9JXKDV:ui-src-generated-pages-adminauditpage-jsx-adminauditpage"}), (b:Branch {id: "branch:branch_1fc5da5b-84fe-4ff1-b0bb-4c12f2320afe"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_ccc81f6c-ec69-414a-9f3e-5a2678da58b7"})
 SET b.ledger_id = "branch_ccc81f6c-ec69-414a-9f3e-5a2678da58b7", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:ui-src-generated-pages-adminauditpage-jsx-adminauditpage"}), (b:Branch {id: "branch:branch_ccc81f6c-ec69-414a-9f3e-5a2678da58b7"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:Page {id: "functionality:gymx-9JXKDV:ui-src-generated-pages-adminauditpage-jsx-adminauditpage"}), (b:Branch {id: "branch:branch_ccc81f6c-ec69-414a-9f3e-5a2678da58b7"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_cc056a6d-6eb5-4c21-9ab7-179f40aa6719"})
 SET b.ledger_id = "branch_cc056a6d-6eb5-4c21-9ab7-179f40aa6719", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:ui-agentic-system-d3-agentic-system-d3-js-agentic-system-d3"}), (b:Branch {id: "branch:branch_cc056a6d-6eb5-4c21-9ab7-179f40aa6719"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:UIElement {id: "functionality:gymx-9JXKDV:ui-agentic-system-d3-agentic-system-d3-js-agentic-system-d3"}), (b:Branch {id: "branch:branch_cc056a6d-6eb5-4c21-9ab7-179f40aa6719"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_232e8753-cc97-49cb-975c-6ee068a891d1"})
 SET b.ledger_id = "branch_232e8753-cc97-49cb-975c-6ee068a891d1", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:ui-agentic-system-d3-agentic-system-d3-js-agentic-system-d3"}), (b:Branch {id: "branch:branch_232e8753-cc97-49cb-975c-6ee068a891d1"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:UIElement {id: "functionality:gymx-9JXKDV:ui-agentic-system-d3-agentic-system-d3-js-agentic-system-d3"}), (b:Branch {id: "branch:branch_232e8753-cc97-49cb-975c-6ee068a891d1"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_8627c327-daaa-4887-8713-87c9b5c05657"})
 SET b.ledger_id = "branch_8627c327-daaa-4887-8713-87c9b5c05657", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:ui-agentic-system-d3-agentic-system-d3-js-agentic-system-d3"}), (b:Branch {id: "branch:branch_8627c327-daaa-4887-8713-87c9b5c05657"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:UIElement {id: "functionality:gymx-9JXKDV:ui-agentic-system-d3-agentic-system-d3-js-agentic-system-d3"}), (b:Branch {id: "branch:branch_8627c327-daaa-4887-8713-87c9b5c05657"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_a34402c1-cd0c-4ff6-8226-e32fbf62c699"})
 SET b.ledger_id = "branch_a34402c1-cd0c-4ff6-8226-e32fbf62c699", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:ui-src-app-jsx-app"}), (b:Branch {id: "branch:branch_a34402c1-cd0c-4ff6-8226-e32fbf62c699"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:Page {id: "functionality:gymx-9JXKDV:ui-src-app-jsx-app"}), (b:Branch {id: "branch:branch_a34402c1-cd0c-4ff6-8226-e32fbf62c699"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_58b917c1-8098-4c55-8d99-e0b59f9e7ec7"})
 SET b.ledger_id = "branch_58b917c1-8098-4c55-8d99-e0b59f9e7ec7", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:ui-src-app-jsx-app"}), (b:Branch {id: "branch:branch_58b917c1-8098-4c55-8d99-e0b59f9e7ec7"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:Page {id: "functionality:gymx-9JXKDV:ui-src-app-jsx-app"}), (b:Branch {id: "branch:branch_58b917c1-8098-4c55-8d99-e0b59f9e7ec7"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_6d19b371-0b51-4713-8d40-696e8bc5d32f"})
 SET b.ledger_id = "branch_6d19b371-0b51-4713-8d40-696e8bc5d32f", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:ui-src-app-jsx-app"}), (b:Branch {id: "branch:branch_6d19b371-0b51-4713-8d40-696e8bc5d32f"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:Page {id: "functionality:gymx-9JXKDV:ui-src-app-jsx-app"}), (b:Branch {id: "branch:branch_6d19b371-0b51-4713-8d40-696e8bc5d32f"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_e210bd52-19fc-4b83-8ab6-56a59a11f6c5"})
 SET b.ledger_id = "branch_e210bd52-19fc-4b83-8ab6-56a59a11f6c5", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:ui-scripts-generate-gymx-schedule-pdf-mjs-generate-gymx-schedule-pdf"}), (b:Branch {id: "branch:branch_e210bd52-19fc-4b83-8ab6-56a59a11f6c5"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:UIElement {id: "functionality:gymx-9JXKDV:ui-scripts-generate-gymx-schedule-pdf-mjs-generate-gymx-schedule-pdf"}), (b:Branch {id: "branch:branch_e210bd52-19fc-4b83-8ab6-56a59a11f6c5"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_516a71b0-7042-4421-922b-a4e8793c4f72"})
 SET b.ledger_id = "branch_516a71b0-7042-4421-922b-a4e8793c4f72", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:ui-scripts-generate-gymx-schedule-pdf-mjs-generate-gymx-schedule-pdf"}), (b:Branch {id: "branch:branch_516a71b0-7042-4421-922b-a4e8793c4f72"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:UIElement {id: "functionality:gymx-9JXKDV:ui-scripts-generate-gymx-schedule-pdf-mjs-generate-gymx-schedule-pdf"}), (b:Branch {id: "branch:branch_516a71b0-7042-4421-922b-a4e8793c4f72"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_2c01b483-c6c6-4daf-9baf-ad100391d8a5"})
 SET b.ledger_id = "branch_2c01b483-c6c6-4daf-9baf-ad100391d8a5", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:ui-scripts-generate-gymx-schedule-pdf-mjs-generate-gymx-schedule-pdf"}), (b:Branch {id: "branch:branch_2c01b483-c6c6-4daf-9baf-ad100391d8a5"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:UIElement {id: "functionality:gymx-9JXKDV:ui-scripts-generate-gymx-schedule-pdf-mjs-generate-gymx-schedule-pdf"}), (b:Branch {id: "branch:branch_2c01b483-c6c6-4daf-9baf-ad100391d8a5"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_84dac944-153a-41bd-957a-f1f73b3b76b1"})
 SET b.ledger_id = "branch_84dac944-153a-41bd-957a-f1f73b3b76b1", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:Branch {id: "branch:branch_84dac944-153a-41bd-957a-f1f73b3b76b1"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:Page {id: "functionality:gymx-9JXKDV:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:Branch {id: "branch:branch_84dac944-153a-41bd-957a-f1f73b3b76b1"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_f03fcfac-8176-495a-8802-a9dd752e49c9"})
 SET b.ledger_id = "branch_f03fcfac-8176-495a-8802-a9dd752e49c9", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:Branch {id: "branch:branch_f03fcfac-8176-495a-8802-a9dd752e49c9"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:Page {id: "functionality:gymx-9JXKDV:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:Branch {id: "branch:branch_f03fcfac-8176-495a-8802-a9dd752e49c9"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_61b842ce-21b8-4601-88aa-9134e6e6e0c4"})
 SET b.ledger_id = "branch_61b842ce-21b8-4601-88aa-9134e6e6e0c4", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:Branch {id: "branch:branch_61b842ce-21b8-4601-88aa-9134e6e6e0c4"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:Page {id: "functionality:gymx-9JXKDV:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:Branch {id: "branch:branch_61b842ce-21b8-4601-88aa-9134e6e6e0c4"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_6780b86f-39ee-4ef8-bc83-48d7c892b21a"})
 SET b.ledger_id = "branch_6780b86f-39ee-4ef8-bc83-48d7c892b21a", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:api-backend-src-server-js-get-api-health"}), (b:Branch {id: "branch:branch_6780b86f-39ee-4ef8-bc83-48d7c892b21a"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:API {id: "functionality:gymx-9JXKDV:api-backend-src-server-js-get-api-health"}), (b:Branch {id: "branch:branch_6780b86f-39ee-4ef8-bc83-48d7c892b21a"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_d5e7ebbd-988d-4d43-8af7-4de268d00dfb"})
 SET b.ledger_id = "branch_d5e7ebbd-988d-4d43-8af7-4de268d00dfb", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:api-backend-src-server-js-get-api-health"}), (b:Branch {id: "branch:branch_d5e7ebbd-988d-4d43-8af7-4de268d00dfb"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:API {id: "functionality:gymx-9JXKDV:api-backend-src-server-js-get-api-health"}), (b:Branch {id: "branch:branch_d5e7ebbd-988d-4d43-8af7-4de268d00dfb"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_886468cc-cc4f-4a0b-a471-66c75d7ce0b1"})
 SET b.ledger_id = "branch_886468cc-cc4f-4a0b-a471-66c75d7ce0b1", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:api-backend-src-server-js-get-api-health"}), (b:Branch {id: "branch:branch_886468cc-cc4f-4a0b-a471-66c75d7ce0b1"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:API {id: "functionality:gymx-9JXKDV:api-backend-src-server-js-get-api-health"}), (b:Branch {id: "branch:branch_886468cc-cc4f-4a0b-a471-66c75d7ce0b1"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_e484cde6-8b51-40bd-acbe-56aac7ef220c"})
 SET b.ledger_id = "branch_e484cde6-8b51-40bd-acbe-56aac7ef220c", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:api-backend-src-server-js-get-api-health-profile"}), (b:Branch {id: "branch:branch_e484cde6-8b51-40bd-acbe-56aac7ef220c"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:API {id: "functionality:gymx-9JXKDV:api-backend-src-server-js-get-api-health-profile"}), (b:Branch {id: "branch:branch_e484cde6-8b51-40bd-acbe-56aac7ef220c"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_fdcd0cfb-13f0-480d-ac88-08fbf4e8c951"})
 SET b.ledger_id = "branch_fdcd0cfb-13f0-480d-ac88-08fbf4e8c951", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:api-backend-src-server-js-get-api-health-profile"}), (b:Branch {id: "branch:branch_fdcd0cfb-13f0-480d-ac88-08fbf4e8c951"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:API {id: "functionality:gymx-9JXKDV:api-backend-src-server-js-get-api-health-profile"}), (b:Branch {id: "branch:branch_fdcd0cfb-13f0-480d-ac88-08fbf4e8c951"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_7d98e0a4-52a7-431a-9a67-7a1a331dbb8b"})
 SET b.ledger_id = "branch_7d98e0a4-52a7-431a-9a67-7a1a331dbb8b", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:api-backend-src-server-js-get-api-health-profile"}), (b:Branch {id: "branch:branch_7d98e0a4-52a7-431a-9a67-7a1a331dbb8b"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:API {id: "functionality:gymx-9JXKDV:api-backend-src-server-js-get-api-health-profile"}), (b:Branch {id: "branch:branch_7d98e0a4-52a7-431a-9a67-7a1a331dbb8b"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_9ec4ae2e-fb9e-46ab-9099-a6fcf2777257"})
 SET b.ledger_id = "branch_9ec4ae2e-fb9e-46ab-9099-a6fcf2777257", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:api-backend-src-server-js-get-api-health-vitals"}), (b:Branch {id: "branch:branch_9ec4ae2e-fb9e-46ab-9099-a6fcf2777257"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:API {id: "functionality:gymx-9JXKDV:api-backend-src-server-js-get-api-health-vitals"}), (b:Branch {id: "branch:branch_9ec4ae2e-fb9e-46ab-9099-a6fcf2777257"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_51eaf7ed-c6f3-4a1e-8364-b98dbc693880"})
 SET b.ledger_id = "branch_51eaf7ed-c6f3-4a1e-8364-b98dbc693880", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:api-backend-src-server-js-get-api-health-vitals"}), (b:Branch {id: "branch:branch_51eaf7ed-c6f3-4a1e-8364-b98dbc693880"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:API {id: "functionality:gymx-9JXKDV:api-backend-src-server-js-get-api-health-vitals"}), (b:Branch {id: "branch:branch_51eaf7ed-c6f3-4a1e-8364-b98dbc693880"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_855f9824-1371-45ff-b2f0-3e2f2bf27f56"})
 SET b.ledger_id = "branch_855f9824-1371-45ff-b2f0-3e2f2bf27f56", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:api-backend-src-server-js-get-api-health-vitals"}), (b:Branch {id: "branch:branch_855f9824-1371-45ff-b2f0-3e2f2bf27f56"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:API {id: "functionality:gymx-9JXKDV:api-backend-src-server-js-get-api-health-vitals"}), (b:Branch {id: "branch:branch_855f9824-1371-45ff-b2f0-3e2f2bf27f56"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_81073ef9-345c-4d2f-9f35-b86e61f868b7"})
 SET b.ledger_id = "branch_81073ef9-345c-4d2f-9f35-b86e61f868b7", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:ui-deliverables-gymx-gymx-health-reset-gym-schedule-html-gymx-health-reset-"}), (b:Branch {id: "branch:branch_81073ef9-345c-4d2f-9f35-b86e61f868b7"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:ui-deliverables-gymx-gymx-health-reset-gym-schedule-html-gymx-health-reset-"}), (b:Branch {id: "branch:branch_81073ef9-345c-4d2f-9f35-b86e61f868b7"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_dc37afee-37fa-494f-ac4f-953bfeab0c01"})
 SET b.ledger_id = "branch_dc37afee-37fa-494f-ac4f-953bfeab0c01", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:ui-deliverables-gymx-gymx-health-reset-gym-schedule-html-gymx-health-reset-"}), (b:Branch {id: "branch:branch_dc37afee-37fa-494f-ac4f-953bfeab0c01"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:ui-deliverables-gymx-gymx-health-reset-gym-schedule-html-gymx-health-reset-"}), (b:Branch {id: "branch:branch_dc37afee-37fa-494f-ac4f-953bfeab0c01"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_fcd2b758-1b67-46ba-8327-efb18189f59b"})
 SET b.ledger_id = "branch_fcd2b758-1b67-46ba-8327-efb18189f59b", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:ui-deliverables-gymx-gymx-health-reset-gym-schedule-html-gymx-health-reset-"}), (b:Branch {id: "branch:branch_fcd2b758-1b67-46ba-8327-efb18189f59b"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:ui-deliverables-gymx-gymx-health-reset-gym-schedule-html-gymx-health-reset-"}), (b:Branch {id: "branch:branch_fcd2b758-1b67-46ba-8327-efb18189f59b"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_f35b7c24-1061-416c-91c7-c6d285ade836"})
 SET b.ledger_id = "branch_f35b7c24-1061-416c-91c7-c6d285ade836", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:ui-public-deliverables-gymx-gymx-health-reset-gym-schedule-html-gymx-health"}), (b:Branch {id: "branch:branch_f35b7c24-1061-416c-91c7-c6d285ade836"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:ui-public-deliverables-gymx-gymx-health-reset-gym-schedule-html-gymx-health"}), (b:Branch {id: "branch:branch_f35b7c24-1061-416c-91c7-c6d285ade836"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_e2509d89-c126-4c25-ab7f-b9e673848ed1"})
 SET b.ledger_id = "branch_e2509d89-c126-4c25-ab7f-b9e673848ed1", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:ui-public-deliverables-gymx-gymx-health-reset-gym-schedule-html-gymx-health"}), (b:Branch {id: "branch:branch_e2509d89-c126-4c25-ab7f-b9e673848ed1"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:ui-public-deliverables-gymx-gymx-health-reset-gym-schedule-html-gymx-health"}), (b:Branch {id: "branch:branch_e2509d89-c126-4c25-ab7f-b9e673848ed1"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_14e2ba51-9d84-47b9-8978-7633bd8e4a00"})
 SET b.ledger_id = "branch_14e2ba51-9d84-47b9-8978-7633bd8e4a00", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:ui-public-deliverables-gymx-gymx-health-reset-gym-schedule-html-gymx-health"}), (b:Branch {id: "branch:branch_14e2ba51-9d84-47b9-8978-7633bd8e4a00"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:ui-public-deliverables-gymx-gymx-health-reset-gym-schedule-html-gymx-health"}), (b:Branch {id: "branch:branch_14e2ba51-9d84-47b9-8978-7633bd8e4a00"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_9112c1e1-cf40-4732-8eb9-2b57e107f15b"})
 SET b.ledger_id = "branch_9112c1e1-cf40-4732-8eb9-2b57e107f15b", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:ui-src-generated-pages-healthprogresspage-jsx-healthprogresspage"}), (b:Branch {id: "branch:branch_9112c1e1-cf40-4732-8eb9-2b57e107f15b"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:Page {id: "functionality:gymx-9JXKDV:ui-src-generated-pages-healthprogresspage-jsx-healthprogresspage"}), (b:Branch {id: "branch:branch_9112c1e1-cf40-4732-8eb9-2b57e107f15b"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_a2d2ca7c-d3bc-4d20-a408-edfe7ab57e5d"})
 SET b.ledger_id = "branch_a2d2ca7c-d3bc-4d20-a408-edfe7ab57e5d", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:ui-src-generated-pages-healthprogresspage-jsx-healthprogresspage"}), (b:Branch {id: "branch:branch_a2d2ca7c-d3bc-4d20-a408-edfe7ab57e5d"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:Page {id: "functionality:gymx-9JXKDV:ui-src-generated-pages-healthprogresspage-jsx-healthprogresspage"}), (b:Branch {id: "branch:branch_a2d2ca7c-d3bc-4d20-a408-edfe7ab57e5d"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_4bd04bf2-df5d-49a4-a19e-528805ef0ef1"})
 SET b.ledger_id = "branch_4bd04bf2-df5d-49a4-a19e-528805ef0ef1", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:ui-src-generated-pages-healthprogresspage-jsx-healthprogresspage"}), (b:Branch {id: "branch:branch_4bd04bf2-df5d-49a4-a19e-528805ef0ef1"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:Page {id: "functionality:gymx-9JXKDV:ui-src-generated-pages-healthprogresspage-jsx-healthprogresspage"}), (b:Branch {id: "branch:branch_4bd04bf2-df5d-49a4-a19e-528805ef0ef1"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_9919aa5f-d95c-446f-82b5-ffbd15fbc1fb"})
 SET b.ledger_id = "branch_9919aa5f-d95c-446f-82b5-ffbd15fbc1fb", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:ui-agentic-system-d3-index-html-index"}), (b:Branch {id: "branch:branch_9919aa5f-d95c-446f-82b5-ffbd15fbc1fb"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:Page {id: "functionality:gymx-9JXKDV:ui-agentic-system-d3-index-html-index"}), (b:Branch {id: "branch:branch_9919aa5f-d95c-446f-82b5-ffbd15fbc1fb"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_b2b09b98-19cd-4c9f-a971-a54999f22b03"})
 SET b.ledger_id = "branch_b2b09b98-19cd-4c9f-a971-a54999f22b03", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:ui-agentic-system-d3-index-html-index"}), (b:Branch {id: "branch:branch_b2b09b98-19cd-4c9f-a971-a54999f22b03"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:Page {id: "functionality:gymx-9JXKDV:ui-agentic-system-d3-index-html-index"}), (b:Branch {id: "branch:branch_b2b09b98-19cd-4c9f-a971-a54999f22b03"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_fcdbf5d9-6ba6-453c-bfd4-611a1320c65b"})
 SET b.ledger_id = "branch_fcdbf5d9-6ba6-453c-bfd4-611a1320c65b", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:ui-agentic-system-d3-index-html-index"}), (b:Branch {id: "branch:branch_fcdbf5d9-6ba6-453c-bfd4-611a1320c65b"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:Page {id: "functionality:gymx-9JXKDV:ui-agentic-system-d3-index-html-index"}), (b:Branch {id: "branch:branch_fcdbf5d9-6ba6-453c-bfd4-611a1320c65b"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_a474aeb3-b174-43d9-bbb4-4e1f32acfe4c"})
 SET b.ledger_id = "branch_a474aeb3-b174-43d9-bbb4-4e1f32acfe4c", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:ui-index-html-index"}), (b:Branch {id: "branch:branch_a474aeb3-b174-43d9-bbb4-4e1f32acfe4c"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:Page {id: "functionality:gymx-9JXKDV:ui-index-html-index"}), (b:Branch {id: "branch:branch_a474aeb3-b174-43d9-bbb4-4e1f32acfe4c"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_c6c24972-0756-4e56-80d0-4d2be5a97ace"})
 SET b.ledger_id = "branch_c6c24972-0756-4e56-80d0-4d2be5a97ace", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:ui-index-html-index"}), (b:Branch {id: "branch:branch_c6c24972-0756-4e56-80d0-4d2be5a97ace"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:Page {id: "functionality:gymx-9JXKDV:ui-index-html-index"}), (b:Branch {id: "branch:branch_c6c24972-0756-4e56-80d0-4d2be5a97ace"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_9ee176fe-9cfa-416d-8579-85ce4a2a3a49"})
 SET b.ledger_id = "branch_9ee176fe-9cfa-416d-8579-85ce4a2a3a49", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:ui-index-html-index"}), (b:Branch {id: "branch:branch_9ee176fe-9cfa-416d-8579-85ce4a2a3a49"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:Page {id: "functionality:gymx-9JXKDV:ui-index-html-index"}), (b:Branch {id: "branch:branch_9ee176fe-9cfa-416d-8579-85ce4a2a3a49"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_df7fd7f2-21f9-4c5f-80f0-64676fab6d21"})
 SET b.ledger_id = "branch_df7fd7f2-21f9-4c5f-80f0-64676fab6d21", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:ui-src-main-jsx-main"}), (b:Branch {id: "branch:branch_df7fd7f2-21f9-4c5f-80f0-64676fab6d21"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:Page {id: "functionality:gymx-9JXKDV:ui-src-main-jsx-main"}), (b:Branch {id: "branch:branch_df7fd7f2-21f9-4c5f-80f0-64676fab6d21"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_6334146e-a091-40bb-b97f-9816f77b0482"})
 SET b.ledger_id = "branch_6334146e-a091-40bb-b97f-9816f77b0482", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:ui-src-main-jsx-main"}), (b:Branch {id: "branch:branch_6334146e-a091-40bb-b97f-9816f77b0482"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:Page {id: "functionality:gymx-9JXKDV:ui-src-main-jsx-main"}), (b:Branch {id: "branch:branch_6334146e-a091-40bb-b97f-9816f77b0482"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_452b80ab-faf5-4909-9779-ec89a5c7400d"})
 SET b.ledger_id = "branch_452b80ab-faf5-4909-9779-ec89a5c7400d", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:ui-src-main-jsx-main"}), (b:Branch {id: "branch:branch_452b80ab-faf5-4909-9779-ec89a5c7400d"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:Page {id: "functionality:gymx-9JXKDV:ui-src-main-jsx-main"}), (b:Branch {id: "branch:branch_452b80ab-faf5-4909-9779-ec89a5c7400d"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_aa8bf7ae-4dac-48aa-9a80-b9414917b020"})
 SET b.ledger_id = "branch_aa8bf7ae-4dac-48aa-9a80-b9414917b020", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:api-backend-src-server-js-post-api-health-profile"}), (b:Branch {id: "branch:branch_aa8bf7ae-4dac-48aa-9a80-b9414917b020"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:API {id: "functionality:gymx-9JXKDV:api-backend-src-server-js-post-api-health-profile"}), (b:Branch {id: "branch:branch_aa8bf7ae-4dac-48aa-9a80-b9414917b020"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_c4281ad5-3ec5-4ba4-99a7-a317cd5cbca2"})
 SET b.ledger_id = "branch_c4281ad5-3ec5-4ba4-99a7-a317cd5cbca2", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:api-backend-src-server-js-post-api-health-profile"}), (b:Branch {id: "branch:branch_c4281ad5-3ec5-4ba4-99a7-a317cd5cbca2"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:API {id: "functionality:gymx-9JXKDV:api-backend-src-server-js-post-api-health-profile"}), (b:Branch {id: "branch:branch_c4281ad5-3ec5-4ba4-99a7-a317cd5cbca2"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_447530cc-36d5-40ba-9479-fa58fc413ad3"})
 SET b.ledger_id = "branch_447530cc-36d5-40ba-9479-fa58fc413ad3", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:api-backend-src-server-js-post-api-health-profile"}), (b:Branch {id: "branch:branch_447530cc-36d5-40ba-9479-fa58fc413ad3"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:API {id: "functionality:gymx-9JXKDV:api-backend-src-server-js-post-api-health-profile"}), (b:Branch {id: "branch:branch_447530cc-36d5-40ba-9479-fa58fc413ad3"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_6af1a437-7cf3-4c2b-81e1-303506577c38"})
 SET b.ledger_id = "branch_6af1a437-7cf3-4c2b-81e1-303506577c38", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:api-backend-src-server-js-post-api-health-recipe-suggestions"}), (b:Branch {id: "branch:branch_6af1a437-7cf3-4c2b-81e1-303506577c38"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:API {id: "functionality:gymx-9JXKDV:api-backend-src-server-js-post-api-health-recipe-suggestions"}), (b:Branch {id: "branch:branch_6af1a437-7cf3-4c2b-81e1-303506577c38"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_99006a29-bed8-4ec1-b455-c465d378fafd"})
 SET b.ledger_id = "branch_99006a29-bed8-4ec1-b455-c465d378fafd", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:api-backend-src-server-js-post-api-health-recipe-suggestions"}), (b:Branch {id: "branch:branch_99006a29-bed8-4ec1-b455-c465d378fafd"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:API {id: "functionality:gymx-9JXKDV:api-backend-src-server-js-post-api-health-recipe-suggestions"}), (b:Branch {id: "branch:branch_99006a29-bed8-4ec1-b455-c465d378fafd"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_d2cc01de-8560-4abb-b16c-c49c324cae4d"})
 SET b.ledger_id = "branch_d2cc01de-8560-4abb-b16c-c49c324cae4d", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:api-backend-src-server-js-post-api-health-recipe-suggestions"}), (b:Branch {id: "branch:branch_d2cc01de-8560-4abb-b16c-c49c324cae4d"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:API {id: "functionality:gymx-9JXKDV:api-backend-src-server-js-post-api-health-recipe-suggestions"}), (b:Branch {id: "branch:branch_d2cc01de-8560-4abb-b16c-c49c324cae4d"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_51e30d8b-417c-494a-b9ac-fb41da20f667"})
 SET b.ledger_id = "branch_51e30d8b-417c-494a-b9ac-fb41da20f667", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:api-backend-src-server-js-post-api-health-vitals"}), (b:Branch {id: "branch:branch_51e30d8b-417c-494a-b9ac-fb41da20f667"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:API {id: "functionality:gymx-9JXKDV:api-backend-src-server-js-post-api-health-vitals"}), (b:Branch {id: "branch:branch_51e30d8b-417c-494a-b9ac-fb41da20f667"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_10cc8eed-58dd-470b-b8c9-8f9cf8affcf0"})
 SET b.ledger_id = "branch_10cc8eed-58dd-470b-b8c9-8f9cf8affcf0", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:api-backend-src-server-js-post-api-health-vitals"}), (b:Branch {id: "branch:branch_10cc8eed-58dd-470b-b8c9-8f9cf8affcf0"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:API {id: "functionality:gymx-9JXKDV:api-backend-src-server-js-post-api-health-vitals"}), (b:Branch {id: "branch:branch_10cc8eed-58dd-470b-b8c9-8f9cf8affcf0"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_836fda52-be0b-4540-b6f6-75ed7567d25c"})
 SET b.ledger_id = "branch_836fda52-be0b-4540-b6f6-75ed7567d25c", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:api-backend-src-server-js-post-api-health-vitals"}), (b:Branch {id: "branch:branch_836fda52-be0b-4540-b6f6-75ed7567d25c"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:API {id: "functionality:gymx-9JXKDV:api-backend-src-server-js-post-api-health-vitals"}), (b:Branch {id: "branch:branch_836fda52-be0b-4540-b6f6-75ed7567d25c"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_fe8f2ac7-03c1-43c6-8c87-bc28f341a0ec"})
 SET b.ledger_id = "branch_fe8f2ac7-03c1-43c6-8c87-bc28f341a0ec", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:ui-src-generated-pages-prepworkflowpage-jsx-prepworkflowpage"}), (b:Branch {id: "branch:branch_fe8f2ac7-03c1-43c6-8c87-bc28f341a0ec"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:Page {id: "functionality:gymx-9JXKDV:ui-src-generated-pages-prepworkflowpage-jsx-prepworkflowpage"}), (b:Branch {id: "branch:branch_fe8f2ac7-03c1-43c6-8c87-bc28f341a0ec"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_2fa82375-3db5-4303-b299-4d950344c045"})
 SET b.ledger_id = "branch_2fa82375-3db5-4303-b299-4d950344c045", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:ui-src-generated-pages-prepworkflowpage-jsx-prepworkflowpage"}), (b:Branch {id: "branch:branch_2fa82375-3db5-4303-b299-4d950344c045"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:Page {id: "functionality:gymx-9JXKDV:ui-src-generated-pages-prepworkflowpage-jsx-prepworkflowpage"}), (b:Branch {id: "branch:branch_2fa82375-3db5-4303-b299-4d950344c045"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_ba3c499e-4501-427f-8121-65e6cab5a9eb"})
 SET b.ledger_id = "branch_ba3c499e-4501-427f-8121-65e6cab5a9eb", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:ui-src-generated-pages-prepworkflowpage-jsx-prepworkflowpage"}), (b:Branch {id: "branch:branch_ba3c499e-4501-427f-8121-65e6cab5a9eb"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:Page {id: "functionality:gymx-9JXKDV:ui-src-generated-pages-prepworkflowpage-jsx-prepworkflowpage"}), (b:Branch {id: "branch:branch_ba3c499e-4501-427f-8121-65e6cab5a9eb"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_f94cfbd7-015e-4223-8f15-bc71109944f9"})
 SET b.ledger_id = "branch_f94cfbd7-015e-4223-8f15-bc71109944f9", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:ui-src-generated-pages-recoverypage-jsx-recoverypage"}), (b:Branch {id: "branch:branch_f94cfbd7-015e-4223-8f15-bc71109944f9"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:Page {id: "functionality:gymx-9JXKDV:ui-src-generated-pages-recoverypage-jsx-recoverypage"}), (b:Branch {id: "branch:branch_f94cfbd7-015e-4223-8f15-bc71109944f9"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_3fb8a8e0-dddc-40bb-b073-5be2aeda09bd"})
 SET b.ledger_id = "branch_3fb8a8e0-dddc-40bb-b073-5be2aeda09bd", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:ui-src-generated-pages-recoverypage-jsx-recoverypage"}), (b:Branch {id: "branch:branch_3fb8a8e0-dddc-40bb-b073-5be2aeda09bd"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:Page {id: "functionality:gymx-9JXKDV:ui-src-generated-pages-recoverypage-jsx-recoverypage"}), (b:Branch {id: "branch:branch_3fb8a8e0-dddc-40bb-b073-5be2aeda09bd"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_feb4b16d-6c38-42e4-886f-4ec003a27038"})
 SET b.ledger_id = "branch_feb4b16d-6c38-42e4-886f-4ec003a27038", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:ui-src-generated-pages-recoverypage-jsx-recoverypage"}), (b:Branch {id: "branch:branch_feb4b16d-6c38-42e4-886f-4ec003a27038"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:Page {id: "functionality:gymx-9JXKDV:ui-src-generated-pages-recoverypage-jsx-recoverypage"}), (b:Branch {id: "branch:branch_feb4b16d-6c38-42e4-886f-4ec003a27038"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_cdf2f6ce-aa16-49ac-b9e3-9a508a738eb6"})
 SET b.ledger_id = "branch_cdf2f6ce-aa16-49ac-b9e3-9a508a738eb6", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:ui-src-generated-pages-scheduleworkspacepage-jsx-scheduleworkspacepage"}), (b:Branch {id: "branch:branch_cdf2f6ce-aa16-49ac-b9e3-9a508a738eb6"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:Page {id: "functionality:gymx-9JXKDV:ui-src-generated-pages-scheduleworkspacepage-jsx-scheduleworkspacepage"}), (b:Branch {id: "branch:branch_cdf2f6ce-aa16-49ac-b9e3-9a508a738eb6"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_391df56e-8e91-4014-b81a-4e9f61ac4c1e"})
 SET b.ledger_id = "branch_391df56e-8e91-4014-b81a-4e9f61ac4c1e", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:ui-src-generated-pages-scheduleworkspacepage-jsx-scheduleworkspacepage"}), (b:Branch {id: "branch:branch_391df56e-8e91-4014-b81a-4e9f61ac4c1e"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:Page {id: "functionality:gymx-9JXKDV:ui-src-generated-pages-scheduleworkspacepage-jsx-scheduleworkspacepage"}), (b:Branch {id: "branch:branch_391df56e-8e91-4014-b81a-4e9f61ac4c1e"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_9b50ea1d-c52d-4a75-a4ca-acc8f4c5b269"})
 SET b.ledger_id = "branch_9b50ea1d-c52d-4a75-a4ca-acc8f4c5b269", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:ui-src-generated-pages-scheduleworkspacepage-jsx-scheduleworkspacepage"}), (b:Branch {id: "branch:branch_9b50ea1d-c52d-4a75-a4ca-acc8f4c5b269"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:Page {id: "functionality:gymx-9JXKDV:ui-src-generated-pages-scheduleworkspacepage-jsx-scheduleworkspacepage"}), (b:Branch {id: "branch:branch_9b50ea1d-c52d-4a75-a4ca-acc8f4c5b269"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_23728aa3-6734-4e86-bb71-eff71aa1244e"})
 SET b.ledger_id = "branch_23728aa3-6734-4e86-bb71-eff71aa1244e", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:ui-deliverables-gymx-gymx-health-reset-gym-schedule-html-table-2017"}), (b:Branch {id: "branch:branch_23728aa3-6734-4e86-bb71-eff71aa1244e"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:UIElement {id: "functionality:gymx-9JXKDV:ui-deliverables-gymx-gymx-health-reset-gym-schedule-html-table-2017"}), (b:Branch {id: "branch:branch_23728aa3-6734-4e86-bb71-eff71aa1244e"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_b6006025-55b8-4df8-a2f3-75071b009df8"})
 SET b.ledger_id = "branch_b6006025-55b8-4df8-a2f3-75071b009df8", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:ui-deliverables-gymx-gymx-health-reset-gym-schedule-html-table-2017"}), (b:Branch {id: "branch:branch_b6006025-55b8-4df8-a2f3-75071b009df8"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:UIElement {id: "functionality:gymx-9JXKDV:ui-deliverables-gymx-gymx-health-reset-gym-schedule-html-table-2017"}), (b:Branch {id: "branch:branch_b6006025-55b8-4df8-a2f3-75071b009df8"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_23b2f96b-2dc8-466d-8f21-5435a3ce1cab"})
 SET b.ledger_id = "branch_23b2f96b-2dc8-466d-8f21-5435a3ce1cab", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:ui-deliverables-gymx-gymx-health-reset-gym-schedule-html-table-2017"}), (b:Branch {id: "branch:branch_23b2f96b-2dc8-466d-8f21-5435a3ce1cab"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:UIElement {id: "functionality:gymx-9JXKDV:ui-deliverables-gymx-gymx-health-reset-gym-schedule-html-table-2017"}), (b:Branch {id: "branch:branch_23b2f96b-2dc8-466d-8f21-5435a3ce1cab"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_9abae882-6755-4b5f-b5f6-53bfc9359d2c"})
 SET b.ledger_id = "branch_9abae882-6755-4b5f-b5f6-53bfc9359d2c", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:ui-public-deliverables-gymx-gymx-health-reset-gym-schedule-html-table-2017"}), (b:Branch {id: "branch:branch_9abae882-6755-4b5f-b5f6-53bfc9359d2c"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:ui-public-deliverables-gymx-gymx-health-reset-gym-schedule-html-table-2017"}), (b:Branch {id: "branch:branch_9abae882-6755-4b5f-b5f6-53bfc9359d2c"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_57760602-a75a-4a83-826d-fccbc8f684d4"})
 SET b.ledger_id = "branch_57760602-a75a-4a83-826d-fccbc8f684d4", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:ui-public-deliverables-gymx-gymx-health-reset-gym-schedule-html-table-2017"}), (b:Branch {id: "branch:branch_57760602-a75a-4a83-826d-fccbc8f684d4"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:ui-public-deliverables-gymx-gymx-health-reset-gym-schedule-html-table-2017"}), (b:Branch {id: "branch:branch_57760602-a75a-4a83-826d-fccbc8f684d4"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_f359b4e4-1ac0-4288-adab-9a6d325c542f"})
 SET b.ledger_id = "branch_f359b4e4-1ac0-4288-adab-9a6d325c542f", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:ui-public-deliverables-gymx-gymx-health-reset-gym-schedule-html-table-2017"}), (b:Branch {id: "branch:branch_f359b4e4-1ac0-4288-adab-9a6d325c542f"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:ui-public-deliverables-gymx-gymx-health-reset-gym-schedule-html-table-2017"}), (b:Branch {id: "branch:branch_f359b4e4-1ac0-4288-adab-9a6d325c542f"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_f0c3ec6e-4841-4108-bb3a-65b82f72f4f7"})
 SET b.ledger_id = "branch_f0c3ec6e-4841-4108-bb3a-65b82f72f4f7", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:ui-scripts-generate-gymx-schedule-pdf-mjs-table-2097"}), (b:Branch {id: "branch:branch_f0c3ec6e-4841-4108-bb3a-65b82f72f4f7"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:UIElement {id: "functionality:gymx-9JXKDV:ui-scripts-generate-gymx-schedule-pdf-mjs-table-2097"}), (b:Branch {id: "branch:branch_f0c3ec6e-4841-4108-bb3a-65b82f72f4f7"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_768485b5-ae2a-4c14-9f7f-cd32afec132e"})
 SET b.ledger_id = "branch_768485b5-ae2a-4c14-9f7f-cd32afec132e", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:ui-scripts-generate-gymx-schedule-pdf-mjs-table-2097"}), (b:Branch {id: "branch:branch_768485b5-ae2a-4c14-9f7f-cd32afec132e"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:UIElement {id: "functionality:gymx-9JXKDV:ui-scripts-generate-gymx-schedule-pdf-mjs-table-2097"}), (b:Branch {id: "branch:branch_768485b5-ae2a-4c14-9f7f-cd32afec132e"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_c25a2b1c-178d-41b4-abdd-ca3525ffb51d"})
 SET b.ledger_id = "branch_c25a2b1c-178d-41b4-abdd-ca3525ffb51d", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:ui-scripts-generate-gymx-schedule-pdf-mjs-table-2097"}), (b:Branch {id: "branch:branch_c25a2b1c-178d-41b4-abdd-ca3525ffb51d"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:UIElement {id: "functionality:gymx-9JXKDV:ui-scripts-generate-gymx-schedule-pdf-mjs-table-2097"}), (b:Branch {id: "branch:branch_c25a2b1c-178d-41b4-abdd-ca3525ffb51d"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_c179abc3-da0b-4487-a95a-09db3efb055b"})
 SET b.ledger_id = "branch_c179abc3-da0b-4487-a95a-09db3efb055b", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:ui-deliverables-gymx-gymx-health-reset-gym-schedule-html-table-3634"}), (b:Branch {id: "branch:branch_c179abc3-da0b-4487-a95a-09db3efb055b"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:UIElement {id: "functionality:gymx-9JXKDV:ui-deliverables-gymx-gymx-health-reset-gym-schedule-html-table-3634"}), (b:Branch {id: "branch:branch_c179abc3-da0b-4487-a95a-09db3efb055b"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_68cec3ad-c63e-44a8-b982-e87370c915a0"})
 SET b.ledger_id = "branch_68cec3ad-c63e-44a8-b982-e87370c915a0", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:ui-deliverables-gymx-gymx-health-reset-gym-schedule-html-table-3634"}), (b:Branch {id: "branch:branch_68cec3ad-c63e-44a8-b982-e87370c915a0"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:UIElement {id: "functionality:gymx-9JXKDV:ui-deliverables-gymx-gymx-health-reset-gym-schedule-html-table-3634"}), (b:Branch {id: "branch:branch_68cec3ad-c63e-44a8-b982-e87370c915a0"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_1058c1f2-e1b8-442a-9925-4e87849613e7"})
 SET b.ledger_id = "branch_1058c1f2-e1b8-442a-9925-4e87849613e7", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:ui-deliverables-gymx-gymx-health-reset-gym-schedule-html-table-3634"}), (b:Branch {id: "branch:branch_1058c1f2-e1b8-442a-9925-4e87849613e7"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:UIElement {id: "functionality:gymx-9JXKDV:ui-deliverables-gymx-gymx-health-reset-gym-schedule-html-table-3634"}), (b:Branch {id: "branch:branch_1058c1f2-e1b8-442a-9925-4e87849613e7"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_917ca678-5296-44c4-b590-a51f57ecef08"})
 SET b.ledger_id = "branch_917ca678-5296-44c4-b590-a51f57ecef08", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:ui-public-deliverables-gymx-gymx-health-reset-gym-schedule-html-table-3634"}), (b:Branch {id: "branch:branch_917ca678-5296-44c4-b590-a51f57ecef08"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:ui-public-deliverables-gymx-gymx-health-reset-gym-schedule-html-table-3634"}), (b:Branch {id: "branch:branch_917ca678-5296-44c4-b590-a51f57ecef08"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_f72dfb12-28a9-42d6-9c52-796176d9f639"})
 SET b.ledger_id = "branch_f72dfb12-28a9-42d6-9c52-796176d9f639", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:ui-public-deliverables-gymx-gymx-health-reset-gym-schedule-html-table-3634"}), (b:Branch {id: "branch:branch_f72dfb12-28a9-42d6-9c52-796176d9f639"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:ui-public-deliverables-gymx-gymx-health-reset-gym-schedule-html-table-3634"}), (b:Branch {id: "branch:branch_f72dfb12-28a9-42d6-9c52-796176d9f639"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_7d0a4346-fd65-4666-8ece-ccafe5a2fd00"})
 SET b.ledger_id = "branch_7d0a4346-fd65-4666-8ece-ccafe5a2fd00", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:ui-public-deliverables-gymx-gymx-health-reset-gym-schedule-html-table-3634"}), (b:Branch {id: "branch:branch_7d0a4346-fd65-4666-8ece-ccafe5a2fd00"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:ui-public-deliverables-gymx-gymx-health-reset-gym-schedule-html-table-3634"}), (b:Branch {id: "branch:branch_7d0a4346-fd65-4666-8ece-ccafe5a2fd00"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_34a561f1-945c-4fd8-9e63-19dee4a1ef07"})
 SET b.ledger_id = "branch_34a561f1-945c-4fd8-9e63-19dee4a1ef07", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:ui-deliverables-gymx-gymx-health-reset-gym-schedule-html-table-5572"}), (b:Branch {id: "branch:branch_34a561f1-945c-4fd8-9e63-19dee4a1ef07"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:UIElement {id: "functionality:gymx-9JXKDV:ui-deliverables-gymx-gymx-health-reset-gym-schedule-html-table-5572"}), (b:Branch {id: "branch:branch_34a561f1-945c-4fd8-9e63-19dee4a1ef07"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_71a04ba5-b174-4609-a57a-68a9389f4262"})
 SET b.ledger_id = "branch_71a04ba5-b174-4609-a57a-68a9389f4262", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:ui-deliverables-gymx-gymx-health-reset-gym-schedule-html-table-5572"}), (b:Branch {id: "branch:branch_71a04ba5-b174-4609-a57a-68a9389f4262"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:UIElement {id: "functionality:gymx-9JXKDV:ui-deliverables-gymx-gymx-health-reset-gym-schedule-html-table-5572"}), (b:Branch {id: "branch:branch_71a04ba5-b174-4609-a57a-68a9389f4262"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_aa0c735b-7082-4bd7-a3ee-d0d83d5c4ffc"})
 SET b.ledger_id = "branch_aa0c735b-7082-4bd7-a3ee-d0d83d5c4ffc", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:ui-deliverables-gymx-gymx-health-reset-gym-schedule-html-table-5572"}), (b:Branch {id: "branch:branch_aa0c735b-7082-4bd7-a3ee-d0d83d5c4ffc"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:UIElement {id: "functionality:gymx-9JXKDV:ui-deliverables-gymx-gymx-health-reset-gym-schedule-html-table-5572"}), (b:Branch {id: "branch:branch_aa0c735b-7082-4bd7-a3ee-d0d83d5c4ffc"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_a1cfc225-3074-45e4-8502-5ccda4853abc"})
 SET b.ledger_id = "branch_a1cfc225-3074-45e4-8502-5ccda4853abc", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:ui-public-deliverables-gymx-gymx-health-reset-gym-schedule-html-table-5572"}), (b:Branch {id: "branch:branch_a1cfc225-3074-45e4-8502-5ccda4853abc"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:ui-public-deliverables-gymx-gymx-health-reset-gym-schedule-html-table-5572"}), (b:Branch {id: "branch:branch_a1cfc225-3074-45e4-8502-5ccda4853abc"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_37867374-a614-4a00-9cec-2135149610df"})
 SET b.ledger_id = "branch_37867374-a614-4a00-9cec-2135149610df", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:ui-public-deliverables-gymx-gymx-health-reset-gym-schedule-html-table-5572"}), (b:Branch {id: "branch:branch_37867374-a614-4a00-9cec-2135149610df"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:ui-public-deliverables-gymx-gymx-health-reset-gym-schedule-html-table-5572"}), (b:Branch {id: "branch:branch_37867374-a614-4a00-9cec-2135149610df"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_9e12f6c9-3a8f-474d-b5a9-fc4ee77c4e33"})
 SET b.ledger_id = "branch_9e12f6c9-3a8f-474d-b5a9-fc4ee77c4e33", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:ui-public-deliverables-gymx-gymx-health-reset-gym-schedule-html-table-5572"}), (b:Branch {id: "branch:branch_9e12f6c9-3a8f-474d-b5a9-fc4ee77c4e33"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:ui-public-deliverables-gymx-gymx-health-reset-gym-schedule-html-table-5572"}), (b:Branch {id: "branch:branch_9e12f6c9-3a8f-474d-b5a9-fc4ee77c4e33"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_315c146a-e5b0-4526-9ce0-4a09e2436b98"})
 SET b.ledger_id = "branch_315c146a-e5b0-4526-9ce0-4a09e2436b98", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:data-database-gym-schedule-schema-sql-table-gym-schedule-audit-events"}), (b:Branch {id: "branch:branch_315c146a-e5b0-4526-9ce0-4a09e2436b98"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:Database {id: "functionality:gymx-9JXKDV:data-database-gym-schedule-schema-sql-table-gym-schedule-audit-events"}), (b:Branch {id: "branch:branch_315c146a-e5b0-4526-9ce0-4a09e2436b98"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_9cf72843-cc2b-41df-9da5-c407307e3565"})
 SET b.ledger_id = "branch_9cf72843-cc2b-41df-9da5-c407307e3565", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:data-database-gym-schedule-schema-sql-table-gym-schedule-audit-events"}), (b:Branch {id: "branch:branch_9cf72843-cc2b-41df-9da5-c407307e3565"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:Database {id: "functionality:gymx-9JXKDV:data-database-gym-schedule-schema-sql-table-gym-schedule-audit-events"}), (b:Branch {id: "branch:branch_9cf72843-cc2b-41df-9da5-c407307e3565"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_c04bb3a1-5fe3-47bc-a719-9fad6995e19a"})
 SET b.ledger_id = "branch_c04bb3a1-5fe3-47bc-a719-9fad6995e19a", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.733
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:data-database-gym-schedule-schema-sql-table-gym-schedule-audit-events"}), (b:Branch {id: "branch:branch_c04bb3a1-5fe3-47bc-a719-9fad6995e19a"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:Database {id: "functionality:gymx-9JXKDV:data-database-gym-schedule-schema-sql-table-gym-schedule-audit-events"}), (b:Branch {id: "branch:branch_c04bb3a1-5fe3-47bc-a719-9fad6995e19a"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_2581544e-cb66-43fa-a161-ac36fbad960d"})
 SET b.ledger_id = "branch_2581544e-cb66-43fa-a161-ac36fbad960d", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:data-database-gym-schedule-schema-sql-table-gym-schedule-export-jobs"}), (b:Branch {id: "branch:branch_2581544e-cb66-43fa-a161-ac36fbad960d"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:Database {id: "functionality:gymx-9JXKDV:data-database-gym-schedule-schema-sql-table-gym-schedule-export-jobs"}), (b:Branch {id: "branch:branch_2581544e-cb66-43fa-a161-ac36fbad960d"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_1721cc7d-f5cf-40c6-805d-86d3839b1b7c"})
 SET b.ledger_id = "branch_1721cc7d-f5cf-40c6-805d-86d3839b1b7c", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:data-database-gym-schedule-schema-sql-table-gym-schedule-export-jobs"}), (b:Branch {id: "branch:branch_1721cc7d-f5cf-40c6-805d-86d3839b1b7c"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:Database {id: "functionality:gymx-9JXKDV:data-database-gym-schedule-schema-sql-table-gym-schedule-export-jobs"}), (b:Branch {id: "branch:branch_1721cc7d-f5cf-40c6-805d-86d3839b1b7c"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_2fd6a534-1fcc-45f7-a19e-9ce45301d934"})
 SET b.ledger_id = "branch_2fd6a534-1fcc-45f7-a19e-9ce45301d934", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.733
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:data-database-gym-schedule-schema-sql-table-gym-schedule-export-jobs"}), (b:Branch {id: "branch:branch_2fd6a534-1fcc-45f7-a19e-9ce45301d934"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:Database {id: "functionality:gymx-9JXKDV:data-database-gym-schedule-schema-sql-table-gym-schedule-export-jobs"}), (b:Branch {id: "branch:branch_2fd6a534-1fcc-45f7-a19e-9ce45301d934"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_97da930f-aec9-44bb-a7a4-e9e13bf43e77"})
 SET b.ledger_id = "branch_97da930f-aec9-44bb-a7a4-e9e13bf43e77", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:data-database-gym-schedule-schema-sql-table-gym-schedule-sources"}), (b:Branch {id: "branch:branch_97da930f-aec9-44bb-a7a4-e9e13bf43e77"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:Database {id: "functionality:gymx-9JXKDV:data-database-gym-schedule-schema-sql-table-gym-schedule-sources"}), (b:Branch {id: "branch:branch_97da930f-aec9-44bb-a7a4-e9e13bf43e77"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_d9f8815a-fc20-4b29-97be-bcf3d228c35a"})
 SET b.ledger_id = "branch_d9f8815a-fc20-4b29-97be-bcf3d228c35a", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:data-database-gym-schedule-schema-sql-table-gym-schedule-sources"}), (b:Branch {id: "branch:branch_d9f8815a-fc20-4b29-97be-bcf3d228c35a"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:Database {id: "functionality:gymx-9JXKDV:data-database-gym-schedule-schema-sql-table-gym-schedule-sources"}), (b:Branch {id: "branch:branch_d9f8815a-fc20-4b29-97be-bcf3d228c35a"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_a71da7f1-1889-4120-8c0d-fd484422ff4e"})
 SET b.ledger_id = "branch_a71da7f1-1889-4120-8c0d-fd484422ff4e", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.733
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:data-database-gym-schedule-schema-sql-table-gym-schedule-sources"}), (b:Branch {id: "branch:branch_a71da7f1-1889-4120-8c0d-fd484422ff4e"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:Database {id: "functionality:gymx-9JXKDV:data-database-gym-schedule-schema-sql-table-gym-schedule-sources"}), (b:Branch {id: "branch:branch_a71da7f1-1889-4120-8c0d-fd484422ff4e"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_3f6c40ae-ba44-4be4-8152-f13cde7d9f9e"})
 SET b.ledger_id = "branch_3f6c40ae-ba44-4be4-8152-f13cde7d9f9e", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:data-database-gym-schedule-schema-sql-table-health-app-parameters"}), (b:Branch {id: "branch:branch_3f6c40ae-ba44-4be4-8152-f13cde7d9f9e"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:Database {id: "functionality:gymx-9JXKDV:data-database-gym-schedule-schema-sql-table-health-app-parameters"}), (b:Branch {id: "branch:branch_3f6c40ae-ba44-4be4-8152-f13cde7d9f9e"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_c012c2e1-b39c-4c41-b3a3-42f9b2c41e87"})
 SET b.ledger_id = "branch_c012c2e1-b39c-4c41-b3a3-42f9b2c41e87", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:data-database-gym-schedule-schema-sql-table-health-app-parameters"}), (b:Branch {id: "branch:branch_c012c2e1-b39c-4c41-b3a3-42f9b2c41e87"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:Database {id: "functionality:gymx-9JXKDV:data-database-gym-schedule-schema-sql-table-health-app-parameters"}), (b:Branch {id: "branch:branch_c012c2e1-b39c-4c41-b3a3-42f9b2c41e87"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_509daa19-bbf7-4cfa-b14f-6805281ac587"})
 SET b.ledger_id = "branch_509daa19-bbf7-4cfa-b14f-6805281ac587", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.733
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:data-database-gym-schedule-schema-sql-table-health-app-parameters"}), (b:Branch {id: "branch:branch_509daa19-bbf7-4cfa-b14f-6805281ac587"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:Database {id: "functionality:gymx-9JXKDV:data-database-gym-schedule-schema-sql-table-health-app-parameters"}), (b:Branch {id: "branch:branch_509daa19-bbf7-4cfa-b14f-6805281ac587"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_fd9617c4-3987-4d80-804b-55dc8a10a9db"})
 SET b.ledger_id = "branch_fd9617c4-3987-4d80-804b-55dc8a10a9db", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:data-database-gym-schedule-schema-sql-table-health-recipe-suggestion-jobs"}), (b:Branch {id: "branch:branch_fd9617c4-3987-4d80-804b-55dc8a10a9db"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:data-database-gym-schedule-schema-sql-table-health-recipe-suggestion-jobs"}), (b:Branch {id: "branch:branch_fd9617c4-3987-4d80-804b-55dc8a10a9db"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_06530ddf-9982-470c-a0c7-ad8fac04c19b"})
 SET b.ledger_id = "branch_06530ddf-9982-470c-a0c7-ad8fac04c19b", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:data-database-gym-schedule-schema-sql-table-health-recipe-suggestion-jobs"}), (b:Branch {id: "branch:branch_06530ddf-9982-470c-a0c7-ad8fac04c19b"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:data-database-gym-schedule-schema-sql-table-health-recipe-suggestion-jobs"}), (b:Branch {id: "branch:branch_06530ddf-9982-470c-a0c7-ad8fac04c19b"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_90066b3e-90cf-4024-a06c-da51f3cc7fe2"})
 SET b.ledger_id = "branch_90066b3e-90cf-4024-a06c-da51f3cc7fe2", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.733
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:data-database-gym-schedule-schema-sql-table-health-recipe-suggestion-jobs"}), (b:Branch {id: "branch:branch_90066b3e-90cf-4024-a06c-da51f3cc7fe2"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:data-database-gym-schedule-schema-sql-table-health-recipe-suggestion-jobs"}), (b:Branch {id: "branch:branch_90066b3e-90cf-4024-a06c-da51f3cc7fe2"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_13559934-f25a-4c52-acdf-c47fd904fa1f"})
 SET b.ledger_id = "branch_13559934-f25a-4c52-acdf-c47fd904fa1f", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:data-tests-gymschedule-test-mjs-table-health-recipe-suggestion-jobs"}), (b:Branch {id: "branch:branch_13559934-f25a-4c52-acdf-c47fd904fa1f"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:Database {id: "functionality:gymx-9JXKDV:data-tests-gymschedule-test-mjs-table-health-recipe-suggestion-jobs"}), (b:Branch {id: "branch:branch_13559934-f25a-4c52-acdf-c47fd904fa1f"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_a6acafd4-a0f7-403e-ba83-0866ef9467c7"})
 SET b.ledger_id = "branch_a6acafd4-a0f7-403e-ba83-0866ef9467c7", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:data-tests-gymschedule-test-mjs-table-health-recipe-suggestion-jobs"}), (b:Branch {id: "branch:branch_a6acafd4-a0f7-403e-ba83-0866ef9467c7"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:Database {id: "functionality:gymx-9JXKDV:data-tests-gymschedule-test-mjs-table-health-recipe-suggestion-jobs"}), (b:Branch {id: "branch:branch_a6acafd4-a0f7-403e-ba83-0866ef9467c7"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_e59b43d5-3c6e-4236-a49b-6996d3b3c525"})
 SET b.ledger_id = "branch_e59b43d5-3c6e-4236-a49b-6996d3b3c525", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.733
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:data-tests-gymschedule-test-mjs-table-health-recipe-suggestion-jobs"}), (b:Branch {id: "branch:branch_e59b43d5-3c6e-4236-a49b-6996d3b3c525"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:Database {id: "functionality:gymx-9JXKDV:data-tests-gymschedule-test-mjs-table-health-recipe-suggestion-jobs"}), (b:Branch {id: "branch:branch_e59b43d5-3c6e-4236-a49b-6996d3b3c525"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_b9cf0246-1307-461f-b0aa-09ab3493cfb3"})
 SET b.ledger_id = "branch_b9cf0246-1307-461f-b0aa-09ab3493cfb3", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:data-database-gym-schedule-schema-sql-table-health-user-profiles"}), (b:Branch {id: "branch:branch_b9cf0246-1307-461f-b0aa-09ab3493cfb3"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:Database {id: "functionality:gymx-9JXKDV:data-database-gym-schedule-schema-sql-table-health-user-profiles"}), (b:Branch {id: "branch:branch_b9cf0246-1307-461f-b0aa-09ab3493cfb3"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_fd2b1a6b-90d7-40a6-a056-7c764d399173"})
 SET b.ledger_id = "branch_fd2b1a6b-90d7-40a6-a056-7c764d399173", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:data-database-gym-schedule-schema-sql-table-health-user-profiles"}), (b:Branch {id: "branch:branch_fd2b1a6b-90d7-40a6-a056-7c764d399173"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:Database {id: "functionality:gymx-9JXKDV:data-database-gym-schedule-schema-sql-table-health-user-profiles"}), (b:Branch {id: "branch:branch_fd2b1a6b-90d7-40a6-a056-7c764d399173"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_83367651-b6d2-4392-9051-b12562236c1c"})
 SET b.ledger_id = "branch_83367651-b6d2-4392-9051-b12562236c1c", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.733
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:data-database-gym-schedule-schema-sql-table-health-user-profiles"}), (b:Branch {id: "branch:branch_83367651-b6d2-4392-9051-b12562236c1c"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:Database {id: "functionality:gymx-9JXKDV:data-database-gym-schedule-schema-sql-table-health-user-profiles"}), (b:Branch {id: "branch:branch_83367651-b6d2-4392-9051-b12562236c1c"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_c168d23b-1cec-43e3-999a-4a0394400d8f"})
 SET b.ledger_id = "branch_c168d23b-1cec-43e3-999a-4a0394400d8f", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:data-tests-gymschedule-test-mjs-table-health-user-profiles"}), (b:Branch {id: "branch:branch_c168d23b-1cec-43e3-999a-4a0394400d8f"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:Database {id: "functionality:gymx-9JXKDV:data-tests-gymschedule-test-mjs-table-health-user-profiles"}), (b:Branch {id: "branch:branch_c168d23b-1cec-43e3-999a-4a0394400d8f"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_dc94022d-e0c1-4fd7-b442-0dbbaa892122"})
 SET b.ledger_id = "branch_dc94022d-e0c1-4fd7-b442-0dbbaa892122", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:data-tests-gymschedule-test-mjs-table-health-user-profiles"}), (b:Branch {id: "branch:branch_dc94022d-e0c1-4fd7-b442-0dbbaa892122"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:Database {id: "functionality:gymx-9JXKDV:data-tests-gymschedule-test-mjs-table-health-user-profiles"}), (b:Branch {id: "branch:branch_dc94022d-e0c1-4fd7-b442-0dbbaa892122"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_b9004183-9598-4afd-933f-6573be462f67"})
 SET b.ledger_id = "branch_b9004183-9598-4afd-933f-6573be462f67", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.733
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:data-tests-gymschedule-test-mjs-table-health-user-profiles"}), (b:Branch {id: "branch:branch_b9004183-9598-4afd-933f-6573be462f67"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:Database {id: "functionality:gymx-9JXKDV:data-tests-gymschedule-test-mjs-table-health-user-profiles"}), (b:Branch {id: "branch:branch_b9004183-9598-4afd-933f-6573be462f67"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_5b1af937-5149-406a-adad-bf868ad2dd89"})
 SET b.ledger_id = "branch_5b1af937-5149-406a-adad-bf868ad2dd89", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:data-database-gym-schedule-schema-sql-table-health-vital-logs"}), (b:Branch {id: "branch:branch_5b1af937-5149-406a-adad-bf868ad2dd89"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:Database {id: "functionality:gymx-9JXKDV:data-database-gym-schedule-schema-sql-table-health-vital-logs"}), (b:Branch {id: "branch:branch_5b1af937-5149-406a-adad-bf868ad2dd89"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_7ca2457d-f2d5-49a0-a5f4-d4819eada470"})
 SET b.ledger_id = "branch_7ca2457d-f2d5-49a0-a5f4-d4819eada470", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:data-database-gym-schedule-schema-sql-table-health-vital-logs"}), (b:Branch {id: "branch:branch_7ca2457d-f2d5-49a0-a5f4-d4819eada470"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:Database {id: "functionality:gymx-9JXKDV:data-database-gym-schedule-schema-sql-table-health-vital-logs"}), (b:Branch {id: "branch:branch_7ca2457d-f2d5-49a0-a5f4-d4819eada470"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_e889cfeb-1a3c-4362-bc9c-229ff9c41092"})
 SET b.ledger_id = "branch_e889cfeb-1a3c-4362-bc9c-229ff9c41092", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.733
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:data-database-gym-schedule-schema-sql-table-health-vital-logs"}), (b:Branch {id: "branch:branch_e889cfeb-1a3c-4362-bc9c-229ff9c41092"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:Database {id: "functionality:gymx-9JXKDV:data-database-gym-schedule-schema-sql-table-health-vital-logs"}), (b:Branch {id: "branch:branch_e889cfeb-1a3c-4362-bc9c-229ff9c41092"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_9f1e5f82-4a04-4a3d-984e-92b406b4b582"})
 SET b.ledger_id = "branch_9f1e5f82-4a04-4a3d-984e-92b406b4b582", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:data-tests-gymschedule-test-mjs-table-health-vital-logs"}), (b:Branch {id: "branch:branch_9f1e5f82-4a04-4a3d-984e-92b406b4b582"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:Database {id: "functionality:gymx-9JXKDV:data-tests-gymschedule-test-mjs-table-health-vital-logs"}), (b:Branch {id: "branch:branch_9f1e5f82-4a04-4a3d-984e-92b406b4b582"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_040b102b-5c23-4b4f-9aae-94a9e241b782"})
 SET b.ledger_id = "branch_040b102b-5c23-4b4f-9aae-94a9e241b782", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:data-tests-gymschedule-test-mjs-table-health-vital-logs"}), (b:Branch {id: "branch:branch_040b102b-5c23-4b4f-9aae-94a9e241b782"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:Database {id: "functionality:gymx-9JXKDV:data-tests-gymschedule-test-mjs-table-health-vital-logs"}), (b:Branch {id: "branch:branch_040b102b-5c23-4b4f-9aae-94a9e241b782"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MERGE (b:Branch {id: "branch:branch_54a31a26-c9ad-45c9-b3d3-e9ae185ac720"})
 SET b.ledger_id = "branch_54a31a26-c9ad-45c9-b3d3-e9ae185ac720", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.733
-MATCH (f:ApplicationFunctionality {id: "functionality:gymx-9JXKDV:major-functionality:data-tests-gymschedule-test-mjs-table-health-vital-logs"}), (b:Branch {id: "branch:branch_54a31a26-c9ad-45c9-b3d3-e9ae185ac720"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (f:Database {id: "functionality:gymx-9JXKDV:data-tests-gymschedule-test-mjs-table-health-vital-logs"}), (b:Branch {id: "branch:branch_54a31a26-c9ad-45c9-b3d3-e9ae185ac720"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MATCH (a:Agent {id: "plutonix-fullstack-agent"}), (b:Agent {id: "project-orchestrator-agent"}) MERGE (a)-[:RUNTIME_DELEGATES_TO]->(b)
 MATCH (p:Project {id: 'project:gymx-9JXKDV'}), (a:Agent {id: "project-orchestrator-agent"}) MERGE (p)-[:HAS_ORCHESTRATOR]->(a)
 MATCH (a:Agent {id: "project-orchestrator-agent"}), (b:Agent {id: "qagent-controller"}) MERGE (a)-[:USES_QAGENT_CONTROLLER]->(b)
@@ -5242,7 +5242,7 @@ MATCH (a:Agent {id: "data-contract-agent"}), (f:Database {id: "functionality:gym
 MATCH (a:Agent {id: "data-contract-agent"}), (f:Database {id: "functionality:gymx-9JXKDV:data-tests-gymschedule-test-mjs-table-health-recipe-suggestion-jobs"}) MERGE (a)-[:IMPLEMENTS]->(f)
 
 MERGE (p:Project {id: 'project:investmentfinderx-z8rTq_'})
-SET p.name = "InvestmentFinderX", p.folder_name = "investmentfinderx", p.workspace_dir = "/workspace/money/apps/investmentfinderx", p.port = 5303
+SET p.name = "InvestmentFinderX", p.folder_name = "investmentfinderx", p.workspace_dir = "/workspace/apps/investmentfinderx", p.port = 5303
 MERGE (a:Agent {id: "project-orchestrator-agent"})
 SET a.name = "Project Orchestrator Agent", a.role = "project-orchestrator", a.definition_type = 'AgentDefinition', a.scope = 'global_reusable', a.status = 'active'
 MERGE (pa:ProjectAgentAssignment {id: "project-agent-assignment:investmentfinderx-z8rTq_:project-orchestrator-agent"})
@@ -5499,7 +5499,7 @@ MATCH (a:Agent {id: "experience-composition-agent"}), (f:Page {id: "functionalit
 MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:investmentfinderx-z8rTq_:ui-src-plutonixreferencebridge-jsx-plutonixreferencebridge"}) MERGE (a)-[:IMPLEMENTS]->(f)
 
 MERGE (p:Project {id: 'project:mapex-M6rGkR'})
-SET p.name = "mapEx", p.folder_name = "mapex", p.workspace_dir = "/workspace/money/mapex", p.port = 5305
+SET p.name = "mapEx", p.folder_name = "mapex", p.workspace_dir = "/workspace/apps/mapex", p.port = 5305
 MERGE (a:Agent {id: "project-orchestrator-agent"})
 SET a.name = "Project Orchestrator Agent", a.role = "project-orchestrator", a.definition_type = 'AgentDefinition', a.scope = 'global_reusable', a.status = 'active'
 MERGE (pa:ProjectAgentAssignment {id: "project-agent-assignment:mapex-M6rGkR:project-orchestrator-agent"})
@@ -5911,7 +5911,7 @@ MATCH (a:Agent {id: "experience-composition-agent"}), (f:Page {id: "functionalit
 MATCH (a:Agent {id: "experience-composition-agent"}), (f:Page {id: "functionality:mapex-M6rGkR:ui-src-main-jsx-main"}) MERGE (a)-[:IMPLEMENTS]->(f)
 
 MERGE (p:Project {id: 'project:mentalheathcounselor-PJ1N2o'})
-SET p.name = "MentalHeathCounselor", p.folder_name = "mentalheathcounselor", p.workspace_dir = "/workspace/money/apps/mentalheathcounselor", p.port = 5312
+SET p.name = "MentalHeathCounselor", p.folder_name = "mentalheathcounselor", p.workspace_dir = "/workspace/apps/mentalheathcounselor", p.port = 5312
 MERGE (a:Agent {id: "project-orchestrator-agent"})
 SET a.name = "Project Orchestrator Agent", a.role = "project-orchestrator", a.definition_type = 'AgentDefinition', a.scope = 'global_reusable', a.status = 'active'
 MERGE (pa:ProjectAgentAssignment {id: "project-agent-assignment:mentalheathcounselor-PJ1N2o:project-orchestrator-agent"})
@@ -6227,7 +6227,7 @@ MATCH (a:Agent {id: "experience-composition-agent"}), (f:Page {id: "functionalit
 MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:mentalheathcounselor-PJ1N2o:ui-src-plutonixreferencebridge-jsx-plutonixreferencebridge"}) MERGE (a)-[:IMPLEMENTS]->(f)
 
 MERGE (p:Project {id: 'project:researchanddevx-xF8SDs'})
-SET p.name = "ResearchAndDevX", p.folder_name = "researchanddevx", p.workspace_dir = "/workspace/money/apps/researchanddevx", p.port = 5309
+SET p.name = "ResearchAndDevX", p.folder_name = "researchanddevx", p.workspace_dir = "/workspace/apps/researchanddevx", p.port = 5309
 MERGE (a:Agent {id: "project-orchestrator-agent"})
 SET a.name = "Project Orchestrator Agent", a.role = "project-orchestrator", a.definition_type = 'AgentDefinition', a.scope = 'global_reusable', a.status = 'active'
 MERGE (pa:ProjectAgentAssignment {id: "project-agent-assignment:researchanddevx-xF8SDs:project-orchestrator-agent"})
@@ -6485,7 +6485,7 @@ MATCH (a:Agent {id: "experience-composition-agent"}), (f:Page {id: "functionalit
 MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:researchanddevx-xF8SDs:ui-src-plutonixreferencebridge-jsx-plutonixreferencebridge"}) MERGE (a)-[:IMPLEMENTS]->(f)
 
 MERGE (p:Project {id: 'project:spydash-qkWtmJ'})
-SET p.name = "spyDash", p.folder_name = "spydash", p.workspace_dir = "/workspace/money/apps/spydash", p.port = 5307
+SET p.name = "spyDash", p.folder_name = "spydash", p.workspace_dir = "/workspace/apps/spydash", p.port = 5307
 MERGE (a:Agent {id: "project-orchestrator-agent"})
 SET a.name = "Project Orchestrator Agent", a.role = "project-orchestrator", a.definition_type = 'AgentDefinition', a.scope = 'global_reusable', a.status = 'active'
 MERGE (pa:ProjectAgentAssignment {id: "project-agent-assignment:spydash-qkWtmJ:project-orchestrator-agent"})
@@ -7872,7 +7872,7 @@ MATCH (a:Agent {id: "experience-composition-agent"}), (f:Page {id: "functionalit
 MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:spydash-qkWtmJ:ui-src-plutonixreferencebridge-jsx-plutonixreferencebridge"}) MERGE (a)-[:IMPLEMENTS]->(f)
 
 MERGE (p:Project {id: 'project:videopresentationforproductx-GtDUxv'})
-SET p.name = "VideoPresentationForProductX", p.folder_name = "videopresentationforproductx", p.workspace_dir = "/workspace/money/apps/videopresentationforproductx", p.port = 5311
+SET p.name = "VideoPresentationForProductX", p.folder_name = "videopresentationforproductx", p.workspace_dir = "/workspace/apps/videopresentationforproductx", p.port = 5311
 MERGE (a:Agent {id: "project-orchestrator-agent"})
 SET a.name = "Project Orchestrator Agent", a.role = "project-orchestrator", a.definition_type = 'AgentDefinition', a.scope = 'global_reusable', a.status = 'active'
 MERGE (pa:ProjectAgentAssignment {id: "project-agent-assignment:videopresentationforproductx-GtDUxv:project-orchestrator-agent"})
@@ -8274,8 +8274,576 @@ MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functio
 MATCH (a:Agent {id: "experience-composition-agent"}), (f:Page {id: "functionality:videopresentationforproductx-GtDUxv:ui-src-main-jsx-main"}) MERGE (a)-[:IMPLEMENTS]->(f)
 MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:videopresentationforproductx-GtDUxv:ui-src-plutonixreferencebridge-jsx-plutonixreferencebridge"}) MERGE (a)-[:IMPLEMENTS]->(f)
 
+MERGE (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'})
+SET p.name = "voiceTranscriptGenX", p.folder_name = "voicetranscriptgenx", p.workspace_dir = "/workspace/apps/voicetranscriptgenx", p.port = 5301
+MERGE (a:Agent {id: "project-orchestrator-agent"})
+SET a.name = "Project Orchestrator Agent", a.role = "project-orchestrator", a.definition_type = 'AgentDefinition', a.scope = 'global_reusable', a.status = 'active'
+MERGE (pa:ProjectAgentAssignment {id: "project-agent-assignment:voicetranscriptgenx-QcKNlU:project-orchestrator-agent"})
+SET pa.project_id = "voicetranscriptgenx-QcKNlU", pa.agent_id = "project-orchestrator-agent", pa.role = "project-orchestrator", pa.status = "active"
+MERGE (p)-[:HAS_AGENT_ASSIGNMENT]->(pa)
+MERGE (pa)-[:ASSIGNS_AGENT]->(a)
+MERGE (a:Agent {id: "qagent-controller"})
+SET a.name = "QAgent Controller", a.role = "qagent-controller", a.definition_type = 'AgentDefinition', a.scope = 'global_reusable', a.status = 'active'
+MERGE (pa:ProjectAgentAssignment {id: "project-agent-assignment:voicetranscriptgenx-QcKNlU:qagent-controller"})
+SET pa.project_id = "voicetranscriptgenx-QcKNlU", pa.agent_id = "qagent-controller", pa.role = "qagent-controller", pa.status = "active"
+MERGE (p)-[:HAS_AGENT_ASSIGNMENT]->(pa)
+MERGE (pa)-[:ASSIGNS_AGENT]->(a)
+MERGE (a:Agent {id: "experience-composition-agent"})
+SET a.name = "Experience Composition Agent", a.role = "experience-composition", a.definition_type = 'AgentDefinition', a.scope = 'global_reusable', a.status = 'active'
+MERGE (pa:ProjectAgentAssignment {id: "project-agent-assignment:voicetranscriptgenx-QcKNlU:experience-composition-agent"})
+SET pa.project_id = "voicetranscriptgenx-QcKNlU", pa.agent_id = "experience-composition-agent", pa.role = "experience-composition", pa.status = "active"
+MERGE (p)-[:HAS_AGENT_ASSIGNMENT]->(pa)
+MERGE (pa)-[:ASSIGNS_AGENT]->(a)
+MERGE (a:Agent {id: "data-contract-agent"})
+SET a.name = "Data Contract Agent", a.role = "data-contract", a.definition_type = 'AgentDefinition', a.scope = 'global_reusable', a.status = 'active'
+MERGE (pa:ProjectAgentAssignment {id: "project-agent-assignment:voicetranscriptgenx-QcKNlU:data-contract-agent"})
+SET pa.project_id = "voicetranscriptgenx-QcKNlU", pa.agent_id = "data-contract-agent", pa.role = "data-contract", pa.status = "active"
+MERGE (p)-[:HAS_AGENT_ASSIGNMENT]->(pa)
+MERGE (pa)-[:ASSIGNS_AGENT]->(a)
+MERGE (a:Agent {id: "runtime-packaging-agent"})
+SET a.name = "Runtime Packaging Agent", a.role = "runtime-packaging", a.definition_type = 'AgentDefinition', a.scope = 'global_reusable', a.status = 'active'
+MERGE (pa:ProjectAgentAssignment {id: "project-agent-assignment:voicetranscriptgenx-QcKNlU:runtime-packaging-agent"})
+SET pa.project_id = "voicetranscriptgenx-QcKNlU", pa.agent_id = "runtime-packaging-agent", pa.role = "runtime-packaging", pa.status = "active"
+MERGE (p)-[:HAS_AGENT_ASSIGNMENT]->(pa)
+MERGE (pa)-[:ASSIGNS_AGENT]->(a)
+MERGE (a:Agent {id: "design-workshop-review-agent"})
+SET a.name = "Design Workshop Review Agent", a.role = "design-workshop-review", a.definition_type = 'AgentDefinition', a.scope = 'global_reusable', a.status = 'active'
+MERGE (pa:ProjectAgentAssignment {id: "project-agent-assignment:voicetranscriptgenx-QcKNlU:design-workshop-review-agent"})
+SET pa.project_id = "voicetranscriptgenx-QcKNlU", pa.agent_id = "design-workshop-review-agent", pa.role = "design-workshop-review", pa.status = "active"
+MERGE (p)-[:HAS_AGENT_ASSIGNMENT]->(pa)
+MERGE (pa)-[:ASSIGNS_AGENT]->(a)
+MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-agentic-system-d3-agentic-system-d3-js-agentic-system-d3"})
+SET f.name = "Agentic System D3", f.category = "ui", f.entity_type = "ui_surface", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-agentic-system-d3-agentic-system-d3-js-agentic-system-d3"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-agentic-system-d3-agentic-system-d3-js-agentic-system-d3"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-agentic-system-d3-index-html-index"})
+SET f.name = "Index", f.category = "ui", f.entity_type = "ui_surface", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-agentic-system-d3-index-html-index"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-agentic-system-d3-index-html-index"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-project-env-path"})
+SET f.name = "PROJECT_ENV_PATH", f.category = "ui", f.entity_type = "ui_surface", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-project-env-path"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-project-env-path"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-openai-transcriptions-url"})
+SET f.name = "OPENAI_TRANSCRIPTIONS_URL", f.category = "ui", f.entity_type = "ui_surface", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-openai-transcriptions-url"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-openai-transcriptions-url"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-audio-files"})
+SET f.name = "MAX_AUDIO_FILES", f.category = "ui", f.entity_type = "ui_surface", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-audio-files"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-audio-files"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-audio-file-bytes"})
+SET f.name = "MAX_AUDIO_FILE_BYTES", f.category = "ui", f.entity_type = "ui_surface", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-audio-file-bytes"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-audio-file-bytes"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-total-audio-bytes"})
+SET f.name = "MAX_TOTAL_AUDIO_BYTES", f.category = "ui", f.entity_type = "ui_surface", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-total-audio-bytes"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-total-audio-bytes"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-text-context-chars"})
+SET f.name = "MAX_TEXT_CONTEXT_CHARS", f.category = "ui", f.entity_type = "ui_surface", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-text-context-chars"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-text-context-chars"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-audio-filename-pattern"})
+SET f.name = "AUDIO_FILENAME_PATTERN", f.category = "ui", f.entity_type = "ui_surface", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-audio-filename-pattern"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-audio-filename-pattern"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-transcription-rate-limit-window-ms"})
+SET f.name = "TRANSCRIPTION_RATE_LIMIT_WINDOW_MS", f.category = "ui", f.entity_type = "ui_surface", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-transcription-rate-limit-window-ms"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-transcription-rate-limit-window-ms"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-transcription-rate-limit-max-requests"})
+SET f.name = "TRANSCRIPTION_RATE_LIMIT_MAX_REQUESTS", f.category = "ui", f.entity_type = "ui_surface", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-transcription-rate-limit-max-requests"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-transcription-rate-limit-max-requests"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:API {id: "functionality:voicetranscriptgenx-QcKNlU:api-backend-src-server-js-get-api-health"})
+SET f.name = "GET /api/health", f.category = "api", f.entity_type = "api_route", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:API {id: "functionality:voicetranscriptgenx-QcKNlU:api-backend-src-server-js-get-api-health"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "project-orchestrator-agent"}), (f:API {id: "functionality:voicetranscriptgenx-QcKNlU:api-backend-src-server-js-get-api-health"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:API {id: "functionality:voicetranscriptgenx-QcKNlU:api-backend-src-server-js-get-api-transcriptions-status"})
+SET f.name = "GET /api/transcriptions/status", f.category = "api", f.entity_type = "api_route", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:API {id: "functionality:voicetranscriptgenx-QcKNlU:api-backend-src-server-js-get-api-transcriptions-status"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "project-orchestrator-agent"}), (f:API {id: "functionality:voicetranscriptgenx-QcKNlU:api-backend-src-server-js-get-api-transcriptions-status"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:API {id: "functionality:voicetranscriptgenx-QcKNlU:api-backend-src-server-js-post-api-transcriptions"})
+SET f.name = "POST /api/transcriptions", f.category = "api", f.entity_type = "api_route", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:API {id: "functionality:voicetranscriptgenx-QcKNlU:api-backend-src-server-js-post-api-transcriptions"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "project-orchestrator-agent"}), (f:API {id: "functionality:voicetranscriptgenx-QcKNlU:api-backend-src-server-js-post-api-transcriptions"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-deliverables-validation-plutonix-12a7b495-166f-4037-9e58-024e379f85"})
+SET f.name = "Table: response", f.category = "data", f.entity_type = "database_table", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-deliverables-validation-plutonix-12a7b495-166f-4037-9e58-024e379f85"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "data-contract-agent"}), (f:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-deliverables-validation-plutonix-12a7b495-166f-4037-9e58-024e379f85"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-index-html-index"})
+SET f.name = "Index", f.category = "ui", f.entity_type = "ui_surface", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-index-html-index"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-index-html-index"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-scripts-huggingface-models-mjs-table-of"})
+SET f.name = "Table: of", f.category = "data", f.entity_type = "database_table", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-scripts-huggingface-models-mjs-table-of"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "data-contract-agent"}), (f:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-scripts-huggingface-models-mjs-table-of"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-scripts-huggingface-models-mjs-table-card"})
+SET f.name = "Table: card", f.category = "data", f.entity_type = "database_table", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-scripts-huggingface-models-mjs-table-card"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "data-contract-agent"}), (f:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-scripts-huggingface-models-mjs-table-card"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-app-jsx-app"})
+SET f.name = "App", f.category = "ui", f.entity_type = "ui_surface", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-app-jsx-app"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-app-jsx-app"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-icon"})
+SET f.name = "Icon", f.category = "ui", f.entity_type = "ui_surface", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-icon"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-icon"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-statusbadge"})
+SET f.name = "StatusBadge", f.category = "ui", f.entity_type = "ui_surface", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-statusbadge"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-statusbadge"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-trackrow"})
+SET f.name = "TrackRow", f.category = "ui", f.entity_type = "ui_surface", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-trackrow"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-trackrow"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-3494"})
+SET f.name = "onRemove(track.id)}", f.category = "ui", f.entity_type = "ui_element", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-3494"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-3494"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-emptyaudiostate"})
+SET f.name = "EmptyAudioState", f.category = "ui", f.entity_type = "ui_surface", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-emptyaudiostate"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-emptyaudiostate"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-4148"})
+SET f.name = "Input 2", f.category = "ui", f.entity_type = "ui_element", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-4148"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-4148"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-4148-onchange"})
+SET f.name = "On Select", f.category = "ui", f.entity_type = "ui_feature", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-4148-onchange"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-4148-onchange"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"})
+SET f.name = "GeneratedPage", f.category = "ui", f.entity_type = "ui_surface", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-a-13166"})
+SET f.name = "Media Studio workspace", f.category = "ui", f.entity_type = "ui_element", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-a-13166"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-a-13166"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-13577"})
+SET f.name = "workspaceInputRef.current?.click()}>", f.category = "ui", f.entity_type = "ui_element", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-13577"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-13577"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-13777"})
+SET f.name = "Button 5", f.category = "ui", f.entity_type = "ui_element", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-13777"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-13777"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-13777-onclick"})
+SET f.name = "Export Workspace", f.category = "ui", f.entity_type = "ui_feature", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-13777-onclick"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-13777-onclick"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-13965"})
+SET f.name = "Input 6", f.category = "ui", f.entity_type = "ui_element", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-13965"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-13965"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-13965-onchange"})
+SET f.name = "Import Workspace", f.category = "ui", f.entity_type = "ui_feature", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-13965-onchange"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-13965-onchange"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-15133"})
+SET f.name = "Input 7", f.category = "ui", f.entity_type = "ui_element", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-15133"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-15133"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-15133-onchange"})
+SET f.name = "Handle Audio Select", f.category = "ui", f.entity_type = "ui_feature", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-15133-onchange"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-15133-onchange"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-16090"})
+SET f.name = "Button 8", f.category = "ui", f.entity_type = "ui_element", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-16090"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-16090"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-16090-onclick"})
+SET f.name = "Restore Staged Tracks", f.category = "ui", f.entity_type = "ui_feature", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-16090-onclick"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-16090-onclick"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-16820"})
+SET f.name = "Input 9", f.category = "ui", f.entity_type = "ui_element", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-16820"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-16820"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-16820-onchange"})
+SET f.name = "Handle Text Import", f.category = "ui", f.entity_type = "ui_feature", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-16820-onchange"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-16820-onchange"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-textarea-16977"})
+SET f.name = "setTextCorpus(event.target.value)}", f.category = "ui", f.entity_type = "ui_element", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-textarea-16977"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-textarea-16977"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-select-18089"})
+SET f.name = "setLanguage(event.target.value)} disabled=", f.category = "ui", f.entity_type = "ui_element", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-select-18089"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-select-18089"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-select-18585"})
+SET f.name = "setSpeakerHint(event.target.value)} disabled=", f.category = "ui", f.entity_type = "ui_element", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-select-18585"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-select-18585"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-19907"})
+SET f.name = "Button 13", f.category = "ui", f.entity_type = "ui_element", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-19907"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-19907"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-19907-onclick"})
+SET f.name = "Stop Transcription", f.category = "ui", f.entity_type = "ui_feature", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-19907-onclick"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-19907-onclick"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-20112"})
+SET f.name = "Button 14", f.category = "ui", f.entity_type = "ui_element", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-20112"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-20112"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-20112-onclick"})
+SET f.name = "Run Transcription", f.category = "ui", f.entity_type = "ui_feature", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-20112-onclick"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-20112-onclick"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-20450"})
+SET f.name = "Button 15", f.category = "ui", f.entity_type = "ui_element", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-20450"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-20450"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-20450-onclick"})
+SET f.name = "Run Transcription", f.category = "ui", f.entity_type = "ui_feature", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-20450-onclick"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-20450-onclick"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-textarea-21464"})
+SET f.name = "setTranscript(event.target.value)}", f.category = "ui", f.entity_type = "ui_element", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-textarea-21464"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-textarea-21464"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-21803"})
+SET f.name = "Button 17", f.category = "ui", f.entity_type = "ui_element", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-21803"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-21803"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-21803-onclick"})
+SET f.name = "Copy Transcript", f.category = "ui", f.entity_type = "ui_feature", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-21803-onclick"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-21803-onclick"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-22060"})
+SET f.name = "Button 18", f.category = "ui", f.entity_type = "ui_element", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-22060"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-22060"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-22060-onclick"})
+SET f.name = "Export Transcript", f.category = "ui", f.entity_type = "ui_feature", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-22060-onclick"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-22060-onclick"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-src-generated-metadata-json-table-are"})
+SET f.name = "Table: are", f.category = "data", f.entity_type = "database_table", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-src-generated-metadata-json-table-are"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "data-contract-agent"}), (f:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-src-generated-metadata-json-table-are"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-main-jsx-main"})
+SET f.name = "Main", f.category = "ui", f.entity_type = "ui_surface", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-main-jsx-main"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-main-jsx-main"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-plutonixreferencebridge-jsx-plutonixreferencebridge"})
+SET f.name = "PlutoniXReferenceBridge", f.category = "ui", f.entity_type = "ui_surface", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-plutonixreferencebridge-jsx-plutonixreferencebridge"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-plutonixreferencebridge-jsx-plutonixreferencebridge"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-13777"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
+MATCH (a:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-13965"}), (b:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-13965-onchange"}) MERGE (a)-[:HAS_UI_FEATURE {confidence: 1}]->(b)
+MATCH (a:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-textarea-21464"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
+MATCH (a:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-13965"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
+MATCH (a:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-20450"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
+MATCH (a:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-select-18585"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
+MATCH (a:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-app-jsx-app"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-plutonixreferencebridge-jsx-plutonixreferencebridge"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
+MATCH (a:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-app-jsx-app"}), (b:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}) MERGE (a)-[:CONTAINS_FEATURE {confidence: 1}]->(b)
+MATCH (a:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-21803"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
+MATCH (a:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-a-13166"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
+MATCH (a:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-project-env-path"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-transcription-rate-limit-max-requests"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
+MATCH (a:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-20112"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
+MATCH (a:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-textarea-16977"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
+MATCH (a:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-project-env-path"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-audio-files"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
+MATCH (a:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-16820"}), (b:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-16820-onchange"}) MERGE (a)-[:HAS_UI_FEATURE {confidence: 1}]->(b)
+MATCH (a:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-19907"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
+MATCH (a:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-22060"}), (b:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-22060-onclick"}) MERGE (a)-[:HAS_UI_FEATURE {confidence: 1}]->(b)
+MATCH (a:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-19907"}), (b:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-19907-onclick"}) MERGE (a)-[:HAS_UI_FEATURE {confidence: 1}]->(b)
+MATCH (a:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-project-env-path"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-openai-transcriptions-url"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
+MATCH (a:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-trackrow"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-3494"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
+MATCH (a:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-4148"}), (b:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-4148-onchange"}) MERGE (a)-[:HAS_UI_FEATURE {confidence: 1}]->(b)
+MATCH (a:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-13777"}), (b:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-13777-onclick"}) MERGE (a)-[:HAS_UI_FEATURE {confidence: 1}]->(b)
+MATCH (a:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-16090"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
+MATCH (a:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-project-env-path"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-total-audio-bytes"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
+MATCH (a:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-icon"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
+MATCH (a:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-emptyaudiostate"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-4148"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
+MATCH (a:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-22060"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
+MATCH (a:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-13577"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
+MATCH (a:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-15133"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
+MATCH (a:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-16820"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
+MATCH (a:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-emptyaudiostate"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
+MATCH (a:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-21803"}), (b:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-21803-onclick"}) MERGE (a)-[:HAS_UI_FEATURE {confidence: 1}]->(b)
+MATCH (a:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-main-jsx-main"}), (b:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-app-jsx-app"}) MERGE (a)-[:CONTAINS_FEATURE {confidence: 1}]->(b)
+MATCH (a:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-trackrow"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
+MATCH (a:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-20450"}), (b:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-20450-onclick"}) MERGE (a)-[:HAS_UI_FEATURE {confidence: 1}]->(b)
+MATCH (a:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-project-env-path"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-audio-file-bytes"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
+MATCH (a:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-statusbadge"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
+MATCH (a:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-project-env-path"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-audio-filename-pattern"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
+MATCH (a:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-select-18089"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
+MATCH (a:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-project-env-path"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-text-context-chars"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
+MATCH (a:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-16090"}), (b:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-16090-onclick"}) MERGE (a)-[:HAS_UI_FEATURE {confidence: 1}]->(b)
+MATCH (a:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-20112"}), (b:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-20112-onclick"}) MERGE (a)-[:HAS_UI_FEATURE {confidence: 1}]->(b)
+MATCH (a:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-15133"}), (b:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-15133-onchange"}) MERGE (a)-[:HAS_UI_FEATURE {confidence: 1}]->(b)
+MATCH (a:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-project-env-path"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-transcription-rate-limit-window-ms"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
+MERGE (b:Branch {id: "branch:branch_b1badb97-2304-40cb-b7b2-cc95d10fff88"})
+SET b.ledger_id = "branch_b1badb97-2304-40cb-b7b2-cc95d10fff88", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
+MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-agentic-system-d3-agentic-system-d3-js-agentic-system-d3"}), (b:Branch {id: "branch:branch_b1badb97-2304-40cb-b7b2-cc95d10fff88"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_09bf4a6a-731c-421c-a4c5-c18539deab3b"})
+SET b.ledger_id = "branch_09bf4a6a-731c-421c-a4c5-c18539deab3b", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-agentic-system-d3-agentic-system-d3-js-agentic-system-d3"}), (b:Branch {id: "branch:branch_09bf4a6a-731c-421c-a4c5-c18539deab3b"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_31506395-1d22-4e50-8716-a7a5d81a3e03"})
+SET b.ledger_id = "branch_31506395-1d22-4e50-8716-a7a5d81a3e03", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-agentic-system-d3-agentic-system-d3-js-agentic-system-d3"}), (b:Branch {id: "branch:branch_31506395-1d22-4e50-8716-a7a5d81a3e03"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_6a399690-c3ea-4867-b038-efabce914e9f"})
+SET b.ledger_id = "branch_6a399690-c3ea-4867-b038-efabce914e9f", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
+MATCH (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-app-jsx-app"}), (b:Branch {id: "branch:branch_6a399690-c3ea-4867-b038-efabce914e9f"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_90e6a45f-d5d1-4a21-afe9-378812507bbe"})
+SET b.ledger_id = "branch_90e6a45f-d5d1-4a21-afe9-378812507bbe", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-app-jsx-app"}), (b:Branch {id: "branch:branch_90e6a45f-d5d1-4a21-afe9-378812507bbe"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_0c4ec673-f08a-41b3-9fae-db3fab8379d0"})
+SET b.ledger_id = "branch_0c4ec673-f08a-41b3-9fae-db3fab8379d0", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-app-jsx-app"}), (b:Branch {id: "branch:branch_0c4ec673-f08a-41b3-9fae-db3fab8379d0"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_ca3c2834-884f-4d9f-a09f-4ac3c15ff6c5"})
+SET b.ledger_id = "branch_ca3c2834-884f-4d9f-a09f-4ac3c15ff6c5", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
+MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-audio-filename-pattern"}), (b:Branch {id: "branch:branch_ca3c2834-884f-4d9f-a09f-4ac3c15ff6c5"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_b480db18-5087-4ce0-891c-73d97f6d334e"})
+SET b.ledger_id = "branch_b480db18-5087-4ce0-891c-73d97f6d334e", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-audio-filename-pattern"}), (b:Branch {id: "branch:branch_b480db18-5087-4ce0-891c-73d97f6d334e"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_7e8b05ac-16ec-4b37-a7b9-6c4be1aed4be"})
+SET b.ledger_id = "branch_7e8b05ac-16ec-4b37-a7b9-6c4be1aed4be", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-audio-filename-pattern"}), (b:Branch {id: "branch:branch_7e8b05ac-16ec-4b37-a7b9-6c4be1aed4be"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_dc50fbd5-9084-4565-adf7-528dce5768d3"})
+SET b.ledger_id = "branch_dc50fbd5-9084-4565-adf7-528dce5768d3", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
+MATCH (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:Branch {id: "branch:branch_dc50fbd5-9084-4565-adf7-528dce5768d3"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_c62beff6-d308-4728-96df-b52f672310e7"})
+SET b.ledger_id = "branch_c62beff6-d308-4728-96df-b52f672310e7", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:Branch {id: "branch:branch_c62beff6-d308-4728-96df-b52f672310e7"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_e06de374-99cb-4dc2-8bd5-822e1efe3634"})
+SET b.ledger_id = "branch_e06de374-99cb-4dc2-8bd5-822e1efe3634", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:Branch {id: "branch:branch_e06de374-99cb-4dc2-8bd5-822e1efe3634"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_19439244-13da-44a5-8917-51e632933700"})
+SET b.ledger_id = "branch_19439244-13da-44a5-8917-51e632933700", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
+MATCH (f:API {id: "functionality:voicetranscriptgenx-QcKNlU:api-backend-src-server-js-get-api-health"}), (b:Branch {id: "branch:branch_19439244-13da-44a5-8917-51e632933700"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_aaa3bcee-d5c5-43e4-973c-8698ba07146b"})
+SET b.ledger_id = "branch_aaa3bcee-d5c5-43e4-973c-8698ba07146b", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:API {id: "functionality:voicetranscriptgenx-QcKNlU:api-backend-src-server-js-get-api-health"}), (b:Branch {id: "branch:branch_aaa3bcee-d5c5-43e4-973c-8698ba07146b"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_1db20e4a-6b7c-41ef-a2b3-f17d46ef3ae0"})
+SET b.ledger_id = "branch_1db20e4a-6b7c-41ef-a2b3-f17d46ef3ae0", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:API {id: "functionality:voicetranscriptgenx-QcKNlU:api-backend-src-server-js-get-api-health"}), (b:Branch {id: "branch:branch_1db20e4a-6b7c-41ef-a2b3-f17d46ef3ae0"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_69b14c6d-6298-4c0c-8724-dff73ca4ce93"})
+SET b.ledger_id = "branch_69b14c6d-6298-4c0c-8724-dff73ca4ce93", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
+MATCH (f:API {id: "functionality:voicetranscriptgenx-QcKNlU:api-backend-src-server-js-get-api-transcriptions-status"}), (b:Branch {id: "branch:branch_69b14c6d-6298-4c0c-8724-dff73ca4ce93"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_88b19fa0-8095-4b6c-b0e2-5ddb7173570d"})
+SET b.ledger_id = "branch_88b19fa0-8095-4b6c-b0e2-5ddb7173570d", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:API {id: "functionality:voicetranscriptgenx-QcKNlU:api-backend-src-server-js-get-api-transcriptions-status"}), (b:Branch {id: "branch:branch_88b19fa0-8095-4b6c-b0e2-5ddb7173570d"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_aa8e397a-42fa-47b2-b1f6-0a44af27b1e5"})
+SET b.ledger_id = "branch_aa8e397a-42fa-47b2-b1f6-0a44af27b1e5", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:API {id: "functionality:voicetranscriptgenx-QcKNlU:api-backend-src-server-js-get-api-transcriptions-status"}), (b:Branch {id: "branch:branch_aa8e397a-42fa-47b2-b1f6-0a44af27b1e5"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_144df7c1-aade-42ee-b95c-df8ba55f0b09"})
+SET b.ledger_id = "branch_144df7c1-aade-42ee-b95c-df8ba55f0b09", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
+MATCH (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-agentic-system-d3-index-html-index"}), (b:Branch {id: "branch:branch_144df7c1-aade-42ee-b95c-df8ba55f0b09"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_30a70f21-168a-47c4-b57e-be4ad2922b91"})
+SET b.ledger_id = "branch_30a70f21-168a-47c4-b57e-be4ad2922b91", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-agentic-system-d3-index-html-index"}), (b:Branch {id: "branch:branch_30a70f21-168a-47c4-b57e-be4ad2922b91"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_80b21dae-410a-4efb-87a5-21787b9ad7b0"})
+SET b.ledger_id = "branch_80b21dae-410a-4efb-87a5-21787b9ad7b0", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-agentic-system-d3-index-html-index"}), (b:Branch {id: "branch:branch_80b21dae-410a-4efb-87a5-21787b9ad7b0"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_f5163a80-b586-4347-9459-a57dc689901d"})
+SET b.ledger_id = "branch_f5163a80-b586-4347-9459-a57dc689901d", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
+MATCH (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-index-html-index"}), (b:Branch {id: "branch:branch_f5163a80-b586-4347-9459-a57dc689901d"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_1f4ac02b-8067-4f7c-b35c-638c8fa29da9"})
+SET b.ledger_id = "branch_1f4ac02b-8067-4f7c-b35c-638c8fa29da9", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-index-html-index"}), (b:Branch {id: "branch:branch_1f4ac02b-8067-4f7c-b35c-638c8fa29da9"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_82ba67c2-bbe0-4fe3-adec-4b9cccd2a026"})
+SET b.ledger_id = "branch_82ba67c2-bbe0-4fe3-adec-4b9cccd2a026", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-index-html-index"}), (b:Branch {id: "branch:branch_82ba67c2-bbe0-4fe3-adec-4b9cccd2a026"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_c935649b-520c-4650-bca2-5b722199d157"})
+SET b.ledger_id = "branch_c935649b-520c-4650-bca2-5b722199d157", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
+MATCH (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-main-jsx-main"}), (b:Branch {id: "branch:branch_c935649b-520c-4650-bca2-5b722199d157"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_10518e20-33b5-4c62-a718-2c8963c48711"})
+SET b.ledger_id = "branch_10518e20-33b5-4c62-a718-2c8963c48711", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-main-jsx-main"}), (b:Branch {id: "branch:branch_10518e20-33b5-4c62-a718-2c8963c48711"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_0fcb5d2c-8c3a-4885-9133-0f8a3d5cd46b"})
+SET b.ledger_id = "branch_0fcb5d2c-8c3a-4885-9133-0f8a3d5cd46b", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-main-jsx-main"}), (b:Branch {id: "branch:branch_0fcb5d2c-8c3a-4885-9133-0f8a3d5cd46b"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_d1b35683-6af2-417a-92c0-b13cad49681a"})
+SET b.ledger_id = "branch_d1b35683-6af2-417a-92c0-b13cad49681a", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
+MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-audio-file-bytes"}), (b:Branch {id: "branch:branch_d1b35683-6af2-417a-92c0-b13cad49681a"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_7f74d500-b502-4efb-be7d-e62ccd350a5f"})
+SET b.ledger_id = "branch_7f74d500-b502-4efb-be7d-e62ccd350a5f", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-audio-file-bytes"}), (b:Branch {id: "branch:branch_7f74d500-b502-4efb-be7d-e62ccd350a5f"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_582091fd-406a-444d-b6a0-9d87286a27b3"})
+SET b.ledger_id = "branch_582091fd-406a-444d-b6a0-9d87286a27b3", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-audio-file-bytes"}), (b:Branch {id: "branch:branch_582091fd-406a-444d-b6a0-9d87286a27b3"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_857aed7a-f48d-4849-8ed3-d5302b647ff0"})
+SET b.ledger_id = "branch_857aed7a-f48d-4849-8ed3-d5302b647ff0", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
+MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-audio-files"}), (b:Branch {id: "branch:branch_857aed7a-f48d-4849-8ed3-d5302b647ff0"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_ba9b24a1-2303-40e5-9651-d22b1780ea74"})
+SET b.ledger_id = "branch_ba9b24a1-2303-40e5-9651-d22b1780ea74", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-audio-files"}), (b:Branch {id: "branch:branch_ba9b24a1-2303-40e5-9651-d22b1780ea74"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_17cf7031-0c3d-4bfc-a0ce-fe9391f6b65e"})
+SET b.ledger_id = "branch_17cf7031-0c3d-4bfc-a0ce-fe9391f6b65e", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-audio-files"}), (b:Branch {id: "branch:branch_17cf7031-0c3d-4bfc-a0ce-fe9391f6b65e"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_c9ae86a0-19b9-4d07-b5fa-ee78220137de"})
+SET b.ledger_id = "branch_c9ae86a0-19b9-4d07-b5fa-ee78220137de", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
+MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-text-context-chars"}), (b:Branch {id: "branch:branch_c9ae86a0-19b9-4d07-b5fa-ee78220137de"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_7c1bced9-f81a-492b-a445-99d16ecbb232"})
+SET b.ledger_id = "branch_7c1bced9-f81a-492b-a445-99d16ecbb232", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-text-context-chars"}), (b:Branch {id: "branch:branch_7c1bced9-f81a-492b-a445-99d16ecbb232"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_9fbac908-5375-4773-8acb-a79fee493fba"})
+SET b.ledger_id = "branch_9fbac908-5375-4773-8acb-a79fee493fba", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-text-context-chars"}), (b:Branch {id: "branch:branch_9fbac908-5375-4773-8acb-a79fee493fba"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_49cafac5-9ed6-4ea4-a0e1-63b24d5955e4"})
+SET b.ledger_id = "branch_49cafac5-9ed6-4ea4-a0e1-63b24d5955e4", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
+MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-total-audio-bytes"}), (b:Branch {id: "branch:branch_49cafac5-9ed6-4ea4-a0e1-63b24d5955e4"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_a56ca2e8-76ae-4923-90e9-ce3a5b240ea5"})
+SET b.ledger_id = "branch_a56ca2e8-76ae-4923-90e9-ce3a5b240ea5", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-total-audio-bytes"}), (b:Branch {id: "branch:branch_a56ca2e8-76ae-4923-90e9-ce3a5b240ea5"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_1a01a15b-f1f7-4b5f-bcbd-f9bc0d5b872d"})
+SET b.ledger_id = "branch_1a01a15b-f1f7-4b5f-bcbd-f9bc0d5b872d", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-total-audio-bytes"}), (b:Branch {id: "branch:branch_1a01a15b-f1f7-4b5f-bcbd-f9bc0d5b872d"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_2ff1d14e-6bdf-4489-bd94-b3a33d5515b8"})
+SET b.ledger_id = "branch_2ff1d14e-6bdf-4489-bd94-b3a33d5515b8", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
+MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-openai-transcriptions-url"}), (b:Branch {id: "branch:branch_2ff1d14e-6bdf-4489-bd94-b3a33d5515b8"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_19e52e03-2658-41ca-b9d5-3b35226f6dad"})
+SET b.ledger_id = "branch_19e52e03-2658-41ca-b9d5-3b35226f6dad", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-openai-transcriptions-url"}), (b:Branch {id: "branch:branch_19e52e03-2658-41ca-b9d5-3b35226f6dad"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_94363ded-003a-4b31-a83b-ed0b4e1392be"})
+SET b.ledger_id = "branch_94363ded-003a-4b31-a83b-ed0b4e1392be", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-openai-transcriptions-url"}), (b:Branch {id: "branch:branch_94363ded-003a-4b31-a83b-ed0b4e1392be"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_5e9ea189-9497-4c78-9dc2-36e235e82d41"})
+SET b.ledger_id = "branch_5e9ea189-9497-4c78-9dc2-36e235e82d41", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
+MATCH (f:API {id: "functionality:voicetranscriptgenx-QcKNlU:api-backend-src-server-js-post-api-transcriptions"}), (b:Branch {id: "branch:branch_5e9ea189-9497-4c78-9dc2-36e235e82d41"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_c306b4f1-e10a-412b-af33-3701b5a6aebf"})
+SET b.ledger_id = "branch_c306b4f1-e10a-412b-af33-3701b5a6aebf", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:API {id: "functionality:voicetranscriptgenx-QcKNlU:api-backend-src-server-js-post-api-transcriptions"}), (b:Branch {id: "branch:branch_c306b4f1-e10a-412b-af33-3701b5a6aebf"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_3c159330-c510-4949-a5b3-62f8a7bed9d0"})
+SET b.ledger_id = "branch_3c159330-c510-4949-a5b3-62f8a7bed9d0", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:API {id: "functionality:voicetranscriptgenx-QcKNlU:api-backend-src-server-js-post-api-transcriptions"}), (b:Branch {id: "branch:branch_3c159330-c510-4949-a5b3-62f8a7bed9d0"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_067d46ea-36e1-4f8a-8149-f1dacb9d28c8"})
+SET b.ledger_id = "branch_067d46ea-36e1-4f8a-8149-f1dacb9d28c8", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
+MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-project-env-path"}), (b:Branch {id: "branch:branch_067d46ea-36e1-4f8a-8149-f1dacb9d28c8"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_b8d16f97-e4b8-411e-94eb-141eb3c3a400"})
+SET b.ledger_id = "branch_b8d16f97-e4b8-411e-94eb-141eb3c3a400", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-project-env-path"}), (b:Branch {id: "branch:branch_b8d16f97-e4b8-411e-94eb-141eb3c3a400"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_10289caf-8049-4d72-a069-029367dbe9c1"})
+SET b.ledger_id = "branch_10289caf-8049-4d72-a069-029367dbe9c1", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-project-env-path"}), (b:Branch {id: "branch:branch_10289caf-8049-4d72-a069-029367dbe9c1"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_b140ecdc-6b2c-45cf-a261-9495e527a245"})
+SET b.ledger_id = "branch_b140ecdc-6b2c-45cf-a261-9495e527a245", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
+MATCH (f:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-src-generated-metadata-json-table-are"}), (b:Branch {id: "branch:branch_b140ecdc-6b2c-45cf-a261-9495e527a245"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_08cf4406-fe48-4e67-91c5-3eb74d1bcf7b"})
+SET b.ledger_id = "branch_08cf4406-fe48-4e67-91c5-3eb74d1bcf7b", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-src-generated-metadata-json-table-are"}), (b:Branch {id: "branch:branch_08cf4406-fe48-4e67-91c5-3eb74d1bcf7b"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_f12f63cf-b1e0-4895-89b9-6786a0f3c0e8"})
+SET b.ledger_id = "branch_f12f63cf-b1e0-4895-89b9-6786a0f3c0e8", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.733
+MATCH (f:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-src-generated-metadata-json-table-are"}), (b:Branch {id: "branch:branch_f12f63cf-b1e0-4895-89b9-6786a0f3c0e8"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_455d5512-8e22-4ff7-80bf-c755bbf17d01"})
+SET b.ledger_id = "branch_455d5512-8e22-4ff7-80bf-c755bbf17d01", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
+MATCH (f:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-scripts-huggingface-models-mjs-table-card"}), (b:Branch {id: "branch:branch_455d5512-8e22-4ff7-80bf-c755bbf17d01"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_8d00045c-6cf1-4e5e-be93-3349bdc239cb"})
+SET b.ledger_id = "branch_8d00045c-6cf1-4e5e-be93-3349bdc239cb", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-scripts-huggingface-models-mjs-table-card"}), (b:Branch {id: "branch:branch_8d00045c-6cf1-4e5e-be93-3349bdc239cb"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_0400922f-2c37-431a-83ca-cc2b051ae437"})
+SET b.ledger_id = "branch_0400922f-2c37-431a-83ca-cc2b051ae437", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.733
+MATCH (f:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-scripts-huggingface-models-mjs-table-card"}), (b:Branch {id: "branch:branch_0400922f-2c37-431a-83ca-cc2b051ae437"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_f18089b4-a9e3-4f5e-89cd-eebc4e4784ca"})
+SET b.ledger_id = "branch_f18089b4-a9e3-4f5e-89cd-eebc4e4784ca", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
+MATCH (f:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-scripts-huggingface-models-mjs-table-of"}), (b:Branch {id: "branch:branch_f18089b4-a9e3-4f5e-89cd-eebc4e4784ca"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_3eb3b43f-f569-43f6-9b6b-5ccc110eaef9"})
+SET b.ledger_id = "branch_3eb3b43f-f569-43f6-9b6b-5ccc110eaef9", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-scripts-huggingface-models-mjs-table-of"}), (b:Branch {id: "branch:branch_3eb3b43f-f569-43f6-9b6b-5ccc110eaef9"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_46c84ba0-95f4-4a8d-a02d-c55ca1b616f0"})
+SET b.ledger_id = "branch_46c84ba0-95f4-4a8d-a02d-c55ca1b616f0", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.733
+MATCH (f:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-scripts-huggingface-models-mjs-table-of"}), (b:Branch {id: "branch:branch_46c84ba0-95f4-4a8d-a02d-c55ca1b616f0"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_7021bd31-b575-4f67-9bce-6e6372377dcc"})
+SET b.ledger_id = "branch_7021bd31-b575-4f67-9bce-6e6372377dcc", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
+MATCH (f:ApplicationFunctionality {id: "functionality:voicetranscriptgenx-QcKNlU:data-deliverables-validation-plutonix-12a7b495-166f-4037-9e58-024e379f8540-tr"}), (b:Branch {id: "branch:branch_7021bd31-b575-4f67-9bce-6e6372377dcc"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_38294060-4af7-439b-9231-8e71e57b80db"})
+SET b.ledger_id = "branch_38294060-4af7-439b-9231-8e71e57b80db", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:ApplicationFunctionality {id: "functionality:voicetranscriptgenx-QcKNlU:data-deliverables-validation-plutonix-12a7b495-166f-4037-9e58-024e379f8540-tr"}), (b:Branch {id: "branch:branch_38294060-4af7-439b-9231-8e71e57b80db"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_fea821e3-4e13-4a94-94dd-8dff00c2dffa"})
+SET b.ledger_id = "branch_fea821e3-4e13-4a94-94dd-8dff00c2dffa", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.733
+MATCH (f:ApplicationFunctionality {id: "functionality:voicetranscriptgenx-QcKNlU:data-deliverables-validation-plutonix-12a7b495-166f-4037-9e58-024e379f8540-tr"}), (b:Branch {id: "branch:branch_fea821e3-4e13-4a94-94dd-8dff00c2dffa"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_fc7eb376-db09-49a9-a19e-a5b71fc16181"})
+SET b.ledger_id = "branch_fc7eb376-db09-49a9-a19e-a5b71fc16181", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
+MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-transcription-rate-limit-max-requests"}), (b:Branch {id: "branch:branch_fc7eb376-db09-49a9-a19e-a5b71fc16181"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_33cb7999-131a-447a-9116-24a6c89a1c0a"})
+SET b.ledger_id = "branch_33cb7999-131a-447a-9116-24a6c89a1c0a", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-transcription-rate-limit-max-requests"}), (b:Branch {id: "branch:branch_33cb7999-131a-447a-9116-24a6c89a1c0a"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_e784f00d-cbbe-4c96-9faf-93faa39e3288"})
+SET b.ledger_id = "branch_e784f00d-cbbe-4c96-9faf-93faa39e3288", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-transcription-rate-limit-max-requests"}), (b:Branch {id: "branch:branch_e784f00d-cbbe-4c96-9faf-93faa39e3288"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_0845a23e-49d1-42c1-b7cd-9fab84dab0b0"})
+SET b.ledger_id = "branch_0845a23e-49d1-42c1-b7cd-9fab84dab0b0", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
+MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-transcription-rate-limit-window-ms"}), (b:Branch {id: "branch:branch_0845a23e-49d1-42c1-b7cd-9fab84dab0b0"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_147a2955-b242-4c07-a400-2e47c3aeba29"})
+SET b.ledger_id = "branch_147a2955-b242-4c07-a400-2e47c3aeba29", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-transcription-rate-limit-window-ms"}), (b:Branch {id: "branch:branch_147a2955-b242-4c07-a400-2e47c3aeba29"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_63181ab0-cac1-4dd9-841f-f02e388d2f91"})
+SET b.ledger_id = "branch_63181ab0-cac1-4dd9-841f-f02e388d2f91", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-transcription-rate-limit-window-ms"}), (b:Branch {id: "branch:branch_63181ab0-cac1-4dd9-841f-f02e388d2f91"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (a:Agent {id: "plutonix-fullstack-agent"}), (b:Agent {id: "project-orchestrator-agent"}) MERGE (a)-[:RUNTIME_DELEGATES_TO]->(b)
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (a:Agent {id: "project-orchestrator-agent"}) MERGE (p)-[:HAS_ORCHESTRATOR]->(a)
+MATCH (a:Agent {id: "project-orchestrator-agent"}), (b:Agent {id: "qagent-controller"}) MERGE (a)-[:USES_QAGENT_CONTROLLER]->(b)
+MATCH (a:Agent {id: "project-orchestrator-agent"}), (b:Agent {id: "experience-composition-agent"}) MERGE (a)-[:DELEGATES_TO]->(b)
+MATCH (a:Agent {id: "project-orchestrator-agent"}), (b:Agent {id: "data-contract-agent"}) MERGE (a)-[:DELEGATES_TO]->(b)
+MATCH (a:Agent {id: "project-orchestrator-agent"}), (b:Agent {id: "runtime-packaging-agent"}) MERGE (a)-[:DELEGATES_TO]->(b)
+MATCH (a:Agent {id: "project-orchestrator-agent"}), (b:Agent {id: "design-workshop-review-agent"}) MERGE (a)-[:DELEGATES_TO]->(b)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-agentic-system-d3-agentic-system-d3-js-agentic-system-d3"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-agentic-system-d3-index-html-index"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-project-env-path"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-openai-transcriptions-url"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-audio-files"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-audio-file-bytes"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-total-audio-bytes"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-text-context-chars"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-audio-filename-pattern"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-transcription-rate-limit-window-ms"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-transcription-rate-limit-max-requests"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "project-orchestrator-agent"}), (f:API {id: "functionality:voicetranscriptgenx-QcKNlU:api-backend-src-server-js-get-api-health"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "project-orchestrator-agent"}), (f:API {id: "functionality:voicetranscriptgenx-QcKNlU:api-backend-src-server-js-get-api-transcriptions-status"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "project-orchestrator-agent"}), (f:API {id: "functionality:voicetranscriptgenx-QcKNlU:api-backend-src-server-js-post-api-transcriptions"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "data-contract-agent"}), (f:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-deliverables-validation-plutonix-12a7b495-166f-4037-9e58-024e379f85"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-index-html-index"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "data-contract-agent"}), (f:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-scripts-huggingface-models-mjs-table-of"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "data-contract-agent"}), (f:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-scripts-huggingface-models-mjs-table-card"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-app-jsx-app"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-icon"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-statusbadge"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-trackrow"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-3494"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-emptyaudiostate"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-4148"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-4148-onchange"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-a-13166"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-13577"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-13777"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-13777-onclick"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-13965"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-13965-onchange"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-15133"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-15133-onchange"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-16090"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-16090-onclick"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-16820"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-16820-onchange"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-textarea-16977"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-select-18089"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-select-18585"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-19907"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-19907-onclick"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-20112"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-20112-onclick"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-20450"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-20450-onclick"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-textarea-21464"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-21803"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-21803-onclick"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-22060"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-22060-onclick"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "data-contract-agent"}), (f:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-src-generated-metadata-json-table-are"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-main-jsx-main"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-plutonixreferencebridge-jsx-plutonixreferencebridge"}) MERGE (a)-[:IMPLEMENTS]->(f)
+
 MERGE (p:Project {id: 'project:voicex-4q9G58'})
-SET p.name = "voiceX", p.folder_name = "voicex", p.workspace_dir = "/workspace/money/apps/voicex", p.port = 5314
+SET p.name = "voiceX", p.folder_name = "voicex", p.workspace_dir = "/workspace/apps/voicex", p.port = 5314
 MERGE (a:Agent {id: "project-orchestrator-agent"})
 SET a.name = "Project Orchestrator Agent", a.role = "project-orchestrator", a.definition_type = 'AgentDefinition', a.scope = 'global_reusable', a.status = 'active'
 MERGE (pa:ProjectAgentAssignment {id: "project-agent-assignment:voicex-4q9G58:project-orchestrator-agent"})
@@ -8471,7 +9039,7 @@ MATCH (a:Agent {id: "experience-composition-agent"}), (f:Page {id: "functionalit
 MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicex-4q9G58:ui-src-plutonixreferencebridge-jsx-plutonixreferencebridge"}) MERGE (a)-[:IMPLEMENTS]->(f)
 
 MERGE (p:Project {id: 'project:webforbusinesses-xu7qsM'})
-SET p.name = "WebForBusinesses", p.folder_name = "webforbusinesses", p.workspace_dir = "/workspace/money/apps/webforbusinesses", p.port = 5308
+SET p.name = "WebForBusinesses", p.folder_name = "webforbusinesses", p.workspace_dir = "/workspace/apps/webforbusinesses", p.port = 5308
 MERGE (a:Agent {id: "project-orchestrator-agent"})
 SET a.name = "Project Orchestrator Agent", a.role = "project-orchestrator", a.definition_type = 'AgentDefinition', a.scope = 'global_reusable', a.status = 'active'
 MERGE (pa:ProjectAgentAssignment {id: "project-agent-assignment:webforbusinesses-xu7qsM:project-orchestrator-agent"})
@@ -8870,7 +9438,7 @@ MATCH (a:Agent {id: "experience-composition-agent"}), (f:Page {id: "functionalit
 MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:webforbusinesses-xu7qsM:ui-src-plutonixreferencebridge-jsx-plutonixreferencebridge"}) MERGE (a)-[:IMPLEMENTS]->(f)
 
 MERGE (p:Project {id: 'project:whatsappmediaanalyser-oAeSvn'})
-SET p.name = "WhatsappMediaAnalyser", p.folder_name = "whatsappmediaanalyser", p.workspace_dir = "/workspace/money/apps/whatsappmediaanalyser", p.port = 5304
+SET p.name = "WhatsappMediaAnalyser", p.folder_name = "whatsappmediaanalyser", p.workspace_dir = "/workspace/apps/whatsappmediaanalyser", p.port = 5304
 MERGE (a:Agent {id: "project-orchestrator-agent"})
 SET a.name = "Project Orchestrator Agent", a.role = "project-orchestrator", a.definition_type = 'AgentDefinition', a.scope = 'global_reusable', a.status = 'active'
 MERGE (pa:ProjectAgentAssignment {id: "project-agent-assignment:whatsappmediaanalyser-oAeSvn:project-orchestrator-agent"})
@@ -9168,6 +9736,168 @@ MATCH (a:Page {id: "functionality:whatsappmediaanalyser-oAeSvn:ui-src-generated-
 MATCH (a:Page {id: "functionality:whatsappmediaanalyser-oAeSvn:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:Page {id: "functionality:whatsappmediaanalyser-oAeSvn:ui-src-generated-pages-analyzerpage-jsx-analyzerpage"}) MERGE (a)-[:CONTAINS_FEATURE {confidence: 1}]->(b)
 MATCH (a:UIElement {id: "functionality:whatsappmediaanalyser-oAeSvn:ui-src-generated-generatedpage-jsx-header"}), (b:UIElement {id: "functionality:whatsappmediaanalyser-oAeSvn:ui-src-generated-generatedpage-jsx-nav-1977"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
 MATCH (a:UIElement {id: "functionality:whatsappmediaanalyser-oAeSvn:ui-src-generated-generatedpage-jsx-footer"}), (b:UIElement {id: "functionality:whatsappmediaanalyser-oAeSvn:ui-src-generated-generatedpage-jsx-button-2597"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
+MERGE (b:Branch {id: "branch:branch_0c3f8cd0-9bb3-4025-a179-8d99b2635fd3"})
+SET b.ledger_id = "branch_0c3f8cd0-9bb3-4025-a179-8d99b2635fd3", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
+MATCH (f:ApplicationFunctionality {id: "functionality:whatsappmediaanalyser-oAeSvn:major-functionality:ui-agentic-system-d3-agentic-system-d3-js-agentic-system-d3"}), (b:Branch {id: "branch:branch_0c3f8cd0-9bb3-4025-a179-8d99b2635fd3"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_dd454606-52ad-4af4-8c92-4ae0ea8db839"})
+SET b.ledger_id = "branch_dd454606-52ad-4af4-8c92-4ae0ea8db839", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
+MATCH (f:ApplicationFunctionality {id: "functionality:whatsappmediaanalyser-oAeSvn:major-functionality:ui-agentic-system-d3-agentic-system-d3-js-agentic-system-d3"}), (b:Branch {id: "branch:branch_dd454606-52ad-4af4-8c92-4ae0ea8db839"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_c878a407-cf64-4023-a72e-e1e70cf04b3e"})
+SET b.ledger_id = "branch_c878a407-cf64-4023-a72e-e1e70cf04b3e", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
+MATCH (f:ApplicationFunctionality {id: "functionality:whatsappmediaanalyser-oAeSvn:major-functionality:ui-agentic-system-d3-agentic-system-d3-js-agentic-system-d3"}), (b:Branch {id: "branch:branch_c878a407-cf64-4023-a72e-e1e70cf04b3e"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_29dfc7ef-1d69-4c8c-ab9b-02880a44ab00"})
+SET b.ledger_id = "branch_29dfc7ef-1d69-4c8c-ab9b-02880a44ab00", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
+MATCH (f:ApplicationFunctionality {id: "functionality:whatsappmediaanalyser-oAeSvn:major-functionality:ui-src-generated-pages-analyzerpage-jsx-analyzerpage"}), (b:Branch {id: "branch:branch_29dfc7ef-1d69-4c8c-ab9b-02880a44ab00"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_8ddbf1c2-ec62-473f-919f-70e9d07f2020"})
+SET b.ledger_id = "branch_8ddbf1c2-ec62-473f-919f-70e9d07f2020", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
+MATCH (f:ApplicationFunctionality {id: "functionality:whatsappmediaanalyser-oAeSvn:major-functionality:ui-src-generated-pages-analyzerpage-jsx-analyzerpage"}), (b:Branch {id: "branch:branch_8ddbf1c2-ec62-473f-919f-70e9d07f2020"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_3f764657-beb3-4b40-88f7-1288159be921"})
+SET b.ledger_id = "branch_3f764657-beb3-4b40-88f7-1288159be921", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
+MATCH (f:ApplicationFunctionality {id: "functionality:whatsappmediaanalyser-oAeSvn:major-functionality:ui-src-generated-pages-analyzerpage-jsx-analyzerpage"}), (b:Branch {id: "branch:branch_3f764657-beb3-4b40-88f7-1288159be921"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_a9d5ad15-d24d-4fce-bde7-211d4d1da233"})
+SET b.ledger_id = "branch_a9d5ad15-d24d-4fce-bde7-211d4d1da233", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
+MATCH (f:ApplicationFunctionality {id: "functionality:whatsappmediaanalyser-oAeSvn:major-functionality:ui-src-app-jsx-app"}), (b:Branch {id: "branch:branch_a9d5ad15-d24d-4fce-bde7-211d4d1da233"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_b995913b-ea01-4f71-b705-7340d8023f23"})
+SET b.ledger_id = "branch_b995913b-ea01-4f71-b705-7340d8023f23", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
+MATCH (f:ApplicationFunctionality {id: "functionality:whatsappmediaanalyser-oAeSvn:major-functionality:ui-src-app-jsx-app"}), (b:Branch {id: "branch:branch_b995913b-ea01-4f71-b705-7340d8023f23"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_d7c357ef-6910-40ee-aca4-84f3aa711428"})
+SET b.ledger_id = "branch_d7c357ef-6910-40ee-aca4-84f3aa711428", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
+MATCH (f:ApplicationFunctionality {id: "functionality:whatsappmediaanalyser-oAeSvn:major-functionality:ui-src-app-jsx-app"}), (b:Branch {id: "branch:branch_d7c357ef-6910-40ee-aca4-84f3aa711428"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_716ee09e-24c8-47bf-8258-7e543ab8db0b"})
+SET b.ledger_id = "branch_716ee09e-24c8-47bf-8258-7e543ab8db0b", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
+MATCH (f:ApplicationFunctionality {id: "functionality:whatsappmediaanalyser-oAeSvn:major-functionality:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:Branch {id: "branch:branch_716ee09e-24c8-47bf-8258-7e543ab8db0b"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_c57ac2fa-6b55-44cf-b1e5-4f60c21e5d79"})
+SET b.ledger_id = "branch_c57ac2fa-6b55-44cf-b1e5-4f60c21e5d79", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
+MATCH (f:ApplicationFunctionality {id: "functionality:whatsappmediaanalyser-oAeSvn:major-functionality:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:Branch {id: "branch:branch_c57ac2fa-6b55-44cf-b1e5-4f60c21e5d79"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_b3957e07-ad6d-4d62-a922-a6fd54acb07f"})
+SET b.ledger_id = "branch_b3957e07-ad6d-4d62-a922-a6fd54acb07f", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
+MATCH (f:ApplicationFunctionality {id: "functionality:whatsappmediaanalyser-oAeSvn:major-functionality:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:Branch {id: "branch:branch_b3957e07-ad6d-4d62-a922-a6fd54acb07f"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_47891896-41cb-4ac7-851e-6b9fc1d8b4c8"})
+SET b.ledger_id = "branch_47891896-41cb-4ac7-851e-6b9fc1d8b4c8", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
+MATCH (f:ApplicationFunctionality {id: "functionality:whatsappmediaanalyser-oAeSvn:major-functionality:api-backend-src-server-js-get-api-analyses"}), (b:Branch {id: "branch:branch_47891896-41cb-4ac7-851e-6b9fc1d8b4c8"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_080789d5-d569-437a-822c-616bbf04e80f"})
+SET b.ledger_id = "branch_080789d5-d569-437a-822c-616bbf04e80f", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
+MATCH (f:ApplicationFunctionality {id: "functionality:whatsappmediaanalyser-oAeSvn:major-functionality:api-backend-src-server-js-get-api-analyses"}), (b:Branch {id: "branch:branch_080789d5-d569-437a-822c-616bbf04e80f"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_3625b72c-29cd-473c-ac0c-ad0a6f3a250b"})
+SET b.ledger_id = "branch_3625b72c-29cd-473c-ac0c-ad0a6f3a250b", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
+MATCH (f:ApplicationFunctionality {id: "functionality:whatsappmediaanalyser-oAeSvn:major-functionality:api-backend-src-server-js-get-api-analyses"}), (b:Branch {id: "branch:branch_3625b72c-29cd-473c-ac0c-ad0a6f3a250b"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_47070c7e-62d1-4261-8275-dbc3ab528cbc"})
+SET b.ledger_id = "branch_47070c7e-62d1-4261-8275-dbc3ab528cbc", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
+MATCH (f:ApplicationFunctionality {id: "functionality:whatsappmediaanalyser-oAeSvn:major-functionality:api-backend-src-server-js-get-api-config"}), (b:Branch {id: "branch:branch_47070c7e-62d1-4261-8275-dbc3ab528cbc"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_f7520a89-a12a-4e98-a60d-5c6768d2d12d"})
+SET b.ledger_id = "branch_f7520a89-a12a-4e98-a60d-5c6768d2d12d", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
+MATCH (f:ApplicationFunctionality {id: "functionality:whatsappmediaanalyser-oAeSvn:major-functionality:api-backend-src-server-js-get-api-config"}), (b:Branch {id: "branch:branch_f7520a89-a12a-4e98-a60d-5c6768d2d12d"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_f69a8a40-3a9d-4c85-a3cd-ea53dcd3a6f8"})
+SET b.ledger_id = "branch_f69a8a40-3a9d-4c85-a3cd-ea53dcd3a6f8", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
+MATCH (f:ApplicationFunctionality {id: "functionality:whatsappmediaanalyser-oAeSvn:major-functionality:api-backend-src-server-js-get-api-config"}), (b:Branch {id: "branch:branch_f69a8a40-3a9d-4c85-a3cd-ea53dcd3a6f8"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_be7e4bdc-d79d-42b5-9b24-519bac92d573"})
+SET b.ledger_id = "branch_be7e4bdc-d79d-42b5-9b24-519bac92d573", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
+MATCH (f:ApplicationFunctionality {id: "functionality:whatsappmediaanalyser-oAeSvn:major-functionality:api-backend-src-server-js-get-api-health"}), (b:Branch {id: "branch:branch_be7e4bdc-d79d-42b5-9b24-519bac92d573"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_0987f362-ce22-45d4-8b19-9b0f674f8756"})
+SET b.ledger_id = "branch_0987f362-ce22-45d4-8b19-9b0f674f8756", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
+MATCH (f:ApplicationFunctionality {id: "functionality:whatsappmediaanalyser-oAeSvn:major-functionality:api-backend-src-server-js-get-api-health"}), (b:Branch {id: "branch:branch_0987f362-ce22-45d4-8b19-9b0f674f8756"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_bae1374d-36ef-4e6f-918c-589c8e34c051"})
+SET b.ledger_id = "branch_bae1374d-36ef-4e6f-918c-589c8e34c051", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
+MATCH (f:ApplicationFunctionality {id: "functionality:whatsappmediaanalyser-oAeSvn:major-functionality:api-backend-src-server-js-get-api-health"}), (b:Branch {id: "branch:branch_bae1374d-36ef-4e6f-918c-589c8e34c051"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_4e19028a-83ba-4a4b-bdbc-4cf981286e73"})
+SET b.ledger_id = "branch_4e19028a-83ba-4a4b-bdbc-4cf981286e73", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
+MATCH (f:ApplicationFunctionality {id: "functionality:whatsappmediaanalyser-oAeSvn:major-functionality:ui-src-generated-pages-historypage-jsx-historypage"}), (b:Branch {id: "branch:branch_4e19028a-83ba-4a4b-bdbc-4cf981286e73"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_522120ed-2e24-4fb9-b415-671c65651c5a"})
+SET b.ledger_id = "branch_522120ed-2e24-4fb9-b415-671c65651c5a", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
+MATCH (f:ApplicationFunctionality {id: "functionality:whatsappmediaanalyser-oAeSvn:major-functionality:ui-src-generated-pages-historypage-jsx-historypage"}), (b:Branch {id: "branch:branch_522120ed-2e24-4fb9-b415-671c65651c5a"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_9d059298-72b7-42e5-b0da-ec7558046f8f"})
+SET b.ledger_id = "branch_9d059298-72b7-42e5-b0da-ec7558046f8f", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
+MATCH (f:ApplicationFunctionality {id: "functionality:whatsappmediaanalyser-oAeSvn:major-functionality:ui-src-generated-pages-historypage-jsx-historypage"}), (b:Branch {id: "branch:branch_9d059298-72b7-42e5-b0da-ec7558046f8f"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_1449c2e8-7caa-4ce4-9e5a-69817901c52b"})
+SET b.ledger_id = "branch_1449c2e8-7caa-4ce4-9e5a-69817901c52b", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
+MATCH (f:ApplicationFunctionality {id: "functionality:whatsappmediaanalyser-oAeSvn:major-functionality:ui-agentic-system-d3-index-html-index"}), (b:Branch {id: "branch:branch_1449c2e8-7caa-4ce4-9e5a-69817901c52b"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_1842cda1-34ea-4819-b219-e4f2fed4539f"})
+SET b.ledger_id = "branch_1842cda1-34ea-4819-b219-e4f2fed4539f", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
+MATCH (f:ApplicationFunctionality {id: "functionality:whatsappmediaanalyser-oAeSvn:major-functionality:ui-agentic-system-d3-index-html-index"}), (b:Branch {id: "branch:branch_1842cda1-34ea-4819-b219-e4f2fed4539f"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_a44585f6-b4de-4ee6-8f71-365fc2f95109"})
+SET b.ledger_id = "branch_a44585f6-b4de-4ee6-8f71-365fc2f95109", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
+MATCH (f:ApplicationFunctionality {id: "functionality:whatsappmediaanalyser-oAeSvn:major-functionality:ui-agentic-system-d3-index-html-index"}), (b:Branch {id: "branch:branch_a44585f6-b4de-4ee6-8f71-365fc2f95109"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_0897ab9c-2e65-41eb-a1f9-08b604b69d2f"})
+SET b.ledger_id = "branch_0897ab9c-2e65-41eb-a1f9-08b604b69d2f", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
+MATCH (f:ApplicationFunctionality {id: "functionality:whatsappmediaanalyser-oAeSvn:major-functionality:ui-index-html-index"}), (b:Branch {id: "branch:branch_0897ab9c-2e65-41eb-a1f9-08b604b69d2f"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_0e92bdc6-ea55-4fd2-8172-856b16a8b030"})
+SET b.ledger_id = "branch_0e92bdc6-ea55-4fd2-8172-856b16a8b030", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
+MATCH (f:ApplicationFunctionality {id: "functionality:whatsappmediaanalyser-oAeSvn:major-functionality:ui-index-html-index"}), (b:Branch {id: "branch:branch_0e92bdc6-ea55-4fd2-8172-856b16a8b030"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_2c150652-82c0-4cc7-9fa3-991a3836ccb5"})
+SET b.ledger_id = "branch_2c150652-82c0-4cc7-9fa3-991a3836ccb5", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
+MATCH (f:ApplicationFunctionality {id: "functionality:whatsappmediaanalyser-oAeSvn:major-functionality:ui-index-html-index"}), (b:Branch {id: "branch:branch_2c150652-82c0-4cc7-9fa3-991a3836ccb5"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_6ae07df7-1b35-4bef-8636-b386e2d3a0ae"})
+SET b.ledger_id = "branch_6ae07df7-1b35-4bef-8636-b386e2d3a0ae", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
+MATCH (f:ApplicationFunctionality {id: "functionality:whatsappmediaanalyser-oAeSvn:major-functionality:ui-src-generated-pages-landingpage-jsx-landingpage"}), (b:Branch {id: "branch:branch_6ae07df7-1b35-4bef-8636-b386e2d3a0ae"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_3087bd58-3ec0-4c4d-a9a9-8851e380481b"})
+SET b.ledger_id = "branch_3087bd58-3ec0-4c4d-a9a9-8851e380481b", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
+MATCH (f:ApplicationFunctionality {id: "functionality:whatsappmediaanalyser-oAeSvn:major-functionality:ui-src-generated-pages-landingpage-jsx-landingpage"}), (b:Branch {id: "branch:branch_3087bd58-3ec0-4c4d-a9a9-8851e380481b"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_6f4acd51-c1a3-437e-8d6f-a0379566bec5"})
+SET b.ledger_id = "branch_6f4acd51-c1a3-437e-8d6f-a0379566bec5", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
+MATCH (f:ApplicationFunctionality {id: "functionality:whatsappmediaanalyser-oAeSvn:major-functionality:ui-src-generated-pages-landingpage-jsx-landingpage"}), (b:Branch {id: "branch:branch_6f4acd51-c1a3-437e-8d6f-a0379566bec5"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_547f510a-c392-4279-8d4b-0361ae4ba695"})
+SET b.ledger_id = "branch_547f510a-c392-4279-8d4b-0361ae4ba695", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
+MATCH (f:ApplicationFunctionality {id: "functionality:whatsappmediaanalyser-oAeSvn:major-functionality:ui-src-main-jsx-main"}), (b:Branch {id: "branch:branch_547f510a-c392-4279-8d4b-0361ae4ba695"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_7a90da22-ba2b-4f1d-89bf-76e2b78beb24"})
+SET b.ledger_id = "branch_7a90da22-ba2b-4f1d-89bf-76e2b78beb24", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
+MATCH (f:ApplicationFunctionality {id: "functionality:whatsappmediaanalyser-oAeSvn:major-functionality:ui-src-main-jsx-main"}), (b:Branch {id: "branch:branch_7a90da22-ba2b-4f1d-89bf-76e2b78beb24"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_ce7d4b8b-6a99-421b-8d42-720cbfb3773b"})
+SET b.ledger_id = "branch_ce7d4b8b-6a99-421b-8d42-720cbfb3773b", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
+MATCH (f:ApplicationFunctionality {id: "functionality:whatsappmediaanalyser-oAeSvn:major-functionality:ui-src-main-jsx-main"}), (b:Branch {id: "branch:branch_ce7d4b8b-6a99-421b-8d42-720cbfb3773b"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_262f4775-a632-4730-9c10-b4e05be6fcae"})
+SET b.ledger_id = "branch_262f4775-a632-4730-9c10-b4e05be6fcae", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
+MATCH (f:ApplicationFunctionality {id: "functionality:whatsappmediaanalyser-oAeSvn:major-functionality:api-backend-src-server-js-post-api-analyses"}), (b:Branch {id: "branch:branch_262f4775-a632-4730-9c10-b4e05be6fcae"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_6c76fa1a-60c2-443c-849a-cb7ea738cd7e"})
+SET b.ledger_id = "branch_6c76fa1a-60c2-443c-849a-cb7ea738cd7e", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
+MATCH (f:ApplicationFunctionality {id: "functionality:whatsappmediaanalyser-oAeSvn:major-functionality:api-backend-src-server-js-post-api-analyses"}), (b:Branch {id: "branch:branch_6c76fa1a-60c2-443c-849a-cb7ea738cd7e"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_c6eceba5-81eb-442c-8014-da2ff17a11e0"})
+SET b.ledger_id = "branch_c6eceba5-81eb-442c-8014-da2ff17a11e0", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
+MATCH (f:ApplicationFunctionality {id: "functionality:whatsappmediaanalyser-oAeSvn:major-functionality:api-backend-src-server-js-post-api-analyses"}), (b:Branch {id: "branch:branch_c6eceba5-81eb-442c-8014-da2ff17a11e0"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_8122a12f-d7b0-49a0-8e5b-913222d67726"})
+SET b.ledger_id = "branch_8122a12f-d7b0-49a0-8e5b-913222d67726", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
+MATCH (f:ApplicationFunctionality {id: "functionality:whatsappmediaanalyser-oAeSvn:major-functionality:api-backend-src-server-js-post-api-analyses-id-prompt"}), (b:Branch {id: "branch:branch_8122a12f-d7b0-49a0-8e5b-913222d67726"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_ed090f0c-ac0b-4a3f-bf1c-8bdd667b7298"})
+SET b.ledger_id = "branch_ed090f0c-ac0b-4a3f-bf1c-8bdd667b7298", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
+MATCH (f:ApplicationFunctionality {id: "functionality:whatsappmediaanalyser-oAeSvn:major-functionality:api-backend-src-server-js-post-api-analyses-id-prompt"}), (b:Branch {id: "branch:branch_ed090f0c-ac0b-4a3f-bf1c-8bdd667b7298"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_3ce1ac33-8a06-437b-b9d1-61c69c50c548"})
+SET b.ledger_id = "branch_3ce1ac33-8a06-437b-b9d1-61c69c50c548", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
+MATCH (f:ApplicationFunctionality {id: "functionality:whatsappmediaanalyser-oAeSvn:major-functionality:api-backend-src-server-js-post-api-analyses-id-prompt"}), (b:Branch {id: "branch:branch_3ce1ac33-8a06-437b-b9d1-61c69c50c548"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_1bccc9ed-62a1-4b34-a4b6-0a37a9915d3c"})
+SET b.ledger_id = "branch_1bccc9ed-62a1-4b34-a4b6-0a37a9915d3c", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
+MATCH (f:ApplicationFunctionality {id: "functionality:whatsappmediaanalyser-oAeSvn:major-functionality:data-database-migrations-001-agent-knowledge-registry-sql-table-agent-capabil"}), (b:Branch {id: "branch:branch_1bccc9ed-62a1-4b34-a4b6-0a37a9915d3c"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_88518d31-50bf-4a13-a904-d38998855f9d"})
+SET b.ledger_id = "branch_88518d31-50bf-4a13-a904-d38998855f9d", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
+MATCH (f:ApplicationFunctionality {id: "functionality:whatsappmediaanalyser-oAeSvn:major-functionality:data-database-migrations-001-agent-knowledge-registry-sql-table-agent-capabil"}), (b:Branch {id: "branch:branch_88518d31-50bf-4a13-a904-d38998855f9d"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_3135ec1b-97b3-43bc-9903-78a72190137b"})
+SET b.ledger_id = "branch_3135ec1b-97b3-43bc-9903-78a72190137b", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.733
+MATCH (f:ApplicationFunctionality {id: "functionality:whatsappmediaanalyser-oAeSvn:major-functionality:data-database-migrations-001-agent-knowledge-registry-sql-table-agent-capabil"}), (b:Branch {id: "branch:branch_3135ec1b-97b3-43bc-9903-78a72190137b"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_749cf052-6a72-48d5-bb8a-06f566559ef3"})
+SET b.ledger_id = "branch_749cf052-6a72-48d5-bb8a-06f566559ef3", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
+MATCH (f:ApplicationFunctionality {id: "functionality:whatsappmediaanalyser-oAeSvn:major-functionality:data-database-migrations-001-agent-knowledge-registry-sql-table-agent-reuse-d"}), (b:Branch {id: "branch:branch_749cf052-6a72-48d5-bb8a-06f566559ef3"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_12a29f56-792d-49a4-8655-2ab8ed179ad1"})
+SET b.ledger_id = "branch_12a29f56-792d-49a4-8655-2ab8ed179ad1", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
+MATCH (f:ApplicationFunctionality {id: "functionality:whatsappmediaanalyser-oAeSvn:major-functionality:data-database-migrations-001-agent-knowledge-registry-sql-table-agent-reuse-d"}), (b:Branch {id: "branch:branch_12a29f56-792d-49a4-8655-2ab8ed179ad1"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_b7d15504-9c9f-4166-a25c-d401acac530b"})
+SET b.ledger_id = "branch_b7d15504-9c9f-4166-a25c-d401acac530b", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.733
+MATCH (f:ApplicationFunctionality {id: "functionality:whatsappmediaanalyser-oAeSvn:major-functionality:data-database-migrations-001-agent-knowledge-registry-sql-table-agent-reuse-d"}), (b:Branch {id: "branch:branch_b7d15504-9c9f-4166-a25c-d401acac530b"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_a47016d8-ff3c-49d8-bd75-41a004a3bba1"})
+SET b.ledger_id = "branch_a47016d8-ff3c-49d8-bd75-41a004a3bba1", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
+MATCH (f:ApplicationFunctionality {id: "functionality:whatsappmediaanalyser-oAeSvn:major-functionality:data-database-migrations-001-agent-knowledge-registry-sql-table-agents"}), (b:Branch {id: "branch:branch_a47016d8-ff3c-49d8-bd75-41a004a3bba1"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_316e37b1-9c46-4c9e-9839-03415c0b0bf6"})
+SET b.ledger_id = "branch_316e37b1-9c46-4c9e-9839-03415c0b0bf6", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
+MATCH (f:ApplicationFunctionality {id: "functionality:whatsappmediaanalyser-oAeSvn:major-functionality:data-database-migrations-001-agent-knowledge-registry-sql-table-agents"}), (b:Branch {id: "branch:branch_316e37b1-9c46-4c9e-9839-03415c0b0bf6"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_ed5dc4bc-0727-40ed-ab76-16bb6ba004c8"})
+SET b.ledger_id = "branch_ed5dc4bc-0727-40ed-ab76-16bb6ba004c8", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.733
+MATCH (f:ApplicationFunctionality {id: "functionality:whatsappmediaanalyser-oAeSvn:major-functionality:data-database-migrations-001-agent-knowledge-registry-sql-table-agents"}), (b:Branch {id: "branch:branch_ed5dc4bc-0727-40ed-ab76-16bb6ba004c8"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_fa9581fa-b2c5-41c7-ac15-06afd5aa663e"})
+SET b.ledger_id = "branch_fa9581fa-b2c5-41c7-ac15-06afd5aa663e", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
+MATCH (f:ApplicationFunctionality {id: "functionality:whatsappmediaanalyser-oAeSvn:major-functionality:data-database-migrations-001-agent-knowledge-registry-sql-table-project-execu"}), (b:Branch {id: "branch:branch_fa9581fa-b2c5-41c7-ac15-06afd5aa663e"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_7de88e35-0507-4bb8-b3c9-734e19301d03"})
+SET b.ledger_id = "branch_7de88e35-0507-4bb8-b3c9-734e19301d03", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.818
+MATCH (f:ApplicationFunctionality {id: "functionality:whatsappmediaanalyser-oAeSvn:major-functionality:data-database-migrations-001-agent-knowledge-registry-sql-table-project-execu"}), (b:Branch {id: "branch:branch_7de88e35-0507-4bb8-b3c9-734e19301d03"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_1380fa24-c198-4807-ae7c-758e24dc5616"})
+SET b.ledger_id = "branch_1380fa24-c198-4807-ae7c-758e24dc5616", b.status = "deferred", b.inference_role = "deferred_alternative", b.score = 0.733
+MATCH (f:ApplicationFunctionality {id: "functionality:whatsappmediaanalyser-oAeSvn:major-functionality:data-database-migrations-001-agent-knowledge-registry-sql-table-project-execu"}), (b:Branch {id: "branch:branch_1380fa24-c198-4807-ae7c-758e24dc5616"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MATCH (a:Agent {id: "plutonix-fullstack-agent"}), (b:Agent {id: "project-orchestrator-agent"}) MERGE (a)-[:RUNTIME_DELEGATES_TO]->(b)
 MATCH (p:Project {id: 'project:whatsappmediaanalyser-oAeSvn'}), (a:Agent {id: "project-orchestrator-agent"}) MERGE (p)-[:HAS_ORCHESTRATOR]->(a)
 MATCH (a:Agent {id: "project-orchestrator-agent"}), (b:Agent {id: "qagent-controller"}) MERGE (a)-[:USES_QAGENT_CONTROLLER]->(b)

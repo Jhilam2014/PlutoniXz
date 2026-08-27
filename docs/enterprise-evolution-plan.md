@@ -73,6 +73,7 @@ The ledger is authoritative for the implemented slice. Graph, vector, fitness ra
 - Make QAgents branch-aware uncertainty and experiment planners with bounded budgets and deduplication. **Step 5 is implemented as a feature-disabled-by-default QAgent adapter in the existing Decision Continuity ledger:** versioned tenant/workspace-scoped runs/effects, structured output, calibrated-proxy semantic deduplication, hard server limits, read-only collector boundary, deterministic provenance validation, independent-evaluator attachment, duplicate/restart recovery safety, operator visibility, and deterministic baseline/reflection/QAgent fixture comparison are in `apps/backend/src/qagentDecisionContinuity.js`, migration 008, and `docs/qagent-decision-continuity.md`. It still requires production collector registration, external identity provisioning, migration application, and a controlled deployment drill before activation.
 - **Step 7 is implemented as a non-executing Decision Continuity adapter:** Suggested Next Instructions and Intel capability proposals have tenant/workspace-scoped evidence, revision/invalidation, explicit blocker/state controls, inspectable deterministic deduplication/reuse decisions, RBAC, and Step 4 promotion links in `apps/backend/src/suggestionIntelGovernance.js`, migration 010, and `docs/suggestion-intel-governance.md`. They cannot install, enable, grant, download, or deploy.
 - **Step 6 is implemented as a feature-disabled BrainX model-governance layer in the existing Decision Continuity ledger:** immutable provider/model/artifact registrations, licence/data/region/egress routing eligibility, reproducible candidate/exclusion evidence, isolated fixture-only execution, strict untrusted-output validation, independent critique separation, idempotent usage effects, health/circuit/kill controls, and operator read/admin views are in `apps/backend/src/brainxModelRegistry.js`, migration 009, and `docs/brainx-model-registry.md`. It performs no model download, GPU allocation, cloud job, or live provider call; production activation still requires tenant-specific registration and deployment controls.
+- **Enterprise BrainX governed rollout extends, rather than replaces, Step 6:** migration 011 and the Enterprise Brain services add immutable application/enterprise bindings, policy snapshots, budget envelopes/reservations, DecisionX contexts/outcomes, ResearchX source/run records, AIX route receipts, and AgenticX reuse receipts to the same Decision Continuity authority. Strict `/api/enterprise-brain/*` routes use existing OIDC/RBAC; the legacy portfolio endpoint remains a projection. Feature-disabled defaults preserve current executor behavior. Missing/stale/expired/unauthorized evidence, unavailable policy/budget authority, and unpersistable receipts fail closed. See `docs/enterprise-brainx-governance.md`.
 
 ### Step 4 — governed runtime promotion (implemented; production activation requires operator configuration)
 
@@ -83,8 +84,8 @@ The ledger is authoritative for the implemented slice. Graph, vector, fitness ra
 
 ### Phase 5 — P2 research and production infrastructure
 
-- Add a feature-flagged QD/Pareto research view backed by the ledger.
-- Extend the established PostgreSQL/OIDC/RBAC pattern to remaining control-plane surfaces; add ABAC where required, Neo4j/vector projection rebuild, retention/deletion, OpenAPI, runbooks, and disaster-recovery adapters.
+- ResearchX now supplies a feature-disabled, allowlisted, bounded research-worker foundation backed by the ledger. It can emit citations, sanitized evidence, observations, or reconsideration requests only; it cannot mutate source, policy, or deployment state.
+- Extend the established PostgreSQL/OIDC/RBAC pattern to remaining control-plane surfaces; add ABAC where required, egress enforcement, retention/deletion, OpenAPI, runbooks, disaster-recovery adapters, and separately approved live-provider/inference adapters.
 
 ### Step 1 persistence update — PostgreSQL authority (implemented, deployment pending)
 
@@ -95,6 +96,7 @@ The ledger is authoritative for the implemented slice. Graph, vector, fitness ra
 ## Compatibility and risk controls
 
 - New endpoints and runtime files are additive; no existing route or project record is changed.
+- Enterprise Brain application bindings, policy/budget records, research runs, model routes, and knowledge-reuse receipts are canonical Decision Continuity state; portfolio, graph, vector, and UI material remain derived views.
 - The local ledger is feature-scoped and has no live deployment action.
 - Unknown, stale, expired, or unauthorized evidence cannot clear a constraint.
 - Promotion is blocked without an independent evaluator, deterministic validation, approval, and a bounded canary record.
@@ -113,6 +115,7 @@ Decision Continuity derives tenant authority from verified OIDC identity plus Po
 | `POST /api/decision-continuity/condition-events` | Record trusted observations and request reconsideration | Requires configured trusted service identity and tenant id; idempotent. |
 | evaluation/policy/outcome routes | Record deterministic validation, independent review, policy, and monitored outcomes | Trusted-service only. |
 | disposition/approval/canary routes | Set a non-promoting disposition, human approval, or audit-only canary record | Requires explicit operator allowlist; deny by default. |
+| `/api/enterprise-brain/*` | Manage/read immutable bindings, policy snapshots, budgets, approved research sources/runs, DecisionX projections, AIX route receipts, and AgenticX reuse receipts | Strict verified OIDC/RBAC; human administration for high-impact writes; worker reads only its explicit scope; legacy portfolio data is not authorization. |
 
 Configuration uses no embedded secrets:
 
@@ -147,10 +150,12 @@ The lifecycle API does not use a shared service token. It verifies OIDC bearer t
 - [x] Operator view distinguishes ledger facts and derived graph/projection data; sensitive lifecycle actions remain server guarded.
 - [x] Step 0 baseline: full backend suite (115 tests), frontend suite (17 tests), JavaScript syntax checks, and frontend production builds pass. The two Agentic-system fixture expectations were updated to the intentional separate QAgent visual role.
 - [x] Step 1: a PostgreSQL integration suite proves atomic state/event/outbox writes, expected-revision conflict behavior, idempotency replay, tenant isolation, importer dry-run/rerun, projection reconstruction, and database-loss fail-closed behavior.
+- Enterprise Brain rollout validation exercises policy snapshot immutability, stale/unknown evidence denial, budget-reservation concurrency, capture idempotency, legacy-branch compatibility, model exclusions, ResearchX no-side-effect behavior, tenant reuse denial, PostgreSQL/OIDC role isolation, migration 011, and permission/loading/empty/denied UI states.
 
 ## Owner decisions and external blockers
 
 - Select a production transactional event store (PostgreSQL/EventStore/etc.) and migration owner before multi-instance deployment.
 - Configure OIDC/SAML, role mapping, trusted service identities, secrets manager, and tenant retention/deletion policy before production use.
 - Approve any live Neo4j/vector projection, paid model, GPU, or external provider execution separately.
+- Assign data-protection, residency, retention, licence, egress, and compliance-control owners for each production policy snapshot; this software does not make those organization-specific approvals or legal certifications.
 - Build the Phase 4 adapters so QAgent, Intel, BrainX, and Suggested Next Instruction consume this ledger rather than duplicating branch/evidence/policy records.

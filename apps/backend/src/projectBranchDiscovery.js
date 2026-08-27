@@ -11,7 +11,7 @@ const MAX_FILES = 400;
 const MAX_FILE_BYTES = 256 * 1024;
 const MAX_TOTAL_BYTES = 3 * 1024 * 1024;
 const PUBLISH_THRESHOLD = 0.60;
-export const ANALYSIS_VERSION = 8;
+export const ANALYSIS_VERSION = 9;
 const MAX_SUBFUNCTIONALITIES_PER_FUNCTIONALITY = 12;
 
 const ModelAlternativesSchema = z.object({
@@ -781,6 +781,63 @@ function applyApplicationHierarchy(functionalities, applicationLinks) {
     const connectorCount = applicationLinks.filter((link) => link.sourceEntityId === entity.id || link.targetEntityId === entity.id).length;
     entity.metrics = { ...(entity.metrics || {}), connectorCount };
   }
+  // Source order records when a file was observed, not the sequence in which
+  // a capability should be delivered. Build a deterministic dependency-aware
+  // sequence: providers come before consumers (data -> service -> API -> UI),
+  // while parent/child feature links keep their natural direction. This is an
+  // explicitly marked inference, never a claim about historical execution.
+  const precedence = new Map(functionalities.map((entity) => [entity.id, new Set()]));
+  const hierarchyTypes = new Set(["contains_subpage", "contains_feature", "contains_ui_element", "has_ui_feature", "database_contains_table"]);
+  for (const link of applicationLinks) {
+    if (!precedence.has(link.sourceEntityId) || !precedence.has(link.targetEntityId)) continue;
+    if (hierarchyTypes.has(link.type)) precedence.get(link.sourceEntityId).add(link.targetEntityId);
+    else precedence.get(link.targetEntityId).add(link.sourceEntityId);
+  }
+  const phaseFor = (entity) => {
+    if (String(entity.entityType || "").startsWith("database_")) return { rank: 0, label: "Data foundation" };
+    if (["service", "cloud_function"].includes(entity.entityType)) return { rank: 1, label: "Service layer" };
+    if (entity.entityType === "api_route") return { rank: 2, label: "API and integration" };
+    if (["ui_surface", "ui_element", "ui_feature"].includes(entity.entityType)) return { rank: 3, label: "User experience" };
+    return { rank: 4, label: "Supporting capability" };
+  };
+  const compareEntities = (left, right) => {
+    const leftOrder = [phaseFor(left).rank, Number(left.chronology?.discoveryOrder || 0), Number(left.chronology?.sourceOffset || 0), left.id];
+    const rightOrder = [phaseFor(right).rank, Number(right.chronology?.discoveryOrder || 0), Number(right.chronology?.sourceOffset || 0), right.id];
+    for (let index = 0; index < leftOrder.length; index += 1) {
+      if (leftOrder[index] < rightOrder[index]) return -1;
+      if (leftOrder[index] > rightOrder[index]) return 1;
+    }
+    return 0;
+  };
+  const entityByIdForTimeline = new Map(functionalities.map((entity) => [entity.id, entity]));
+  const remaining = new Set(functionalities.map((entity) => entity.id));
+  const deliveryOrder = [];
+  while (remaining.size) {
+    const ready = [...remaining]
+      .filter((id) => [...precedence.entries()].every(([source, targets]) => !targets.has(id) || !remaining.has(source)))
+      .map((id) => entityByIdForTimeline.get(id))
+      .filter(Boolean)
+      .sort(compareEntities);
+    // Real applications can contain cycles. Break one deterministically and
+    // retain the inferred confidence marker instead of hiding those entities.
+    const next = ready[0] || [...remaining].map((id) => entityByIdForTimeline.get(id)).filter(Boolean).sort(compareEntities)[0];
+    if (!next) break;
+    remaining.delete(next.id);
+    deliveryOrder.push(next);
+  }
+  deliveryOrder.forEach((entity, index) => {
+    const phase = phaseFor(entity);
+    entity.chronology = {
+      ...(entity.chronology || {}),
+      order: index,
+      deliveryOrder: index + 1,
+      deliveryPhase: phase.label,
+      deliveryPhaseRank: phase.rank,
+      basis: "dependency_aware_delivery_inference",
+      inferred: true,
+      confidence: 0.72
+    };
+  });
   return applicationLinks.map((link) => ({
     ...link,
     hierarchy: entityById.get(link.targetEntityId)?.parentEntityId === link.sourceEntityId
@@ -1342,6 +1399,7 @@ export async function analyzeProjectArchitecture({ project, env = process.env, m
   return {
     version: ANALYSIS_VERSION,
     projectId: project.id,
+    projectOrigin: project.provenance?.origin || project.origin || "unknown_legacy",
     sourceDigest,
     analyzedAt: new Date().toISOString(),
     scan: { fileCount: sourceFiles.length, byteCount: scanned.totalBytes, limited: scanned.limited, excluded: "secrets, dependencies, build output, VCS metadata, uploads, large and binary files" },
@@ -1408,18 +1466,27 @@ function fitnessVector(candidate) {
   };
 }
 
-async function existingBranch(store, tenantId, workspaceId, candidateDecisionId, inferenceRole) {
+async function existingBranch(store, tenantId, workspaceId, candidateDecisionId, inferenceRoles) {
   const rows = await store.listBranches({ tenantId, workspaceId, decisionId: candidateDecisionId, limit: 20 });
-  return rows.find((branch) => branch.candidate?.inferenceRole === inferenceRole) || null;
+  const acceptedRoles = new Set(Array.isArray(inferenceRoles) ? inferenceRoles : [inferenceRoles]);
+  return rows.find((branch) => acceptedRoles.has(branch.candidate?.inferenceRole)) || null;
 }
 
-/** Publishes only evidence-cited, deferred alternatives. It never selects, approves, evaluates, or executes them. */
+/**
+ * Publishes source observations and evidence-cited possibilities. Static source
+ * analysis cannot create a historical selected/deferred/rejected disposition;
+ * only a later governed actor may do that through Decision Continuity.
+ */
 export async function publishArchitectureBranches({ report, store, tenantId, workspaceId, actor, principalId }) {
   const branches = [];
   const decisionFunctionalities = Array.isArray(report.majorFunctionalities) && report.majorFunctionalities.length
     ? report.majorFunctionalities
     : report.functionalities || [];
   for (const functionality of decisionFunctionalities) {
+    // Major functionalities are the decision-sized aggregates used by the
+    // ledger; sourceEntityId preserves the concrete application entity that
+    // can safely anchor the visual topology and its cited branch link.
+    const sourceEntityId = functionality.sourceEntityId || functionality.id;
     const currentDecisionId = decisionId(report.projectId, functionality.id, report.sourceDigest, "current");
     let current = await existingBranch(store, tenantId, workspaceId, currentDecisionId, "observed_current");
     if (!current) {
@@ -1432,6 +1499,7 @@ export async function publishArchitectureBranches({ report, store, tenantId, wor
         candidate: {
           inferenceRole: "observed_current",
           functionalityId: functionality.id,
+          sourceEntityId,
           objectiveId: functionality.objectiveId || "",
           featureIds: functionality.featureIds || [],
           sourceDigest: report.sourceDigest,
@@ -1447,11 +1515,11 @@ export async function publishArchitectureBranches({ report, store, tenantId, wor
         executionProvenance: { provider: "static-source-analysis", promptVersion: "project-architecture-branch-v1", environment: "bounded" }
       }, { tenantId, actor });
     }
-    branches.push({ id: current.id, functionalityId: functionality.id, title: functionality.label, status: current.status, inferenceRole: "observed_current", sourceDigest: report.sourceDigest, score: null, autoReconsideration: false, evidenceIds: functionality.evidence.map((evidence) => evidence.id) });
+    branches.push({ id: current.id, functionalityId: functionality.id, sourceEntityId, title: functionality.label, status: current.status, inferenceRole: "observed_current", sourceDigest: report.sourceDigest, score: null, autoReconsideration: false, evidenceIds: functionality.evidence.map((evidence) => evidence.id) });
     const alternatives = report.publishedCandidates.filter((candidate) => candidate.functionalityId === functionality.id);
     for (const candidate of alternatives) {
       const alternativeDecisionId = decisionId(report.projectId, functionality.id, report.sourceDigest, shortId(candidate.id, 10));
-      let branch = await existingBranch(store, tenantId, workspaceId, alternativeDecisionId, "deferred_alternative");
+      let branch = await existingBranch(store, tenantId, workspaceId, alternativeDecisionId, ["anticipated_alternative", "deferred_alternative"]);
       if (!branch) {
         branch = await store.createBranch({
           workspaceId,
@@ -1461,8 +1529,9 @@ export async function publishArchitectureBranches({ report, store, tenantId, wor
           branchType: "proposal",
           origin: { source: "other", correlationId: report.sourceDigest },
           candidate: {
-            inferenceRole: "deferred_alternative",
+            inferenceRole: "anticipated_alternative",
             functionalityId: functionality.id,
+            sourceEntityId,
             objectiveId: functionality.objectiveId || "",
             featureIds: functionality.featureIds || [],
             sourceDigest: report.sourceDigest,
@@ -1471,21 +1540,21 @@ export async function publishArchitectureBranches({ report, store, tenantId, wor
             generatedBy: candidate.generatedBy,
             score: candidate.score,
             scoreBreakdown: candidate.dimensions,
-            decisionRationale: `Not selected: this is an evidence-supported possibility, but source inspection alone cannot prove a historical selection or supply validation and approval evidence. It remains deferred for governed comparison (score ${candidate.score}).`
+            decisionRationale: `This is an evidence-supported possibility, but source inspection alone cannot prove a historical selection, deferral, or rejection. It is available for future governed comparison (analysis score ${candidate.score}).`
           },
           assumptions: ["This is a source-supported future architecture candidate, not an asserted historical decision."],
           evidence: functionality.evidence.filter((evidence) => candidate.evidenceIds.includes(evidence.id)),
           fitnessVector: fitnessVector(candidate),
           revisitTriggers: [`project-source-changed:${shortId(report.projectId, 16)}`, `architecture-reconsider:${shortId(functionality.id, 16)}`],
-          autoReconsideration: true,
-          allowRejectedReconsideration: true,
-          disposition: { reason: candidate.dispositionReason || "not_enough_evidence_to_determine_why_not_selected", alternativesConsidered: [current.id] },
+          autoReconsideration: false,
+          allowRejectedReconsideration: false,
+          disposition: { reason: "source_anticipated_not_historical", alternativesConsidered: [current.id] },
           producedBy: { agentId: "project-architecture-discovery", actorId: principalId, source: candidate.generatedBy },
           executionProvenance: { provider: candidate.generatedBy === "bounded_model_assist" ? "openai-bounded-assist" : "static-source-analysis", modelId: candidate.generatedBy === "bounded_model_assist" ? report.modelAssist.model || undefined : undefined, promptVersion: "project-architecture-branch-v1", environment: "bounded" }
         }, { tenantId, actor });
-        branch = await store.setDisposition({ branchId: branch.id, status: "deferred", reason: candidate.dispositionReason || "not_enough_evidence_to_determine_why_not_selected", expectedRevision: branch.revision }, { tenantId, actor });
       }
-      branches.push({ id: branch.id, functionalityId: functionality.id, title: candidate.title, status: branch.status, inferenceRole: "deferred_alternative", sourceDigest: report.sourceDigest, score: candidate.score, autoReconsideration: true, evidenceIds: candidate.evidenceIds });
+      const inferenceRole = branch.candidate?.inferenceRole === "deferred_alternative" ? "deferred_alternative" : "anticipated_alternative";
+      branches.push({ id: branch.id, functionalityId: functionality.id, sourceEntityId, title: candidate.title, status: branch.status, inferenceRole, sourceDigest: report.sourceDigest, score: candidate.score, autoReconsideration: branch.autoReconsideration === true, historicalClaim: false, evidenceIds: candidate.evidenceIds });
     }
   }
   return branches;
@@ -1496,6 +1565,7 @@ export function publicArchitectureAnalysis(report) {
   return {
     version: report.version,
     projectId: report.projectId,
+    projectOrigin: report.projectOrigin || "unknown_legacy",
     sourceDigest: report.sourceDigest,
     analyzedAt: report.analyzedAt,
     scan: report.scan,
@@ -1506,7 +1576,9 @@ export function publicArchitectureAnalysis(report) {
     inferredChains: report.inferredChains || [],
     assignments: report.assignments || [],
     branches: report.branches || [],
-    publishedBranchCount: (report.branches || []).filter((branch) => branch.inferenceRole === "deferred_alternative").length,
+    publishedCandidates: report.publishedCandidates || [],
+    publishedBranchCount: (report.branches || []).filter((branch) => ["deferred_alternative", "anticipated_alternative"].includes(branch.inferenceRole)).length,
+    anticipatedBranchCount: (report.branches || []).filter((branch) => ["deferred_alternative", "anticipated_alternative"].includes(branch.inferenceRole)).length,
     suppressedCandidates: report.suppressedCandidates || [],
     modelAssist: report.modelAssist,
     idempotent: Boolean(report.idempotent)

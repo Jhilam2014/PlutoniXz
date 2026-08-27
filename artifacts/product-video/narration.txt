@@ -1,19 +1,17 @@
-Meet PlutoniX, the agentic product-building cockpit that turns clear instructions into working digital experiences.
+Meet PlutoniX, the multi-artifact product-building cockpit.
 
-Start in Gotham Builder. Choose the project, task depth, and execution mode, then run the job against a live playground.
+In Builder, a team describes a product or artifact. PlutoniX classifies its shape, keeps the requested deliverable primary, and asks for missing data or integration context before work continues.
 
-When a build needs real data, integrations, or media, PlutoniX pauses and asks only for the missing source, so agents do not invent business facts.
+Analysis turns individual builds into an evidenced application portfolio. Each App BrainX remains private. Enterprise tags organize the view; they never authorize cross-application access.
 
-Every project is decomposed into a live functionality graph, from the first instruction through sub-functions, evidence, and the agents responsible for each node.
+Open the portfolio map to inspect enterprise scopes, recorded relationships, unassigned applications, and evidence.
 
-The PlutoniX Graphical Model page opens on a project-first topology, so teams can scan every active build.
+At application level, PlutoniX separates observed source behavior from recorded selections, deferred options, rejected options, constraints, and reconsideration signals.
 
-In Explore, select a project to trace its orchestrator relationships and inspect live status, configuration, and activity.
+The governed BrainX boundary is separate. An authorized scope records bindings, policy, evidence, budgets, and receipts. DecisionX captures development facts. AIX selects eligible candidates and fails closed when none qualify. ResearchX is allowlisted and review-only. AgenticX reuses policy-checked, sanitized knowledge.
 
-The Control Plane monitors health, review gates, and self-improvement activity.
+The delivery graph connects build context, functionality, decisions, agents, and services—without inferring links from proximity.
 
-Global agent memory stays inspectable, searchable, and project-aware.
+Cloud Hosting guides a reviewable plan, approval, health check, and rollback. Deployment is simulated.
 
-Cloud Hosting turns generated projects into controlled deployments with runtime and provider choices.
-
-From instruction to evidence, review, and deployment, PlutoniX keeps the full build accountable.
+PlutoniX turns instructions into working products, with evidence to govern and evolve them.

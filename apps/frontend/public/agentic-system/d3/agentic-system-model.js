@@ -1,7 +1,7 @@
 export const VIEW_MODES = {
   overview: "System Overview",
   dependency: "Dependency View",
-  live: "Live Execution",
+  flow: "Functionality Flow",
   explore: "Explore"
 };
 
@@ -1210,30 +1210,52 @@ export function buildClusters(nodes, links = []) {
   };
 }
 
-export function buildProjectClusters(nodes, links = []) {
+export function buildProjectClusters(nodes, links = [], inventoryNodes = nodes) {
   const capabilityModel = buildClusters(nodes, links);
   const projectMap = new Map();
   const nodeToProjectCluster = new Map();
+  const inventoryByProject = new Map();
+  for (const node of inventoryNodes) {
+    const project = node.project || "Core Platform";
+    const inventory = inventoryByProject.get(project) || {
+      total: 0,
+      features: 0,
+      apis: 0,
+      services: 0,
+      dataStores: 0,
+      attention: 0
+    };
+    inventory.total += 1;
+    if (["application_functionality", "functionality", "feature", "page"].includes(node.type)) inventory.features += 1;
+    if (node.type === "api") inventory.apis += 1;
+    if (node.type === "service") inventory.services += 1;
+    if (["database", "memory", "vector_store", "graph_store"].includes(node.type)) inventory.dataStores += 1;
+    if (["failed", "waiting"].includes(node.statusGroup)) inventory.attention += 1;
+    inventoryByProject.set(project, inventory);
+  }
+  const ensureProjectCluster = (project) => {
+    if (projectMap.has(project)) return projectMap.get(project);
+    const cluster = {
+      id: `project-cluster:${project}`,
+      key: project,
+      kind: "cluster",
+      clusterLevel: "project",
+      label: project,
+      project,
+      domain: "project",
+      capability: "system",
+      agentType: "cluster",
+      statusGroup: "idle",
+      nodes: [],
+      counts: { total: 0, agents: 0, resources: 0, running: 0, warning: 0, failed: 0, waiting: 0, idle: 0 },
+      description: ""
+    };
+    projectMap.set(project, cluster);
+    return cluster;
+  };
   for (const node of nodes) {
     const project = node.project || "Core Platform";
-    if (!projectMap.has(project)) {
-      projectMap.set(project, {
-        id: `project-cluster:${project}`,
-        key: project,
-        kind: "cluster",
-        clusterLevel: "project",
-        label: project,
-        project,
-        domain: "project",
-        capability: "system",
-        agentType: "cluster",
-        statusGroup: "idle",
-        nodes: [],
-        counts: { total: 0, agents: 0, resources: 0, running: 0, warning: 0, failed: 0, waiting: 0, idle: 0 },
-        description: ""
-      });
-    }
-    const cluster = projectMap.get(project);
+    const cluster = ensureProjectCluster(project);
     cluster.nodes.push(node);
     cluster.counts.total += 1;
     if (node.type === "agent") cluster.counts.agents += 1;
@@ -1242,6 +1264,7 @@ export function buildProjectClusters(nodes, links = []) {
     if (node.statusGroup === "waiting") cluster.counts.warning += 1;
     nodeToProjectCluster.set(node.id, cluster.id);
   }
+  for (const project of inventoryByProject.keys()) ensureProjectCluster(project);
 
   const capabilitiesByProject = new Map();
   for (const capability of capabilityModel.clusters) {
@@ -1255,7 +1278,8 @@ export function buildProjectClusters(nodes, links = []) {
   for (const cluster of projectMap.values()) {
     const capabilities = capabilitiesByProject.get(cluster.project) || [];
     cluster.capabilityClusters = capabilities;
-    cluster.description = `${capabilities.length} capability groups across ${cluster.counts.agents} agents${cluster.counts.resources ? ` and ${cluster.counts.resources} system resources` : ""}.`;
+    cluster.inventory = inventoryByProject.get(cluster.project) || { total: 0, features: 0, apis: 0, services: 0, dataStores: 0, attention: 0 };
+    cluster.description = `${cluster.inventory.features} features · ${cluster.inventory.apis} APIs · ${cluster.inventory.dataStores} data stores${cluster.inventory.attention ? ` · ${cluster.inventory.attention} need attention` : ""}.`;
     cluster.statusGroup = cluster.counts.failed ? "failed" : cluster.counts.warning ? "waiting" : cluster.counts.running ? "running" : "idle";
   }
 
@@ -1648,17 +1672,24 @@ export function selectDependencyAnchor(items = [], links = [], selectedId = "") 
     if (degree.has(source)) degree.set(source, degree.get(source) + 1);
     if (degree.has(target)) degree.set(target, degree.get(target) + 1);
   }
+  const anchorPriority = (item) => {
+    if (["application_functionality", "functionality", "feature", "page", "api", "service", "database"].includes(item.type)) return 0;
+    if (item.type === "agent") return 2;
+    if (item.type === "project") return 4;
+    return 1;
+  };
   return items
     .slice()
     .sort((left, right) =>
+      anchorPriority(left) - anchorPriority(right) ||
       (degree.get(right.id) || 0) - (degree.get(left.id) || 0) ||
-      Number(left.type === "project") - Number(right.type === "project") ||
       left.label.localeCompare(right.label)
     )[0]?.id || "";
 }
 
 export function buildDependencyLens(items = [], links = [], selectedId = "") {
   const normalizedLinks = dedupeGraphLinks(links.map((link) => ({ ...link, source: nodeId(link.source), target: nodeId(link.target) })));
+  const nodeById = new Map(items.map((item) => [item.id, item]));
   const anchorId = selectDependencyAnchor(items, normalizedLinks, selectedId);
   const visibleIds = new Set(items.map((item) => item.id));
   // Dependency inspection is an ownership/dependency explanation, so a
@@ -1708,8 +1739,21 @@ export function buildDependencyLens(items = [], links = [], selectedId = "") {
       hierarchyFrontier.push(adjacent);
     }
   }
+  // Ownership is not a causal dependency, but it is essential context for a
+  // feature taxonomy. Keep agents that explicitly implement any reachable
+  // feature in the same dependency canvas without expanding unrelated agent
+  // delegation chains.
+  const ownershipIds = new Set();
+  for (const link of normalizedLinks) {
+    if (String(link.type || "").toLowerCase() !== "implements" || !ids.has(link.target)) continue;
+    const owner = nodeById.get(link.source);
+    if (!owner || owner.type !== "agent") continue;
+    ids.add(owner.id);
+    ownershipIds.add(owner.id);
+  }
   const roleFor = (id) => {
     if (id === anchorId) return "focus";
+    if (ownershipIds.has(id)) return "shared";
     if (upstream.has(id) && downstream.has(id)) return "shared";
     return upstream.has(id) ? "upstream" : "downstream";
   };
@@ -1723,7 +1767,15 @@ export function buildDependencyLens(items = [], links = [], selectedId = "") {
         : item.id !== anchorId && hierarchyParents.has(item.id) && !upstream.has(item.id)
           ? "ancestor"
           : "",
-      dependencyDepth: Math.min(upstream.get(item.id) ?? Infinity, downstream.get(item.id) ?? Infinity)
+      dependencyDepth: Math.min(upstream.get(item.id) ?? Infinity, downstream.get(item.id) ?? Infinity),
+      // Delivery data is derived from literal dependencies by the backend.
+      // It may be inferred for an imported project, so preserve that fact in
+      // the canvas rather than presenting an invented implementation history.
+      deliveryOrder: Number(item.metadata?.deliveryOrder || item.metadata?.chronologyOrder || 0) || 0,
+      deliveryPhase: item.metadata?.deliveryPhase || "",
+      deliveryPhaseRank: Number(item.metadata?.deliveryPhaseRank ?? 99),
+      timelineInferred: Boolean(item.metadata?.timelineInferred),
+      projectOrigin: item.metadata?.projectOrigin || ""
     }));
   const lensIds = new Set(lensNodes.map((node) => node.id));
   return {
@@ -1733,13 +1785,125 @@ export function buildDependencyLens(items = [], links = [], selectedId = "") {
   };
 }
 
-/** A directional three-lane layout for causal dependency inspection. */
-export function createDependencyLayout(items = [], _links, width = 1200, height = 760) {
+function createHorizontalFeatureTimelineLayout(items = [], links = [], width = 1200, height = 760) {
+  const featureTypes = new Set(["functionality", "application_functionality", "feature", "page", "ui_element"]);
+  // Discovery/dependency ordering is useful context, but it is not an
+  // execution sequence. A timeline is reserved for an explicit source-backed
+  // control-flow sequence so the canvas never implies runtime history.
+  const deliveryNodes = items.filter((item) => item.deliveryOrder > 0 && item.metadata?.controlFlowSequence === true);
+  const featureTimeline = deliveryNodes.filter((item) => featureTypes.has(item.type) || featureTypes.has(item.agentType));
+  const timeline = (featureTimeline.length >= 2 ? featureTimeline : deliveryNodes)
+    .slice()
+    .sort((left, right) => left.deliveryOrder - right.deliveryOrder || left.label.localeCompare(right.label));
+  if (timeline.length < 2) return null;
+
+  const stepGap = 340;
+  const virtualWidth = Math.max(width, 180 + (timeline.length - 1) * stepGap + 180);
+  const adjacency = new Map(items.map((item) => [item.id, new Set()]));
+  for (const link of links) {
+    if (!adjacency.has(link.source) || !adjacency.has(link.target)) continue;
+    adjacency.get(link.source).add(link.target);
+    adjacency.get(link.target).add(link.source);
+  }
+  const timelineIds = new Set(timeline.map((item) => item.id));
+  const closestCheckpoint = (startId) => {
+    if (timelineIds.has(startId)) return startId;
+    const visited = new Set([startId]);
+    const queue = [startId];
+    while (queue.length) {
+      const current = queue.shift();
+      for (const next of adjacency.get(current) || []) {
+        if (visited.has(next)) continue;
+        if (timelineIds.has(next)) return next;
+        visited.add(next);
+        queue.push(next);
+      }
+    }
+    return "";
+  };
+  const supportByCheckpoint = new Map(timeline.map((item) => [item.id, []]));
+  const unanchored = [];
+  for (const item of items) {
+    if (timelineIds.has(item.id)) continue;
+    const checkpointId = closestCheckpoint(item.id);
+    if (checkpointId) supportByCheckpoint.get(checkpointId).push(item);
+    else unanchored.push(item);
+  }
+  const largestSupportGroup = Math.max(0, ...[...supportByCheckpoint.values()].map((rows) => rows.length));
+  const unanchoredHeight = unanchored.reduce((total, item) => total + layoutNodeBounds(item).halfHeight * 2 + 34, 110);
+  const virtualHeight = Math.max(height, 560 + Math.ceil(largestSupportGroup / 2) * 250, unanchoredHeight + 80);
+  const timelineY = Math.round(virtualHeight / 2);
+  const positioned = new Map();
+  timeline.forEach((item, index) => {
+    positioned.set(item.id, {
+      ...item,
+      dependencyLayout: "feature-timeline",
+      dependencyTimelineCheckpoint: true,
+      dependencyTimelineStep: index + 1,
+      dependencyVirtualWidth: virtualWidth,
+      dependencyVirtualHeight: virtualHeight,
+      x: 180 + index * stepGap,
+      y: timelineY
+    });
+  });
+  for (const [checkpointId, rows] of supportByCheckpoint) {
+    const checkpoint = positioned.get(checkpointId);
+    rows
+      .slice()
+      .sort((left, right) => left.deliveryOrder - right.deliveryOrder || left.label.localeCompare(right.label))
+      .forEach((item, index) => {
+        const ring = Math.floor(index / 2);
+        const side = index % 2 ? 1 : -1;
+        const horizontalOffset = ring % 2 ? -74 : 74;
+        positioned.set(item.id, {
+          ...item,
+          dependencyLayout: "feature-timeline",
+          dependencyTimelineCheckpointId: checkpointId,
+          dependencyVirtualWidth: virtualWidth,
+          dependencyVirtualHeight: virtualHeight,
+          x: checkpoint.x + horizontalOffset + Math.floor(ring / 2) * (ring % 2 ? -40 : 40),
+          y: timelineY + side * (210 + ring * 240)
+        });
+      });
+  }
+  let unanchoredCursor = 60;
+  unanchored.forEach((item) => {
+    const upstream = item.dependencyRole === "upstream";
+    const bounds = layoutNodeBounds(item);
+    positioned.set(item.id, {
+      ...item,
+      dependencyLayout: "feature-timeline",
+      dependencyVirtualWidth: virtualWidth,
+      dependencyVirtualHeight: virtualHeight,
+      x: upstream ? 64 : virtualWidth - 64,
+      y: unanchoredCursor + bounds.halfHeight
+    });
+    unanchoredCursor += bounds.halfHeight * 2 + 34;
+  });
+  return items.map((item) => positioned.get(item.id) || item);
+}
+
+/** A horizontal feature timeline when source-backed delivery order exists,
+ * otherwise a directional three-lane layout for causal dependency inspection. */
+export function createDependencyLayout(items = [], links = [], width = 1200, height = 760) {
+  items = items.map((item) => ({
+    ...item,
+    deliveryOrder: Number(item.deliveryOrder || item.metadata?.deliveryOrder || item.metadata?.chronologyOrder || 0) || 0,
+    deliveryPhase: item.deliveryPhase || item.metadata?.deliveryPhase || "",
+    deliveryPhaseRank: Number(item.deliveryPhaseRank ?? item.metadata?.deliveryPhaseRank ?? 99)
+  }));
+  const timelineLayout = createHorizontalFeatureTimelineLayout(items, links, width, height);
+  if (timelineLayout) return timelineLayout;
   const groups = new Map(["upstream", "shared", "focus", "downstream"].map((role) => [role, []]));
   items.forEach((item) => groups.get(item.dependencyRole || "focus")?.push(item));
   const sortRows = (rows) => rows
     .slice()
-    .sort((left, right) => left.dependencyDepth - right.dependencyDepth || left.label.localeCompare(right.label));
+    .sort((left, right) =>
+      Number(Boolean(right.deliveryOrder)) - Number(Boolean(left.deliveryOrder))
+      || left.deliveryOrder - right.deliveryOrder
+      || left.deliveryPhaseRank - right.deliveryPhaseRank
+      || left.dependencyDepth - right.dependencyDepth
+      || left.label.localeCompare(right.label));
   const columns = {
     upstream: sortRows(groups.get("upstream") || []),
     focus: sortRows([...(groups.get("focus") || []), ...(groups.get("shared") || [])]),
@@ -1773,6 +1937,186 @@ export function createDependencyLayout(items = [], _links, width = 1200, height 
       cursorY += bounds.halfHeight * 2 + verticalGap;
     }
   }
+  return items.map((item) => positioned.get(item.id) || item);
+}
+
+function functionalityFlowStage(item = {}) {
+  const type = item.type || item.agentType;
+  if (type === "agent") return { id: "control-0", label: "Agent assignment", index: 0 };
+  if (["functionality", "application_functionality", "feature", "page"].includes(type)) return { id: "control-1", label: "Application control", index: 1 };
+  if (type === "ui_element") return { id: "control-2", label: "User action", index: 2 };
+  if (type === "api") return { id: "control-3", label: "API boundary", index: 3 };
+  if (type === "service") return { id: "control-4", label: "Domain operation", index: 4 };
+  if (type === "database" || type === "memory") return { id: "control-5", label: "State change", index: 5 };
+  return { id: "control-6", label: "Supporting control", index: 6 };
+}
+
+/** Projects one literal major feature, its child functionality, and its
+ * explicitly connected delivery architecture into a compact flow. */
+export function buildFunctionalityFlow(items = [], links = [], selectedMajorFeatureId = "") {
+  const sourceEntities = items.filter((item) =>
+    Boolean(item.metadata?.applicationTopology)
+    || ["application_functionality", "functionality", "feature", "page", "ui_element", "api", "service", "database"].includes(item.type)
+  );
+  const entityIds = new Set(sourceEntities.map((item) => item.id));
+  const majorTypes = new Set(["application_functionality", "functionality", "feature", "page"]);
+  const hierarchyTypes = new Set(["contains_feature", "contains_subpage", "contains_ui_element", "has_ui_feature"]);
+  const parentById = new Map();
+  for (const entity of sourceEntities) {
+    const parentId = entity.metadata?.parentEntityNodeId || entity.metadata?.parentFeatureId;
+    if (parentId && entityIds.has(parentId)) parentById.set(entity.id, parentId);
+  }
+  for (const link of links) {
+    const source = nodeId(link.source);
+    const target = nodeId(link.target);
+    const type = String(link.type || "").toLowerCase();
+    if (!entityIds.has(source) || !entityIds.has(target) || parentById.has(target)) continue;
+    if (link.metadata?.hierarchy || isHierarchyLink(link) || hierarchyTypes.has(type)) parentById.set(target, source);
+  }
+  let majorFeatures = sourceEntities.filter((item) => majorTypes.has(item.type) && !parentById.has(item.id));
+  // Imported projects can lack explicit hierarchy links. In that case each
+  // feature-like entity remains independently explorable rather than being
+  // collapsed into one unbounded canvas.
+  if (!majorFeatures.length) majorFeatures = sourceEntities.filter((item) => majorTypes.has(item.type));
+  if (!majorFeatures.length) majorFeatures = sourceEntities.slice();
+  majorFeatures = majorFeatures
+    .slice()
+    .sort((left, right) =>
+      Number(left.deliveryOrder || left.metadata?.deliveryOrder || left.metadata?.chronologyOrder || 0)
+        - Number(right.deliveryOrder || right.metadata?.deliveryOrder || right.metadata?.chronologyOrder || 0)
+      || left.label.localeCompare(right.label));
+  const selectedMajor = majorFeatures.find((item) => item.id === selectedMajorFeatureId) || majorFeatures[0] || null;
+  const majorIds = new Set(majorFeatures.map((item) => item.id));
+  const adjacency = new Map(sourceEntities.map((item) => [item.id, new Set()]));
+  for (const link of links) {
+    const source = nodeId(link.source);
+    const target = nodeId(link.target);
+    if (!entityIds.has(source) || !entityIds.has(target)) continue;
+    adjacency.get(source).add(target);
+    adjacency.get(target).add(source);
+  }
+  const selectedEntityIds = new Set();
+  if (selectedMajor) {
+    const queue = [selectedMajor.id];
+    selectedEntityIds.add(selectedMajor.id);
+    while (queue.length) {
+      const current = queue.shift();
+      for (const connectedId of adjacency.get(current) || []) {
+        // A connected peer feature starts its own focused view; its shared
+        // dependencies will still appear in the currently selected flow.
+        if (connectedId !== selectedMajor.id && majorIds.has(connectedId)) continue;
+        if (selectedEntityIds.has(connectedId)) continue;
+        selectedEntityIds.add(connectedId);
+        queue.push(connectedId);
+      }
+    }
+  }
+  const ownerIds = new Set(
+    links
+      .filter((link) => String(link.type || "").toLowerCase() === "implements" && selectedEntityIds.has(nodeId(link.target)))
+      .map((link) => nodeId(link.source))
+  );
+  const nodes = items.filter((item) => selectedEntityIds.has(item.id) || ownerIds.has(item.id));
+  const nodeIds = new Set(nodes.map((item) => item.id));
+  const selectedLinks = links
+    .filter((link) => nodeIds.has(nodeId(link.source)) && nodeIds.has(nodeId(link.target)))
+    .map((link) => ({ ...link, source: nodeId(link.source), target: nodeId(link.target), kind: "functionality-flow" }));
+  const controlRelationshipTypes = new Set(["ui_calls_api", "ui_uses_service", "api_calls_service", "service_uses_service"]);
+  const controlRelationshipCount = selectedLinks.filter((link) => controlRelationshipTypes.has(String(link.type || "").toLowerCase())).length;
+  return {
+    nodes,
+    links: selectedLinks,
+    majorFeatures: majorFeatures.map((item) => ({
+      id: item.id,
+      label: item.label,
+      type: item.type,
+      deliveryOrder: item.deliveryOrder || item.metadata?.deliveryOrder || item.metadata?.chronologyOrder || 0
+    })),
+    selectedMajorFeatureId: selectedMajor?.id || "",
+    controlRelationshipCount,
+    evidenceLabel: controlRelationshipCount
+      ? "Source-derived application map with recorded control relationships"
+      : "Source-derived application map · no end-to-end control path recorded"
+  };
+}
+
+export function createFunctionalityFlowLayout(items = [], links = [], width = 1200, height = 760) {
+  const itemById = new Map(items.map((item) => [item.id, item]));
+  const predecessors = new Map(items.map((item) => [item.id, []]));
+  const ownershipTargetsByAgent = new Map();
+  links.forEach((link) => {
+    const source = nodeId(link.source);
+    const target = nodeId(link.target);
+    if (!itemById.has(source) || !itemById.has(target)) return;
+    if (String(link.type || "").toLowerCase() === "implements") {
+      const targets = ownershipTargetsByAgent.get(source) || [];
+      targets.push(target);
+      ownershipTargetsByAgent.set(source, targets);
+      return;
+    }
+    predecessors.get(target).push(source);
+  });
+  const rankMemo = new Map();
+  const controlRankFor = (id, visiting = new Set()) => {
+    if (rankMemo.has(id)) return rankMemo.get(id);
+    const item = itemById.get(id);
+    const baseRank = functionalityFlowStage(item).index;
+    // Cycles are valid in real application graphs. A cycle keeps its semantic
+    // stage rather than escalating indefinitely through the left-to-right map.
+    if (visiting.has(id)) return baseRank;
+    const nextVisiting = new Set(visiting).add(id);
+    const rank = Math.max(baseRank, ...(predecessors.get(id) || []).map((parentId) => controlRankFor(parentId, nextVisiting) + 1));
+    rankMemo.set(id, rank);
+    return rank;
+  };
+  const stages = new Map();
+  items.forEach((item) => {
+    const ownershipTargets = ownershipTargetsByAgent.get(item.id) || [];
+    const rank = item.type === "agent" && ownershipTargets.length
+      ? Math.min(...ownershipTargets.map((targetId) => controlRankFor(targetId)))
+      : controlRankFor(item.id);
+    const rows = stages.get(rank) || [];
+    rows.push(item);
+    stages.set(rank, rows);
+  });
+  const activeStages = [...stages.entries()].sort(([left], [right]) => left - right);
+  const rowGap = 34;
+  const stageHeight = (rows) => rows.reduce((total, item) => total + layoutNodeBounds(item).halfHeight * 2, 0) + Math.max(0, rows.length - 1) * rowGap;
+  const virtualHeight = Math.max(height, 150 + Math.max(0, ...activeStages.map(([, rows]) => stageHeight(rows))) + 150);
+  const columnGap = 278;
+  const virtualWidth = Math.max(width, 130 + Math.max(0, ...activeStages.map(([rank]) => rank)) * columnGap + 230);
+  const positioned = new Map();
+  activeStages.forEach(([rank, rows]) => {
+    const ordered = rows.slice().sort((left, right) => {
+      const parentY = (item) => {
+        const values = (predecessors.get(item.id) || []).map((id) => positioned.get(id)?.y).filter(Number.isFinite);
+        return values.length ? values.reduce((total, value) => total + value, 0) / values.length : Number.POSITIVE_INFINITY;
+      };
+      return Number(left.type === "agent") - Number(right.type === "agent")
+        || parentY(left) - parentY(right)
+        || Number(left.deliveryOrder || left.metadata?.deliveryOrder || 0) - Number(right.deliveryOrder || right.metadata?.deliveryOrder || 0)
+        || left.label.localeCompare(right.label);
+    });
+    let cursorY = (virtualHeight - stageHeight(ordered)) / 2;
+    ordered.forEach((item) => {
+      const bounds = layoutNodeBounds(item);
+      const defaultStage = functionalityFlowStage(item);
+      positioned.set(item.id, {
+        ...item,
+        functionalityFlow: true,
+        functionalityFlowStage: `control-${rank}`,
+        functionalityFlowStageLabel: item.type === "agent"
+          ? "Implemented by"
+          : rank === defaultStage.index ? defaultStage.label : `Control step ${rank + 1} · ${defaultStage.label}`,
+        functionalityFlowStageIndex: rank,
+        functionalityFlowVirtualWidth: virtualWidth,
+        functionalityFlowVirtualHeight: virtualHeight,
+        x: 130 + rank * columnGap,
+        y: cursorY + bounds.halfHeight
+      });
+      cursorY += bounds.halfHeight * 2 + rowGap;
+    });
+  });
   return items.map((item) => positioned.get(item.id) || item);
 }
 
@@ -2668,12 +3012,17 @@ export function selectRenderStrategy({ nodeCount = 0, linkCount = 0, lastFrameMs
 }
 
 export function visibleGraphForState(model, state, width = 1200, height = 760, dagreApi) {
-  const filtered = applyGraphFilters(model, state.filters);
   const viewMode = state.viewMode || "overview";
-  const overviewNodes = filtered.nodes.filter(isOverviewEntity);
+  const requestedProject = String(state.filters?.project || "");
+  const rawFiltered = applyGraphFilters(model, state.filters);
+  const portfolioOverview = viewMode === "overview" && !requestedProject;
+  const requiresProjectScope = ["dependency", "flow", "explore"].includes(viewMode) && !requestedProject;
+  const source = portfolioOverview ? { nodes: model.nodes, links: model.links } : rawFiltered;
+  const filtered = requiresProjectScope ? { nodes: [], links: [] } : source;
+  const overviewNodes = source.nodes.filter(isOverviewEntity);
   const overviewIds = new Set(overviewNodes.map((node) => node.id));
-  const overviewLinks = filtered.links.filter((link) => overviewIds.has(link.source) && overviewIds.has(link.target));
-  const projectModel = buildProjectClusters(overviewNodes, overviewLinks);
+  const overviewLinks = source.links.filter((link) => overviewIds.has(link.source) && overviewIds.has(link.target));
+  const projectModel = buildProjectClusters(overviewNodes, overviewLinks, source.nodes);
   const clustersModel = projectModel.capabilityModel;
   const expanded = state.expandedClusters || new Set();
   const selectedId = preserveSelectionThroughFilters(model, state.selectedId, state.filters);
@@ -2682,11 +3031,16 @@ export function visibleGraphForState(model, state, width = 1200, height = 760, d
   let links = [];
   let hiddenClusterCount = 0;
   let lens = null;
+  let flow = null;
 
   if (viewMode === "explore") {
     const architecture = buildArchitectureBranchSummary(filtered.nodes, filtered.links);
     items = architecture.nodes;
     links = architecture.links;
+  } else if (viewMode === "flow") {
+    flow = buildFunctionalityFlow(filtered.nodes, filtered.links, state.flowMajorFeatureId);
+    items = flow.nodes;
+    links = flow.links;
   } else if (viewMode === "overview") {
     items = projectModel.clusters.flatMap((projectCluster) => {
       if (!expanded.has(projectCluster.id)) return [projectCluster];
@@ -2709,11 +3063,9 @@ export function visibleGraphForState(model, state, width = 1200, height = 760, d
         type: "contains",
         clusterLink: true
       }));
-    links = [
-      ...projectModel.projectLinks,
-      ...hierarchyLinks,
-      ...filtered.links.filter((link) => ids.has(link.source) && ids.has(link.target))
-    ].filter((link) => ids.has(link.source) && ids.has(link.target));
+    // Overview is a Finder-style portfolio outline. It intentionally draws
+    // only disclosure relationships, never cross-project topology spaghetti.
+    links = hierarchyLinks.filter((link) => ids.has(link.source) && ids.has(link.target));
     if (!expanded.size && !selectedId) {
       hiddenClusterCount = Math.max(0, items.length - 24);
       items = items.slice(0, 24);
@@ -2727,13 +3079,8 @@ export function visibleGraphForState(model, state, width = 1200, height = 760, d
   } else {
     items = filtered.nodes;
     links = filtered.links;
-    if (viewMode === "live") {
-      items = items.filter((node) => node.hasRuntimeSignal && node.statusGroup !== "idle");
-      const ids = new Set(items.map((item) => item.id));
-      links = links.filter((link) => ids.has(link.source) && ids.has(link.target));
-    }
-    // Live retains its complete filtered topology. Explore is a source-backed
-    // feature-cluster canvas; selection only changes visual emphasis.
+    // The remaining views retain their complete filtered topology; selection
+    // only changes visual emphasis.
   }
 
   const saved = loadPositions(state.storage, state.filters?.project || "all", viewMode);
@@ -2745,6 +3092,8 @@ export function visibleGraphForState(model, state, width = 1200, height = 760, d
       ? createArchitectureFreeForceSeedLayout(items, layoutLinks, width, height)
       : viewMode === "dependency"
         ? createDependencyLayout(items, layoutLinks, width, height)
+      : viewMode === "flow"
+        ? createFunctionalityFlowLayout(items, layoutLinks, width, height)
       : createDagreLayout(items, layoutLinks, width, height, dagreApi);
   items = viewMode === "dependency"
     ? laidOut
@@ -2752,5 +3101,5 @@ export function visibleGraphForState(model, state, width = 1200, height = 760, d
       ? applyArchitectureSavedPositions(laidOut, saved)
       : applySavedPositions(laidOut, saved);
 
-  return { items, links: layoutLinks, clusters: projectModel.clusters, focus, selectedId, hiddenClusterCount, lens };
+  return { items, links: layoutLinks, clusters: projectModel.clusters, focus, selectedId, hiddenClusterCount, lens, flow };
 }

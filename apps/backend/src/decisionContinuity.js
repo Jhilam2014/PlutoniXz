@@ -27,6 +27,9 @@ export const BRANCH_STATUSES = [
   "retired"
 ];
 export const OBSERVATION_STATES = ["active", "cleared", "unknown", "stale", "expired", "invalid"];
+export const DEFAULT_BRANCH_PAGE_SIZE = 100;
+export const MAX_BRANCH_PAGE_SIZE = 250;
+export const MAX_BRANCH_PAGE_OFFSET = 100_000;
 
 const MAX_CANARY_TRAFFIC_PERCENT = 25;
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -81,6 +84,63 @@ function asArray(value) {
   return Array.isArray(value) ? value : [];
 }
 
+function paginationInteger(value, { fallback, minimum, maximum, field }) {
+  if (value === undefined || value === null || value === "") return fallback;
+  const parsed = Number(value);
+  if (!Number.isSafeInteger(parsed) || parsed < minimum || parsed > maximum) {
+    throw new DecisionContinuityError(`${field} must be an integer from ${minimum} to ${maximum}.`, {
+      code: "invalid_pagination",
+      status: 400
+    });
+  }
+  return parsed;
+}
+
+/**
+ * A small, bounded offset contract shared by the file and PostgreSQL adapters.
+ * Offsets never grant access or override tenant/workspace filtering.
+ */
+export function normalizeBranchPagination({ limit, offset } = {}) {
+  const pageLimit = paginationInteger(limit, {
+    fallback: DEFAULT_BRANCH_PAGE_SIZE,
+    minimum: 1,
+    maximum: MAX_BRANCH_PAGE_SIZE,
+    field: "limit"
+  });
+  const pageOffset = paginationInteger(offset, {
+    fallback: 0,
+    minimum: 0,
+    maximum: MAX_BRANCH_PAGE_OFFSET,
+    field: "offset"
+  });
+  return { limit: pageLimit, offset: pageOffset };
+}
+
+export function branchPaginationMetadata({ offset = 0, limit = DEFAULT_BRANCH_PAGE_SIZE, total = 0, returned = 0 } = {}) {
+  const nextOffset = offset + returned < total ? offset + returned : null;
+  return {
+    offset,
+    limit,
+    returned,
+    hasMore: nextOffset !== null,
+    nextOffset
+  };
+}
+
+function orderedBranches(state, { tenantId, workspaceId, decisionId, statuses } = {}) {
+  const allowedStatuses = asArray(statuses).filter((status) => BRANCH_STATUSES.includes(status));
+  return Object.values(state.branches)
+    .filter((branch) => branch.tenantId === tenantId)
+    .filter((branch) => !workspaceId || branch.workspaceId === workspaceId)
+    .filter((branch) => !decisionId || branch.decisionId === decisionId)
+    .filter((branch) => !allowedStatuses.length || allowedStatuses.includes(branch.status))
+    .sort((left, right) => {
+      const leftUpdatedAt = Number.isFinite(Date.parse(left.updatedAt)) ? Date.parse(left.updatedAt) : 0;
+      const rightUpdatedAt = Number.isFinite(Date.parse(right.updatedAt)) ? Date.parse(right.updatedAt) : 0;
+      return rightUpdatedAt - leftUpdatedAt || String(right.id).localeCompare(String(left.id));
+    });
+}
+
 function defaultState() {
   return {
     schemaVersion: DECISION_CONTINUITY_SCHEMA_VERSION,
@@ -101,7 +161,19 @@ function defaultState() {
     brainxControls: {},
     brainxCircuitBreakers: {},
     governedSuggestions: {},
-    intelCapabilityProposals: {}
+    intelCapabilityProposals: {},
+    enterpriseGovernanceBindings: {},
+    enterpriseGovernancePolicies: {},
+    enterpriseGovernanceBudgets: {},
+    enterpriseGovernanceReservations: {},
+    enterpriseGovernanceDecisionContexts: {},
+    enterpriseGovernanceKnowledgeReceipts: {},
+    enterpriseGovernanceIdempotency: {},
+    researchXSources: {},
+    researchXRuns: {},
+    researchXEffects: {},
+    agenticXKnowledge: {},
+    agenticXReuseReceipts: {}
   };
 }
 
@@ -211,6 +283,20 @@ const FitnessVectorSchema = z.object({
   }).strict()
 }).strict();
 
+// Historic branches remain valid without this optional governed context. New
+// branches can bind their evidence to an immutable enterprise-policy snapshot.
+const EnterpriseDecisionContextSchema = z.object({
+  applicationId: z.string().min(1).max(160),
+  enterpriseId: z.string().min(1).max(160).optional(),
+  affectedApplicationIds: z.array(z.string().min(1).max(160)).max(50).default([]),
+  policySnapshotId: z.string().min(1).max(160).optional(),
+  budgetScopeId: z.string().min(1).max(160).optional(),
+  evidenceRefs: z.array(z.string().min(1).max(240)).max(100).default([]),
+  classification: z.enum(["public", "internal", "confidential", "restricted"]).default("internal"),
+  region: z.string().min(1).max(80).optional(),
+  purpose: z.string().min(1).max(160).optional()
+}).strict();
+
 const BranchInputSchema = z.object({
   workspaceId: z.string().min(1).max(160).default("default"),
   decisionId: z.string().min(1).max(160),
@@ -222,7 +308,8 @@ const BranchInputSchema = z.object({
   origin: z.object({
     source: z.enum(["operator", "qagent", "intel", "brainx", "self_improvement", "import", "other"]).default("operator"),
     correlationId: z.string().max(160).optional(),
-    requestId: z.string().max(160).optional()
+    requestId: z.string().max(160).optional(),
+    idempotencyKey: z.string().min(1).max(240).optional()
   }).strict().default({ source: "operator" }),
   decisionSignature: z.object({
     version: z.string().min(1).max(80),
@@ -262,6 +349,7 @@ const BranchInputSchema = z.object({
     codeRevision: z.string().max(160).optional(),
     environment: z.string().max(160).optional()
   }).strict().default({}),
+  enterpriseDecisionContext: EnterpriseDecisionContextSchema.optional(),
   expectedOutcome: z.record(z.unknown()).default({}),
   realizedOutcome: z.record(z.unknown()).default({})
 }).strict();
@@ -285,6 +373,16 @@ const ConditionEventSchema = z.object({
   occurredAt: z.string().datetime().optional(),
   observations: z.array(ObservationInputSchema).min(1).max(50),
   authorizeRejectedReconsideration: z.boolean().default(false)
+}).strict();
+
+const BranchExecutionOutcomeSchema = z.object({
+  status: z.enum(["succeeded", "failed", "stopped", "planned"]),
+  buildId: z.string().max(240).optional(),
+  changedFiles: z.array(z.string().min(1).max(500)).max(500).default([]),
+  validation: z.record(z.unknown()).default({}),
+  modelRouteReceiptId: z.string().max(160).optional(),
+  error: z.string().max(2000).optional(),
+  completedAt: z.string().datetime().optional()
 }).strict();
 
 function expressionConstraintIds(expression) {
@@ -449,7 +547,19 @@ export class FileDecisionContinuityStore {
       brainxControls: state.brainxControls || {},
       brainxCircuitBreakers: state.brainxCircuitBreakers || {},
       governedSuggestions: state.governedSuggestions || {},
-      intelCapabilityProposals: state.intelCapabilityProposals || {}
+      intelCapabilityProposals: state.intelCapabilityProposals || {},
+      enterpriseGovernanceBindings: state.enterpriseGovernanceBindings || {},
+      enterpriseGovernancePolicies: state.enterpriseGovernancePolicies || {},
+      enterpriseGovernanceBudgets: state.enterpriseGovernanceBudgets || {},
+      enterpriseGovernanceReservations: state.enterpriseGovernanceReservations || {},
+      enterpriseGovernanceDecisionContexts: state.enterpriseGovernanceDecisionContexts || {},
+      enterpriseGovernanceKnowledgeReceipts: state.enterpriseGovernanceKnowledgeReceipts || {},
+      enterpriseGovernanceIdempotency: state.enterpriseGovernanceIdempotency || {},
+      researchXSources: state.researchXSources || {},
+      researchXRuns: state.researchXRuns || {},
+      researchXEffects: state.researchXEffects || {},
+      agenticXKnowledge: state.agenticXKnowledge || {},
+      agenticXReuseReceipts: state.agenticXReuseReceipts || {}
     };
   }
 
@@ -486,6 +596,14 @@ export class FileDecisionContinuityStore {
     assertTenant(tenantId);
     const parsed = BranchInputSchema.parse(input);
     return this.mutate(async (state, events) => {
+      if (parsed.origin.idempotencyKey) {
+        const existing = Object.values(state.branches).find((branch) =>
+          branch.tenantId === tenantId &&
+          branch.workspaceId === parsed.workspaceId &&
+          branch.origin?.idempotencyKey === parsed.origin.idempotencyKey
+        );
+        if (existing) return clone(existing);
+      }
       let parent = null;
       if (parsed.parentBranchId) {
         parent = state.branches[parsed.parentBranchId];
@@ -517,6 +635,7 @@ export class FileDecisionContinuityStore {
         disposition: parsed.disposition,
         producedBy: parsed.producedBy,
         executionProvenance: parsed.executionProvenance,
+        enterpriseDecisionContext: parsed.enterpriseDecisionContext || null,
         expectedOutcome: parsed.expectedOutcome,
         realizedOutcome: parsed.realizedOutcome,
         revision: 1,
@@ -538,18 +657,24 @@ export class FileDecisionContinuityStore {
     });
   }
 
-  async listBranches({ tenantId, workspaceId, decisionId, statuses, limit = 100 } = {}) {
+  async listBranchesPage({ tenantId, workspaceId, decisionId, statuses, limit, offset } = {}) {
     assertTenant(tenantId);
-    const allowedStatuses = asArray(statuses).filter((status) => BRANCH_STATUSES.includes(status));
     const state = await this.readState();
-    return Object.values(state.branches)
-      .filter((branch) => branch.tenantId === tenantId)
-      .filter((branch) => !workspaceId || branch.workspaceId === workspaceId)
-      .filter((branch) => !decisionId || branch.decisionId === decisionId)
-      .filter((branch) => !allowedStatuses.length || allowedStatuses.includes(branch.status))
-      .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
-      .slice(0, Math.max(1, Math.min(Number(limit) || 100, 250)))
-      .map(clone);
+    const pagination = normalizeBranchPagination({ limit, offset });
+    const branches = orderedBranches(state, { tenantId, workspaceId, decisionId, statuses });
+    const page = branches.slice(pagination.offset, pagination.offset + pagination.limit).map(clone);
+    return {
+      branches: page,
+      pagination: branchPaginationMetadata({
+        ...pagination,
+        total: branches.length,
+        returned: page.length
+      })
+    };
+  }
+
+  async listBranches(options = {}) {
+    return (await this.listBranchesPage(options)).branches;
   }
 
   async getBranch(branchId, { tenantId, workspaceId } = {}) {
@@ -561,6 +686,45 @@ export class FileDecisionContinuityStore {
       ...clone(branch),
       childBranchIds: Object.values(state.branches).filter((candidate) => candidate.parentBranchId === branch.id).map((candidate) => candidate.id)
     };
+  }
+
+  /**
+   * Records observed build evidence without selecting, approving, or promoting
+   * a branch.  It gives automatic build capture an append-only audit trail while
+   * keeping Decision Continuity's high-risk lifecycle gates intact.
+   */
+  async recordBranchExecutionOutcome({ branchId, ...input } = {}, { tenantId, workspaceId, actor } = {}) {
+    assertTenant(tenantId);
+    if (!branchId || typeof branchId !== "string") throw new DecisionContinuityError("A branch ID is required.", { code: "branch_required" });
+    const parsed = BranchExecutionOutcomeSchema.parse(input);
+    return this.mutate((state, events) => {
+      const branch = state.branches[branchId];
+      assertSameScope(branch, { tenantId, workspaceId });
+      const before = clone(branch);
+      const next = {
+        ...branch,
+        realizedOutcome: {
+          ...(branch.realizedOutcome || {}),
+          execution: {
+            ...parsed,
+            completedAt: parsed.completedAt || nowIso()
+          }
+        },
+        revision: Number(branch.revision || 0) + 1,
+        updatedAt: nowIso()
+      };
+      next.contentHash = stableHash({ ...next, contentHash: undefined, updatedAt: undefined });
+      state.branches[branchId] = next;
+      events.push(eventRecord({
+        tenantId,
+        workspaceId: next.workspaceId,
+        type: "branch.execution_recorded",
+        actor,
+        correlationId: next.origin?.correlationId,
+        payload: { branchId, before, after: clone(next), executionStatus: parsed.status, buildId: parsed.buildId || null }
+      }));
+      return clone(next);
+    });
   }
 
   /** A human/operator disposition may defer or retire a branch, but may never select it. */
@@ -851,7 +1015,7 @@ class UnavailableDecisionContinuityStore {
 }
 
 for (const method of [
-  "ensure", "readState", "mutate", "createBranch", "listBranches", "getBranch", "setDisposition", "listEvents",
+  "ensure", "readState", "mutate", "createBranch", "listBranches", "listBranchesPage", "getBranch", "setDisposition", "listEvents",
   "recordObservation", "ingestConditionEvent", "listReconsiderations", "getReconsideration", "recordEvaluation", "recordPolicyDecision",
   "recordApproval", "startCanary", "getCanary", "recordCanaryOutcome", "importLegacy"
 ]) {
@@ -876,7 +1040,7 @@ class LazyPostgresDecisionContinuityStore {
 }
 
 for (const method of [
-  "ensure", "health", "readState", "mutate", "createBranch", "listBranches", "getBranch", "setDisposition", "listEvents",
+  "ensure", "health", "readState", "mutate", "createBranch", "listBranches", "listBranchesPage", "getBranch", "setDisposition", "listEvents",
   "recordObservation", "ingestConditionEvent", "listReconsiderations", "getReconsideration", "recordEvaluation", "recordPolicyDecision",
   "recordApproval", "startCanary", "getCanary", "recordCanaryOutcome", "importLegacy"
 ]) {

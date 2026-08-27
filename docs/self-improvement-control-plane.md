@@ -68,6 +68,12 @@ The `PlutoniX Graphical Model` tab includes a Self-Improvement Control Plane pan
 
 The D3 graph includes self-improvement relationships such as observer -> aggregator -> planner -> validation and recent proposal/pattern/validation/promotion/rollback nodes. Large logs and detailed diffs stay outside the graph.
 
+## Relationship to Enterprise BrainX
+
+Enterprise BrainX is a separate, additive control plane for tenant/application decisions. ResearchX may emit a bounded, reviewable observation or reconsideration request, but it cannot create a self-improvement candidate, alter this control plane’s policy, change code, or deploy. Likewise, self-improvement research settings do not enable ResearchX network access. Each system retains its own explicit opt-in, budget, source/evidence, and approval gates.
+
+AIX model-route records can be referenced as decision evidence, but model selection is not a self-improvement promotion. No BrainX output or route receipt may promote a self-improvement candidate without the existing isolation, deterministic validation, independent review, policy, approval, and rollback lifecycle.
+
 ## API Endpoints
 
 - `GET /api/self-improvement/status`
@@ -100,6 +106,11 @@ The default mode is `sandbox`.
 ```bash
 SELF_IMPROVEMENT_ENABLED=true
 SELF_IMPROVEMENT_MODE=sandbox
+# One baseline cycle is attempted at backend startup by default. Set false for
+# an event/manual-only local process.
+SELF_IMPROVEMENT_STARTUP_CYCLE_ENABLED=true
+PLUTONIX_SELF_IMPROVEMENT_RUNTIME_EVENTS=false
+PLUTONIX_ORCHESTRATOR_SELF_HEAL=false
 SELF_IMPROVEMENT_SCHEDULE_MS=0
 SELF_IMPROVEMENT_MODEL_PROFILE=
 SELF_IMPROVEMENT_MAX_CALLS_PER_CYCLE=2
@@ -133,7 +144,7 @@ SELF_IMPROVEMENT_MONETARY_APPROVAL_REQUIRED=true
 SELF_IMPROVEMENT_MONETARY_APPROVAL_THRESHOLD_USD=0
 ```
 
-Self-improvement runs event-driven ad hoc only. It does not run a startup cycle or periodic timer. Every logged event is quickly checked by the investigator agent. A full cycle runs only when the investigator emits an evidence-backed problem statement, Gotham targets `PlutoniX System`, or an orchestrator-health finding is forwarded. The manual cycle endpoint remains only for local/admin debugging and regression testing.
+With the checked-in defaults, the backend attempts one bounded baseline cycle at startup (`SELF_IMPROVEMENT_STARTUP_CYCLE_ENABLED=true`). It does not run a periodic timer (`SELF_IMPROVEMENT_SCHEDULE_MS=0`), and runtime-event cycles plus orchestrator self-healing are disabled by default. Set `SELF_IMPROVEMENT_STARTUP_CYCLE_ENABLED=false` when an event/manual-only local process is required. Every logged event can still be checked by the investigator; a later full cycle requires an evidence-backed problem statement, a Gotham `PlutoniX System` target, an enabled runtime-event path, or a forwarded orchestrator-health finding. The manual cycle endpoint remains for local/admin debugging and regression testing.
 
 When a logged event indicates a tool gap, sluggish sub-application, resource waste, or workflow complexity, the Tool Capability Agent records a `ToolIncorporationPlan`. Zero-cost internal tools are built as generated-tool artifacts under `runtime/self-improvement/tools/generated` and then used only against bounded evidence. Tool output can trigger an `ImprovementProposal`, but platform code changes still require candidate isolation, validation, review, promotion policy, and rollback.
 
@@ -194,3 +205,4 @@ Existing generated projects do not require migration. They inherit updated orche
 - Model analysis is structured and gated, but the current implementation uses a rule-based analyst unless a provider-neutral model adapter is explicitly added.
 - Promotion remains staged in `sandbox`; external deployment is not automatic.
 - Benchmark comparison records the plan and hard gates, but before/after runtime metrics require a real candidate patch and healthy baseline suite.
+- Enterprise BrainX adds reviewable policy/budget/research/route/reuse receipts, but it is not legal certification and does not enable autonomous policy changes, unrestricted research, live provider inference, or automatic model downloads.

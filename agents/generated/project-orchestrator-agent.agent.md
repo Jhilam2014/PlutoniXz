@@ -8,7 +8,7 @@ scope: "global_reusable"
 version: "1.0.0"
 
 ## Responsibility
-Read the project instruction, decide required specialist bindings, and coordinate Gotham workflow handoff.
+Read the project instruction, enforce app-private and agreement-gated enterprise context, record checkpoint alternatives, decide required specialist bindings, and coordinate Gotham workflow handoff.
 
 ## Reuse Contract
 This is a project-neutral agent definition. Bind project objectives, workspace paths, and runtime context through a ProjectAgentAssignment and the project-local `.agentic/` overlay.

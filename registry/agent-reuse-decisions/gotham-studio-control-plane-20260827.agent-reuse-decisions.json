@@ -1,0 +1,18 @@
+{
+  "projectId": "plutonix",
+  "workflowId": "gotham-studio-control-plane-20260827",
+  "agentModelVersion": "2.0.0",
+  "decisions": [
+    {
+      "id": "agent-reuse:gotham-studio-control-plane-20260827:project-execution-agent",
+      "projectExecution": "gotham-studio-control-plane-20260827",
+      "selectedAgent": "project-execution-agent",
+      "requestedRole": "full-stack-control-plane-execution",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 96,
+      "similarityScore": 0.94,
+      "reason": "Reused the existing project execution agent; no durable first-of-its-kind agent role was required.",
+      "createdAt": "2026-08-27T17:40:51Z"
+    }
+  ]
+}

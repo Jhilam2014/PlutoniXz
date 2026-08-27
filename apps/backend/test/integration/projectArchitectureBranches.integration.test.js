@@ -14,7 +14,7 @@ function base64Url(value) {
   return Buffer.from(JSON.stringify(value)).toString("base64url");
 }
 
-test("authorized managed-project analysis is source-cited, tenant-bound, deferred, and idempotent", options, async (context) => {
+test("authorized managed-project analysis is source-cited, tenant-bound, anticipated, and idempotent", options, async (context) => {
   const runId = `${process.pid}-${Date.now()}`;
   const tenantId = `architecture-tenant-${runId}`;
   const issuer = `https://issuer.test/architecture-${runId}`;
@@ -36,7 +36,7 @@ test("authorized managed-project analysis is source-cited, tenant-bound, deferre
   await fs.mkdir(path.join(workspaceDir, "src"), { recursive: true });
   await fs.writeFile(path.join(workspaceDir, "src", "App.jsx"), "import React from 'react'; export const App = () => <main>Fixture</main>;\n");
   await fs.writeFile(path.join(workspaceDir, "src", "server.js"), "app.get('/api/fixture', authenticate, () => {});\n");
-  await fs.writeFile(path.join(workspaceDir, "schema.prisma"), "model Fixture { id String @id }\n");
+  await fs.writeFile(path.join(workspaceDir, "schema.prisma"), "datasource db { provider = \"sqlite\" url = \"file:fixture.db\" }\nmodel Fixture { id String @id }\n");
   await fs.mkdir(projectRoot, { recursive: true });
   await fs.writeFile(path.join(projectRoot, "projects.json"), JSON.stringify([{
     id: projectId,
@@ -124,7 +124,7 @@ test("authorized managed-project analysis is source-cited, tenant-bound, deferre
   assert.equal(created.status, 201, JSON.stringify(created.json));
   assert.ok(created.json.report.functionalities.length >= 4);
   assert.ok(created.json.report.branches.some((branch) => branch.inferenceRole === "observed_current"));
-  assert.ok(created.json.report.branches.some((branch) => branch.inferenceRole === "deferred_alternative" && branch.status === "deferred" && branch.autoReconsideration));
+  assert.ok(created.json.report.branches.some((branch) => branch.inferenceRole === "anticipated_alternative" && branch.status === "candidate" && !branch.autoReconsideration && branch.historicalClaim === false));
   assert.equal(created.json.report.modelAssist.status, "disabled");
   const firstDigest = created.json.report.sourceDigest;
 
@@ -144,20 +144,20 @@ test("authorized managed-project analysis is source-cited, tenant-bound, deferre
   await store.pool?.end();
   assert.ok(ledger.some((branch) => branch.candidate?.sourceDigest === firstDigest));
   assert.ok(ledger.some((branch) => branch.candidate?.sourceDigest === changed.json.report.sourceDigest));
-  assert.ok(ledger.filter((branch) => branch.candidate?.inferenceRole === "deferred_alternative").every((branch) => branch.status === "deferred" && branch.autoReconsideration && branch.allowRejectedReconsideration));
+  const anticipated = ledger.filter((branch) => branch.candidate?.inferenceRole === "anticipated_alternative");
+  assert.ok(anticipated.length > 0);
+  assert.ok(anticipated.every((branch) => branch.status === "candidate" && !branch.autoReconsideration && !branch.allowRejectedReconsideration));
   const topology = JSON.parse(await fs.readFile(path.join(projectRoot, "runtime", "agents", "projects", `${projectId}.agents.json`), "utf8"));
   assert.ok(topology.functionalities.length > 0);
   assert.ok(topology.relationships.some((relationship) => relationship.type === "IMPLEMENTS"));
-  assert.ok(topology.architectureBranches.some((branch) => branch.inferenceRole === "deferred_alternative"));
+  assert.ok(topology.architectureBranches.some((branch) => branch.inferenceRole === "anticipated_alternative"));
   const graph = JSON.parse(await fs.readFile(path.join(projectRoot, "topology", "d3", "agentic-system-graph.json"), "utf8"));
-  const functionality = graph.nodes.find((node) => node.type === "application_functionality" && node.metadata?.projectId === projectId);
-  const branch = graph.nodes.find((node) => node.type === "branch" && node.metadata?.projectId === projectId && node.metadata?.inferenceRole === "deferred_alternative");
-  assert.ok(functionality, "the D3 graph contains a project functionality node");
-  assert.ok(branch, "the D3 graph contains a deferred architecture branch node");
-  assert.ok(graph.links.some((link) => link.source === `project:${projectId}` && link.target === functionality.id && link.type === "contains_functionality"));
+  const functionality = graph.nodes.find((node) => node.type === "page" && node.metadata?.projectId === projectId && node.metadata?.applicationEntityType === "ui_surface");
+  const branch = graph.nodes.find((node) => node.type === "branch" && node.metadata?.projectId === projectId && node.metadata?.inferenceRole === "anticipated_alternative");
+  assert.ok(functionality, "the D3 graph contains a project UI application entity node");
+  assert.ok(branch, "the D3 graph contains an anticipated architecture branch node");
+  assert.ok(graph.links.some((link) => link.source === `project:${projectId}` && link.target === functionality.id && link.type === "contains_application_entity"));
   assert.ok(graph.links.some((link) => link.target === functionality.id && link.type === "implements"));
-  const codeUnit = graph.nodes.find((node) => node.type === "application_subfunctionality" && node.metadata?.projectId === projectId);
-  assert.ok(codeUnit, "the D3 graph contains a cited code-unit child");
-  assert.ok(graph.links.some((link) => link.source === functionality.id && link.target === codeUnit.id && link.type === "contains_subfunctionality"));
+  assert.equal(graph.nodes.some((node) => node.type === "application_subfunctionality" && node.metadata?.projectId === projectId), false, "typed application entities do not acquire fabricated code-unit children");
   assert.ok(graph.links.some((link) => link.target === branch.id && ["has_architecture_branch", "supports_architecture_branch"].includes(link.type)));
 });

@@ -1,0 +1,55 @@
+{
+  "agent_id": "media-asset-agent",
+  "agent_name": "Media Asset Agent",
+  "role": "media-asset",
+  "definitionType": "AgentDefinition",
+  "scope": "global_reusable",
+  "version": "1.0.0",
+  "status": "active",
+  "capability_score": {
+    "capabilityScore": 60,
+    "deliverableAccuracyScore": 50,
+    "reliabilityScore": 50,
+    "adaptabilityScore": 70,
+    "reuseConfidenceScore": 40,
+    "successCount": 0,
+    "failureCount": 0,
+    "repeatedCorrectionCount": 0
+  },
+  "projectAssignments": [
+    {
+      "id": "project-agent-assignment:voicetranscriptgenx-QcKNlU:media-asset-agent",
+      "projectId": "voicetranscriptgenx-QcKNlU",
+      "agentId": "media-asset-agent",
+      "role": "media-asset",
+      "projectResponsibility": "Track uploaded media references, identify screenshot/UI reference nodes, and expose each prominent node as a functional implementation or explicit fallback requirement.",
+      "status": "active",
+      "contextPath": ".agentic/orchestrator-agent.md",
+      "createdAt": "2026-08-27T04:25:31.062Z"
+    }
+  ],
+  "reuse_decisions": [
+    {
+      "id": "agent-reuse:voicetranscriptgenx-QcKNlU:media-asset-agent",
+      "projectExecution": "voicetranscriptgenx-QcKNlU",
+      "selectedAgent": "media-asset-agent",
+      "requestedRole": "media-asset",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global media-asset definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-27T04:25:31.062Z"
+    }
+  ],
+  "latest_reuse_decision": {
+    "id": "agent-reuse:voicetranscriptgenx-QcKNlU:media-asset-agent",
+    "projectExecution": "voicetranscriptgenx-QcKNlU",
+    "selectedAgent": "media-asset-agent",
+    "requestedRole": "media-asset",
+    "decisionType": "exact_reuse",
+    "reuseConfidenceScore": 100,
+    "similarityScore": 1,
+    "reason": "Reused the existing global media-asset definition; project context is stored in a separate assignment.",
+    "createdAt": "2026-08-27T04:25:31.062Z"
+  }
+}

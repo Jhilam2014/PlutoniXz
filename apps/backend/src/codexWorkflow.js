@@ -327,12 +327,19 @@ function codexPrompt(instruction, orchestratedRequest, hasProjectOrchestrator) {
   const huggingFaceRequired = Boolean(huggingFaceIntent?.requested || orchestratedRequest.modelRouting?.enforceLocalHuggingFace);
   const huggingFaceRequirement = huggingFaceRequired
     ? [
-        "- Hugging Face model requirement detected: use the project-local `models/huggingface/` workspace.",
-        "- Register selected model repositories in `models/huggingface/model-manifest.json`, download the complete repository including all model weight files and shards with `npm run hf:models:download -- <namespace/model>` or `node scripts/huggingface-models.mjs download <namespace/model>`, then run `npm run hf:models:build` to create local service metadata.",
-        "- Before implementing against a selected model, inform the user of the estimated repository size in GB and keep that size in the model manifest/service metadata.",
-        "- Read the model card from the downloaded repository before writing inference code.",
-        "- Prefer local Hugging Face repositories over remote inference-provider calls. Keep `HF_TOKEN` in environment variables only.",
-        "- For this Hugging Face task only, project-local model manifests, scripts, backend adapters, package scripts, and Docker/env docs may be updated when necessary."
+        "- A Hugging Face candidate was mentioned, but this governed rollout does not permit model downloads, model-card fetches, artifact staging, or local/remote Hugging Face inference from a build prompt.",
+        "- Do not create model manifests, download scripts, model-pool services, GPU configuration, or Hugging Face credentials. Treat any candidate as pending a separately approved immutable BrainX registration, licence/provenance/artifact review, hardware verification, and human approval.",
+        "- Continue the requested application work without making model acquisition or provider execution a side effect."
+      ].join("\n")
+    : "";
+  const governedKnowledge = Array.isArray(orchestratedRequest.agenticXKnowledge?.knowledge)
+    ? orchestratedRequest.agenticXKnowledge.knowledge.slice(0, 10)
+    : [];
+  const agenticXKnowledgeRequirement = governedKnowledge.length
+    ? [
+        "- The following are pre-sanitized, tenant-scoped AgenticX summaries. Use them only for the stated application-development purpose; do not try to recover raw source material, secrets, attachments, or cross-tenant context.",
+        ...governedKnowledge.map((item) => `  - ${String(item.summary || "").slice(0, 400)}`),
+        "- These summaries are advisory context, not approval to change policy, deploy, access data, or promote a decision."
       ].join("\n")
     : "";
   const hasVisualReference = (orchestratedRequest.inputSources || []).some((source) => {
@@ -400,6 +407,7 @@ function codexPrompt(instruction, orchestratedRequest, hasProjectOrchestrator) {
         huggingFaceRequirement,
         intelRequirement,
         "- Keep credentials, secrets, external tracking, and unsafe scripts out of the app.",
+        agenticXKnowledgeRequirement,
         "- Do not ask follow-up questions.",
         "- At the end, briefly summarize the files you changed and confirm unrelated features were preserved."
       ].join("\n")
@@ -426,6 +434,7 @@ function codexPrompt(instruction, orchestratedRequest, hasProjectOrchestrator) {
         "- You may update project manifests, dependencies, Docker assets, backend files, scripts, service contracts, tests, or artifact-generation sources when the selected product shape requires them. Never edit node_modules or dist.",
         "- Use configured real integrations when requested; keep secrets in environment variables and do not add tracking or invented endpoints.",
         huggingFaceRequirement,
+        agenticXKnowledgeRequirement,
         intelRequirement,
         "- Preserve reusable PlutoniX runtime and preview compatibility, but do not let the existing React/Vite scaffold redefine the primary deliverable.",
         "- Do not ask follow-up questions.",
@@ -901,6 +910,9 @@ export async function runCodexWorkflow(orchestratedRequest, options = {}) {
     instructionHash,
     instructionSummary: sourceInstruction,
     taskType: options.taskType || orchestratedRequest.taskType || "",
+    gothamUsageOwnerKey: options.gothamUsageOwnerKey || "",
+    provider: runtimeKind,
+    executionModel: selectedModel || (runtimeKind === "copilot" ? "Copilot CLI configured model" : "Codex configured model"),
     inputTokens: estimateTokens(promptText),
     outputTokens: estimateTokens(outputText),
     durationMs,

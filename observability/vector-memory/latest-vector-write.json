@@ -1,8 +1,8 @@
 {
-  "workflow_id": "plutonix-vector-sync-1786995337410",
-  "reason": "periodic",
-  "started_at": "2026-08-17T19:35:37.410Z",
-  "completed_at": "2026-08-17T19:35:37.818Z",
+  "workflow_id": "plutonix-vector-sync-1787857080514",
+  "reason": "backend-startup",
+  "started_at": "2026-08-27T18:58:00.514Z",
+  "completed_at": "2026-08-27T18:58:00.662Z",
   "status": "deferred",
   "deferred_reason": "below_pending_threshold",
   "min_pending_files": 5,

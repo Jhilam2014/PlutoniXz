@@ -12,6 +12,7 @@ import {
   CheckCircle2,
   Cloud,
   Code2,
+  Copy,
   Database,
   Download,
   ExternalLink,
@@ -19,11 +20,13 @@ import {
   FileSpreadsheet,
   FileText,
   Film,
+  FlaskConical,
   FolderUp,
   Gauge,
   GitBranch,
   GripVertical,
   Hammer,
+  LockKeyhole,
   Loader2,
   Maximize2,
   Monitor,
@@ -51,7 +54,6 @@ import {
   Square,
   Sigma,
   Tablet,
-  TerminalSquare,
   Trash2,
   Upload,
   UserRound,
@@ -59,8 +61,17 @@ import {
   XCircle
 } from "lucide-react";
 import CloudHostingPage from "./pages/CloudHostingPage.jsx";
+import StudioPage from "./pages/StudioPage.jsx";
 import GovernedPromotionPanel from "./GovernedPromotionPanel.jsx";
+import PlutonixAnalysisWorkspace from "./PlutonixAnalysisWorkspace.jsx";
+import GothamStudio from "./gotham-studio/GothamStudio.jsx";
 import { authFetch, clearUser, getStoredUser, storeDevelopmentUser, storeUser } from "./authClient.js";
+import {
+  agentGlyphMarkup,
+  agentIconKind as sharedAgentIconKind,
+  agentVisualFromId as sharedAgentVisualFromId,
+  agentVisualFromRecord as sharedAgentVisualFromRecord
+} from "./agentAvatarVisual.js";
 import {
   functionalityNodeInsights,
   layoutFunctionalityGraph,
@@ -71,12 +82,15 @@ import {
   buildDecisionObjectiveLedger,
   buildDecisionTimelineFlow,
   decisionBranchLineageIds,
+  decisionBranchProjectionState,
   decisionBranchReviewSignal,
   decisionBranchStateLabel,
   decisionBranchWorkshopSummary,
   isDisabledDecisionBranch
 } from "./decisionBranchTreeModel.js";
+import { applicationDecisionSummary } from "./plutonixAnalysisModel.js";
 import { runtimeEventTranscript } from "./runtimeEventTranscript.js";
+import { authorizedStudioWorkspace, normalizedStudioWorkspace } from "./studioAccessModel.js";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:8080";
 const GENERATED_SITE_URL = import.meta.env.VITE_GENERATED_SITE_URL || "http://localhost:5174";
@@ -110,11 +124,11 @@ function readWorkspaceDeepLink() {
   const agent = params.get("agent")?.trim() || "";
   const logs = params.get("logs")?.trim() || "";
   const requestedWorkspace = params.get("workspace")?.trim() || "";
-  const allowedWorkspaces = new Set(["builder", "agentic-system", "agents", "hosting"]);
   const agentName = params.get("agentName")?.trim() || "";
   const agentType = params.get("agentType")?.trim() || "Agent";
   const project = params.get("project")?.trim() || "Agentic System";
   const description = params.get("description")?.trim() || "";
+  const studioJob = params.get("studioJob")?.trim() || "";
   return {
     agent,
     logs,
@@ -133,7 +147,8 @@ function readWorkspaceDeepLink() {
           efficiency: {}
         }
       : null,
-    workspace: agent ? "agents" : logs ? "builder" : allowedWorkspaces.has(requestedWorkspace) ? requestedWorkspace : "builder"
+    studioJob,
+    workspace: normalizedStudioWorkspace(agent ? "agents" : logs ? "builder" : requestedWorkspace)
   };
 }
 
@@ -730,35 +745,11 @@ const generatedAgentPalettes = [
 ];
 
 function agentVisualFromId(agentId, fallback = {}) {
-  const id = String(agentId || "").trim();
-  const base = agentVisuals[id] || {};
-  const hash = stableAgentHash(id || fallback.name || fallback.agentName);
-  const generatedPalette = generatedAgentPalettes[hash % generatedAgentPalettes.length];
-  const color = base.color || fallback.profile?.color || fallback.color || generatedPalette[0];
-  return {
-    id: id || "gotham-builder",
-    name: fallback.name || base.name || fallback.agentName || displayEventType(id || "Gotham Builder"),
-    label: base.label || fallback.profile?.label || fallback.role || fallback.domain || "Agent",
-    initials: base.initials || fallback.initials || initialsFor(fallback.name || id),
-    color,
-    accent: base.accent || fallback.accent || fallback.profile?.accent || generatedPalette[1],
-    role: fallback.role || base.label || fallback.domain || "",
-    objective: fallback.objective || fallback.instructionSummary || "",
-    capabilities: fallback.capabilities || [],
-    variant: hash % 6
-  };
+  return sharedAgentVisualFromId(agentId, fallback);
 }
 
 function agentVisualFromRecord(agent) {
-  return agentVisualFromId(agent?.id, {
-    name: agent?.name,
-    role: agent?.role,
-    domain: agent?.domain,
-    profile: agent?.profile,
-    objective: agent?.objective,
-    instructionSummary: agent?.instructionSummary,
-    capabilities: agent?.capabilities
-  });
+  return sharedAgentVisualFromRecord(agent);
 }
 
 function agentVisualFromEvent(event, selectedProject = null) {
@@ -795,27 +786,10 @@ function agentVisualFromEvent(event, selectedProject = null) {
 }
 
 function agentIconKind(avatar = {}) {
-  const value = `${avatar.id || ""} ${avatar.name || ""} ${avatar.label || ""} ${avatar.role || ""} ${avatar.objective || ""} ${(avatar.capabilities || []).join(" ")}`.toLowerCase();
-  if (value.includes("human") || value === "user") return "human";
-  if (value.includes("qagent")) return "qagent";
-  if (/review|audit|validation|verifier|quality/.test(value)) return "reviewer";
-  if (/security|auth|permission|compliance|privacy/.test(value)) return "security";
-  if (/test|testing|qa|coverage/.test(value)) return "testing";
-  if (/memory|vector|knowledge|graph/.test(value)) return "memory";
-  if (/api|backend|service|integration|webhook/.test(value)) return "api";
-  if (/voice|audio|speech/.test(value)) return "voice";
-  if (/map|geo|location|route/.test(value)) return "geo";
-  if (value.includes("orchestrator") || value.includes("plutonix") || value.includes("fullstack")) return "orchestrator";
-  if (value.includes("ui") || value.includes("composition") || value.includes("frontend")) return "ui";
-  if (/content|copy|media|ocr|document/.test(value)) return "content";
-  if (value.includes("data") || value.includes("database")) return "data";
-  if (value.includes("runtime") || value.includes("packaging") || value.includes("docker") || value.includes("execution")) return "runtime";
-  if (value.includes("commerce") || value.includes("catalog")) return "commerce";
-  if (value.includes("analytics") || value.includes("signal") || value.includes("score")) return "analytics";
-  return "agent";
+  return sharedAgentIconKind(avatar);
 }
 
-function AgentGlyph({ kind }) {
+function LegacyAgentGlyph({ kind }) {
   if (kind === "reviewer") {
     return <g className="agent-glyph"><path d="M20 19h19l7 7-15 20-15-20 4-7Z" /><path d="M24 31l5 5 11-13" /><circle cx="44" cy="19" r="4" /></g>;
   }
@@ -933,6 +907,10 @@ function AgentGlyph({ kind }) {
   );
 }
 
+function AgentGlyph({ kind }) {
+  return <g className="agent-glyph" dangerouslySetInnerHTML={{ __html: agentGlyphMarkup(kind) }} />;
+}
+
 function AgentAvatar({ visual, size = "medium", className = "" }) {
   const avatar = visual || agentVisualFromId("project-execution-agent");
   const label = `${avatar.name} profile image`;
@@ -983,7 +961,7 @@ function AgentAvatar({ visual, size = "medium", className = "" }) {
   );
 }
 
-function EventRow({ event, sessionStartedAt, selectedProject }) {
+function EventRow({ event, sessionStartedAt, selectedProject, onOpenStudio }) {
   const [expanded, setExpanded] = useState(false);
   const isCurrentSession = sessionStartedAt && new Date(event.createdAt || 0).getTime() >= sessionStartedAt;
   const isPromptEvent = ["instruction", "orchestrator-prompt"].includes(event.type);
@@ -1011,7 +989,9 @@ function EventRow({ event, sessionStartedAt, selectedProject }) {
     status: event.status,
     changedFiles: event.changedFiles,
     tokenUsage: event.tokenUsage,
-    failureClass: event.failureClass
+    failureClass: event.failureClass,
+    studioJobId: event.studioJobId,
+    studioPipelineId: event.studioPipelineId
   }).filter(([, value]) => value !== undefined && value !== null && value !== ""));
   return (
     <li
@@ -1082,6 +1062,7 @@ function EventRow({ event, sessionStartedAt, selectedProject }) {
                 <pre>{JSON.stringify(eventMetadata, null, 2)}</pre>
               </div>
             ) : null}
+            {event.studioJobId ? <button type="button" onClick={() => onOpenStudio?.(event.studioJobId)}>Open in Gotham Studio</button> : null}
           </section>
         ) : null}
       </div>
@@ -3009,8 +2990,9 @@ function decisionCanvasLines(value, max = 21) {
   return lines.length ? lines : ["Recorded branch"];
 }
 
-function decisionLandscapeState(kind) {
-  return ({ current: "CURRENT", possibility: "OPTION", dormant: "DORMANT", record: "RECORD", stage: "REVIEW" })[kind] || "RECORD";
+function decisionLandscapeState(kind, branch = null) {
+  if (kind === "dormant" && decisionBranchProjectionState(branch || {}) === "rejected") return "REJECTED";
+  return ({ current: "CURRENT", possibility: "OPTION", anticipated: "ANTICIPATED", anticipated_rejected: "ANTICIPATED NO", dormant: "DORMANT", record: "RECORD", stage: "REVIEW" })[kind] || "RECORD";
 }
 
 function DecisionInspectorLabel({ icon: Icon, children, tone = "violet" }) {
@@ -3078,6 +3060,7 @@ function DecisionBranchTreeCanvas({
   selectedDecisionRecord = null,
   selectedFunctionalityId = "",
   selectedAssignment = null,
+  assignments = [],
   onSelectBranch,
   onResetFocus,
   onAnalyze,
@@ -3095,9 +3078,10 @@ function DecisionBranchTreeCanvas({
       projectName: project?.name || "Project",
       branches,
       analysisReport,
-      graph: decisionGraph
+      graph: decisionGraph,
+      assignments
     }),
-    [analysisReport, branches, decisionGraph, project?.id, project?.name]
+    [analysisReport, assignments, branches, decisionGraph, project?.id, project?.name]
   );
   const selectedLineageIds = useMemo(
     () => decisionBranchLineageIds(branches, selectedBranchId),
@@ -3132,6 +3116,7 @@ function DecisionBranchTreeCanvas({
     const dimUnrelated = Boolean(selectedBranchId);
     const isLineage = (branchId) => selectedLineageIds.has(branchId);
     const nodeLineageId = (datum) => datum.branchId || datum.lineageBranchId || "";
+    const functionalityHasSelectedLineage = (functionalityId) => landscape.nodes.some((node) => node.functionalityId === functionalityId && isLineage(node.branchId));
 
     const zones = graph.append("g").attr("class", "decision-branch-landscape-zones");
     const zone = zones.selectAll("g")
@@ -3201,6 +3186,17 @@ function DecisionBranchTreeCanvas({
       ].filter(Boolean).join(" "))
       .attr("d", route);
 
+    const assignmentLinks = graph.append("g").attr("class", "decision-branch-landscape-assignment-links");
+    assignmentLinks.selectAll("path")
+      .data(landscape.agentLinks || [])
+      .join("path")
+      .attr("class", (link) => [
+        "decision-branch-landscape-link",
+        "decision-agent-assignment-link",
+        dimUnrelated && !isLineage(link.targetBranchId) ? "muted" : ""
+      ].filter(Boolean).join(" "))
+      .attr("d", route);
+
     const genesis = graph.append("g")
       .attr("class", "decision-branch-landscape-genesis")
       .attr("transform", `translate(${landscape.genesis.x},${landscape.genesis.y})`);
@@ -3247,7 +3243,7 @@ function DecisionBranchTreeCanvas({
     node.append("circle").attr("class", "decision-branch-landscape-node-core").attr("r", (datum) => datum.radius);
     node.append("circle").attr("class", "decision-branch-landscape-node-evidence-ring").attr("r", (datum) => Math.max(13, datum.radius - 7));
     node.append("text").attr("class", "decision-branch-landscape-node-glyph").attr("text-anchor", "middle").attr("y", -5).text((datum) => datum.glyph);
-    node.append("text").attr("class", "decision-branch-landscape-node-state").attr("text-anchor", "middle").attr("y", 13).text((datum) => decisionLandscapeState(datum.visualKind));
+    node.append("text").attr("class", "decision-branch-landscape-node-state").attr("text-anchor", "middle").attr("y", 13).text((datum) => decisionLandscapeState(datum.visualKind, datum.branch));
     const nodeLabel = node.append("text")
       .attr("class", "decision-branch-landscape-node-label")
       .attr("text-anchor", "middle")
@@ -3263,12 +3259,46 @@ function DecisionBranchTreeCanvas({
       .attr("text-anchor", "middle")
       .attr("y", (datum) => datum.radius + 17 + Math.min(2, decisionCanvasLines(datum.label, 21).length) * 13 + 3)
       .text((datum) => datum.kind === "deferred-review-stage" ? datum.detail : datum.timelineLabel || `${datum.signal?.evidenceCount || 0} cited · ${datum.signal?.childCount || 0} linked`);
+
+    const agentNode = graph.append("g")
+      .attr("class", "decision-branch-landscape-agent-nodes")
+      .selectAll("g")
+      .data(landscape.agentNodes || [])
+      .join("g")
+      .attr("class", (datum) => [
+        "decision-branch-landscape-agent-node",
+        datum.associationBasis || "analysis-assignment",
+        dimUnrelated && !functionalityHasSelectedLineage(datum.functionalityId) ? "muted" : ""
+      ].filter(Boolean).join(" "))
+      .attr("transform", (datum) => `translate(${datum.x},${datum.y})`)
+      .attr("tabindex", 0)
+      .attr("role", "img")
+      .attr("aria-label", (datum) => `${datum.label}, analysis assignment to ${datum.functionalityLabel}. This is not recorded topology ownership or a historical decision event.`);
+    agentNode.append("circle").attr("class", "decision-branch-landscape-agent-node-aura").attr("r", (datum) => datum.radius + 6);
+    agentNode.append("circle").attr("class", "decision-branch-landscape-agent-node-core").attr("r", (datum) => datum.radius);
+    agentNode.append("text").attr("class", "decision-branch-landscape-agent-node-glyph").attr("text-anchor", "middle").attr("y", -3).text("AGT");
+    agentNode.append("text").attr("class", "decision-branch-landscape-agent-node-state").attr("text-anchor", "middle").attr("y", 8).text("ASSIGNED");
+    const agentNodeLabel = agentNode.append("text")
+      .attr("class", "decision-branch-landscape-agent-node-label")
+      .attr("text-anchor", "middle")
+      .attr("y", (datum) => datum.radius + 15);
+    agentNodeLabel.each(function renderAgentLabel(datum) {
+      const label = d3.select(this);
+      decisionCanvasLines(datum.label, 19).slice(0, 2).forEach((line, index) => {
+        label.append("tspan").attr("x", 0).attr("dy", index ? 12 : 0).text(line);
+      });
+    });
+    agentNode.append("text")
+      .attr("class", "decision-branch-landscape-agent-node-detail")
+      .attr("text-anchor", "middle")
+      .attr("y", (datum) => datum.radius + 15 + Math.min(2, decisionCanvasLines(datum.label, 19).length) * 12 + 3)
+      .text("Analysis assignment");
     const zoom = d3.zoom()
       .scaleExtent([0.35, 3.1])
       .filter((event) => {
         if (event.type === "dblclick") return false;
         if (event.type === "wheel") return true;
-        return !event.target?.closest?.(".decision-branch-landscape-node");
+        return !event.target?.closest?.(".decision-branch-landscape-node, .decision-branch-landscape-agent-node");
       })
       .on("zoom", (event) => {
         zoomTransformRef.current = event.transform;
@@ -3332,7 +3362,9 @@ function DecisionBranchTreeCanvas({
           <span>{landscape.knownCount || 0} known sequence steps</span>
           <span>{landscape.anticipatedCount || 0} anticipated steps</span>
           <span>{landscape.activeCount} live records</span>
-          <span className={landscape.disabledCount ? "disabled" : ""}>{landscape.disabledCount} dormant</span>
+          {landscape.agentNodeCount ? <span>{landscape.agentNodeCount} analysis agent node{landscape.agentNodeCount === 1 ? "" : "s"}</span> : null}
+          {landscape.recordedRejectedCount ? <span className="disabled">{landscape.recordedRejectedCount} recorded rejected</span> : null}
+          <span className={landscape.disabledCount ? "disabled" : ""}>{landscape.disabledCount} dormant provenance</span>
           {landscape.deferredReviewStageCount ? <span>{landscape.deferredReviewStageCount} impact review stage{landscape.deferredReviewStageCount === 1 ? "" : "s"}</span> : null}
         </div>
       </header>
@@ -3340,8 +3372,11 @@ function DecisionBranchTreeCanvas({
         <span><i className="genesis" />Timeline origin</span>
         <span><i className="current" />Observed current</span>
         <span><i className="possibility" />Future possibility</span>
-        <span><i className="disabled" />Dormant evidence</span>
-        <small>Each bordered zone is a project objective, with one horizontal lane per major functionality. Solid left-to-right flow follows known ledger sequence; nodes labelled Anticipated are ordered only from the recorded path shape and remain non-authoritative. Drag to explore · scroll to zoom · use Reset to recenter.</small>
+        <span><i className="anticipated" />Anticipated alternative</span>
+        <span><i className="anticipated-rejected" />Anticipated rejection</span>
+        <span><i className="analysis-agent" />Analysis assignment node</span>
+        <span><i className="disabled" />Recorded rejected / dormant</span>
+        <small>Each bordered zone is a project objective, with one horizontal lane per major functionality. Solid left-to-right flow follows known ledger sequence; nodes labelled Anticipated are ordered only from the recorded path shape and remain non-authoritative. Agent nodes are explicit analysis assignments, not recorded ownership. Drag to explore · scroll to zoom · use Reset to recenter.</small>
       </div>
       <div className="decision-branch-landscape-workspace">
         <DecisionBranchInspector
@@ -3445,9 +3480,23 @@ function DecisionContinuityPanel({
     return () => clearInterval(timer);
   }, [architectureAnalysisRevision, hasSelectedManagedProject, selectedProject?.id]);
 
+  // The application summary merges source-derived alternatives with the
+  // authoritative ledger, retaining the ledger as the winner for duplicate
+  // branch IDs. The tree therefore shows deferred/rejected outcomes wherever
+  // they exist and source alternatives only as explicitly anticipated nodes.
+  const timelineDecisionSummary = useMemo(
+    () => applicationDecisionSummary({
+      architectureAnalysisReport,
+      branches,
+      reconsiderations,
+      decisionGraph: graph,
+      project: selectedProject
+    }),
+    [architectureAnalysisReport, branches, graph, reconsiderations, selectedProject]
+  );
   const objectiveLedger = useMemo(
-    () => buildDecisionObjectiveLedger({ analysisReport: architectureAnalysisReport, branches }),
-    [architectureAnalysisReport, branches]
+    () => buildDecisionObjectiveLedger({ analysisReport: architectureAnalysisReport, branches: timelineDecisionSummary.branchRows }),
+    [architectureAnalysisReport, timelineDecisionSummary.branchRows]
   );
   const displayedBranches = objectiveLedger.decisionBranches;
   const branchCountByStatus = useMemo(() => displayedBranches.reduce((counts, branch) => {
@@ -3558,6 +3607,7 @@ function DecisionContinuityPanel({
         selectedDecisionRecord={selectedDecisionRecord}
         selectedFunctionalityId={selectedFunctionalityId}
         selectedAssignment={selectedAssignment}
+        assignments={architectureAnalysisReport?.assignments || []}
         onSelectBranch={setSelectedBranchId}
         onResetFocus={() => setSelectedBranchId("")}
         onAnalyze={onAnalyzeArchitecture}
@@ -4411,6 +4461,10 @@ function ProductDocumentPanel() {
           <span>Multi-artifact capabilities, autonomous central brain, workflows, requirements, architecture, safety model, roadmap, and open product questions.</span>
         </div>
         <div className="product-document-actions">
+          <a className="ghost-action" href="/media/product-video/plutonix-product-video.mp4" target="_blank" rel="noreferrer">
+            <Film size={15} />
+            Watch demo
+          </a>
           <button className="ghost-action" onClick={() => downloadProductDocumentPdf(documentText)} disabled={status !== "ready" || !documentText}>
             <Download size={15} />
             Download PDF
@@ -5209,7 +5263,7 @@ function PlutonixBrainXCanvas() {
   );
 }
 
-function FunctionalityGraphWorkspace({ graph, selectedNodeId, onSelectNode, detailed = false }) {
+function FunctionalityGraphWorkspace({ graph, selectedNodeId, onSelectNode, onOpenStudioResource, detailed = false }) {
   const canvasRef = useRef(null);
   const svgRef = useRef(null);
   const graphLayerRef = useRef(null);
@@ -5464,6 +5518,16 @@ function FunctionalityGraphWorkspace({ graph, selectedNodeId, onSelectNode, deta
             </span>
             <h3>{insights.node.label}</h3>
             <p>{insights.node.detail || "No additional detail was recorded for this node."}</p>
+            {insights.node.studioResource ? (
+              <button
+                type="button"
+                className="functionality-studio-resource-action"
+                onClick={() => onOpenStudioResource?.(insights.node.studioResource)}
+              >
+                <FlaskConical size={13} />
+                {insights.node.studioResource.type === "ml_pipeline" ? "Open ML pipeline" : "Open in Gotham Studio"}
+              </button>
+            ) : null}
             <dl>
               <div><dt>Status</dt><dd>{insights.node.state || graph.status || "recorded"}</dd></div>
               <div><dt>Child nodes</dt><dd>{insights.children.length}</dd></div>
@@ -5494,7 +5558,7 @@ function FunctionalityGraphWorkspace({ graph, selectedNodeId, onSelectNode, deta
   );
 }
 
-function FunctionalityNodalAnalysis({ projectId = "", flowPath }) {
+function FunctionalityNodalAnalysis({ projectId = "", flowPath, onOpenStudioResource }) {
   const graph = useMemo(
     () => normalizeFunctionalityGraph(flowPath || {}, projectId),
     [flowPath, projectId]
@@ -5565,6 +5629,7 @@ function FunctionalityNodalAnalysis({ projectId = "", flowPath }) {
                 graph={graph}
                 selectedNodeId={selectedNodeId}
                 onSelectNode={setSelectedNodeId}
+                onOpenStudioResource={onOpenStudioResource}
                 detailed
               />
             </section>
@@ -5596,6 +5661,7 @@ function FunctionalityNodalAnalysis({ projectId = "", flowPath }) {
           graph={graph}
           selectedNodeId={selectedNodeId}
           onSelectNode={setSelectedNodeId}
+          onOpenStudioResource={onOpenStudioResource}
         />
       </section>
       {detailModal}
@@ -5603,7 +5669,7 @@ function FunctionalityNodalAnalysis({ projectId = "", flowPath }) {
   );
 }
 
-function ProjectFlowPanel({ projectId = "", flowPath, decisionHistory = [], expanded, running, onToggle, onHumanChoice }) {
+function ProjectFlowPanel({ projectId = "", flowPath, decisionHistory = [], expanded, running, onToggle, onHumanChoice, onOpenStudioResource }) {
   const [detailPage, setDetailPage] = useState(() => typeof window !== "undefined" && window.location.hash === "#execution-snapshot" ? "snapshot" : "");
   const [historyCursor, setHistoryCursor] = useState(0);
   const [isHistoryPlaying, setHistoryPlaying] = useState(false);
@@ -6030,7 +6096,7 @@ function ProjectFlowPanel({ projectId = "", flowPath, decisionHistory = [], expa
               <Activity size={16} /><span><strong>Execution snapshot</strong><small>Movable sequential graph</small></span><ChevronRight size={15} />
             </button>
           </div>
-          <FunctionalityNodalAnalysis projectId={projectId} flowPath={flowPath} />
+          <FunctionalityNodalAnalysis projectId={projectId} flowPath={flowPath} onOpenStudioResource={onOpenStudioResource} />
         </div>
       ) : null}
       {flowDetailModal}
@@ -6038,9 +6104,106 @@ function ProjectFlowPanel({ projectId = "", flowPath, decisionHistory = [], expa
   );
 }
 
+function usageValue(value, suffix = "") {
+  return value === null || value === undefined || value === "" ? "Not exposed by provider" : `${Number.isFinite(Number(value)) ? Number(value).toLocaleString() : value}${suffix}`;
+}
+
+function usageTimestamp(value) {
+  if (!value) return "Not updated";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "Not updated";
+  return `${date.toLocaleString()} ${Intl.DateTimeFormat().resolvedOptions().timeZone}`;
+}
+
+function GothamAccountUsagePanel({ data, loading, error, expanded, onExpandedChange, onRefresh }) {
+  const [openProvider, setOpenProvider] = useState("");
+  const providers = Array.isArray(data?.providers) ? data.providers : [];
+  const activeProvider = providers.find((provider) => provider.id === data?.activeProvider) || providers[0] || null;
+
+  useEffect(() => {
+    if (activeProvider?.id) setOpenProvider(activeProvider.id);
+  }, [activeProvider?.id]);
+
+  async function copyProviderAccountId(accountId) {
+    if (!accountId || !navigator.clipboard?.writeText) return;
+    await navigator.clipboard.writeText(accountId).catch(() => {});
+  }
+
+  function providerCard(provider) {
+    const account = provider.account || {};
+    const conversation = provider.conversation || {};
+    const allowance = provider.allowance || {};
+    const context = provider.contextWindow || {};
+    const isOpen = openProvider === provider.id;
+    const providerId = `gotham-account-provider-${provider.id}`;
+    return (
+      <article className={`gotham-usage-provider ${provider.active ? "active" : ""}`} key={provider.id}>
+        <button
+          type="button"
+          className="gotham-usage-provider-head"
+          onClick={() => setOpenProvider(isOpen ? "" : provider.id)}
+          aria-expanded={isOpen}
+          aria-controls={providerId}
+        >
+          <span><UserRound size={14} /><strong>{provider.label}</strong>{provider.active ? <b>Active conversation</b> : null}</span>
+          <span className={`gotham-usage-status ${provider.connection?.status || "unavailable"}`}>{provider.connection?.status || "unavailable"}<ChevronDown size={14} /></span>
+        </button>
+        {isOpen ? (
+          <div id={providerId} className="gotham-usage-provider-body">
+            <dl className="gotham-usage-fields">
+              <div><dt>Provider account ID</dt><dd title={account.providerAccountId || account.providerAccountIdReason || "Not exposed by provider"}>{account.providerAccountId || "Not exposed by provider"}{account.providerAccountId ? <button type="button" onClick={() => copyProviderAccountId(account.providerAccountId)} aria-label={`Copy ${provider.label} provider account ID`}><Copy size={12} /></button> : null}</dd></div>
+              <div><dt>Identity</dt><dd>{account.displayName || account.email || account.username || "Not exposed by provider"}</dd></div>
+              <div><dt>Organization / plan</dt><dd>{[account.organization, account.workspace, account.plan].filter(Boolean).join(" · ") || "Not exposed by provider"}</dd></div>
+              <div><dt>Authentication</dt><dd>{account.authenticationMode || "Not exposed by provider"}</dd></div>
+            </dl>
+            <section className="gotham-usage-group" aria-label={`${provider.label} conversation usage`}>
+              <header><strong>This conversation</strong><small>{conversation.availability === "available" ? `${conversation.classification || "estimated"} · ${conversation.source || "Gotham runtime"}` : conversation.availabilityReason}</small></header>
+              <div className="gotham-usage-metrics">
+                <span><small>Input</small><b>{usageValue(conversation.inputTokens)}</b></span>
+                <span><small>Output</small><b>{usageValue(conversation.outputTokens)}</b></span>
+                <span><small>Cached</small><b>{usageValue(conversation.cachedTokens)}</b></span>
+                <span><small>Total</small><b>{usageValue(conversation.totalTokens)}</b></span>
+              </div>
+              <p>{conversation.model ? `${conversation.provider || provider.label} · ${conversation.model}` : "Provider/model details unavailable."}{conversation.cost ? ` · Estimated cost ${conversation.cost.currency} ${conversation.cost.amount}` : ""}</p>
+            </section>
+            <section className="gotham-usage-group" aria-label={`${provider.label} account allowance`}>
+              <header><strong>Account allowance</strong><small>{allowance.availability === "available" ? allowance.source : allowance.availabilityReason}</small></header>
+              {allowance.buckets?.length ? allowance.buckets.map((bucket) => <div className="gotham-usage-quota" key={bucket.id}><span><strong>{bucket.label}</strong><small>{bucket.resetAt ? `Resets ${usageTimestamp(bucket.resetAt)}` : "Reset time unavailable"}</small></span><b>{usageValue(bucket.percentUsed, "%")}</b></div>) : <p>Not exposed by provider. Allowance may include usage outside PlutoniX.</p>}
+            </section>
+            <section className="gotham-usage-group" aria-label={`${provider.label} context window`}>
+              <header><strong>Context window</strong><small>Separate from subscription quota</small></header>
+              <p>{context.availability === "available" ? `${usageValue(context.occupancyTokens)} of ${usageValue(context.capacityTokens)} tokens` : context.availabilityReason || "Not exposed by provider."}</p>
+            </section>
+          </div>
+        ) : null}
+      </article>
+    );
+  }
+
+  return (
+    <details className="gotham-account-usage" open={expanded} onToggle={(event) => onExpandedChange(event.currentTarget.open)}>
+      <summary>
+        <span><Gauge size={15} /><strong>Account &amp; Usage</strong><small>{activeProvider ? `${activeProvider.label} · ${activeProvider.connection?.status || "unavailable"}` : loading ? "Loading" : "Sign in to view"}</small></span>
+        <ChevronDown size={15} />
+      </summary>
+      <div className="gotham-account-usage-body" aria-live="polite">
+        <div className="gotham-usage-toolbar">
+          <span>PlutoniX profile ID: <b title={data?.profile?.id || "Not available"}>{data?.profile?.id || "Not available"}</b></span>
+          <button type="button" onClick={onRefresh} disabled={loading} aria-label="Refresh account and usage"><RefreshCcw size={13} />Refresh</button>
+        </div>
+        {loading && !data ? <p className="gotham-usage-notice"><Loader2 className="spin" size={14} /> Loading connected provider data…</p> : null}
+        {error ? <p className="gotham-usage-notice error">{error}</p> : null}
+        {data?.stale ? <p className="gotham-usage-notice stale">Last known values may be stale.</p> : null}
+        {providers.length ? providers.map(providerCard) : !loading && !error ? <p className="gotham-usage-notice">No connected Gotham provider is available for this profile.</p> : null}
+        {data ? <small className="gotham-usage-updated">Last updated {usageTimestamp(data.updatedAt)}{data.refresh?.status === "throttled" ? " · Refresh is temporarily rate-limited." : ""}</small> : null}
+      </div>
+    </details>
+  );
+}
+
 export default function App() {
   const [deepLink] = useState(readWorkspaceDeepLink);
-  const [activeWorkspaceTab, setActiveWorkspaceTab] = useState(deepLink.workspace);
+  const [activeWorkspaceTab, setActiveWorkspaceTab] = useState(() => authorizedStudioWorkspace(deepLink.workspace, getStoredUser()));
   const [activeAgenticSystemTab, setActiveAgenticSystemTab] = useState("graph");
   const [currentUser, setCurrentUser] = useState(() => getStoredUser());
   const [themeMode, setThemeMode] = useState(() => localStorage.getItem("plutonix-theme") || "system");
@@ -6048,12 +6211,19 @@ export default function App() {
   const [taskType, setTaskType] = useState("Medium");
   const [gothamWorkflowMode, setGothamWorkflowMode] = useState("executor");
   const [gothamIntelEnabled, setGothamIntelEnabled] = useState(() => localStorage.getItem("plutonix-gotham-intel") === "true");
+  const [studioSelectedJobId, setStudioSelectedJobId] = useState(deepLink.studioJob);
+  const [studioInitialTab, setStudioInitialTab] = useState(deepLink.studioJob ? "jobs" : "");
+  const [pendingStudioContext, setPendingStudioContext] = useState(null);
   const [brandingPalette, setBrandingPalette] = useState(null);
   const [customPalette, setCustomPalette] = useState(["#111827", "#0F766E", "#2563EB", "#F8FAFC"]);
   const [showPalettePicker, setShowPalettePicker] = useState(false);
   const [backendStatus, setBackendStatus] = useState("offline");
   const [mcpStatus, setMcpStatus] = useState("offline");
   const [mcpId, setMcpId] = useState("");
+  const [gothamAccountUsage, setGothamAccountUsage] = useState(null);
+  const [gothamAccountUsageOpen, setGothamAccountUsageOpen] = useState(false);
+  const [gothamAccountUsageLoading, setGothamAccountUsageLoading] = useState(false);
+  const [gothamAccountUsageError, setGothamAccountUsageError] = useState("");
   const [useGothamMcp, setUseGothamMcp] = useState(() => localStorage.getItem("plutonix-use-gotham-mcp") === "true");
   const [generatedStatus, setGeneratedStatus] = useState("ready");
   const [, setEvents] = useState([]);
@@ -6126,19 +6296,18 @@ export default function App() {
   const [isGoogleSsoReady, setGoogleSsoReady] = useState(false);
   const [googleSignInMessage, setGoogleSignInMessage] = useState("");
   const previewFrameRef = useRef(null);
-  const agenticD3FrameRef = useRef(null);
   const instructionEditorRef = useRef(null);
   const instructionCursorRef = useRef(null);
   const instructionEditorValueRef = useRef("");
   const instructionDraftRef = useRef({ key: "", value: "" });
   const instructionHistoryCaretIntentRef = useRef("");
   const googleIdentityRef = useRef(null);
-  const googleButtonRef = useRef(null);
   const instructionHistoryIndexRef = useRef(-1);
   const gothamResizeRef = useRef(null);
   const taskModeMenuRef = useRef(null);
   const instructionSettingsMenuRef = useRef(null);
   const instructionProjectMenuRef = useRef(null);
+  const gothamAccountUsageRequestRef = useRef(0);
 
   const isSystemTarget = selectedProjectId === SYSTEM_TARGET_VALUE;
   const selectedProject = selectedProjectId && !isSystemTarget ? projects.find((project) => project.id === selectedProjectId) : null;
@@ -6322,6 +6491,10 @@ export default function App() {
   }, []);
 
   useEffect(() => {
+    if (!currentUser?.id && activeWorkspaceTab !== "studio") setActiveWorkspaceTab("studio");
+  }, [activeWorkspaceTab, currentUser?.id]);
+
+  useEffect(() => {
     setGoogleSsoReady(false);
     setGoogleSignInMessage("");
     googleIdentityRef.current = null;
@@ -6348,8 +6521,10 @@ export default function App() {
             });
             const data = await res.json();
             if (!res.ok) throw new Error(data.error || "Google sign in failed");
+            setGoogleSignInMessage("");
             storeUser(data.user, { token: credentialResponse.credential });
           } catch (error) {
+            setGoogleSignInMessage(error.message || "Google sign in failed");
             setRuntimeLogs((current) =>
               mergeRuntimeRows([{ id: `auth-${Date.now()}`, type: "error", message: error.message, createdAt: new Date().toISOString(), time: formatIstTime() }], current)
             );
@@ -6357,16 +6532,6 @@ export default function App() {
         }
       });
       googleIdentityRef.current = identity;
-      if (googleButtonRef.current) {
-        googleButtonRef.current.innerHTML = "";
-        identity.renderButton(googleButtonRef.current, {
-          type: "standard",
-          theme: resolvedTheme === "dark" ? "filled_black" : "outline",
-          size: "medium",
-          text: "signin_with",
-          shape: "rectangular"
-        });
-      }
       setGoogleSsoReady(true);
       setGoogleSignInMessage("");
       return true;
@@ -6384,11 +6549,15 @@ export default function App() {
       }
     }, 250);
     return () => window.clearInterval(retry);
-  }, [currentUser, resolvedTheme, googleClientId]);
+  }, [currentUser, googleClientId]);
 
   function startGoogleSignIn() {
     const identity = googleIdentityRef.current;
     if (!identity) {
+      setGoogleSignInMessage(
+        googleSignInMessage ||
+          `Google sign-in is not ready from ${window.location.origin}. Add this exact JavaScript origin in Google Cloud Console and restart the frontend.`
+      );
       setRuntimeLogs((current) =>
         mergeRuntimeRows(
           [
@@ -6409,6 +6578,9 @@ export default function App() {
     }
     identity.prompt((notification) => {
       if (notification.isNotDisplayed?.() || notification.isSkippedMoment?.()) {
+        setGoogleSignInMessage(
+          `Google sign-in could not open from ${window.location.origin}. Add this exact JavaScript origin to the OAuth client in Google Cloud Console.`
+        );
         setRuntimeLogs((current) =>
           mergeRuntimeRows(
             [
@@ -6436,7 +6608,7 @@ export default function App() {
       email: "",
       authProvider: "local-dev"
     };
-    storeDevelopmentUser(user, { subject: user.id });
+    storeDevelopmentUser(user, { subject: import.meta.env.VITE_PLUTONIX_DEV_AUTH_SUBJECT || "local:local-plutonix-user" });
   }
 
   useEffect(() => {
@@ -6452,15 +6624,6 @@ export default function App() {
     media.addEventListener("change", applyTheme);
     return () => media.removeEventListener("change", applyTheme);
   }, [themeMode]);
-
-  // The topology is an embedded document. Pass theme changes across the same
-  // origin boundary so a palette toggle never remounts or refetches its graph.
-  useEffect(() => {
-    agenticD3FrameRef.current?.contentWindow?.postMessage(
-      { type: "plutonix:set-theme", theme: resolvedTheme },
-      window.location.origin
-    );
-  }, [resolvedTheme]);
 
   useEffect(() => {
     if (!activityTarget || activeWorkspaceTab !== "builder") return undefined;
@@ -6562,6 +6725,46 @@ export default function App() {
   useEffect(() => {
     localStorage.setItem("plutonix-gotham-chat-width", String(Math.round(gothamChatWidth)));
   }, [gothamChatWidth]);
+
+  async function loadGothamAccountUsage({ refresh = false } = {}) {
+    if (!currentUser?.id) {
+      setGothamAccountUsage(null);
+      setGothamAccountUsageError("Sign in to view Account & Usage.");
+      return;
+    }
+    const requestId = ++gothamAccountUsageRequestRef.current;
+    setGothamAccountUsageLoading(true);
+    setGothamAccountUsageError("");
+    try {
+      const params = new URLSearchParams();
+      if (selectedProject?.id) params.set("projectId", selectedProject.id);
+      if (refresh) params.set("refresh", "true");
+      const res = await authFetch(`${BACKEND_URL}/api/gotham/account-usage?${params.toString()}`);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Account & Usage could not be loaded.");
+      if (requestId !== gothamAccountUsageRequestRef.current) return;
+      setGothamAccountUsage(data);
+    } catch (error) {
+      if (requestId !== gothamAccountUsageRequestRef.current) return;
+      setGothamAccountUsageError(error.message || "Account & Usage could not be loaded.");
+      setGothamAccountUsage(null);
+    } finally {
+      if (requestId === gothamAccountUsageRequestRef.current) setGothamAccountUsageLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    gothamAccountUsageRequestRef.current += 1;
+    setGothamAccountUsage(null);
+    setGothamAccountUsageError("");
+  }, [currentUser?.id]);
+
+  useEffect(() => {
+    if (!gothamAccountUsageOpen) return undefined;
+    loadGothamAccountUsage();
+    const intervalId = window.setInterval(() => loadGothamAccountUsage(), 90_000);
+    return () => window.clearInterval(intervalId);
+  }, [gothamAccountUsageOpen, currentUser?.id, selectedProject?.id]);
 
   useEffect(() => {
     setBrandingPalette(null);
@@ -6743,6 +6946,8 @@ export default function App() {
       return undefined;
     }
     let active = true;
+    setArchitectureBranchReport(null);
+    setArchitectureBranchError("");
     authFetch(`${BACKEND_URL}/api/decision-continuity/projects/${encodeURIComponent(selectedProject.id)}/architecture-branches`)
       .then(async (response) => {
         const data = await response.json();
@@ -7602,6 +7807,7 @@ export default function App() {
     if (requiredDataInstruction === null) return;
     const startedAt = Date.now();
     const workflowMode = gothamWorkflowMode;
+    const studioContextForRun = pendingStudioContext;
     const workflowModeLabel = gothamWorkflowModes.find((mode) => mode.id === workflowMode)?.label || "Execution";
     const intelEnabledForRun = gothamIntelEnabled && !isSystemTarget;
     const submittedInstruction = [
@@ -7706,6 +7912,8 @@ export default function App() {
               }
             : { enabled: false },
           projectId: isSystemTarget ? "" : selectedProjectId,
+          workspaceId: isSystemTarget ? "" : selectedProjectId,
+          studioContext: studioContextForRun || undefined,
           target: isSystemTarget
             ? { type: "system", systemId: "plutonix" }
             : { type: "project", projectId: selectedProjectId },
@@ -7803,6 +8011,7 @@ export default function App() {
       await loadProjects().catch(() => {});
       setSelectedReferences([]);
     } finally {
+      setPendingStudioContext(null);
       setGenerating(false);
       setStoppingGotham(false);
       setFlowExpanded(false);
@@ -8131,6 +8340,49 @@ export default function App() {
     }
   }
 
+  function openStudioWorkspace(workspace, { plutonixTab = "" } = {}) {
+    const authorizedWorkspace = authorizedStudioWorkspace(workspace, currentUser);
+    if (authorizedWorkspace === "studio" && workspace !== "studio") {
+      setActiveWorkspaceTab("studio");
+      window.requestAnimationFrame(() => document.getElementById("studio-access")?.scrollIntoView({ behavior: "smooth", block: "center" }));
+      return;
+    }
+    if (plutonixTab) setActiveAgenticSystemTab(plutonixTab);
+    setActiveWorkspaceTab(authorizedWorkspace);
+  }
+
+  function askGothamFromStudio(prompt, studioContext = {}) {
+    const nextPrompt = String(prompt || "").trim();
+    if (!nextPrompt) return;
+    setInstruction(nextPrompt);
+    setPendingStudioContext(studioContext);
+    if (studioContext.selectedJobId) setStudioSelectedJobId(studioContext.selectedJobId);
+    openStudioWorkspace("builder");
+    window.requestAnimationFrame(() => instructionEditorRef.current?.focus());
+  }
+
+  function openStudioJob(jobId) {
+    setStudioSelectedJobId(jobId);
+    setStudioInitialTab("jobs");
+    openStudioWorkspace("gotham-studio");
+  }
+
+  function openStudioResource(resource = {}) {
+    const resourceType = String(resource.type || "");
+    const resourceId = String(resource.id || "");
+    setStudioSelectedJobId(resourceType === "ml_job" ? resourceId : "");
+    setStudioInitialTab(resourceType === "ml_pipeline" ? "pipelines" : "jobs");
+    openStudioWorkspace("gotham-studio");
+  }
+
+  function openStudioFunctionality(functionalityId) {
+    setActivityTarget(functionalityId);
+    setFlowExpanded(true);
+    openStudioWorkspace("builder");
+  }
+
+  const visibleWorkspaceTab = authorizedStudioWorkspace(activeWorkspaceTab, currentUser);
+
   return (
     <div className="workspace-shell">
       <nav className="workspace-tabs" aria-label="PlutoniX workspace tabs">
@@ -8147,40 +8399,51 @@ export default function App() {
         </div>
         <button
           type="button"
-          className={activeWorkspaceTab === "builder" ? "active" : ""}
-          onClick={() => setActiveWorkspaceTab("builder")}
-          aria-selected={activeWorkspaceTab === "builder"}
+          className={visibleWorkspaceTab === "studio" ? "active" : ""}
+          onClick={() => openStudioWorkspace("studio")}
+          aria-selected={visibleWorkspaceTab === "studio"}
+        >
+          <Palette size={15} />
+          Studio
+        </button>
+        {currentUser?.id ? <>
+        <button
+          type="button"
+          className={visibleWorkspaceTab === "builder" ? "active" : ""}
+          onClick={() => openStudioWorkspace("builder")}
+          aria-selected={visibleWorkspaceTab === "builder"}
         >
           <Sparkles size={15} />
           Builder
         </button>
         <button
           type="button"
-          className={activeWorkspaceTab === "agentic-system" ? "active" : ""}
-          onClick={() => setActiveWorkspaceTab("agentic-system")}
-          aria-selected={activeWorkspaceTab === "agentic-system"}
+          className={visibleWorkspaceTab === "agentic-system" ? "active" : ""}
+          onClick={() => openStudioWorkspace("agentic-system")}
+          aria-selected={visibleWorkspaceTab === "agentic-system"}
         >
           <BrainCircuit size={15} />
           PlutoniX
         </button>
         <button
           type="button"
-          className={activeWorkspaceTab === "agents" ? "active" : ""}
-          onClick={() => setActiveWorkspaceTab("agents")}
-          aria-selected={activeWorkspaceTab === "agents"}
+          className={visibleWorkspaceTab === "agents" ? "active" : ""}
+          onClick={() => openStudioWorkspace("agents")}
+          aria-selected={visibleWorkspaceTab === "agents"}
         >
           <Bot size={15} />
           Agents
         </button>
         <button
           type="button"
-          className={activeWorkspaceTab === "hosting" ? "active" : ""}
-          onClick={() => setActiveWorkspaceTab("hosting")}
-          aria-selected={activeWorkspaceTab === "hosting"}
+          className={visibleWorkspaceTab === "hosting" ? "active" : ""}
+          onClick={() => openStudioWorkspace("hosting")}
+          aria-selected={visibleWorkspaceTab === "hosting"}
         >
           <Server size={15} />
           Cloud Hosting
         </button>
+        </> : <span className="workspace-public-context"><LockKeyhole size={13} /> Product overview</span>}
         <div className="theme-switch" role="radiogroup" aria-label="Theme">
           {themeOptions.map((option) => {
             const ThemeIcon = option.icon;
@@ -8200,42 +8463,55 @@ export default function App() {
             );
           })}
         </div>
-        {mcpWorkflowRunning ? <span className="workspace-running"><i />Gotham workflow running</span> : null}
-        <SelfImprovementRunIndicator />
-        <div className="user-profile-control">
-          {currentUser ? (
-            <>
-              <span title={currentUser.id}><UserRound size={14} />{currentUser.name}<small>{currentUser.id}</small></span>
-              <button type="button" onClick={clearUser}>Sign out</button>
-            </>
-          ) : (
-            <>
-              <button
-                type="button"
-                className="google-login-button"
-                onClick={startGoogleSignIn}
-                title={isGoogleSsoReady ? "Sign in with Google" : googleSignInMessage || "Google sign-in is not ready"}
-              >
-                <svg className="google-mark" viewBox="0 0 24 24" aria-hidden="true">
-                  <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-                  <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-                  <path fill="#FBBC05" d="M5.84 14.1c-.22-.66-.35-1.36-.35-2.1s.13-1.44.35-2.1V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l3.66-2.84z" />
-                  <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06L5.84 9.9C6.71 7.3 9.14 5.38 12 5.38z" />
-                </svg>
-                <span className="google-login-label">Sign in with Google</span>
-              </button>
-              <div ref={googleButtonRef} className="google-rendered-button" aria-label="Google sign-in button" />
-              {DEVELOPMENT_AUTH_ENABLED ? (
-                <button type="button" className="dev-profile-button" onClick={useLocalProfile} aria-label="Use development profile" title="Use the explicitly enabled development profile">
-                  <TerminalSquare size={16} />
-                </button>
-              ) : null}
-              {googleSignInMessage ? <small className="google-signin-status">{googleSignInMessage}</small> : null}
-            </>
-          )}
-        </div>
+        {currentUser?.id && mcpWorkflowRunning ? <span className="workspace-running"><i />Gotham workflow running</span> : null}
+        {currentUser?.id ? <SelfImprovementRunIndicator /> : null}
+        {currentUser ? <div className="user-profile-control">
+          <span className="verified-profile" title={currentUser.email || currentUser.id}>
+            {currentUser.picture ? <img src={currentUser.picture} alt="" referrerPolicy="no-referrer" /> : <UserRound size={15} />}
+            <div><b>{currentUser.name}</b><small>{currentUser.authProvider === "oidc" ? "Google profile" : "Development profile"}</small></div>
+          </span>
+          <button type="button" onClick={clearUser}>Sign out</button>
+        </div> : <div className="user-profile-control auth-entry-control">
+          <button
+            type="button"
+            className="google-login-button"
+            onClick={startGoogleSignIn}
+            disabled={!isGoogleSsoReady}
+            title={isGoogleSsoReady ? "Continue with Google" : googleSignInMessage || "Google SSO is loading"}
+          >
+            <svg className="google-mark" viewBox="0 0 24 24" aria-hidden="true">
+              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+              <path fill="#FBBC05" d="M5.84 14.1c-.22-.66-.35-1.36-.35-2.1s.13-1.44.35-2.1V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l3.66-2.84z" />
+              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06L5.84 9.9C6.71 7.3 9.14 5.38 12 5.38z" />
+            </svg>
+            <span className="google-login-label">Continue with Google</span>
+          </button>
+          {googleSignInMessage ? <small className="google-signin-status" role="status">{googleSignInMessage}</small> : null}
+        </div>}
       </nav>
-      {activeWorkspaceTab === "builder" ? (
+      {visibleWorkspaceTab === "studio" ? (
+        <StudioPage
+          currentUser={currentUser}
+          onOpenBuilder={() => openStudioWorkspace("builder")}
+          onOpenPlutonix={() => openStudioWorkspace("agentic-system", { plutonixTab: "analysis" })}
+          onOpenAgents={() => openStudioWorkspace("agents")}
+          onOpenHosting={() => openStudioWorkspace("hosting")}
+          onOpenProductDocument={() => openStudioWorkspace("agentic-system", { plutonixTab: "product-document" })}
+          developmentAuthEnabled={DEVELOPMENT_AUTH_ENABLED}
+          onUseDevelopmentProfile={useLocalProfile}
+        />
+      ) : visibleWorkspaceTab === "gotham-studio" ? (
+        <GothamStudio
+          project={selectedProject}
+          workflowMode={gothamWorkflowMode}
+          initialJobId={studioSelectedJobId}
+          initialTab={studioInitialTab}
+          onBack={() => openStudioWorkspace("builder")}
+          onAskGotham={askGothamFromStudio}
+          onOpenFunctionality={openStudioFunctionality}
+        />
+      ) : visibleWorkspaceTab === "builder" ? (
       <main
         className={`app-shell ${selectedProject || isSystemTarget ? (showExpandedFlow ? "flow-expanded" : "flow-collapsed") : "no-flow"}`}
         style={{ "--gotham-chat-width": `${Math.round(gothamChatWidth)}px` }}
@@ -8550,6 +8826,7 @@ export default function App() {
           running={isGenerating}
           onToggle={() => setFlowExpanded((value) => !value)}
           onHumanChoice={chooseHumanFlowPath}
+          onOpenStudioResource={openStudioResource}
         />
       ) : null}
 
@@ -8604,6 +8881,19 @@ export default function App() {
 			              <span>Intel</span>
 			              <small>{gothamIntelEnabled && !isSystemTarget ? `profiles · score ≥ ${gothamIntelConfig.minExpansionScore}` : isSystemTarget ? "project only" : "off"}</small>
 			            </button>
+			            <button
+			              type="button"
+			              className="gotham-studio-toggle"
+			              onClick={() => openStudioWorkspace("gotham-studio")}
+			              disabled={!selectedProject || isSystemTarget}
+			              aria-label="Open Gotham Studio ML execution workspace"
+			              aria-pressed={visibleWorkspaceTab === "gotham-studio"}
+			              title={selectedProject ? "Open the project-scoped AI/ML execution control plane" : "Select a project before opening Gotham Studio"}
+			            >
+			              <FlaskConical size={14} />
+			              <span>Studio</span>
+			              <small>ML control</small>
+			            </button>
 			          </div>
 		          <section className="instruction-workshop" aria-label="Instruction workshop">
 			            <section id="activity-log" className="activity-card workshop-activity-log">
@@ -8636,7 +8926,7 @@ export default function App() {
 			              ) : null}
 			              <ol>
 			                {activityEvents.length ? (
-			                  activityEvents.map((event) => <EventRow key={`activity-${event.id || event.createdAt}`} event={event} sessionStartedAt={sessionStartedAt} selectedProject={selectedProject} />)
+			                  activityEvents.map((event) => <EventRow key={`activity-${event.id || event.createdAt}`} event={event} sessionStartedAt={sessionStartedAt} selectedProject={selectedProject} onOpenStudio={openStudioJob} />)
 			                ) : (
 			                  <li className="empty-state">
 			                    {activityTarget ? `No activity events matched ${activityTarget}.` : "Activity events will appear here."}
@@ -8644,11 +8934,19 @@ export default function App() {
 			                )}
 			              </ol>
 			            </section>
-	            <p className="orchestrator-note">
+            <p className="orchestrator-note">
 	              {activePalette || activeAppIcon
 	                ? `Task Type: ${taskType}. Gotham: ${gothamWorkflowModes.find((mode) => mode.id === gothamWorkflowMode)?.label || "Execution"}.${gothamIntelEnabled && !isSystemTarget ? ` Intel: profile-driven scoring.` : ""}${activePalette ? ` Palette: ${activePalette.name}.` : ""}${activeAppIcon ? ` Icon: ${activeAppIcon.name}.` : ""} Path: ${useGothamMcp ? "local MCP" : "direct"}.`
                 : `Task Type: ${taskType}. Gotham: ${gothamWorkflowModes.find((mode) => mode.id === gothamWorkflowMode)?.label || "Execution"}.${gothamIntelEnabled && !isSystemTarget ? ` Intel: profile-driven scoring.` : ""} Path: ${useGothamMcp ? "local MCP" : "direct"}.`}
             </p>
+	            <GothamAccountUsagePanel
+	              data={gothamAccountUsage}
+	              loading={gothamAccountUsageLoading}
+	              error={gothamAccountUsageError}
+	              expanded={gothamAccountUsageOpen}
+	              onExpandedChange={setGothamAccountUsageOpen}
+	              onRefresh={() => loadGothamAccountUsage({ refresh: true })}
+	            />
 	            <div className="chat-input-shell">
 	              <div className="instruction-textarea-wrap">
 	                <div
@@ -9206,55 +9504,33 @@ export default function App() {
         </div>
       ) : null}
       </main>
-	      ) : activeWorkspaceTab === "agentic-system" ? (
-	        <main className={`agentic-workspace-tab ${activeAgenticSystemTab === "control-plane" || activeAgenticSystemTab === "decision-continuity" || activeAgenticSystemTab === "governed-promotion" ? "control-plane-view" : activeAgenticSystemTab === "market-vision" ? "market-vision-view" : activeAgenticSystemTab === "product-document" ? "product-document-view" : "graph-view"}`}>
-          <div className="agentic-system-subtabs" role="tablist" aria-label="PlutoniX views">
+      ) : visibleWorkspaceTab === "agentic-system" ? (
+	        <main className={`agentic-workspace-tab ${activeAgenticSystemTab === "control-plane" || activeAgenticSystemTab === "governed-promotion" ? "control-plane-view" : activeAgenticSystemTab === "market-vision" ? "market-vision-view" : activeAgenticSystemTab === "product-document" ? "product-document-view" : "analysis-view"}`}>
+	          <header className="plutonix-page-header" aria-label="PlutoniX project navigation and analysis controls">
+          <nav className="agentic-system-subtabs" aria-label="PlutoniX views">
             <button
               type="button"
               className={activeAgenticSystemTab === "graph" ? "active" : ""}
               onClick={() => setActiveAgenticSystemTab("graph")}
-              role="tab"
-              aria-selected={activeAgenticSystemTab === "graph"}
+              aria-pressed={activeAgenticSystemTab === "graph"}
             >
               <BrainCircuit size={15} />
-              Overview
-            </button>
-            <button
-              type="button"
-              className={activeAgenticSystemTab === "brainx" ? "active" : ""}
-              onClick={() => setActiveAgenticSystemTab("brainx")}
-              role="tab"
-              aria-selected={activeAgenticSystemTab === "brainx"}
-            >
-              <BrainCircuit size={15} />
-              PlutoniX-BrainX
+              Analysis
             </button>
             <button
               type="button"
               className={activeAgenticSystemTab === "control-plane" ? "active" : ""}
               onClick={() => setActiveAgenticSystemTab("control-plane")}
-              role="tab"
-              aria-selected={activeAgenticSystemTab === "control-plane"}
+              aria-pressed={activeAgenticSystemTab === "control-plane"}
             >
               <ShieldCheck size={15} />
               Control Plane
             </button>
 	            <button
 	              type="button"
-	              className={activeAgenticSystemTab === "decision-continuity" ? "active" : ""}
-	              onClick={() => setActiveAgenticSystemTab("decision-continuity")}
-	              role="tab"
-	              aria-selected={activeAgenticSystemTab === "decision-continuity"}
-	            >
-	              <GitBranch size={15} />
-	              Decision Ledger
-	            </button>
-	            <button
-	              type="button"
 	              className={activeAgenticSystemTab === "governed-promotion" ? "active" : ""}
 	              onClick={() => setActiveAgenticSystemTab("governed-promotion")}
-	              role="tab"
-	              aria-selected={activeAgenticSystemTab === "governed-promotion"}
+	              aria-pressed={activeAgenticSystemTab === "governed-promotion"}
 	            >
 	              <ShieldCheck size={15} />
 	              Governed Promotion
@@ -9263,8 +9539,7 @@ export default function App() {
 	              type="button"
 	              className={activeAgenticSystemTab === "market-vision" ? "active" : ""}
               onClick={() => setActiveAgenticSystemTab("market-vision")}
-              role="tab"
-              aria-selected={activeAgenticSystemTab === "market-vision"}
+              aria-pressed={activeAgenticSystemTab === "market-vision"}
             >
 	              <FileText size={15} />
 	              Market Readiness R&D
@@ -9273,75 +9548,48 @@ export default function App() {
 	              type="button"
 	              className={activeAgenticSystemTab === "product-document" ? "active" : ""}
 	              onClick={() => setActiveAgenticSystemTab("product-document")}
-	              role="tab"
-	              aria-selected={activeAgenticSystemTab === "product-document"}
+	              aria-pressed={activeAgenticSystemTab === "product-document"}
 	            >
 	              <FileText size={15} />
 	              Product Document
 	            </button>
-	          </div>
-	          <section className="plutonix-architecture-toolbar" aria-label="Architecture branch analysis">
-	            <div>
-	              <span>Architecture Branches</span>
-	              <strong>{selectedProject ? selectedProject.name : "Select a project"}</strong>
-	              <small>
-	                {architectureBranchError
-	                  ? `Analysis could not complete: ${architectureBranchError}`
-	                  : architectureBranchReport
-                    ? `${architectureBranchReport.objectives?.length || 0} objectives · ${architectureBranchReport.majorFunctionalities?.length || 0} major functions · ${architectureBranchReport.publishedBranchCount || 0} deferred alternatives · digest ${architectureBranchReport.sourceDigest?.slice(0, 12) || "pending"}`
-	                    : "Analyse allowlisted source to refresh pages, UI elements, features, services, and data relationships."}
-	              </small>
-	            </div>
-	            <button
-	              type="button"
-	              onClick={analyzeArchitectureBranches}
-	              disabled={!selectedProject || isAnalyzingArchitecture}
-	              title="Analyse allowlisted project source and refresh the PlutoniX Architecture Branches graph"
-	            >
-	              {isAnalyzingArchitecture ? <Loader2 className="spin" size={15} /> : <GitBranch size={15} />}
-	              {isAnalyzingArchitecture ? "Analysing…" : "Analyse branches"}
-	            </button>
-	          </section>
+	          </nav>
+	          </header>
 	          {activeAgenticSystemTab === "control-plane" ? (
 	            <SelfImprovementPanel />
-          ) : activeAgenticSystemTab === "decision-continuity" ? (
-            <DecisionContinuityPanel
-              selectedProject={selectedProject}
-              onAnalyzeArchitecture={analyzeArchitectureBranches}
-              analyzingArchitecture={isAnalyzingArchitecture}
-              architectureAnalysisStatus={architectureBranchError
-                ? `Analysis could not complete: ${architectureBranchError}`
-                : architectureBranchReport
-                  ? `Last analysis: ${architectureBranchReport.objectives?.length || 0} objectives · ${architectureBranchReport.majorFunctionalities?.length || 0} major functions · ${architectureBranchReport.publishedBranchCount || 0} published possibilities · digest ${architectureBranchReport.sourceDigest?.slice(0, 12) || "pending"}`
-                  : ""}
-              architectureAnalysisRevision={architectureBranchReport?.sourceDigest || ""}
-              architectureAnalysisReport={architectureBranchReport}
-            />
 	          ) : activeAgenticSystemTab === "governed-promotion" ? (
 	            <GovernedPromotionPanel />
 	          ) : activeAgenticSystemTab === "market-vision" ? (
 	            <MarketVisionPanel />
 	          ) : activeAgenticSystemTab === "product-document" ? (
 	            <ProductDocumentPanel />
-	          ) : activeAgenticSystemTab === "brainx" ? (
-	            <PlutonixBrainXCanvas />
 	          ) : (
-            <section className="agentic-d3-frame">
-              <iframe
-                ref={agenticD3FrameRef}
-                title="PlutoniX graphical model"
-                src={`/agentic-system/d3/index.html?embedded=1&graphUrl=${encodeURIComponent(`${BACKEND_URL}/api/agentic-system/graph`)}&view=${architectureBranchReport ? "explore" : "overview"}&project=${encodeURIComponent(selectedProject?.name || "")}&revision=${encodeURIComponent(`${selectedProject?.id || "system"}:${architectureBranchReport?.sourceDigest || ""}`)}`}
-                onLoad={() => agenticD3FrameRef.current?.contentWindow?.postMessage(
-                  { type: "plutonix:set-theme", theme: resolvedTheme },
-                  window.location.origin
-                )}
-              />
-            </section>
+            <PlutonixAnalysisWorkspace
+              projects={projects.filter((project) => !project.isDefault)}
+              selectedProject={selectedProject && !selectedProject.isDefault ? selectedProject : null}
+              architectureAnalysisReport={architectureBranchReport}
+              architectureAnalysisError={architectureBranchError}
+              onSelectProject={(project) => {
+                if (!project?.id) return;
+                setArchitectureBranchReport(null);
+                setArchitectureBranchError("");
+                setSelectedProjectId(project.id);
+                setProjectFlowPath(null);
+                setProjectResult(null);
+              }}
+              onAnalyzeArchitecture={analyzeArchitectureBranches}
+              analyzingArchitecture={isAnalyzingArchitecture}
+              onProjectUpdated={(project, options = {}) => {
+                if (!project?.id) return;
+                setProjects((current) => current.map((item) => item.id === project.id ? { ...item, ...project } : item));
+                if (options.select !== false) setSelectedProjectId(project.id);
+              }}
+            />
           )}
         </main>
-      ) : activeWorkspaceTab === "hosting" ? (
+      ) : visibleWorkspaceTab === "hosting" ? (
         <CloudHostingPage />
-      ) : activeWorkspaceTab === "agents" ? (
+      ) : visibleWorkspaceTab === "agents" ? (
         <AgentsWorkspace initialAgentId={deepLink.agent} initialAgent={deepLink.agentContext} />
       ) : (
         <main className="app-shell" />

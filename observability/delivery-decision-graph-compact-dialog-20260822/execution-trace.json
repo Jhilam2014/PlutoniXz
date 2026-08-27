@@ -1,0 +1,17 @@
+{
+  "workflow_id": "delivery-decision-graph-compact-dialog-20260822",
+  "status": "completed",
+  "task_size": "medium",
+  "product_shape": "existing_product_change",
+  "context_budget": "medium_context",
+  "agents_reused": ["project-execution-agent", "delivery-graph-dialog-audit", "delivery-dialog-test-review"],
+  "agent_creation": "skipped",
+  "graph_update": "Presentation-only local graph layout update; delivery evidence, timeline model, topology, and persisted graph contracts were unchanged.",
+  "validation": [
+    "frontend test suite: 128 passed, 0 failed",
+    "frontend Vite production build passed",
+    "git diff --check passed",
+    "independent detail-dialog and freeform-interaction review passed"
+  ],
+  "completed_at": "2026-08-22T11:48:23Z"
+}

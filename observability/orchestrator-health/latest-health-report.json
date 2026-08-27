@@ -1,15 +1,36 @@
 {
   "status": "critical",
-  "generatedAt": "2026-08-17T19:35:34.139Z",
+  "generatedAt": "2026-08-27T20:02:09.141Z",
   "reason": "periodic",
   "scope": "plutonix-orchestrator-health",
   "userActivitySummary": {
     "recentEvents": 0,
     "errors": 0,
     "recentInstructions": 120,
-    "failedInstructions": 33,
+    "failedInstructions": 34,
     "repairedInstructions": 0,
     "sampleIntentSignals": [
+      {
+        "projectName": "voiceTranscriptGenX",
+        "taskType": "Medium",
+        "status": "succeeded",
+        "instruction": "",
+        "instructionStored": false
+      },
+      {
+        "projectName": "voiceTranscriptGenX",
+        "taskType": "Medium",
+        "status": "failed",
+        "instruction": "",
+        "instructionStored": false
+      },
+      {
+        "projectName": "voiceTranscriptGenX",
+        "taskType": "Medium",
+        "status": "succeeded",
+        "instruction": "",
+        "instructionStored": false
+      },
       {
         "projectName": "DatabricksX",
         "taskType": "Medium",
@@ -23,32 +44,11 @@
         "status": "failed",
         "instruction": "",
         "instructionStored": false
-      },
-      {
-        "projectName": "DatabricksX",
-        "taskType": "Medium",
-        "status": "failed",
-        "instruction": "",
-        "instructionStored": false
-      },
-      {
-        "projectName": "DatabricksX",
-        "taskType": "Medium",
-        "status": "failed",
-        "instruction": "",
-        "instructionStored": false
-      },
-      {
-        "projectName": "DatabricksX",
-        "taskType": "Medium",
-        "status": "failed",
-        "instruction": "",
-        "instructionStored": false
       }
     ]
   },
   "tokenWasteSummary": {
-    "observedAgents": 21,
+    "observedAgents": 22,
     "wasteIssues": 6,
     "worstAgents": [
       {
@@ -90,10 +90,10 @@
       "title": "User instructions are not reliably reaching successful outcomes",
       "detail": "The user asked for working functionality, but recent instruction records include failures.",
       "evidence": {
-        "count": 33,
+        "count": 34,
         "examples": [
           {
-            "projectName": "DatabricksX",
+            "projectName": "voiceTranscriptGenX",
             "taskType": "Medium",
             "status": "failed",
             "hasInstruction": true,
@@ -203,6 +203,26 @@
   ],
   "agents": [
     {
+      "agentId": "voicetranscriptgenx-orchestrator-agent",
+      "name": "voicetranscriptgenx-orchestrator-agent",
+      "status": "observed",
+      "sourcePath": "",
+      "healthScore": 58,
+      "qualityScore": 67,
+      "efficiencyScore": 57,
+      "concerns": [],
+      "directives": [
+        "Use smaller context windows, cite exact files, and avoid broad rewrites unless required.",
+        "Route through independent review or auto-repair before PlutoniX approval."
+      ],
+      "tokenEconomy": {
+        "totalRuns": 3,
+        "averageTotalTokens": 157107,
+        "tokensPerAccuracyPoint": 5747.82,
+        "estimatedUsd": 13.15378
+      }
+    },
+    {
       "agentId": "plutonix-auto-repair-agent",
       "name": "plutonix-auto-repair-agent",
       "status": "observed",
@@ -226,16 +246,18 @@
       "name": "plutonix-independent-reviewer",
       "status": "observed",
       "sourcePath": "",
-      "healthScore": 62,
-      "qualityScore": 72,
-      "efficiencyScore": 61,
+      "healthScore": 61,
+      "qualityScore": 71,
+      "efficiencyScore": 59,
       "concerns": [],
-      "directives": [],
+      "directives": [
+        "Use smaller context windows, cite exact files, and avoid broad rewrites unless required."
+      ],
       "tokenEconomy": {
-        "totalRuns": 3,
-        "averageTotalTokens": 31026,
-        "tokensPerAccuracyPoint": 1095.05,
-        "estimatedUsd": 2.683295
+        "totalRuns": 4,
+        "averageTotalTokens": 60555,
+        "tokensPerAccuracyPoint": 2883.56,
+        "estimatedUsd": 7.098745
       }
     },
     {

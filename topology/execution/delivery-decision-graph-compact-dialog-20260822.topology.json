@@ -1,0 +1,17 @@
+{
+  "workflow_id": "delivery-decision-graph-compact-dialog-20260822",
+  "status": "completed",
+  "nodes": [
+    { "id": "inspect-delivery-map", "type": "task", "status": "completed" },
+    { "id": "replace-fixed-columns", "type": "task", "status": "completed" },
+    { "id": "add-brief-dialog-flow", "type": "task", "status": "completed" },
+    { "id": "support-freeform-access", "type": "task", "status": "completed" },
+    { "id": "validate-delivery-graph", "type": "validation", "status": "completed" }
+  ],
+  "links": [
+    { "source": "inspect-delivery-map", "target": "replace-fixed-columns", "type": "informs" },
+    { "source": "replace-fixed-columns", "target": "add-brief-dialog-flow", "type": "precedes" },
+    { "source": "add-brief-dialog-flow", "target": "support-freeform-access", "type": "precedes" },
+    { "source": "support-freeform-access", "target": "validate-delivery-graph", "type": "precedes" }
+  ]
+}

@@ -420,6 +420,37 @@ h1 {
   gap: 7px;
 }
 
+.flow-feature-controls {
+  grid-column: 1 / -1;
+  min-width: 0;
+  min-height: 36px;
+  padding: 4px 6px;
+  border: 1px solid var(--line-subtle);
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  background: rgba(20, 184, 166, 0.055);
+}
+
+.flow-feature-select {
+  min-width: min(440px, 62vw);
+}
+
+.flow-feature-select select {
+  max-width: min(360px, 54vw);
+}
+
+.flow-feature-position {
+  min-width: 42px;
+  color: var(--text-muted);
+  font-size: 10px;
+  font-weight: 760;
+  text-align: center;
+  white-space: nowrap;
+}
+
 .search-control {
   position: relative;
   min-width: 190px;
@@ -1594,6 +1625,39 @@ body.dialog-open {
   stroke-width: 1.9px;
 }
 
+#graph[data-view-mode="flow"] .link.functionality-flow-link {
+  stroke: rgba(96, 165, 250, 0.86);
+  stroke-width: 1.8px;
+  stroke-opacity: 0.88;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+#graph[data-view-mode="flow"] .link.ownership-link {
+  stroke: rgba(148, 163, 184, 0.7);
+  stroke-dasharray: 3 5;
+  stroke-width: 1.1px;
+}
+
+.functionality-flow-stages {
+  pointer-events: none;
+}
+
+.functionality-flow-stage rect {
+  fill: rgba(71, 85, 105, 0.07);
+  stroke: rgba(148, 163, 184, 0.26);
+  stroke-width: 1px;
+  stroke-dasharray: 6 5;
+  vector-effect: non-scaling-stroke;
+}
+
+.functionality-flow-stage text {
+  fill: #cbd5e1;
+  font-size: 12px;
+  font-weight: 820;
+  letter-spacing: 0.035em;
+}
+
 .lens-scaffold {
   pointer-events: none;
 }
@@ -1622,6 +1686,44 @@ body.dialog-open {
   font-size: 10px;
   font-weight: 650;
   letter-spacing: 0;
+}
+
+.dependency-feature-timeline {
+  pointer-events: none;
+}
+
+.dependency-timeline-rail {
+  stroke: rgba(129, 140, 248, 0.72);
+  stroke-width: 3px;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.dependency-timeline-checkpoint circle {
+  fill: rgba(79, 70, 229, 0.14);
+  stroke: rgba(167, 139, 250, 0.78);
+  stroke-width: 2px;
+  vector-effect: non-scaling-stroke;
+}
+
+.dependency-timeline-checkpoint text,
+.dependency-timeline-title {
+  fill: #dce5f2;
+  font-size: 11px;
+  font-weight: 820;
+  letter-spacing: 0.025em;
+}
+
+.dependency-timeline-checkpoint .dependency-timeline-phase {
+  fill: #94a3b8;
+  font-size: 10px;
+  font-weight: 680;
+  letter-spacing: 0;
+}
+
+.dependency-timeline-title {
+  fill: #a5b4fc;
+  font-size: 12px;
 }
 
 .node.dependency-focus .node-shape,
@@ -2887,11 +2989,11 @@ body.dialog-open {
 
   .graph-workspace.architecture-mode,
   .graph-workspace.architecture-mode.inspector-open {
-    grid-template-columns: 184px minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .architecture-panel {
-    padding-inline: 8px;
+    display: none;
   }
 
   .insight-panel {
@@ -2961,11 +3063,11 @@ body.dialog-open {
 @media (max-width: 560px) {
   .graph-workspace.architecture-mode,
   .graph-workspace.architecture-mode.inspector-open {
-    grid-template-columns: 152px minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .architecture-panel {
-    padding: 8px 6px;
+    display: none;
   }
 
   .architecture-panel-header strong {
@@ -3031,8 +3133,8 @@ body.dialog-open {
     content: "Paths";
   }
 
-  .view-tabs button[data-view-mode="live"]::after {
-    content: "Live";
+  .view-tabs button[data-view-mode="flow"]::after {
+    content: "Flow";
   }
 
   .view-tabs button[data-view-mode="explore"]::after {
@@ -3041,6 +3143,26 @@ body.dialog-open {
 
   .primary-toolbar {
     grid-template-columns: minmax(0, 1fr) auto auto;
+  }
+
+  .flow-feature-controls {
+    justify-content: center;
+    gap: 4px;
+  }
+
+  .flow-feature-select {
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+
+  .flow-feature-select select {
+    max-width: none;
+    min-width: 0;
+  }
+
+  .flow-feature-position {
+    min-width: 34px;
+    font-size: 9px;
   }
 
   .status-select {

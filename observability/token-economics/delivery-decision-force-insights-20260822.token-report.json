@@ -1,0 +1,28 @@
+{
+  "workflow_id": "delivery-decision-force-insights-20260822",
+  "task_size": "medium",
+  "context_budget": "medium_context",
+  "model_provider": "openai",
+  "model_name": "runtime-configured",
+  "agent_id": "project-execution-agent",
+  "phase": "validation",
+  "input_tokens": 0,
+  "output_tokens": 0,
+  "cached_input_tokens": 0,
+  "reasoning_tokens": 0,
+  "tool_calls_count": 0,
+  "files_read_count": 10,
+  "files_modified_count": 8,
+  "memory_queries_count": 0,
+  "graph_queries_count": 0,
+  "estimated_cost": 0,
+  "currency": "USD",
+  "published_at": "2026-08-22T02:46:19Z",
+  "source": "unavailable",
+  "token_saving_decisions": [
+    "Exact provider token usage was unavailable; zero values are not measured usage.",
+    "Reused the existing source-backed model and decision timeline instead of creating a separate history model for the Canvas.",
+    "Limited force simulation to cloned visual nodes and retained chronology anchors, avoiding a broader topology or D3 regeneration.",
+    "Used focused model tests plus the full frontend suite, production build, and independent review."
+  ]
+}

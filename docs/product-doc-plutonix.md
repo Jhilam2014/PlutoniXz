@@ -1,7 +1,7 @@
 # PlutoniX Product Document
 
-Version: 1.0  
-Date: 2026-08-08  
+Version: 1.2
+Date: 2026-08-23
 Status: Current product definition and roadmap
 
 ## 1. Product Summary
@@ -24,8 +24,10 @@ PlutoniX helps a user move from an idea, reference, dataset, or existing workspa
 - Artifact-aware Playground: the center workspace changes to a browser/device frame, PDF reader, print/image canvas, workbook grid with formulas and sheet tabs, document page, presentation stage, code/data viewer, or media player.
 - Agentic orchestration: PlutoniX restructures raw user instructions into safer build requests and delegates bounded work to global and project-local agents.
 - Live runtime visibility: users see generation status, file operations, Codex runtime logs, activity logs, and workflow events while work is happening.
-- Functionality analysis: project behavior is decomposed into functionality and subfunctionality graphs with node-level evidence and agent assignments.
-- System topology: the PlutoniX Graphical Model workspace visualizes agents, memory, graph artifacts, runtime state, and self-improvement control-plane relationships.
+- Enterprise/application analysis: the PlutoniX Analysis workspace groups managed applications by explicit enterprise, keeps each App BrainX private, shows only evidenced portfolio relationships, and separates source-observed implementation from governed decisions.
+- Decision continuity: every recorded branch retains evidence, constraints, disposition, and reconsideration provenance; deferred choices can re-enter review when trusted constraint observations change.
+- Governed Enterprise BrainX: application/enterprise bindings, policy snapshots, budget reservations, model-route receipts, research observations, and tenant-scoped agent knowledge reuse make maintenance decisions traceable without turning an agent recommendation into an automatic approval.
+- Visual intelligence: the Analysis workspace combines accessible document-native summaries with bounded Portfolio Intelligence and Delivery Decision Graph popup canvases. Canvas relationships remain evidence-backed projections, while adjacent inspectors, filters, search, and keyboard controls keep the underlying facts accessible without interpreting geometry alone.
 - Safe platform evolution: self-improvement is evidence-backed, isolated, reviewed, and rollback-aware rather than a direct log-to-code loop.
 - Deployment readiness: the cloud hosting workspace guides project selection, provider choice, permissions, credentials, plan preview, approval, simulated deployment, health check, and rollback.
 
@@ -81,6 +83,21 @@ The main PlutoniX app is a React/Vite frontend served at `http://localhost:5173`
 - Export and delete actions for managed projects
 - PlutoniX Graphical Model access
 
+BuildX project records are also the source of application identity used by Analysis. An uploaded `app-icon` remains project-scoped under the managed application runtime and is resolved against that application's own preview origin; Analysis never substitutes another application's logo. When no usable icon is recorded, the UI uses an application monogram and does not invent branded artwork.
+
+### Analysis Workspace
+
+The Analysis workspace provides:
+
+- A brief Portfolio Intelligence preview that opens a dedicated interactive popup on request.
+- Enterprise-centered perimeter layout for explicitly assigned applications and a visibly marked, separated area for applications without an enterprise binding.
+- Application icons sourced from the corresponding BuildX project record.
+- A Delivery Decision Graph brief that opens a detailed D3 canvas for build events, functionality, decision outcomes, agents, services, and their explicit relationships.
+- Category-specific functionality icons and agent avatars derived from the same Global Agent Memory visual record used by the Agents workspace.
+- Non-overlapping rectangular collision bounds, including while nodes settle or are manually repositioned.
+- Search, grouping, relationship filters, depth controls, legend, selection, trace, focus, reset, zoom, pan, and node drag controls.
+- An evidence inspector that retains full names, provenance, chronology basis, constraints, and warnings outside the compact canvas labels.
+
 ### Backend Orchestration
 
 The backend is a Node/Express service at `http://localhost:8080`. It provides:
@@ -92,8 +109,11 @@ The backend is a Node/Express service at `http://localhost:8080`. It provides:
 - Project management, workspace import/export, runtime startup, and cleanup
 - Hosting workflow APIs
 - Self-improvement APIs
+- Strict OIDC/RBAC-protected Enterprise Brain APIs for application bindings, policy/budget state, DecisionX context, approved ResearchX sources/runs, AIX route receipts, and AgenticX reuse receipts
 
-Current README guidance says PlutoniX no longer exposes a local `/mcp` server; it uses real Codex MCP integration externally and reports `codexMcp: external` from status.
+PlutoniX exposes no public generic `/mcp` server. It uses real Codex MCP integration externally and reports `codexMcp: external` from status; the optional UI-selected `/api/generate/mcp` path is a bounded in-process Gotham bridge, not a general JSON-RPC surface.
+
+Gotham Chat’s expandable **Account & Usage** section reads the authorized profile’s own sanitized execution data from `GET /api/gotham/account-usage`. It distinguishes a PlutoniX profile ID from a provider-issued account ID, retains owner-scoped Codex/Copilot execution estimates, and labels identity, allowance, quota, and context-window fields as unavailable unless the active provider runtime reports them. It never returns CLI credentials, API keys, cookies, or tokens; the current CLI executor does not claim provider account identity or subscription allowance.
 
 ### Generated Project Runtime
 
@@ -148,12 +168,35 @@ Success response includes orchestration metadata such as normalized objective, p
 3. Files are stored under the project `public/uploads` path.
 4. Paths are included in Codex workflow instruction context.
 
-### 5.5 Inspect Functionality Analysis
+### 5.5 Inspect Enterprise And Application Analysis
 
-1. PlutoniX normalizes flow-path and instruction evidence into a functionality graph.
-2. The graph shows project, functionality, and subfunctionality nodes.
-3. Users can open detailed analysis, zoom/pan the graph, drag nodes, select nodes, and inspect node evidence.
-4. The insight panel shows status, child nodes, assigned working agents, and supporting evidence.
+1. The Portfolio view lists every accessible managed application and its explicit enterprise tag; untagged applications remain private and visibly unassigned.
+2. PlutoniX aggregates source-backed capability, API, service, and data counts without turning project ownership or common agents into dependencies.
+3. The Enterprise Brain shows only curated portfolio knowledge and governed receipts. Every App BrainX remains application-private; AgenticX may reuse only sanitized same-tenant, same-enterprise knowledge after authorization-first target-policy, classification, region, purpose, retention, and transform checks. Legacy enterprise tags and agreement JSON can inform a projection but cannot authorize a cross-application action.
+4. Selecting an application opens its objectives and one capability checkpoint at a time. Source-observed implementations, selected decisions, deferred options, rejected options, constraints, and evidence use separate labels.
+5. Deferred branches show a reconsideration signal only when Decision Continuity records a real condition-driven request; eligibility alone is described as monitoring, not as an active suggestion.
+6. Portfolio and decision summaries remain usable as normal document content. Optional detail canvases open in dedicated popups: wheel, double-click, or explicit buttons zoom; dragging empty space pans; dragging a node repositions and pins it; Fit and Reset controls recover the view.
+7. Portfolio application nodes use each BuildX application's recorded icon and place explicitly bound applications around their enterprise perimeter. Unassigned applications remain within the visible world but are separated and marked; layout never creates an enterprise membership.
+8. Delivery graph agent nodes use Global Agent Memory avatar rules when an exact agent record exists. A topology-derived fallback retains the same category visual grammar without claiming that a missing global-memory record exists.
+9. Delivery chronology uses directional storyboard-style segue connectors. Recorded chronology is solid, anticipated source order is dashed and explicitly non-historical, and supporting service relationships use a thin service-badge segue with an open destination chevron.
+10. The detail graph uses compact acronyms and category icons on the canvas. Full labels and evidence remain in hover, search, keyboard selection, and the adjacent inspector.
+
+### 5.5.1 Operate The Intelligence Canvases
+
+1. Select **Expand** from the brief Portfolio Intelligence or Delivery Decision Graph surface to open its dedicated popup.
+2. Scroll, double-click, or use the visible Zoom controls to change scale. Use **Fit graph** to restore a complete-world view.
+3. Drag empty canvas space to pan. Drag a node to reposition it; the node stays pinned until **Reset layout** is used.
+4. Use search, filters, grouping, depth, and relationship controls before interpreting a dense graph.
+5. Select a node to inspect the full label, source identity, evidence, chronology, and connected records. Canvas position, proximity, shared color, or a common agent never creates a relationship.
+6. Node collision uses full rectangular bounds with clearance rather than a circle approximation, so wide functionality and service cards do not overlap.
+
+### 5.5.2 Govern Enterprise Decisions
+
+1. An authorized operator binds an application to an enterprise scope and creates an immutable policy snapshot with budget/evidence references.
+2. A normal build can record only its explicit proposed, selected, deferred, rejected, validation, and outcome facts through DecisionX.
+3. AIX evaluates registered model candidates against the policy and budget. A governed tenant with no eligible candidate receives a reviewable `no_eligible_model` outcome rather than an ungoverned fallback.
+4. ResearchX may fetch only a tenant-approved, allowlisted source after a policy/budget check. It stores a bounded citation/digest and emits a reviewable observation; it cannot change code, policy, or deployment state.
+5. AgenticX records an allowed or denied reuse receipt before a sanitized summary is added to an agent context.
 
 ### 5.6 Prepare Cloud Hosting
 
@@ -178,6 +221,13 @@ Success response includes orchestration metadata such as normalized objective, p
 8. Validation and independent review gates run.
 9. Promotion policy stages or promotes depending on autonomy mode and risk.
 10. Rollback controller records rollback if post-promotion metrics regress.
+
+### 5.8 Watch The Current Product Demo
+
+1. The current product demo follows the real user journey: Builder intake, evidence/data gates, Portfolio Intelligence, application decision evidence, the separate governed BrainX boundary, delivery mapping, documentation, and mock-safe hosting.
+2. It distinguishes a legacy portfolio enterprise assignment from an authorized Enterprise BrainX binding. An App BrainX remains application-private by default.
+3. It describes DecisionX, AIX, ResearchX, and AgenticX as governed, receipt-producing capabilities; it does not claim unrestricted research, live model execution, automatic deployment, or compliance certification.
+4. The source captures, narration, captions, rendering instructions, and verification checks are maintained in [the product demo video guide](product-demo-video.md).
 
 ## 6. Functional Requirements
 
@@ -233,10 +283,22 @@ Success response includes orchestration metadata such as normalized objective, p
 - Support detailed graph zoom, pan, node drag, and node selection.
 - Show node evidence and assigned agents without inventing responsibility.
 
+### Portfolio And Delivery Intelligence
+
+- Keep the default Portfolio Intelligence and Delivery Decision Graph surfaces lightweight; mount their live D3 canvases only inside explicitly opened detail popups.
+- Use only explicit enterprise bindings and normalized cross-application relationships. Layout, proximity, icon similarity, and shared agents are never authorization or dependency evidence.
+- Resolve application logos from the matching BuildX project only and show a deterministic monogram when no safe asset is available.
+- Resolve agent identity against Global Agent Memory by exact agent ID before applying a category-derived fallback.
+- Render functionality categories with distinct icons while preserving the full recorded label in accessible detail.
+- Prevent visual overlap using rectangular collision bounds and collision-aware drag placement.
+- Provide wheel, double-click, and button zoom; background pan; collision-aware node drag; Fit; Reset view; and Reset layout.
+- Draw service dependencies as directional storyboard-style segues with a service badge and open arrow. Do not present connector direction as chronology unless the relationship record explicitly carries chronology evidence.
+- Keep compact canvas acronyms presentation-only; the inspector remains authoritative for full names, evidence, constraints, and chronology claims.
+
 ### Agentic System Graph
 
 - Visualize agents, memory nodes, graph/vector artifacts, validation, ownership, and self-improvement relationships.
-- Support modes for overview, dependency view, live execution, and explore.
+- Support modes for overview, dependency view, functionality flow, and explore.
 - Include search, filters, legend, minimap, details drawer, progressive rendering, and canvas edges for large graphs.
 
 ### Hosting
@@ -258,6 +320,14 @@ Success response includes orchestration metadata such as normalized objective, p
 - Support monetary approval gates for paid tools and services.
 - Provide pause, resume, emergency stop, and status APIs.
 
+### Enterprise BrainX
+
+- Preserve immutable application/enterprise bindings, policy snapshots, evidence references, budget reservations, and route/reuse/research receipts within the Decision Continuity authority.
+- Fail closed for missing, stale, expired, unauthorized, or non-matching evidence.
+- Require human approval for configured high-impact actions; neither an agent route nor research observation can promote a branch or deploy a change.
+- Keep actual provider cost distinct from estimated routing cost and require usage evidence before reporting spend.
+- Keep ResearchX, governed routing, AgenticX reuse, live provider inference, and model downloads disabled until their respective rollout controls are explicitly configured.
+
 ## 7. Non-Functional Requirements
 
 ### Reliability
@@ -266,6 +336,7 @@ Success response includes orchestration metadata such as normalized objective, p
 - Runtime log visibility should survive SSE drops.
 - Project creation should be transactional enough to roll back incomplete setup.
 - Large graph rendering should remain responsive through progressive rendering and canvas edges.
+- Interactive analysis canvases must preserve non-overlapping node bounds after force settling, filtering, popup resizing, and manual drag placement.
 
 ### Safety
 
@@ -328,10 +399,15 @@ Important backend modules:
 - `functionalityGraph.js`: functionality graph backend support.
 - `hosting/*`: stage-based hosting workflow.
 - `selfImprovement/*`: control-plane observer, investigator, planner, validation, promotion, and rollback services.
+- `enterpriseGovernance.js`, `decisionXCapture.js`, `aixRouting.js`, `researchX.js`, and `agenticXKnowledge.js`: additive Enterprise Brain control-plane services and receipts.
 
 Important frontend modules:
 
 - `App.jsx`: main PlutoniX control surface, project workflow, runtime panels, functionality analysis.
+- `agentAvatarVisual.js`: shared Global Agent Memory visual derivation and SVG avatar source used by the Agents workspace and analysis canvases.
+- `components/agentic-system/EnterprisePortfolioBrainCanvas.jsx`: brief and popup Portfolio Intelligence canvas.
+- `components/agentic-system/ApplicationDecisionMappingCanvas.jsx`: brief and popup Delivery Decision Graph, interaction controls, collision behavior, icons, and evidence inspector.
+- `components/agentic-system/applicationDecisionMapModel.js`: source-backed delivery, decision, agent, and service projection plus progressive graph disclosure.
 - `functionalityGraphModel.js`: functionality graph normalization, merging, layout, and insights.
 - `pages/CloudHostingPage.jsx`: guided hosting workspace.
 - `public/agentic-system/d3/*`: standalone Agentic System topology workspace.
@@ -346,6 +422,7 @@ PlutoniX stores and reads several evidence layers:
 - Functionality graph evidence from instructions, flow paths, changed files, and explicit functionality graph payloads.
 - Vector memory and Neo4j/D3 topology artifacts.
 - Self-improvement JSONL/JSON state under `runtime/self-improvement` and `observability/self-improvement`.
+- Tenant/workspace-scoped Enterprise Brain policy, budget, decision, research, routing, and reuse records through Decision Continuity; graph/vector/UI views remain derived projections.
 
 The product should treat local artifacts as authoritative until live credentials and external stores are configured and verified.
 
@@ -374,6 +451,7 @@ The product should treat local artifacts as authoritative until live credentials
 - Time from instruction to first valid native artifact preview.
 - Number of successful imports and exports.
 - Usage of functionality analysis detail view.
+- Successful Portfolio Intelligence and Delivery Decision Graph detail sessions, including Fit/Reset recovery after zoom or drag.
 - Hosting workflow completion rate.
 
 ### Agentic Safety
@@ -389,13 +467,14 @@ The product should treat local artifacts as authoritative until live credentials
 - Self-improvement live patch generation is intentionally not enabled in the default vertical slice.
 - Rule-based analysis is the default for self-improvement unless a provider-neutral model adapter is configured.
 - Production-grade self-improvement would need durable queue/lock infrastructure if multiple backend instances run without a shared runtime volume.
-- Some older architecture docs mention a local MCP-compatible endpoint, while the current README states PlutoniX uses external Codex MCP integration and no longer exposes local `/mcp`.
+- PlutoniX exposes no public generic `/mcp` endpoint. Codex MCP remains external; the UI’s optional `/api/generate/mcp` route uses a bounded in-process Gotham bridge rather than a public JSON-RPC server.
+- Enterprise BrainX is a governed control-plane foundation, not legal or compliance certification. Live Hugging Face inference, automatic model downloads, unrestricted network research, GPU allocation, paid provider execution, and autonomous deployment remain disabled or separately approved future adapters.
 
 ## 12. Roadmap
 
 ### Near Term
 
-- Stabilize Functionality Analysis D3 interactions across dense graphs and modal resizing.
+- Expand browser-level interaction coverage for dense Analysis canvases, popup resizing, image-load failures, zoom/pan gestures, node dragging, and Fit/Reset recovery.
 - Add explicit product-level empty, error, and recovery states for all long-running workflows.
 - Expand structured previews with document page thumbnails, slide rendering, workbook styles, charts, and recalculated formula evidence.
 - Improve generated-project health checks and preview readiness diagnostics.

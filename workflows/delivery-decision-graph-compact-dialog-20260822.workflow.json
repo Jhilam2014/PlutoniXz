@@ -1,0 +1,13 @@
+{
+  "workflow_id": "delivery-decision-graph-compact-dialog-20260822",
+  "name": "Compact Delivery Decision Graph dialog",
+  "workflow_class": ["software_engineering", "dashboard_ui", "graph_systems", "accessibility"],
+  "task_size": "medium",
+  "objective": "Replace the default Delivery Decision Graph's fixed type columns with a compact overview and a large, freeform, accessible detail dialog while preserving build-event and decision evidence semantics.",
+  "product_shape": "existing_product_change",
+  "status": "completed",
+  "created_at": "2026-08-22T11:48:23Z",
+  "updated_at": "2026-08-22T11:48:23Z",
+  "agent_id": "project-execution-agent",
+  "reuse_decision": "exact_reuse"
+}

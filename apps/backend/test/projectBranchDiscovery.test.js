@@ -10,6 +10,7 @@ import {
   deriveProjectObjectives,
   estimateCyclomaticComplexity,
   publishArchitectureBranches,
+  publicArchitectureAnalysis,
   readProjectArchitectureAnalysis,
   redactSecretShapedValues,
   scoreArchitectureAlternative,
@@ -35,7 +36,15 @@ test("source-evidenced architecture discovery emits real UI, routes, and databas
   await fs.writeFile(path.join(workspaceDir, "schema.prisma"), "datasource db { provider = \"sqlite\" url = \"file:dev.db\" }\nmodel Order { id String @id }\n");
   await fs.writeFile(path.join(workspaceDir, "tests", "orders.test.js"), "test('orders', () => {});\n");
   await fs.writeFile(path.join(workspaceDir, "docker-compose.yml"), "services:\n  app:\n    image: node:22\n");
-  const project = { id: "imported-orders", name: "Imported orders", folderName: "imported-orders", workspaceDir, port: 5300 };
+  const project = {
+    id: "imported-orders",
+    name: "Imported orders",
+    folderName: "imported-orders",
+    workspaceDir,
+    port: 5300,
+    status: "running",
+    provenance: { origin: "imported", recordedAt: "2026-08-20T00:00:00.000Z", source: "plutonix_project_import" }
+  };
   context.after(() => fs.rm(root, { recursive: true, force: true }));
 
   const report = await analyzeProjectArchitecture({
@@ -49,6 +58,7 @@ test("source-evidenced architecture discovery emits real UI, routes, and databas
   });
 
   assert.equal(report.modelAssist.status, "timed_out");
+  assert.equal(report.projectOrigin, "imported");
   assert.ok(report.functionalities.some((item) => item.category === "ui"));
   assert.ok(report.functionalities.some((item) => item.category === "api"));
   assert.ok(report.functionalities.some((item) => item.category === "data"));
@@ -62,6 +72,7 @@ test("source-evidenced architecture discovery emits real UI, routes, and databas
   assert.ok(report.functionalities.every((item) => !/(?:UI surface|Data boundary|Integration boundary|Security boundary|Test coverage|Runtime configuration|API contract) in/i.test(item.label)));
   assert.ok(report.functionalities.every((item) => item.metrics?.cyclomaticComplexity >= 1));
   assert.ok(report.functionalities.every((item) => item.metrics?.relativeCyclomaticComplexity > 0));
+  assert.ok(report.functionalities.every((item) => item.observedCurrent?.inferenceRole === "observed_current" && item.observedCurrent?.sourceOnly), "static source scans expose observations, not historical decisions");
   assert.ok(report.functionalities.every((item) => item.subfunctionalities?.length === 0), "typed application entities do not acquire fabricated code-unit children");
   assert.ok(!report.sourceFiles.some((item) => item.path === ".env"));
   assert.ok(report.objectives.length >= 1, "connected source entities are grouped into project objectives");
@@ -88,6 +99,9 @@ test("source-evidenced architecture discovery emits real UI, routes, and databas
   assert.equal(byLabel.get("OrderService Service")?.parentEntityId, byLabel.get("GET /api/orders")?.id);
   assert.equal(byLabel.get("OrderRepository Service")?.parentEntityId, byLabel.get("OrderService Service")?.id);
   assert.deepEqual(report.functionalities.map((item) => item.chronology?.order).sort((left, right) => left - right), report.functionalities.map((_item, index) => index));
+  assert.deepEqual(report.functionalities.map((item) => item.chronology?.deliveryOrder).sort((left, right) => left - right), report.functionalities.map((_item, index) => index + 1));
+  assert.ok(report.functionalities.every((item) => item.chronology?.basis === "dependency_aware_delivery_inference" && item.chronology?.inferred));
+  assert.ok(byLabel.get("GET /api/orders")?.chronology?.deliveryOrder < byLabel.get("OrdersPage")?.chronology?.deliveryOrder, "API delivery precedes its UI consumer");
   assert.ok(report.functionalities.every((item) => item.hierarchyDepth >= 1 && item.metrics?.connectorCount >= 0));
   assert.equal(redactSecretShapedValues("API_KEY=leak-me-now").includes("leak-me-now"), false);
   assert.ok(estimateCyclomaticComplexity("if (ready && allowed) { for (const row of rows) {} }") > estimateCyclomaticComplexity("return value;"));
@@ -117,13 +131,17 @@ test("source-evidenced architecture discovery emits real UI, routes, and databas
   });
   assert.ok(branches.some((branch) => branch.inferenceRole === "observed_current"));
   assert.equal(branches.filter((branch) => branch.inferenceRole === "observed_current").length, report.majorFunctionalities.length, "only major functionalities receive current decision branches");
-  assert.ok(branches.some((branch) => branch.inferenceRole === "deferred_alternative"), "evidence-backed alternatives are retained beneath the major functionality");
+  assert.ok(branches.some((branch) => branch.inferenceRole === "anticipated_alternative"), "evidence-backed alternatives are retained beneath the major functionality without implying a historical disposition");
   const ledger = await store.listBranches({ tenantId: "tenant-a", workspaceId: project.id, limit: 250 });
-  assert.ok(ledger.every((branch) => branch.candidate?.inferenceRole !== "deferred_alternative" || branch.status === "deferred"));
+  assert.ok(ledger.every((branch) => branch.candidate?.inferenceRole !== "anticipated_alternative" || branch.status === "candidate"), "anticipated alternatives remain candidates; source analysis does not infer a deferred disposition");
   assert.ok(ledger.every((branch) => branch.candidate?.inferenceRole !== "observed_current" || !/selected/i.test(branch.disposition?.reason || "")));
 
   report.assignments = topology.functionalityAssignments;
   report.branches = branches;
+  const publicReport = publicArchitectureAnalysis(report);
+  assert.equal(publicReport.projectOrigin, "imported");
+  assert.deepEqual(publicReport.publishedCandidates, report.publishedCandidates);
+  assert.equal(Object.hasOwn(publicReport, "candidates"), false, "the source read contract exposes publishable candidates, not the full internal candidate pool");
   const saved = await writeProjectArchitectureAnalysis({ root, report });
   const repeated = await writeProjectArchitectureAnalysis({ root, report: { ...report, analyzedAt: "2099-01-01T00:00:00.000Z" } });
   assert.equal(repeated.analyzedAt, saved.analyzedAt, "analysis reports are immutable per source digest");
@@ -146,7 +164,7 @@ test("architecture discovery excludes virtual environments and preserves only li
     env: { PROJECT_BRANCH_DISCOVERY_MODEL_ASSIST_ENABLED: "false" }
   });
 
-  assert.equal(report.version, 8);
+  assert.equal(report.version, 9);
   assert.equal(report.inferredChains.length, 0);
   assert.ok(!report.sourceFiles.some((file) => file.path.includes("site-packages")));
   assert.ok(!report.functionalities.some((item) => item.label.includes("/internal/package-route")));

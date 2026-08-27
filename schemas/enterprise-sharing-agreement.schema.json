@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://plutonix.local/schemas/enterprise-sharing-agreement.schema.json",
+  "title": "PlutoniX Enterprise Information Sharing Agreement",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "status",
+    "enterpriseId",
+    "sourceProjectId",
+    "recipientProjectId",
+    "direction",
+    "purposes",
+    "approvals"
+  ],
+  "properties": {
+    "id": { "type": "string", "minLength": 2, "maxLength": 160 },
+    "revision": { "type": "string", "minLength": 1, "maxLength": 80 },
+    "status": { "enum": ["draft", "active", "suspended", "revoked", "expired", "superseded"] },
+    "enterpriseId": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]{1,79}$" },
+    "sourceProjectId": { "type": "string", "minLength": 1, "maxLength": 160 },
+    "recipientProjectId": { "type": "string", "minLength": 1, "maxLength": 160 },
+    "direction": { "const": "source_to_recipient" },
+    "purposes": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 20,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1, "maxLength": 160 }
+    },
+    "maxClassification": { "enum": ["public", "internal", "confidential", "restricted"] },
+    "allowedTransforms": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "enum": ["summary", "redacted_excerpt", "embedding", "structured_fact"] }
+    },
+    "startsAt": { "type": "string", "format": "date-time" },
+    "expiresAt": { "type": "string", "format": "date-time" },
+    "approvals": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["account", "source", "recipient"],
+      "properties": {
+        "account": { "$ref": "#/$defs/approval" },
+        "source": { "$ref": "#/$defs/approval" },
+        "recipient": { "$ref": "#/$defs/approval" }
+      }
+    }
+  },
+  "$defs": {
+    "approval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["approved", "principalId", "decidedAt"],
+      "properties": {
+        "approved": { "const": true },
+        "principalId": { "type": "string", "minLength": 1, "maxLength": 160 },
+        "decidedAt": { "type": "string", "format": "date-time" }
+      }
+    }
+  }
+}

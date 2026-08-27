@@ -1,0 +1,18 @@
+{
+  "workflow_id": "gotham-studio-control-plane-20260827",
+  "agent_id": "project-execution-agent",
+  "provider": "openai",
+  "collection": "agent_prompts",
+  "status": "completed",
+  "sync_workflow_id": "plutonix-vector-sync-1787853058082",
+  "files_uploaded": 2,
+  "files_failed": 0,
+  "verification_status": "success",
+  "content_references": [
+    "memory/agent-knowledge/prompts/gotham-studio-control-plane-20260827.project-execution-agent.task.prompt.md",
+    "memory/agent-knowledge/projects/gotham-studio-control-plane-20260827.summary.md"
+  ],
+  "sanitized": true,
+  "created_at": "2026-08-27T17:40:51Z",
+  "completed_at": "2026-08-27T17:54:47.530Z"
+}

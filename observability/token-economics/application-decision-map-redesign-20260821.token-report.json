@@ -1,0 +1,27 @@
+{
+  "workflow_id": "application-decision-map-redesign-20260821",
+  "task_size": "medium",
+  "context_budget": "medium_context",
+  "model_provider": "openai",
+  "model_name": "runtime-configured",
+  "agent_id": "project-execution-agent",
+  "phase": "validation",
+  "input_tokens": 0,
+  "output_tokens": 0,
+  "cached_input_tokens": 0,
+  "reasoning_tokens": 0,
+  "tool_calls_count": 0,
+  "files_read_count": 4,
+  "files_modified_count": 4,
+  "memory_queries_count": 0,
+  "graph_queries_count": 0,
+  "estimated_cost": 0,
+  "currency": "USD",
+  "published_at": "2026-08-21T06:12:26Z",
+  "source": "unavailable",
+  "token_saving_decisions": [
+    "Exact provider token usage was unavailable; zero values are not measured usage.",
+    "Reused the existing source-backed mapping model and D3 canvas dependency.",
+    "Validated deterministic decision-row grouping and the production frontend bundle."
+  ]
+}

@@ -131,7 +131,11 @@ test("shutdown grace fences active work and a second worker recovers the relinqu
 
 test("tenant admission, global/per-tenant claims, duplicate storms, lease transfer, and isolation hold under multi-worker load", options, async (context) => {
   const store = new PostgresDecisionContinuityStore({ databaseUrl });
-  const workers = [queueFor(store), queueFor(store), queueFor(store)];
+  // This scenario intentionally runs several serialized domain effects while
+  // exercising concurrent claims. Keep its normal lease comfortably above
+  // transient PostgreSQL/advisory-lock contention; lease transfer is still
+  // tested explicitly below by expiring the selected lease in the database.
+  const workers = [queueFor(store, { leaseMs: 10_000 }), queueFor(store, { leaseMs: 10_000 }), queueFor(store, { leaseMs: 10_000 })];
   context.after(async () => { await close(...workers); await store.pool?.end(); });
   const noisy = `noisy-${run}`;
   const quiet = `quiet-${run}`;

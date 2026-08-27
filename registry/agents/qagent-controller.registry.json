@@ -25,7 +25,7 @@
       "projectResponsibility": "Evaluate end-of-response objective gaps and produce stop decisions or strict next-instruction packets without directly implementing code.",
       "status": "active",
       "contextPath": ".agentic/orchestrator-agent.md",
-      "createdAt": "2026-08-17T13:01:34.403Z"
+      "createdAt": "2026-08-27T18:57:09.213Z"
     },
     {
       "id": "project-agent-assignment:geofinderx-2yFsDY:qagent-controller",
@@ -35,7 +35,7 @@
       "projectResponsibility": "Evaluate end-of-response objective gaps and produce stop decisions or strict next-instruction packets without directly implementing code.",
       "status": "active",
       "contextPath": ".agentic/orchestrator-agent.md",
-      "createdAt": "2026-08-16T08:45:24.009Z"
+      "createdAt": "2026-08-18T04:25:37.752Z"
     },
     {
       "id": "project-agent-assignment:agenticongen-9TUSjQ:qagent-controller",
@@ -45,7 +45,7 @@
       "projectResponsibility": "Evaluate end-of-response objective gaps and produce stop decisions or strict next-instruction packets without directly implementing code.",
       "status": "active",
       "contextPath": ".agentic/orchestrator-agent.md",
-      "createdAt": "2026-08-16T08:45:26.988Z"
+      "createdAt": "2026-08-18T04:25:46.072Z"
     },
     {
       "id": "project-agent-assignment:investmentfinderx-z8rTq_:qagent-controller",
@@ -55,7 +55,7 @@
       "projectResponsibility": "Evaluate end-of-response objective gaps and produce stop decisions or strict next-instruction packets without directly implementing code.",
       "status": "active",
       "contextPath": ".agentic/orchestrator-agent.md",
-      "createdAt": "2026-08-16T08:45:29.282Z"
+      "createdAt": "2026-08-18T04:25:53.340Z"
     },
     {
       "id": "project-agent-assignment:whatsappmediaanalyser-oAeSvn:qagent-controller",
@@ -65,7 +65,7 @@
       "projectResponsibility": "Evaluate end-of-response objective gaps and produce stop decisions or strict next-instruction packets without directly implementing code.",
       "status": "active",
       "contextPath": ".agentic/orchestrator-agent.md",
-      "createdAt": "2026-08-16T08:45:32.873Z"
+      "createdAt": "2026-08-20T11:01:37.121Z"
     },
     {
       "id": "project-agent-assignment:spydash-qkWtmJ:qagent-controller",
@@ -75,7 +75,7 @@
       "projectResponsibility": "Evaluate end-of-response objective gaps and produce stop decisions or strict next-instruction packets without directly implementing code.",
       "status": "active",
       "contextPath": ".agentic/orchestrator-agent.md",
-      "createdAt": "2026-08-16T08:45:36.701Z"
+      "createdAt": "2026-08-18T04:26:09.332Z"
     },
     {
       "id": "project-agent-assignment:webforbusinesses-xu7qsM:qagent-controller",
@@ -85,7 +85,7 @@
       "projectResponsibility": "Evaluate end-of-response objective gaps and produce stop decisions or strict next-instruction packets without directly implementing code.",
       "status": "active",
       "contextPath": ".agentic/orchestrator-agent.md",
-      "createdAt": "2026-08-16T08:45:38.494Z"
+      "createdAt": "2026-08-18T04:26:13.921Z"
     },
     {
       "id": "project-agent-assignment:researchanddevx-xF8SDs:qagent-controller",
@@ -95,7 +95,7 @@
       "projectResponsibility": "Evaluate end-of-response objective gaps and produce stop decisions or strict next-instruction packets without directly implementing code.",
       "status": "active",
       "contextPath": ".agentic/orchestrator-agent.md",
-      "createdAt": "2026-08-16T08:45:40.857Z"
+      "createdAt": "2026-08-18T04:26:17.629Z"
     },
     {
       "id": "project-agent-assignment:bag-commerce-studio-y2obrr:qagent-controller",
@@ -105,7 +105,7 @@
       "projectResponsibility": "Evaluate end-of-response objective gaps and produce stop decisions or strict next-instruction packets without directly implementing code.",
       "status": "active",
       "contextPath": ".agentic/orchestrator-agent.md",
-      "createdAt": "2026-08-16T08:45:42.840Z"
+      "createdAt": "2026-08-18T04:26:25.931Z"
     },
     {
       "id": "project-agent-assignment:mentalheathcounselor-PJ1N2o:qagent-controller",
@@ -115,7 +115,7 @@
       "projectResponsibility": "Evaluate end-of-response objective gaps and produce stop decisions or strict next-instruction packets without directly implementing code.",
       "status": "active",
       "contextPath": ".agentic/orchestrator-agent.md",
-      "createdAt": "2026-08-16T08:45:44.270Z"
+      "createdAt": "2026-08-18T04:26:33.712Z"
     },
     {
       "id": "project-agent-assignment:videopresentationforproductx-GtDUxv:qagent-controller",
@@ -125,7 +125,7 @@
       "projectResponsibility": "Evaluate end-of-response objective gaps and produce stop decisions or strict next-instruction packets without directly implementing code.",
       "status": "active",
       "contextPath": ".agentic/orchestrator-agent.md",
-      "createdAt": "2026-08-16T08:45:46.094Z"
+      "createdAt": "2026-08-18T04:26:40.805Z"
     },
     {
       "id": "project-agent-assignment:brushx-zHXT8q:qagent-controller",
@@ -135,7 +135,7 @@
       "projectResponsibility": "Evaluate end-of-response objective gaps and produce stop decisions or strict next-instruction packets without directly implementing code.",
       "status": "active",
       "contextPath": ".agentic/orchestrator-agent.md",
-      "createdAt": "2026-08-16T08:45:47.622Z"
+      "createdAt": "2026-08-18T04:26:44.376Z"
     },
     {
       "id": "project-agent-assignment:voicex-4q9G58:qagent-controller",
@@ -145,7 +145,7 @@
       "projectResponsibility": "Evaluate end-of-response objective gaps and produce stop decisions or strict next-instruction packets without directly implementing code.",
       "status": "active",
       "contextPath": ".agentic/orchestrator-agent.md",
-      "createdAt": "2026-08-16T08:45:48.738Z"
+      "createdAt": "2026-08-18T04:26:47.639Z"
     },
     {
       "id": "project-agent-assignment:gymx-9JXKDV:qagent-controller",
@@ -155,7 +155,7 @@
       "projectResponsibility": "Evaluate end-of-response objective gaps and produce stop decisions or strict next-instruction packets without directly implementing code.",
       "status": "active",
       "contextPath": ".agentic/orchestrator-agent.md",
-      "createdAt": "2026-08-16T15:38:43.936Z"
+      "createdAt": "2026-08-24T23:28:29.605Z"
     },
     {
       "id": "project-agent-assignment:bag-commerce-studio-Tj4bB8:qagent-controller",
@@ -165,7 +165,7 @@
       "projectResponsibility": "Evaluate end-of-response objective gaps and produce stop decisions or strict next-instruction packets without directly implementing code.",
       "status": "active",
       "contextPath": ".agentic/orchestrator-agent.md",
-      "createdAt": "2026-08-16T08:45:52.698Z"
+      "createdAt": "2026-08-18T04:27:03.116Z"
     },
     {
       "id": "project-agent-assignment:databricksx-n7lCNf:qagent-controller",
@@ -175,7 +175,7 @@
       "projectResponsibility": "Evaluate end-of-response objective gaps and produce stop decisions or strict next-instruction packets without directly implementing code.",
       "status": "active",
       "contextPath": ".agentic/orchestrator-agent.md",
-      "createdAt": "2026-08-17T19:20:04.752Z"
+      "createdAt": "2026-08-18T06:39:22.712Z"
     },
     {
       "id": "project-agent-assignment:cvmakerx-e4XAzI:qagent-controller",
@@ -185,7 +185,17 @@
       "projectResponsibility": "Evaluate end-of-response objective gaps and produce stop decisions or strict next-instruction packets without directly implementing code.",
       "status": "active",
       "contextPath": ".agentic/orchestrator-agent.md",
-      "createdAt": "2026-08-16T08:45:56.199Z"
+      "createdAt": "2026-08-18T04:27:11.104Z"
+    },
+    {
+      "id": "project-agent-assignment:voicetranscriptgenx-QcKNlU:qagent-controller",
+      "projectId": "voicetranscriptgenx-QcKNlU",
+      "agentId": "qagent-controller",
+      "role": "qagent-controller",
+      "projectResponsibility": "Evaluate end-of-response objective gaps and produce stop decisions or strict next-instruction packets without directly implementing code.",
+      "status": "active",
+      "contextPath": ".agentic/orchestrator-agent.md",
+      "createdAt": "2026-08-27T07:15:34.632Z"
     }
   ],
   "reuse_decisions": [
@@ -198,7 +208,7 @@
       "reuseConfidenceScore": 100,
       "similarityScore": 1,
       "reason": "Reused the existing global qagent-controller definition; project context is stored in a separate assignment.",
-      "createdAt": "2026-08-17T13:01:34.403Z"
+      "createdAt": "2026-08-27T18:57:09.212Z"
     },
     {
       "id": "agent-reuse:geofinderx-2yFsDY:qagent-controller",
@@ -209,7 +219,7 @@
       "reuseConfidenceScore": 100,
       "similarityScore": 1,
       "reason": "Reused the existing global qagent-controller definition; project context is stored in a separate assignment.",
-      "createdAt": "2026-08-16T08:45:24.009Z"
+      "createdAt": "2026-08-18T04:25:37.751Z"
     },
     {
       "id": "agent-reuse:agenticongen-9TUSjQ:qagent-controller",
@@ -220,7 +230,7 @@
       "reuseConfidenceScore": 100,
       "similarityScore": 1,
       "reason": "Reused the existing global qagent-controller definition; project context is stored in a separate assignment.",
-      "createdAt": "2026-08-16T08:45:26.988Z"
+      "createdAt": "2026-08-18T04:25:46.071Z"
     },
     {
       "id": "agent-reuse:investmentfinderx-z8rTq_:qagent-controller",
@@ -231,7 +241,7 @@
       "reuseConfidenceScore": 100,
       "similarityScore": 1,
       "reason": "Reused the existing global qagent-controller definition; project context is stored in a separate assignment.",
-      "createdAt": "2026-08-16T08:45:29.282Z"
+      "createdAt": "2026-08-18T04:25:53.340Z"
     },
     {
       "id": "agent-reuse:whatsappmediaanalyser-oAeSvn:qagent-controller",
@@ -242,7 +252,7 @@
       "reuseConfidenceScore": 100,
       "similarityScore": 1,
       "reason": "Reused the existing global qagent-controller definition; project context is stored in a separate assignment.",
-      "createdAt": "2026-08-16T08:45:32.872Z"
+      "createdAt": "2026-08-20T11:01:37.121Z"
     },
     {
       "id": "agent-reuse:spydash-qkWtmJ:qagent-controller",
@@ -253,7 +263,7 @@
       "reuseConfidenceScore": 100,
       "similarityScore": 1,
       "reason": "Reused the existing global qagent-controller definition; project context is stored in a separate assignment.",
-      "createdAt": "2026-08-16T08:45:36.701Z"
+      "createdAt": "2026-08-18T04:26:09.332Z"
     },
     {
       "id": "agent-reuse:webforbusinesses-xu7qsM:qagent-controller",
@@ -264,7 +274,7 @@
       "reuseConfidenceScore": 100,
       "similarityScore": 1,
       "reason": "Reused the existing global qagent-controller definition; project context is stored in a separate assignment.",
-      "createdAt": "2026-08-16T08:45:38.494Z"
+      "createdAt": "2026-08-18T04:26:13.921Z"
     },
     {
       "id": "agent-reuse:researchanddevx-xF8SDs:qagent-controller",
@@ -275,7 +285,7 @@
       "reuseConfidenceScore": 100,
       "similarityScore": 1,
       "reason": "Reused the existing global qagent-controller definition; project context is stored in a separate assignment.",
-      "createdAt": "2026-08-16T08:45:40.857Z"
+      "createdAt": "2026-08-18T04:26:17.629Z"
     },
     {
       "id": "agent-reuse:bag-commerce-studio-y2obrr:qagent-controller",
@@ -286,7 +296,7 @@
       "reuseConfidenceScore": 100,
       "similarityScore": 1,
       "reason": "Reused the existing global qagent-controller definition; project context is stored in a separate assignment.",
-      "createdAt": "2026-08-16T08:45:42.840Z"
+      "createdAt": "2026-08-18T04:26:25.931Z"
     },
     {
       "id": "agent-reuse:mentalheathcounselor-PJ1N2o:qagent-controller",
@@ -297,7 +307,7 @@
       "reuseConfidenceScore": 100,
       "similarityScore": 1,
       "reason": "Reused the existing global qagent-controller definition; project context is stored in a separate assignment.",
-      "createdAt": "2026-08-16T08:45:44.270Z"
+      "createdAt": "2026-08-18T04:26:33.712Z"
     },
     {
       "id": "agent-reuse:videopresentationforproductx-GtDUxv:qagent-controller",
@@ -308,7 +318,7 @@
       "reuseConfidenceScore": 100,
       "similarityScore": 1,
       "reason": "Reused the existing global qagent-controller definition; project context is stored in a separate assignment.",
-      "createdAt": "2026-08-16T08:45:46.094Z"
+      "createdAt": "2026-08-18T04:26:40.804Z"
     },
     {
       "id": "agent-reuse:brushx-zHXT8q:qagent-controller",
@@ -319,7 +329,7 @@
       "reuseConfidenceScore": 100,
       "similarityScore": 1,
       "reason": "Reused the existing global qagent-controller definition; project context is stored in a separate assignment.",
-      "createdAt": "2026-08-16T08:45:47.622Z"
+      "createdAt": "2026-08-18T04:26:44.376Z"
     },
     {
       "id": "agent-reuse:voicex-4q9G58:qagent-controller",
@@ -330,7 +340,7 @@
       "reuseConfidenceScore": 100,
       "similarityScore": 1,
       "reason": "Reused the existing global qagent-controller definition; project context is stored in a separate assignment.",
-      "createdAt": "2026-08-16T08:45:48.738Z"
+      "createdAt": "2026-08-18T04:26:47.639Z"
     },
     {
       "id": "agent-reuse:gymx-9JXKDV:qagent-controller",
@@ -341,7 +351,7 @@
       "reuseConfidenceScore": 100,
       "similarityScore": 1,
       "reason": "Reused the existing global qagent-controller definition; project context is stored in a separate assignment.",
-      "createdAt": "2026-08-16T15:38:43.936Z"
+      "createdAt": "2026-08-24T23:28:29.604Z"
     },
     {
       "id": "agent-reuse:bag-commerce-studio-Tj4bB8:qagent-controller",
@@ -352,7 +362,7 @@
       "reuseConfidenceScore": 100,
       "similarityScore": 1,
       "reason": "Reused the existing global qagent-controller definition; project context is stored in a separate assignment.",
-      "createdAt": "2026-08-16T08:45:52.698Z"
+      "createdAt": "2026-08-18T04:27:03.116Z"
     },
     {
       "id": "agent-reuse:databricksx-n7lCNf:qagent-controller",
@@ -363,7 +373,7 @@
       "reuseConfidenceScore": 100,
       "similarityScore": 1,
       "reason": "Reused the existing global qagent-controller definition; project context is stored in a separate assignment.",
-      "createdAt": "2026-08-17T19:20:04.751Z"
+      "createdAt": "2026-08-18T06:39:22.712Z"
     },
     {
       "id": "agent-reuse:cvmakerx-e4XAzI:qagent-controller",
@@ -374,18 +384,29 @@
       "reuseConfidenceScore": 100,
       "similarityScore": 1,
       "reason": "Reused the existing global qagent-controller definition; project context is stored in a separate assignment.",
-      "createdAt": "2026-08-16T08:45:56.199Z"
+      "createdAt": "2026-08-18T04:27:11.104Z"
+    },
+    {
+      "id": "agent-reuse:voicetranscriptgenx-QcKNlU:qagent-controller",
+      "projectExecution": "voicetranscriptgenx-QcKNlU",
+      "selectedAgent": "qagent-controller",
+      "requestedRole": "qagent-controller",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global qagent-controller definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-27T07:15:34.632Z"
     }
   ],
   "latest_reuse_decision": {
-    "id": "agent-reuse:databricksx-n7lCNf:qagent-controller",
-    "projectExecution": "databricksx-n7lCNf",
+    "id": "agent-reuse:mapex-M6rGkR:qagent-controller",
+    "projectExecution": "mapex-M6rGkR",
     "selectedAgent": "qagent-controller",
     "requestedRole": "qagent-controller",
     "decisionType": "exact_reuse",
     "reuseConfidenceScore": 100,
     "similarityScore": 1,
     "reason": "Reused the existing global qagent-controller definition; project context is stored in a separate assignment.",
-    "createdAt": "2026-08-17T19:20:04.751Z"
+    "createdAt": "2026-08-27T18:57:09.212Z"
   }
 }

@@ -14,7 +14,10 @@ test("outbox survives an API-side publication gap and dispatches on recovery", o
   const submitted = await queue.submit({ tenantId:`t-outbox-${run}`, workspaceId:"workflow", jobType:"condition_event", payload:input("outbox"), idempotencyKey:`outbox-${run}` }); await store.database();
   const pending = await store.pool.query("SELECT dispatch_status FROM decision_continuity_outbox WHERE payload->'payload'->>'jobId'=$1", [submitted.job.jobId]);
   assert.equal(pending.rows[0].dispatch_status, "pending");
-  await queue.dispatchOutbox();
+  // Scope the recovery pass to this test's isolated tenant. A normal worker
+  // intentionally drains the global outbox in bounded batches, so an
+  // unscoped dispatch can legitimately service older tenants first.
+  await queue.dispatchOutbox({ tenantId: submitted.job.tenantId, workspaceId: submitted.job.workspaceId });
   const published = await store.pool.query("SELECT dispatch_status FROM decision_continuity_outbox WHERE payload->'payload'->>'jobId'=$1", [submitted.job.jobId]);
   assert.equal(published.rows[0].dispatch_status, "published");
 });

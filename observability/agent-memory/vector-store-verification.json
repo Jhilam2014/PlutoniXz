@@ -1,8 +1,3338 @@
 {
   "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
-  "checked_at": "2026-06-29T22:53:21+00:00",
-  "attached_file_count": 0,
-  "uploaded_files": [],
-  "status": "skipped",
-  "reason": "OpenAI Vector Store was not selected; ChromaDB fallback artifacts were generated."
+  "checked_at": "2026-08-27T17:54:47.530Z",
+  "attached_file_count": 666,
+  "uploaded_files": [
+    {
+      "id": "file-JEmZn6nVAg6ymPnjCCXUL3",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-HBSF4ojpP7f5dFGig7JBM3",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-UwKVjRQnobmNamWEyFaobn",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-DWU3WkBA91WaQYYMywcihp",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-NVt6doyy1aiMQxUDBgucit",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-YM4eahg2a8ehgjBbBJECgb",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-Ph9SPmcvpisdZm2fSoPMri",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-MVDCiQ1GytbqfX1YXU6x5T",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-VnbSHwyodT3o5eNLY3L9mn",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-6VLyvbn31FF9GUVGgczt38",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-P1vgcTnp5p2oacgPq563iw",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-Anp2spL632chH4WdQW8zV1",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-LdWqezpU5rwWo1dWtmKiPJ",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-94kkEj1Qu1JMvkmFm2D1t7",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-Fg3Ae3sJqppqPSWAA5toPe",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-6rVPTsk9aVZxo17QzkxysV",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/agents/geofinderx-local-execution-agent.v1.0.0.md"
+    },
+    {
+      "id": "file-KvaJDQSfH6qstAY32zjLhn",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/agents/project-execution-agent.v1.0.0.md"
+    },
+    {
+      "id": "file-QFr6XKtzHpufEsPmaEgiEk",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/corrections/wf-geofinderx-business-search-20260628.project-execution-agent.correction.md"
+    },
+    {
+      "id": "file-Vofwga7b1cv5HR8mvzrNwi",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/projects/wf-geofinderx-bootstrap-20260627.summary.md"
+    },
+    {
+      "id": "file-G5m7LGR6ZJJTg8ruVZ7NHd",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/projects/wf-geofinderx-business-search-20260628.summary.md"
+    },
+    {
+      "id": "file-StE7baZEdBtRSvmgiC26yo",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/prompts/wf-geofinderx-bootstrap-20260627.geofinderx-local-execution-agent.handoff.prompt.md"
+    },
+    {
+      "id": "file-XTPzVeEgyqVFmfG6pmfTtA",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/prompts/wf-geofinderx-bootstrap-20260627.geofinderx-local-execution-agent.summary.prompt.md"
+    },
+    {
+      "id": "file-Td4dRxw1z5dMpUb74Gj657",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/prompts/wf-geofinderx-bootstrap-20260627.geofinderx-local-execution-agent.system.prompt.md"
+    },
+    {
+      "id": "file-1wcntBtVoM3G9MvaybXJt3",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/prompts/wf-geofinderx-bootstrap-20260627.geofinderx-local-execution-agent.task.prompt.md"
+    },
+    {
+      "id": "file-13u1PDhXosP2YDRarU147s",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/prompts/wf-geofinderx-bootstrap-20260627.geofinderx-local-execution-agent.validation.prompt.md"
+    },
+    {
+      "id": "file-4JJdiVha7q5aGZtzjQuQpL",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/prompts/wf-geofinderx-bootstrap-20260627.human-controller.correction.prompt.md"
+    },
+    {
+      "id": "file-FeKDFr3CWxoum3uYetuWFA",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/prompts/wf-geofinderx-business-search-20260628.project-execution-agent.actual-backend-correction.prompt.md"
+    },
+    {
+      "id": "file-4jjY9pcUXioiojPyMWDzrT",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/prompts/wf-geofinderx-business-search-20260628.project-execution-agent.all-results-correction.prompt.md"
+    },
+    {
+      "id": "file-2adhNivomGpZx5YEjHA9ug",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/prompts/wf-geofinderx-business-search-20260628.project-execution-agent.api-routing-correction.prompt.md"
+    },
+    {
+      "id": "file-EewFPN4SFS1oCnwp6mVsH2",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/prompts/wf-geofinderx-business-search-20260628.project-execution-agent.backend-unavailable-correction.prompt.md"
+    },
+    {
+      "id": "file-9mkT7G6VQ8FFBpuaZNEWDk",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/prompts/wf-geofinderx-business-search-20260628.project-execution-agent.correction.prompt.md"
+    },
+    {
+      "id": "file-8j3w9CRFRvJxe8zEnbrFfc",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/prompts/wf-geofinderx-business-search-20260628.project-execution-agent.scheduling-map-query-log.prompt.md"
+    },
+    {
+      "id": "file-LdCx8SVAAHYhEkZn4eKBKk",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/prompts/wf-geofinderx-business-search-20260628.project-execution-agent.task.prompt.md"
+    },
+    {
+      "id": "file-8R83B8P8Dxo4gBPnPao5tb",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-4jxW1aShh2kGEJK2ztS1dW",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-VyR27VXZGwEj9Ac4mKUFWc",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-2hZ54ehTCyie3sBZQjQq8F",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-Jh1XTqfvgA8E5XEW4126u9",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-Q71wsikWKtVR4GFkmmHayq",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-8KFXKfM25tCRvheCe2e6Af",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-3szoWZnHrkUHp8c68Fi5Ai",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-Gp978mXpBQavEGLDJ2KPYv",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-BbA5EgDG1JCSCQonty537g",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-GayCioZou1enJRcRxoSfVS",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/agents/builderx-fullstack-agent.v1.0.0.md"
+    },
+    {
+      "id": "file-3kUJ5YYdawMYfVqKxMwFWf",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/projects/builderx-container-restart-001.summary.md"
+    },
+    {
+      "id": "file-TBV6vaksqt39ZqFaSJ2uzN",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/projects/builderx-generated-file-ops-001.summary.md"
+    },
+    {
+      "id": "file-VZ5T1mEWEBJZiUAXqhkegc",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/projects/builderx-hot-reload-stability-001.summary.md"
+    },
+    {
+      "id": "file-2cDmkXmzx7dJycCkpr52ud",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/projects/builderx-large-001.summary.md"
+    },
+    {
+      "id": "file-LSVSdaspktdSTJ8Xr4jiUB",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/projects/builderx-layout-agentic-d3-001.summary.md"
+    },
+    {
+      "id": "file-VCixrZe3RgU23UKQS2CvTN",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/projects/builderx-mcp-chat-001.summary.md"
+    },
+    {
+      "id": "file-VbXWvndEB23jNvZ53Anbth",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/projects/builderx-mcp-console-trace-001.summary.md"
+    },
+    {
+      "id": "file-GYzKZvNHyC4AJUvBMsNJ2X",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/projects/builderx-mcp-runtime-log-001.summary.md"
+    },
+    {
+      "id": "file-2aqvQeNnVYWmyu6m7KBCen",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/projects/builderx-orchestrator-mcp-001.summary.md"
+    },
+    {
+      "id": "file-YXXtCdeSH7YC9zRD6FM9zm",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/projects/builderx-runtime-log-400-001.summary.md"
+    },
+    {
+      "id": "file-TqfTGojmqJnGZvmXGxqSbv",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/prompts/builderx-large-001.builderx-fullstack-agent.builderx-large-task.prompt.md"
+    },
+    {
+      "id": "file-NUUGLQgCJQwHtjkZbtrJvu",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/agents/project-execution-agent.v1.0.0.md"
+    },
+    {
+      "id": "file-JzdruE5rant4YQabbmkJmG",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/corrections/wf-geofinderx-business-search-20260628.project-execution-agent.correction.md"
+    },
+    {
+      "id": "file-5kDb6sL1kKLFcwYT2eWAvS",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/projects/wf-geofinderx-business-search-20260628.summary.md"
+    },
+    {
+      "id": "file-KvKXJvkZiQybT27af2HPX5",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/prompts/wf-geofinderx-business-search-20260628.project-execution-agent.all-results-correction.prompt.md"
+    },
+    {
+      "id": "file-85PcdEjf79P189Y7c6R6aJ",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/prompts/wf-geofinderx-business-search-20260628.project-execution-agent.map-auth-fallback.prompt.md"
+    },
+    {
+      "id": "file-G9tf4mY1wS8B8Ub6wnQaAo",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/prompts/wf-geofinderx-business-search-20260628.project-execution-agent.rate-limit-pagination-map.prompt.md"
+    },
+    {
+      "id": "file-9PW8cwzmuWbCUBsMyjccFd",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/agents/project-execution-agent.v1.0.0.md"
+    },
+    {
+      "id": "file-7xTYxjDQyXs7qNPmU8U6sP",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/projects/bootstrap-agent-memory.summary.md"
+    },
+    {
+      "id": "file-NHF8nuUZN1RsEg3aL8tXYG",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/prompts/bootstrap-orchestrator-001.project-execution-agent.correction-bootstrap-placeholder.prompt.md"
+    },
+    {
+      "id": "file-ALuhLY7Jh1RUwwGtT5Styx",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/prompts/bootstrap-orchestrator-001.project-execution-agent.default-agent-instruction.prompt.md"
+    },
+    {
+      "id": "file-WpbZQGGJ5qg2KU6HahbLYe",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/prompts/bootstrap-orchestrator-001.project-execution-agent.handoff-bootstrap.prompt.md"
+    },
+    {
+      "id": "file-4XrQgFq578iDLemUbvhZgF",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/prompts/bootstrap-orchestrator-001.project-execution-agent.orchestrator-bootstrap.prompt.md"
+    },
+    {
+      "id": "file-HZKmWCP67e9PjuTDU6NFFv",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/prompts/bootstrap-orchestrator-001.project-execution-agent.validation-bootstrap.prompt.md"
+    },
+    {
+      "id": "file-XYWgyaJHiJY7apHjgf7deV",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-KpPx66J2hE6eB59DFitHQb",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-DkhaeQYVpPwJtWZM8NTwCa",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/prompts/wf-geofinderx-business-search-20260628.project-execution-agent.ai-categorical-search.prompt.md"
+    },
+    {
+      "id": "file-KqAm24nakzWHuoQqy2Fh54",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/projects/wf-geofinderx-business-search-20260628.summary.md"
+    },
+    {
+      "id": "file-1EmEbDzkV2jkLMYDwuRiqT",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/agents/project-execution-agent.v1.0.0.md"
+    },
+    {
+      "id": "file-JNKvSAtw7KjXECcAVbxi3W",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/projects/bootstrap-agent-memory.summary.md"
+    },
+    {
+      "id": "file-SArjAem4jC4gFsMhCF7GZu",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/agents/project-execution-agent.v1.0.0.md"
+    },
+    {
+      "id": "file-HwRv5uG9XbgEG963aFQrSh",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/projects/bootstrap-agent-memory.summary.md"
+    },
+    {
+      "id": "file-CzvAZUWWUoRh4Qv9VcX6jq",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/agents/project-execution-agent.v1.0.0.md"
+    },
+    {
+      "id": "file-CKyRPPJY3wnL29n3VVcSjX",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/projects/bootstrap-agent-memory.summary.md"
+    },
+    {
+      "id": "file-Khqoqxpnd1fNjnv6mR8s6t",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/agents/project-execution-agent.v1.0.0.md"
+    },
+    {
+      "id": "file-VPhKnAFbEmGGTLzPjjJ8X4",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/projects/bootstrap-agent-memory.summary.md"
+    },
+    {
+      "id": "file-MhtcRMFwJfL4pu7qNw7e1q",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/agents/project-execution-agent.v1.0.0.md"
+    },
+    {
+      "id": "file-QHuFbuJVWn5JqXr2TLs6xA",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/projects/bootstrap-agent-memory.summary.md"
+    },
+    {
+      "id": "file-9RLizUFsVUzejGVDT9sULs",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/agents/project-execution-agent.v1.0.0.md"
+    },
+    {
+      "id": "file-Fu5knRhP5ZCMoGnvVGg4sw",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/projects/bootstrap-agent-memory.summary.md"
+    },
+    {
+      "id": "file-4stcKD5LZweX6aTCZ1a9ax",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/agents/project-execution-agent.v1.0.0.md"
+    },
+    {
+      "id": "file-KAVzYLJ4vS7CzMniiNpVMC",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/projects/bootstrap-agent-memory.summary.md"
+    },
+    {
+      "id": "file-J3vobxwZ899gb1vPunNeNa",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/agents/project-execution-agent.v1.0.0.md"
+    },
+    {
+      "id": "file-9oHj3g5f9CnJJoJWdkrNv9",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/projects/bootstrap-agent-memory.summary.md"
+    },
+    {
+      "id": "file-4C6SfKfgNjMHX8GyL3hRiM",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/agents/project-execution-agent.v1.0.0.md"
+    },
+    {
+      "id": "file-42APajDnDXdhKQJuKqmwUq",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/projects/bootstrap-agent-memory.summary.md"
+    },
+    {
+      "id": "file-MBMsWu2PnV6KhRft8UWrJ7",
+      "status": "completed",
+      "source_path": "agents/generated/builderx-fullstack-agent.agent.md"
+    },
+    {
+      "id": "file-AAdaxA5Ho56qz5NjHFwn7D",
+      "status": "completed",
+      "source_path": "agents/generated/builderx-fullstack-agent.agent.md"
+    },
+    {
+      "id": "file-L4GSgwobYYYDGMcPX2sqie",
+      "status": "completed",
+      "source_path": "agents/generated/geofinderx-content-data-agent.agent.md"
+    },
+    {
+      "id": "file-8rFfWJZjSsuXzdWr9q66SZ",
+      "status": "completed",
+      "source_path": "agents/generated/geofinderx-content-data-agent.agent.md"
+    },
+    {
+      "id": "file-E1CenukK3RvBRryw8i6J6Q",
+      "status": "completed",
+      "source_path": "agents/generated/geofinderx-orchestrator-agent.agent.md"
+    },
+    {
+      "id": "file-7oXKTP4J5C4hGeeGdjumCn",
+      "status": "completed",
+      "source_path": "agents/generated/geofinderx-orchestrator-agent.agent.md"
+    },
+    {
+      "id": "file-Vd8FV4gmaAdFdcLbBGrB62",
+      "status": "completed",
+      "source_path": "agents/generated/geofinderx-runtime-packaging-agent.agent.md"
+    },
+    {
+      "id": "file-LcJyV9eqrcyzsD7HFxAWMN",
+      "status": "completed",
+      "source_path": "agents/generated/geofinderx-runtime-packaging-agent.agent.md"
+    },
+    {
+      "id": "file-SfpP7zHa5GfVkyWSSCyS4f",
+      "status": "completed",
+      "source_path": "agents/generated/geofinderx-ui-composition-agent.agent.md"
+    },
+    {
+      "id": "file-GXi9ay3JLuxfqNdf67uTXU",
+      "status": "completed",
+      "source_path": "agents/generated/geofinderx-ui-composition-agent.agent.md"
+    },
+    {
+      "id": "file-CSAXq96zBVhPmpnYxdgDzR",
+      "status": "completed",
+      "source_path": "agents/generated/mapex-commerce-catalog-agent.agent.md"
+    },
+    {
+      "id": "file-4uVfXuijbQRQjYofX2qJ9E",
+      "status": "completed",
+      "source_path": "agents/generated/mapex-content-data-agent.agent.md"
+    },
+    {
+      "id": "file-JoW2JUvkcwES5fth1KD9ZJ",
+      "status": "completed",
+      "source_path": "agents/generated/mapex-commerce-catalog-agent.agent.md"
+    },
+    {
+      "id": "file-Pxb6pwycojajrP8LQ3gqXv",
+      "status": "completed",
+      "source_path": "agents/generated/mapex-content-data-agent.agent.md"
+    },
+    {
+      "id": "file-L1TAu3Q6oqrRQ6bhghee76",
+      "status": "completed",
+      "source_path": "agents/generated/mapex-orchestrator-agent.agent.md"
+    },
+    {
+      "id": "file-7H9PEPwQ8emSd77HskKSko",
+      "status": "completed",
+      "source_path": "agents/generated/mapex-orchestrator-agent.agent.md"
+    },
+    {
+      "id": "file-98p2GkWCJGYtNavChWLuDe",
+      "status": "completed",
+      "source_path": "agents/generated/mapex-runtime-packaging-agent.agent.md"
+    },
+    {
+      "id": "file-1WgadzuuTBRKRR9CD63a85",
+      "status": "completed",
+      "source_path": "agents/generated/mapex-runtime-packaging-agent.agent.md"
+    },
+    {
+      "id": "file-YGSsaq6DdiR4Rzko48Q1sn",
+      "status": "completed",
+      "source_path": "agents/generated/mapex-ui-composition-agent.agent.md"
+    },
+    {
+      "id": "file-EKAuApX27Ng8dc3hgy4Qdc",
+      "status": "completed",
+      "source_path": "agents/generated/mapex-ui-composition-agent.agent.md"
+    },
+    {
+      "id": "file-JsSauVTH2nnmsNFcJ2AmZ9",
+      "status": "completed",
+      "source_path": "agents/generated/project-execution-agent.agent.md"
+    },
+    {
+      "id": "file-1kg4SYF3RaJ8rxM9KbRkXN",
+      "status": "completed",
+      "source_path": "agents/generated/project-execution-agent.agent.md"
+    },
+    {
+      "id": "file-4Vq3gq8WCA3CXfxBVv6Z9f",
+      "status": "completed",
+      "source_path": "agents/human/human-controller.agent.md"
+    },
+    {
+      "id": "file-L6XTgUtssVqisaxG4RvLur",
+      "status": "completed",
+      "source_path": "agents/human/human-controller.agent.md"
+    },
+    {
+      "id": "file-WZihCimHJfNGy7zhfzXAds",
+      "status": "completed",
+      "source_path": "agents/generated/geofinderx-local-execution-agent.agent.md"
+    },
+    {
+      "id": "file-41WU9Agn1J6zJZVJAcvg3D",
+      "status": "completed",
+      "source_path": "agents/generated/project-execution-agent.agent.md"
+    },
+    {
+      "id": "file-7astv9X22NoykGqUzkLHJs",
+      "status": "completed",
+      "source_path": "agents/generated/geofinderx-local-execution-agent.agent.md"
+    },
+    {
+      "id": "file-YAAFxfnDjVT3Ld2suRX1YY",
+      "status": "completed",
+      "source_path": "agents/generated/project-execution-agent.agent.md"
+    },
+    {
+      "id": "file-EGTyhuci8a7H1mRD3bZae1",
+      "status": "completed",
+      "source_path": "agents/human/human-controller.agent.md"
+    },
+    {
+      "id": "file-7Y5Y5efHVBiPvCVVMbAUgv",
+      "status": "completed",
+      "source_path": "agents/human/human-controller.agent.md"
+    },
+    {
+      "id": "file-JMzLHZJBrH9QQkETcoPjFC",
+      "status": "completed",
+      "source_path": "agents/generated/project-execution-agent.agent.md"
+    },
+    {
+      "id": "file-2gMu6zmGxvKZcpfjjiWMjH",
+      "status": "completed",
+      "source_path": "agents/generated/project-execution-agent.agent.md"
+    },
+    {
+      "id": "file-RVWTrrf9JNiuNpKa4wHjmR",
+      "status": "completed",
+      "source_path": "agents/human/human-controller.agent.md"
+    },
+    {
+      "id": "file-QHPxdCXBQ5n28XqGkZ6TYJ",
+      "status": "completed",
+      "source_path": "agents/human/human-controller.agent.md"
+    },
+    {
+      "id": "file-Rfqq4CmdhxXaxjP6ruffFP",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-5YNs6E2WtSVwjEjeajSW12",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-Fr3wWpfYnd9j3qL365Neph",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-MvYp1epca8nFNTWL4vPRML",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-1H5rZfAJYgTVFxhxP2yc5w",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-GnLp2GaJJ91MVKtxsCWdAH",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-7QbvP9oYSeYb7YFFr9KrwG",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-SmUkYVjJzYMuBE9H1xzVi1",
+      "status": "completed",
+      "source_path": "agents/generated/agenticongen-content-data-agent.agent.md"
+    },
+    {
+      "id": "file-Ex5WUFebVpqxnNSbRfyYVF",
+      "status": "completed",
+      "source_path": "agents/generated/agenticongen-orchestrator-agent.agent.md"
+    },
+    {
+      "id": "file-HvRhiHkLRJ5Nw42r2nRsxY",
+      "status": "completed",
+      "source_path": "agents/generated/agenticongen-runtime-packaging-agent.agent.md"
+    },
+    {
+      "id": "file-6BZemXHrzUGJdLqdQC4FTh",
+      "status": "completed",
+      "source_path": "agents/generated/agenticongen-ui-composition-agent.agent.md"
+    },
+    {
+      "id": "file-6G5f8WCbZJPpLfuLAn9kcT",
+      "status": "completed",
+      "source_path": "agents/generated/agenticongen-content-data-agent.agent.md"
+    },
+    {
+      "id": "file-RVW7H3GFurU2xMojgfuNPB",
+      "status": "completed",
+      "source_path": "agents/generated/agenticongen-orchestrator-agent.agent.md"
+    },
+    {
+      "id": "file-WpJo2Q1ezUZUyarf4PPttE",
+      "status": "completed",
+      "source_path": "agents/generated/agenticongen-runtime-packaging-agent.agent.md"
+    },
+    {
+      "id": "file-6H31JDv7m52auT8mtwZvJ7",
+      "status": "completed",
+      "source_path": "agents/generated/agenticongen-ui-composition-agent.agent.md"
+    },
+    {
+      "id": "file-FxiGbSMe17gzG1rpU5Z1zW",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/projects/interactive-cloud-hosting.sanitized.md"
+    },
+    {
+      "id": "file-1PvGXJSakVLqCFqUwJkr9H",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-WkhzbaTJGUhtPR2wgd5WY5",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-5sqTPbA9gnHfDgpXEdEME1",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-J16d5N1sV1XUxzJR4TYXM3",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-JY4JsFfv2APLE5eebkXihY",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-1JEAGk6vQBcLdJcjYrGpsD",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-W2KsBJfjxpaQJzEhT4VQiY",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-EvxcNLHo1Za6KS8SAyfozX",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-48Sg3gXypM9dJAoNWesyDA",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-4PGBymTz2MQLDCn3xgCn5b",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-Urx3mExoJBrrbw6rG4jUuq",
+      "status": "completed",
+      "source_path": "agents/generated/builderx-fullstack-agent.agent.md"
+    },
+    {
+      "id": "file-C4Tqx6ZWNW4sr6rjjoPuqy",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/agents/builderx-fullstack-agent.v1.0.0.md"
+    },
+    {
+      "id": "file-7XEvNxzNj6CmzAAFUGvCvu",
+      "status": "completed",
+      "source_path": "agents/generated/builderx-fullstack-agent.agent.md"
+    },
+    {
+      "id": "file-TS9cJmZeSMDQzCFhnoAq62",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/agents/builderx-fullstack-agent.v1.0.0.md"
+    },
+    {
+      "id": "file-R1r1tABM25X86enWe4ZmTP",
+      "status": "completed",
+      "source_path": "agents/generated/builderx-fullstack-agent.agent.md"
+    },
+    {
+      "id": "file-CsgnAAM7xgbjRN7FxzPiJy",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/agents/builderx-fullstack-agent.v1.0.0.md"
+    },
+    {
+      "id": "file-9RXfwsQw9eixo6wq1F6bs4",
+      "status": "completed",
+      "source_path": "agents/generated/investmentfinderx-content-data-agent.agent.md"
+    },
+    {
+      "id": "file-34T2YRaQPVMwztUPCGn91e",
+      "status": "completed",
+      "source_path": "agents/generated/investmentfinderx-orchestrator-agent.agent.md"
+    },
+    {
+      "id": "file-6LJa3g4u3ZSXSGauo3yHvJ",
+      "status": "completed",
+      "source_path": "agents/generated/investmentfinderx-runtime-packaging-agent.agent.md"
+    },
+    {
+      "id": "file-TPMQw4BhJinYGpHEHgTPXu",
+      "status": "completed",
+      "source_path": "agents/generated/investmentfinderx-ui-composition-agent.agent.md"
+    },
+    {
+      "id": "file-WPcfz5zcMihY9TTeTMgcYt",
+      "status": "completed",
+      "source_path": "agents/generated/investmentfinderx-content-data-agent.agent.md"
+    },
+    {
+      "id": "file-GYvX6fHA1K6uEAXBWW1k8K",
+      "status": "completed",
+      "source_path": "agents/generated/investmentfinderx-orchestrator-agent.agent.md"
+    },
+    {
+      "id": "file-5iCrRBzxxQPfyBUqBY8AYh",
+      "status": "completed",
+      "source_path": "agents/generated/investmentfinderx-runtime-packaging-agent.agent.md"
+    },
+    {
+      "id": "file-NHucKidND52MHXgVgVKWK7",
+      "status": "completed",
+      "source_path": "agents/generated/investmentfinderx-ui-composition-agent.agent.md"
+    },
+    {
+      "id": "file-CdBLbcdDJwJK4jD2TvBfDK",
+      "status": "completed",
+      "source_path": "agents/generated/builderx-fullstack-agent.agent.md"
+    },
+    {
+      "id": "file-Hko4wL9PtM7z1k7GTggwUM",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/agents/builderx-fullstack-agent.v1.0.0.md"
+    },
+    {
+      "id": "file-KBP9enGEigykrFjttN5xco",
+      "status": "completed",
+      "source_path": "agents/generated/investmentfinderx-content-data-agent.agent.md"
+    },
+    {
+      "id": "file-XQKcynuw85eWjhBLWAEdjJ",
+      "status": "completed",
+      "source_path": "agents/generated/investmentfinderx-orchestrator-agent.agent.md"
+    },
+    {
+      "id": "file-KG5yoFqTD1MT2EFTkN1RNh",
+      "status": "completed",
+      "source_path": "agents/generated/investmentfinderx-qagent-controller.agent.md"
+    },
+    {
+      "id": "file-75xMSRryrbLcNezBHVmwzK",
+      "status": "completed",
+      "source_path": "agents/generated/investmentfinderx-runtime-packaging-agent.agent.md"
+    },
+    {
+      "id": "file-Qx8Baae8uetma6U5i8v7eR",
+      "status": "completed",
+      "source_path": "agents/generated/investmentfinderx-ui-composition-agent.agent.md"
+    },
+    {
+      "id": "file-9AvY9EfyyKZMh6pL9eMpLF",
+      "status": "completed",
+      "source_path": "agents/generated/investmentfinderx-content-data-agent.agent.md"
+    },
+    {
+      "id": "file-VZ1TSmNduZ8LBz3dMa9ZBP",
+      "status": "completed",
+      "source_path": "agents/generated/investmentfinderx-orchestrator-agent.agent.md"
+    },
+    {
+      "id": "file-MzGMcZTJnBBgJZrnTw6Bjs",
+      "status": "completed",
+      "source_path": "agents/generated/investmentfinderx-qagent-controller.agent.md"
+    },
+    {
+      "id": "file-J4WqPNyGxEk44EjTXPmH5e",
+      "status": "completed",
+      "source_path": "agents/generated/investmentfinderx-runtime-packaging-agent.agent.md"
+    },
+    {
+      "id": "file-4oLcAo7A1hey14Rm7FmFpT",
+      "status": "completed",
+      "source_path": "agents/generated/investmentfinderx-ui-composition-agent.agent.md"
+    },
+    {
+      "id": "file-8odfv5uLeK9TcNBEnB8xYX",
+      "status": "completed",
+      "source_path": "agents/generated/mediaanalyser-content-data-agent.agent.md"
+    },
+    {
+      "id": "file-5JZAHSWa3cKUHnm5fPfFKe",
+      "status": "completed",
+      "source_path": "agents/generated/mediaanalyser-orchestrator-agent.agent.md"
+    },
+    {
+      "id": "file-1GkZb3QLdfCZsHf2ESd9NT",
+      "status": "completed",
+      "source_path": "agents/generated/mediaanalyser-qagent-controller.agent.md"
+    },
+    {
+      "id": "file-7L4XdvNE7AHhZit2v7kxkD",
+      "status": "completed",
+      "source_path": "agents/generated/mediaanalyser-runtime-packaging-agent.agent.md"
+    },
+    {
+      "id": "file-JDj4wWnFS663ubS6FChGGm",
+      "status": "completed",
+      "source_path": "agents/generated/mediaanalyser-ui-composition-agent.agent.md"
+    },
+    {
+      "id": "file-8ek1WeDMjYtg6P9xxbq75k",
+      "status": "completed",
+      "source_path": "agents/generated/mediaanalyser-content-data-agent.agent.md"
+    },
+    {
+      "id": "file-E9istZpLnGanS32PuJc8Lg",
+      "status": "completed",
+      "source_path": "agents/generated/mediaanalyser-orchestrator-agent.agent.md"
+    },
+    {
+      "id": "file-9eW6EYQ9YXXTgpmhbwbrtG",
+      "status": "completed",
+      "source_path": "agents/generated/mediaanalyser-qagent-controller.agent.md"
+    },
+    {
+      "id": "file-82mjNmzCAfbnsbqYLhgadZ",
+      "status": "completed",
+      "source_path": "agents/generated/mediaanalyser-runtime-packaging-agent.agent.md"
+    },
+    {
+      "id": "file-C6uC28c2JdfXNQvnzvF6QM",
+      "status": "completed",
+      "source_path": "agents/generated/mediaanalyser-ui-composition-agent.agent.md"
+    },
+    {
+      "id": "file-3k2Ps6aAYD9UY25DfAaAjy",
+      "status": "completed",
+      "source_path": "agents/generated/builderx-fullstack-agent.agent.md"
+    },
+    {
+      "id": "file-2QQvQsv2vP1k2QR3oBmuWR",
+      "status": "completed",
+      "source_path": "agents/generated/whatsappmediaanalyser-content-data-agent.agent.md"
+    },
+    {
+      "id": "file-UEjBJpJmopcU8BhihXY7iV",
+      "status": "completed",
+      "source_path": "agents/generated/whatsappmediaanalyser-orchestrator-agent.agent.md"
+    },
+    {
+      "id": "file-VyyarDNxaAQJ5hK1GUBF9e",
+      "status": "completed",
+      "source_path": "agents/generated/whatsappmediaanalyser-qagent-controller.agent.md"
+    },
+    {
+      "id": "file-StAiM2GxKLVXhjjEtSowwG",
+      "status": "completed",
+      "source_path": "agents/generated/whatsappmediaanalyser-runtime-packaging-agent.agent.md"
+    },
+    {
+      "id": "file-KA1LKaogU1R9kFAt7d3BGD",
+      "status": "completed",
+      "source_path": "agents/generated/whatsappmediaanalyser-ui-composition-agent.agent.md"
+    },
+    {
+      "id": "file-C6FVU1ZNM5eZSV5VANeXsQ",
+      "status": "completed",
+      "source_path": "agents/generated/whatsappmediaanalyser-content-data-agent.agent.md"
+    },
+    {
+      "id": "file-KM1BcauTpPXY9vKdi4vVpm",
+      "status": "completed",
+      "source_path": "agents/generated/whatsappmediaanalyser-orchestrator-agent.agent.md"
+    },
+    {
+      "id": "file-DRdXkpv4LCBnmj8imFbgNC",
+      "status": "completed",
+      "source_path": "agents/generated/whatsappmediaanalyser-qagent-controller.agent.md"
+    },
+    {
+      "id": "file-VknJpkajE64Mf8DanqScB8",
+      "status": "completed",
+      "source_path": "agents/generated/whatsappmediaanalyser-runtime-packaging-agent.agent.md"
+    },
+    {
+      "id": "file-2wSPUPSFVkKtoCLGoT2Cqo",
+      "status": "completed",
+      "source_path": "agents/generated/whatsappmediaanalyser-ui-composition-agent.agent.md"
+    },
+    {
+      "id": "file-PGKn8qnFUGNM1JRnXJ6atE",
+      "status": "completed",
+      "source_path": "agents/generated/whatsappmediaanalyser-analytics-dashboard-agent.agent.md"
+    },
+    {
+      "id": "file-XBjV5Ctwfzd3Sa6MpbdgQm",
+      "status": "completed",
+      "source_path": "agents/generated/whatsappmediaanalyser-content-data-agent.agent.md"
+    },
+    {
+      "id": "file-EjwTVDhzGiuNMiHihLhGXv",
+      "status": "completed",
+      "source_path": "agents/generated/whatsappmediaanalyser-orchestrator-agent.agent.md"
+    },
+    {
+      "id": "file-71jsUgzbbjxZGg2rwnLHy5",
+      "status": "completed",
+      "source_path": "agents/generated/whatsappmediaanalyser-qagent-controller.agent.md"
+    },
+    {
+      "id": "file-F8JxsaSCArprH4Q9rn4bKg",
+      "status": "completed",
+      "source_path": "agents/generated/whatsappmediaanalyser-runtime-packaging-agent.agent.md"
+    },
+    {
+      "id": "file-McPwaMiD2xL64MFhBFNm56",
+      "status": "completed",
+      "source_path": "agents/generated/whatsappmediaanalyser-ui-composition-agent.agent.md"
+    },
+    {
+      "id": "file-3UebuTJR5F7P1ao26XuuhY",
+      "status": "completed",
+      "source_path": "agents/generated/whatsappmediaanalyser-2-content-data-agent.agent.md"
+    },
+    {
+      "id": "file-3JSaTsaAEQmx8v6sjyprNG",
+      "status": "completed",
+      "source_path": "agents/generated/whatsappmediaanalyser-2-orchestrator-agent.agent.md"
+    },
+    {
+      "id": "file-5nftu7uwVCPcbZnBfb4KeR",
+      "status": "completed",
+      "source_path": "agents/generated/whatsappmediaanalyser-2-qagent-controller.agent.md"
+    },
+    {
+      "id": "file-PmdLm1GFeHLbVAy5dVFUo6",
+      "status": "completed",
+      "source_path": "agents/generated/whatsappmediaanalyser-2-runtime-packaging-agent.agent.md"
+    },
+    {
+      "id": "file-H3bk38qEr2D4eLfCtswqeo",
+      "status": "completed",
+      "source_path": "agents/generated/whatsappmediaanalyser-2-ui-composition-agent.agent.md"
+    },
+    {
+      "id": "file-RAk3g2vvp2CyMTjA9DRXAZ",
+      "status": "completed",
+      "source_path": "agents/generated/whatsappmediaanalyser-2-analytics-dashboard-agent.agent.md"
+    },
+    {
+      "id": "file-UfpfXfjww28Q96r6HNVUcX",
+      "status": "completed",
+      "source_path": "agents/generated/whatsappmediaanalyser-2-content-data-agent.agent.md"
+    },
+    {
+      "id": "file-VGqNZicdpyY9ftyEuirHUm",
+      "status": "completed",
+      "source_path": "agents/generated/whatsappmediaanalyser-2-orchestrator-agent.agent.md"
+    },
+    {
+      "id": "file-FFQkVFMdMmdDqBKZMexXNM",
+      "status": "completed",
+      "source_path": "agents/generated/whatsappmediaanalyser-2-qagent-controller.agent.md"
+    },
+    {
+      "id": "file-22t81iYmm4HaEQdKEg3NCB",
+      "status": "completed",
+      "source_path": "agents/generated/whatsappmediaanalyser-2-runtime-packaging-agent.agent.md"
+    },
+    {
+      "id": "file-QtHesW7HfkSDi5paGpVpDd",
+      "status": "completed",
+      "source_path": "agents/generated/whatsappmediaanalyser-2-ui-composition-agent.agent.md"
+    },
+    {
+      "id": "file-DWnme1gY5RpwuTMw9KrhHo",
+      "status": "completed",
+      "source_path": "agents/generated/whatsappmediaanalyser-3-content-data-agent.agent.md"
+    },
+    {
+      "id": "file-PZmwXZBDH6JBkFLzWKAKu9",
+      "status": "completed",
+      "source_path": "agents/generated/whatsappmediaanalyser-3-orchestrator-agent.agent.md"
+    },
+    {
+      "id": "file-SFjfe36SZt8RooREyBWjss",
+      "status": "completed",
+      "source_path": "agents/generated/whatsappmediaanalyser-3-qagent-controller.agent.md"
+    },
+    {
+      "id": "file-UmoQTh1o3HsWPotce76UoK",
+      "status": "completed",
+      "source_path": "agents/generated/whatsappmediaanalyser-3-runtime-packaging-agent.agent.md"
+    },
+    {
+      "id": "file-VVVg1i8iR1pJ73Hb5AU9dU",
+      "status": "completed",
+      "source_path": "agents/generated/whatsappmediaanalyser-3-ui-composition-agent.agent.md"
+    },
+    {
+      "id": "file-62iDSK8c6ZF9WKtKKg3naz",
+      "status": "completed",
+      "source_path": "agents/generated/whatsappmediaanalyser-3-analytics-dashboard-agent.agent.md"
+    },
+    {
+      "id": "file-38mmFCYjGQtmaDqrmZybgU",
+      "status": "completed",
+      "source_path": "agents/generated/whatsappmediaanalyser-3-content-data-agent.agent.md"
+    },
+    {
+      "id": "file-LNus3LS9eEFv82rq8bvRVi",
+      "status": "completed",
+      "source_path": "agents/generated/whatsappmediaanalyser-3-orchestrator-agent.agent.md"
+    },
+    {
+      "id": "file-22Mjiorx8BRWeEm3dTbxXt",
+      "status": "completed",
+      "source_path": "agents/generated/whatsappmediaanalyser-3-qagent-controller.agent.md"
+    },
+    {
+      "id": "file-8gGtuanjoGa9c65unSyoJq",
+      "status": "completed",
+      "source_path": "agents/generated/whatsappmediaanalyser-3-runtime-packaging-agent.agent.md"
+    },
+    {
+      "id": "file-EvHqaesWezi77mXai1ZEDe",
+      "status": "completed",
+      "source_path": "agents/generated/whatsappmediaanalyser-3-ui-composition-agent.agent.md"
+    },
+    {
+      "id": "file-599wj7zyMxKLMksT6XfyHy",
+      "status": "completed",
+      "source_path": "agents/generated/protfolio-flyer-content-data-agent.agent.md"
+    },
+    {
+      "id": "file-2cxLhX3NQoiMTu1EK3XkBx",
+      "status": "completed",
+      "source_path": "agents/generated/protfolio-flyer-orchestrator-agent.agent.md"
+    },
+    {
+      "id": "file-KjwQbELoasiWSF6wm5ZAXX",
+      "status": "completed",
+      "source_path": "agents/generated/protfolio-flyer-qagent-controller.agent.md"
+    },
+    {
+      "id": "file-XE1uyujE7RHTHH97ezLobX",
+      "status": "completed",
+      "source_path": "agents/generated/protfolio-flyer-runtime-packaging-agent.agent.md"
+    },
+    {
+      "id": "file-NQhBjqXMQNSoudeSdURb1z",
+      "status": "completed",
+      "source_path": "agents/generated/protfolio-flyer-ui-composition-agent.agent.md"
+    },
+    {
+      "id": "file-Eb7ZXiC8opGiC4UGcBcT4P",
+      "status": "completed",
+      "source_path": "agents/generated/protfolio-flyer-content-data-agent.agent.md"
+    },
+    {
+      "id": "file-EfKAfFqQC6VDWoX4rNFe2v",
+      "status": "completed",
+      "source_path": "agents/generated/protfolio-flyer-orchestrator-agent.agent.md"
+    },
+    {
+      "id": "file-61nRmFXW1s7Y3m8dbfzRnx",
+      "status": "completed",
+      "source_path": "agents/generated/protfolio-flyer-qagent-controller.agent.md"
+    },
+    {
+      "id": "file-Y6ZD9arowwzD6H1tmGASKa",
+      "status": "completed",
+      "source_path": "agents/generated/protfolio-flyer-runtime-packaging-agent.agent.md"
+    },
+    {
+      "id": "file-CQ4SB6m3XmcH7yzpfJFqQj",
+      "status": "completed",
+      "source_path": "agents/generated/protfolio-flyer-ui-composition-agent.agent.md"
+    },
+    {
+      "id": "file-SoRZQzxzxdnczZwGdD4oNP",
+      "status": "completed",
+      "source_path": "agents/generated/mycv-content-data-agent.agent.md"
+    },
+    {
+      "id": "file-YJgsowXmKcLL4ULLECnmN9",
+      "status": "completed",
+      "source_path": "agents/generated/mycv-orchestrator-agent.agent.md"
+    },
+    {
+      "id": "file-QDh8KrMNjQyyzZii8gdE2Y",
+      "status": "completed",
+      "source_path": "agents/generated/mycv-qagent-controller.agent.md"
+    },
+    {
+      "id": "file-KsuibyyPC1CoZsvEP1ocCZ",
+      "status": "completed",
+      "source_path": "agents/generated/mycv-runtime-packaging-agent.agent.md"
+    },
+    {
+      "id": "file-L1KCPzwj7dtyMnF4xPnUkt",
+      "status": "completed",
+      "source_path": "agents/generated/mycv-ui-composition-agent.agent.md"
+    },
+    {
+      "id": "file-2vto5TcfYdFJvnt93CxcG5",
+      "status": "completed",
+      "source_path": "agents/generated/mycv-content-data-agent.agent.md"
+    },
+    {
+      "id": "file-GLKTR4vh686iH3EZne9Fit",
+      "status": "completed",
+      "source_path": "agents/generated/mycv-media-asset-agent.agent.md"
+    },
+    {
+      "id": "file-4Gb4Xg5c26qAntp1knV1Ld",
+      "status": "completed",
+      "source_path": "agents/generated/mycv-orchestrator-agent.agent.md"
+    },
+    {
+      "id": "file-1yhrR19DX4ZZyVhcY4fMUM",
+      "status": "completed",
+      "source_path": "agents/generated/mycv-qagent-controller.agent.md"
+    },
+    {
+      "id": "file-WR2unratYje8q4rvSMWhR4",
+      "status": "completed",
+      "source_path": "agents/generated/mycv-runtime-packaging-agent.agent.md"
+    },
+    {
+      "id": "file-HATPPHiMwCrwXFJvLUurbG",
+      "status": "completed",
+      "source_path": "agents/generated/mycv-ui-composition-agent.agent.md"
+    },
+    {
+      "id": "file-QQgm9Kd1N6vHevkC9o7fYV",
+      "status": "completed",
+      "source_path": "agents/generated/pdfgen-content-data-agent.agent.md"
+    },
+    {
+      "id": "file-4LmFZMmdomZUTG2sKi1Jd4",
+      "status": "completed",
+      "source_path": "agents/generated/pdfgen-orchestrator-agent.agent.md"
+    },
+    {
+      "id": "file-T1t1yURufsbKaNEbCr7V6J",
+      "status": "completed",
+      "source_path": "agents/generated/pdfgen-qagent-controller.agent.md"
+    },
+    {
+      "id": "file-9WCg9iCseHjhb35Nzkxt5L",
+      "status": "completed",
+      "source_path": "agents/generated/pdfgen-runtime-packaging-agent.agent.md"
+    },
+    {
+      "id": "file-TNqxNrpYK96cWq7ZfFDvYG",
+      "status": "completed",
+      "source_path": "agents/generated/pdfgen-ui-composition-agent.agent.md"
+    },
+    {
+      "id": "file-5o1Xkcq96J6d3Uv1bUdej9",
+      "status": "completed",
+      "source_path": "agents/generated/pdfgen-content-data-agent.agent.md"
+    },
+    {
+      "id": "file-RzsSvMGhb1MrorKPU1MgnW",
+      "status": "completed",
+      "source_path": "agents/generated/pdfgen-orchestrator-agent.agent.md"
+    },
+    {
+      "id": "file-RvNV3i1Av6T9Rgd1jMyUfi",
+      "status": "completed",
+      "source_path": "agents/generated/pdfgen-qagent-controller.agent.md"
+    },
+    {
+      "id": "file-7ZQCnNYwgoPFxbY5AnQJFH",
+      "status": "completed",
+      "source_path": "agents/generated/pdfgen-runtime-packaging-agent.agent.md"
+    },
+    {
+      "id": "file-AX7NeCDw3JNC46vntTWA6m",
+      "status": "completed",
+      "source_path": "agents/generated/pdfgen-ui-composition-agent.agent.md"
+    },
+    {
+      "id": "file-78ZveCc92Mv1kWz2uCJm47",
+      "status": "completed",
+      "source_path": "agents/generated/ramo-content-data-agent.agent.md"
+    },
+    {
+      "id": "file-4wD4zB51ZMgTCWq1KTyPUq",
+      "status": "completed",
+      "source_path": "agents/generated/ramo-orchestrator-agent.agent.md"
+    },
+    {
+      "id": "file-TkXZqihfUxDoh1gHZMNrtH",
+      "status": "completed",
+      "source_path": "agents/generated/ramo-qagent-controller.agent.md"
+    },
+    {
+      "id": "file-NshyaTc7GaFegy5t69fMet",
+      "status": "completed",
+      "source_path": "agents/generated/ramo-runtime-packaging-agent.agent.md"
+    },
+    {
+      "id": "file-6fYUpuxr6hJKJSdCeyLRZH",
+      "status": "completed",
+      "source_path": "agents/generated/ramo-ui-composition-agent.agent.md"
+    },
+    {
+      "id": "file-CDLXruPoLhLZtQyASSanH5",
+      "status": "completed",
+      "source_path": "agents/generated/project-execution-agent.agent.md"
+    },
+    {
+      "id": "file-BGLoGt5ReJBwV3RUKHUSym",
+      "status": "completed",
+      "source_path": "agents/human/human-controller.agent.md"
+    },
+    {
+      "id": "file-GBmZiMtA7q5rD94Pe99Gut",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/agents/project-execution-agent.v1.0.0.md"
+    },
+    {
+      "id": "file-NhHnqTXvJ73QAeZ6tuh2mi",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/projects/bootstrap-agent-memory.summary.md"
+    },
+    {
+      "id": "file-Pmxh6e8u8LUY6kAdmYpCPt",
+      "status": "completed",
+      "source_path": "agents/generated/project-execution-agent.agent.md"
+    },
+    {
+      "id": "file-Dak9KZUDZsKu9UHWE9G1yR",
+      "status": "completed",
+      "source_path": "agents/generated/project-execution-agent.agent.md"
+    },
+    {
+      "id": "file-KxfaHYgrS23cV41ruUisvY",
+      "status": "completed",
+      "source_path": "agents/human/human-controller.agent.md"
+    },
+    {
+      "id": "file-Dav8W3nKPKgKc3SSTsASxu",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/agents/project-execution-agent.v1.0.0.md"
+    },
+    {
+      "id": "file-BdG41dyGex9x6seHQ8AWeT",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/projects/bootstrap-agent-memory.summary.md"
+    },
+    {
+      "id": "file-MVD783xYzAbvgWABciL2z6",
+      "status": "completed",
+      "source_path": "agents/generated/porny-content-data-agent.agent.md"
+    },
+    {
+      "id": "file-86R2iMmxNQyCw3ajWhZi4n",
+      "status": "completed",
+      "source_path": "agents/generated/porny-orchestrator-agent.agent.md"
+    },
+    {
+      "id": "file-LZ1boNBQhGM7c4X4RnSPvH",
+      "status": "completed",
+      "source_path": "agents/generated/porny-qagent-controller.agent.md"
+    },
+    {
+      "id": "file-AzYKnMuz6ZM7nGC2cr4WR1",
+      "status": "completed",
+      "source_path": "agents/generated/porny-runtime-packaging-agent.agent.md"
+    },
+    {
+      "id": "file-MCsPzXT12zkBNsBxSoDpBS",
+      "status": "completed",
+      "source_path": "agents/generated/porny-ui-composition-agent.agent.md"
+    },
+    {
+      "id": "file-Ksrjy5QzEwfTsRiwaKMYyu",
+      "status": "completed",
+      "source_path": "agents/generated/spydash-content-data-agent.agent.md"
+    },
+    {
+      "id": "file-HPfZJtYGDDd315CXs96A9o",
+      "status": "completed",
+      "source_path": "agents/generated/spydash-orchestrator-agent.agent.md"
+    },
+    {
+      "id": "file-695kQiTJDebyJHZynE1JQH",
+      "status": "completed",
+      "source_path": "agents/generated/spydash-qagent-controller.agent.md"
+    },
+    {
+      "id": "file-MPNuPmNxtWaPfS6z99oFWZ",
+      "status": "completed",
+      "source_path": "agents/generated/spydash-runtime-packaging-agent.agent.md"
+    },
+    {
+      "id": "file-9KgfqaNBgUV2xhcad8Namk",
+      "status": "completed",
+      "source_path": "agents/generated/spydash-ui-composition-agent.agent.md"
+    },
+    {
+      "id": "file-6TbQuc2XvM91WWqsZYrhyX",
+      "status": "completed",
+      "source_path": "agents/generated/spydash-analytics-dashboard-agent.agent.md"
+    },
+    {
+      "id": "file-RfgF6hiKhw6grdHn5Ft5L6",
+      "status": "completed",
+      "source_path": "agents/generated/spydash-content-data-agent.agent.md"
+    },
+    {
+      "id": "file-K3aZHCVbQYDbARJ6Qk2PeX",
+      "status": "completed",
+      "source_path": "agents/generated/spydash-orchestrator-agent.agent.md"
+    },
+    {
+      "id": "file-ETJzWNnfwEKTyDypABWNgs",
+      "status": "completed",
+      "source_path": "agents/generated/spydash-qagent-controller.agent.md"
+    },
+    {
+      "id": "file-381yGwqU1w3YaRoYX5iGh7",
+      "status": "completed",
+      "source_path": "agents/generated/spydash-runtime-packaging-agent.agent.md"
+    },
+    {
+      "id": "file-7Qm3XtqhoiWNq4bKW7hhkJ",
+      "status": "completed",
+      "source_path": "agents/generated/spydash-ui-composition-agent.agent.md"
+    },
+    {
+      "id": "file-3cH7CPMT8Q1hMeENEbZVtP",
+      "status": "completed",
+      "source_path": "agents/generated/webforbusinesses-content-data-agent.agent.md"
+    },
+    {
+      "id": "file-DkmeRSGWL5GQz3QbaQCLwa",
+      "status": "completed",
+      "source_path": "agents/generated/webforbusinesses-orchestrator-agent.agent.md"
+    },
+    {
+      "id": "file-1adbbEd9aNB3NM7pTGhTue",
+      "status": "completed",
+      "source_path": "agents/generated/webforbusinesses-qagent-controller.agent.md"
+    },
+    {
+      "id": "file-5m48kSym2XxWF4zo7rfza9",
+      "status": "completed",
+      "source_path": "agents/generated/webforbusinesses-runtime-packaging-agent.agent.md"
+    },
+    {
+      "id": "file-DkyzFDwgTsK2vWqAQ1owfa",
+      "status": "completed",
+      "source_path": "agents/generated/webforbusinesses-ui-composition-agent.agent.md"
+    },
+    {
+      "id": "file-HDKdGdZBcAHpog4qgJGEcN",
+      "status": "completed",
+      "source_path": "agents/generated/webforbusinesses-content-data-agent.agent.md"
+    },
+    {
+      "id": "file-Fu2PPCNuoDQnU2fZiXYu4z",
+      "status": "completed",
+      "source_path": "agents/generated/webforbusinesses-orchestrator-agent.agent.md"
+    },
+    {
+      "id": "file-DkrgcZbcrsbWiMTjSoNJ1A",
+      "status": "completed",
+      "source_path": "agents/generated/webforbusinesses-qagent-controller.agent.md"
+    },
+    {
+      "id": "file-MHdvNirrTKtJVTeZf2ozQT",
+      "status": "completed",
+      "source_path": "agents/generated/webforbusinesses-runtime-packaging-agent.agent.md"
+    },
+    {
+      "id": "file-SXJMuCMjxahproznDZkGCy",
+      "status": "completed",
+      "source_path": "agents/generated/webforbusinesses-ui-composition-agent.agent.md"
+    },
+    {
+      "id": "file-Hvkww58XJ85YDx1wkMPd6w",
+      "status": "completed",
+      "source_path": "agents/generated/researchanddevx-content-data-agent.agent.md"
+    },
+    {
+      "id": "file-2J2YLmZos5wuWd6j3kyuDP",
+      "status": "completed",
+      "source_path": "agents/generated/researchanddevx-orchestrator-agent.agent.md"
+    },
+    {
+      "id": "file-3BV6sW55Rp4NEiqKZkgGEw",
+      "status": "completed",
+      "source_path": "agents/generated/researchanddevx-qagent-controller.agent.md"
+    },
+    {
+      "id": "file-SCdhyKwbLrEMpgz5Mqo3G2",
+      "status": "completed",
+      "source_path": "agents/generated/researchanddevx-runtime-packaging-agent.agent.md"
+    },
+    {
+      "id": "file-K47LyagW2u9BcgLjP2wdET",
+      "status": "completed",
+      "source_path": "agents/generated/researchanddevx-ui-composition-agent.agent.md"
+    },
+    {
+      "id": "file-RuDzPkfFss5uyDX4xMsypx",
+      "status": "completed",
+      "source_path": "agents/generated/researchanddevx-orchestrator-agent.agent.md"
+    },
+    {
+      "id": "file-VGmf7ARqxHcBhdrabJMrCv",
+      "status": "completed",
+      "source_path": "agents/generated/researchanddevx-qagent-controller.agent.md"
+    },
+    {
+      "id": "file-TjRV1FRq3RwZDzKPmA6M3H",
+      "status": "completed",
+      "source_path": "agents/generated/researchanddevx-runtime-packaging-agent.agent.md"
+    },
+    {
+      "id": "file-C6XgSvoGKcv16X3PUWmVQR",
+      "status": "completed",
+      "source_path": "agents/generated/researchanddevx-content-data-agent.agent.md"
+    },
+    {
+      "id": "file-GqhKRTB8oYaXAmUUXysRmf",
+      "status": "completed",
+      "source_path": "agents/generated/researchanddevx-ui-composition-agent.agent.md"
+    },
+    {
+      "id": "file-Y2zvFhTfAMbsUAgiXekJgs",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-UXxqAZeRdQenfWo841cs18",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-VAGZUxM7SUH6Uw3LDkAZqg",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-Lpc4qNAuSxUN3vpoKWJR7w",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-XtGKyprm5KCLrA75Q7gvGE",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-9DjDu7bsPtWSJ6xeNptpqR",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/prompts/builderx-agentic-d3-market-ready-001.builderx-fullstack-agent.task.prompt.md"
+    },
+    {
+      "id": "file-B9222cSrCMjQXyRMGai2iU",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/prompts/builderx-agentic-d3-market-ready-001.builderx-fullstack-agent.validation.prompt.md"
+    },
+    {
+      "id": "file-C63dZ6QnXLA6h2krJHcKZu",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/prompts/builderx-agentic-d3-market-ready-001.design-team.workshop.prompt.md"
+    },
+    {
+      "id": "file-QAGqCWpKi9ZK4NnqTaiXaa",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/projects/builderx-agentic-d3-market-ready-001.summary.md"
+    },
+    {
+      "id": "file-HNUZEYu8cty2X5yqSXNXhG",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/projects/builderx-agentic-d3-market-ready-002.summary.md"
+    },
+    {
+      "id": "file-ANZsRubj4RR9Wqaph7MVJE",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/projects/builderx-agentic-d3-market-ready-002.summary.md"
+    },
+    {
+      "id": "file-LNJJkT5LPoNXviBrjm2roS",
+      "status": "completed",
+      "source_path": "agents/generated/bag-commerce-studio-content-data-agent.agent.md"
+    },
+    {
+      "id": "file-92Q6PMMJqWPPNx5zj1FLwj",
+      "status": "completed",
+      "source_path": "agents/generated/bag-commerce-studio-orchestrator-agent.agent.md"
+    },
+    {
+      "id": "file-HQioPzk6LLCzGgpiVBR6hH",
+      "status": "completed",
+      "source_path": "agents/generated/bag-commerce-studio-qagent-controller.agent.md"
+    },
+    {
+      "id": "file-6SrEEVfDJxpw8UC1LqvPn1",
+      "status": "completed",
+      "source_path": "agents/generated/bag-commerce-studio-runtime-packaging-agent.agent.md"
+    },
+    {
+      "id": "file-HFiGkDMvneHzKVSTZtXWZY",
+      "status": "completed",
+      "source_path": "agents/generated/bag-commerce-studio-ui-composition-agent.agent.md"
+    },
+    {
+      "id": "file-SQ2YuBxrELeE3stoL7JVUH",
+      "status": "completed",
+      "source_path": "agents/generated/bag-commerce-studio-content-data-agent.agent.md"
+    },
+    {
+      "id": "file-BQJAD5svjVsp8bW3ZUtJbH",
+      "status": "completed",
+      "source_path": "agents/generated/bag-commerce-studio-orchestrator-agent.agent.md"
+    },
+    {
+      "id": "file-AapG76Wi76L8sdjV7eae5h",
+      "status": "completed",
+      "source_path": "agents/generated/bag-commerce-studio-qagent-controller.agent.md"
+    },
+    {
+      "id": "file-9ffkPox3nfhcnb1Pv5b8Y8",
+      "status": "completed",
+      "source_path": "agents/generated/bag-commerce-studio-runtime-packaging-agent.agent.md"
+    },
+    {
+      "id": "file-SJUgDLMYDpQ5v7tSEzESY1",
+      "status": "completed",
+      "source_path": "agents/generated/bag-commerce-studio-ui-composition-agent.agent.md"
+    },
+    {
+      "id": "file-RQ3SVWqF19yTcRfrtkrTQk",
+      "status": "completed",
+      "source_path": "agents/generated/virtux-content-data-agent.agent.md"
+    },
+    {
+      "id": "file-KK1QLg4BjcaePDx7v2nG6r",
+      "status": "completed",
+      "source_path": "agents/generated/virtux-orchestrator-agent.agent.md"
+    },
+    {
+      "id": "file-1AkaELTWLSWBaS4rhkEeWF",
+      "status": "completed",
+      "source_path": "agents/generated/virtux-qagent-controller.agent.md"
+    },
+    {
+      "id": "file-F74wZKtjz2r6APxHueKfDU",
+      "status": "completed",
+      "source_path": "agents/generated/virtux-runtime-packaging-agent.agent.md"
+    },
+    {
+      "id": "file-H2HHBwjzzWLD8yXSKuGReQ",
+      "status": "completed",
+      "source_path": "agents/generated/virtux-ui-composition-agent.agent.md"
+    },
+    {
+      "id": "file-GhRg9hitVbMmrT4qqaxdjD",
+      "status": "completed",
+      "source_path": "agents/generated/mentalheathcounselor-content-data-agent.agent.md"
+    },
+    {
+      "id": "file-4WBuYq2r2py7c7syyAy5ep",
+      "status": "completed",
+      "source_path": "agents/generated/mentalheathcounselor-orchestrator-agent.agent.md"
+    },
+    {
+      "id": "file-5wjR8FH1raiP8JzRPQ2Ncn",
+      "status": "completed",
+      "source_path": "agents/generated/mentalheathcounselor-qagent-controller.agent.md"
+    },
+    {
+      "id": "file-7E3oLtLuxN6iSbBW8Q4Uxv",
+      "status": "completed",
+      "source_path": "agents/generated/mentalheathcounselor-runtime-packaging-agent.agent.md"
+    },
+    {
+      "id": "file-82pCMf5m1eaw94yu6KGzR3",
+      "status": "completed",
+      "source_path": "agents/generated/mentalheathcounselor-ui-composition-agent.agent.md"
+    },
+    {
+      "id": "file-8dvyx45UCbTYq5SncA2k1e",
+      "status": "completed",
+      "source_path": "agents/generated/mentalheathcounselor-content-data-agent.agent.md"
+    },
+    {
+      "id": "file-KUzsWKAkxwVSS6iLTpBzan",
+      "status": "completed",
+      "source_path": "agents/generated/mentalheathcounselor-orchestrator-agent.agent.md"
+    },
+    {
+      "id": "file-4svcdUG8ucZubvzEsE76wF",
+      "status": "completed",
+      "source_path": "agents/generated/mentalheathcounselor-qagent-controller.agent.md"
+    },
+    {
+      "id": "file-143YwNFjde7mUtgS5hLxTu",
+      "status": "completed",
+      "source_path": "agents/generated/mentalheathcounselor-runtime-packaging-agent.agent.md"
+    },
+    {
+      "id": "file-YG46HzZ3SLWigVBbnvThgM",
+      "status": "completed",
+      "source_path": "agents/generated/mentalheathcounselor-ui-composition-agent.agent.md"
+    },
+    {
+      "id": "file-2NdBun27B8PrzNNhpEc2Yn",
+      "status": "completed",
+      "source_path": "agents/generated/videopresentationforproductx-content-data-agent.agent.md"
+    },
+    {
+      "id": "file-3zXggc7iW57vmxSF83qaAJ",
+      "status": "completed",
+      "source_path": "agents/generated/videopresentationforproductx-orchestrator-agent.agent.md"
+    },
+    {
+      "id": "file-85w6EHYLJaHy48ndeFMV5s",
+      "status": "completed",
+      "source_path": "agents/generated/videopresentationforproductx-qagent-controller.agent.md"
+    },
+    {
+      "id": "file-M3knzRigsCnGXfCaADdC9f",
+      "status": "completed",
+      "source_path": "agents/generated/videopresentationforproductx-runtime-packaging-agent.agent.md"
+    },
+    {
+      "id": "file-3rhFoZoiY89ELRS7PViNFv",
+      "status": "completed",
+      "source_path": "agents/generated/videopresentationforproductx-ui-composition-agent.agent.md"
+    },
+    {
+      "id": "file-37qwVYTUbbQcKfNPirLgQC",
+      "status": "completed",
+      "source_path": "agents/generated/videopresentationforproductx-analytics-dashboard-agent.agent.md"
+    },
+    {
+      "id": "file-S412qkgXKZS3NfKxQtkeNo",
+      "status": "completed",
+      "source_path": "agents/generated/videopresentationforproductx-content-data-agent.agent.md"
+    },
+    {
+      "id": "file-PK7eqSkkvrVdp6dxRyaJKF",
+      "status": "completed",
+      "source_path": "agents/generated/videopresentationforproductx-orchestrator-agent.agent.md"
+    },
+    {
+      "id": "file-5GCZ45gNzPZuWFvRWTT5nA",
+      "status": "completed",
+      "source_path": "agents/generated/videopresentationforproductx-runtime-packaging-agent.agent.md"
+    },
+    {
+      "id": "file-MuUgYQJGzEmKRkXiBgXrr8",
+      "status": "completed",
+      "source_path": "agents/generated/videopresentationforproductx-qagent-controller.agent.md"
+    },
+    {
+      "id": "file-CfRoZbV1PtBTCD6exurJn7",
+      "status": "completed",
+      "source_path": "agents/generated/videopresentationforproductx-ui-composition-agent.agent.md"
+    },
+    {
+      "id": "file-VrDPVVHdHMZSpYpQ6p9q89",
+      "status": "completed",
+      "source_path": "agents/generated/builderx-fullstack-agent.agent.md"
+    },
+    {
+      "id": "file-XCHbXAEpGYtAfurnPLdLZ6",
+      "status": "completed",
+      "source_path": "agents/generated/project-execution-agent.agent.md"
+    },
+    {
+      "id": "file-EeBQsE92DXmRk225xMTgto",
+      "status": "completed",
+      "source_path": "agents/generated/burushx-content-data-agent.agent.md"
+    },
+    {
+      "id": "file-Vn6wRryCBwAT2wXzjKQcfV",
+      "status": "completed",
+      "source_path": "agents/generated/burushx-orchestrator-agent.agent.md"
+    },
+    {
+      "id": "file-ELPALrubMEe1BzSkzFcTNG",
+      "status": "completed",
+      "source_path": "agents/generated/burushx-qagent-controller.agent.md"
+    },
+    {
+      "id": "file-VXFg1BCLn77Pgr1MuSxG8B",
+      "status": "completed",
+      "source_path": "agents/generated/burushx-runtime-packaging-agent.agent.md"
+    },
+    {
+      "id": "file-KfPyz41GX2PCAx1492N1oH",
+      "status": "completed",
+      "source_path": "agents/generated/burushx-ui-composition-agent.agent.md"
+    },
+    {
+      "id": "file-P8tEnXRsafSsh2F5cuo4Kz",
+      "status": "completed",
+      "source_path": "agents/generated/burushx-content-data-agent.agent.md"
+    },
+    {
+      "id": "file-NsKMUSvuAVGGQndRf7n947",
+      "status": "completed",
+      "source_path": "agents/generated/burushx-media-asset-agent.agent.md"
+    },
+    {
+      "id": "file-3qGiyPHdGG4VXB4YbDbpg3",
+      "status": "completed",
+      "source_path": "agents/generated/burushx-orchestrator-agent.agent.md"
+    },
+    {
+      "id": "file-9P5mGRtpT8d4QtroChyPnL",
+      "status": "completed",
+      "source_path": "agents/generated/burushx-qagent-controller.agent.md"
+    },
+    {
+      "id": "file-CwYpZ9ZTZqV8RWZ4bARN6B",
+      "status": "completed",
+      "source_path": "agents/generated/burushx-runtime-packaging-agent.agent.md"
+    },
+    {
+      "id": "file-8XMp1bnjzAvrPrkZHJuiiq",
+      "status": "completed",
+      "source_path": "agents/generated/burushx-ui-composition-agent.agent.md"
+    },
+    {
+      "id": "file-FQSsgJuBN3hLa9JWFndZmg",
+      "status": "completed",
+      "source_path": "agents/generated/builderx-fullstack-agent.agent.md"
+    },
+    {
+      "id": "file-QD17hqQZhXNhjvb4gbsnZ6",
+      "status": "completed",
+      "source_path": "agents/generated/brushx-data-contract-agent.agent.md"
+    },
+    {
+      "id": "file-UG4JCKewxyH4CpfUQ6kAUC",
+      "status": "completed",
+      "source_path": "agents/generated/brushx-experience-composition-agent.agent.md"
+    },
+    {
+      "id": "file-MvsqvEwkdPgRCzUwNYQ6AA",
+      "status": "completed",
+      "source_path": "agents/generated/brushx-orchestrator-agent.agent.md"
+    },
+    {
+      "id": "file-WvnReHLpZtqqwnzFN7k3wd",
+      "status": "completed",
+      "source_path": "agents/generated/brushx-qagent-controller.agent.md"
+    },
+    {
+      "id": "file-51zSU2PnTfVFjP3nxj6fJS",
+      "status": "completed",
+      "source_path": "agents/generated/brushx-runtime-packaging-agent.agent.md"
+    },
+    {
+      "id": "file-4LpcRK2cBywquSFrK5nP7v",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-CBYqLDbYrDa8BwXtX8Ck2A",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-BffWMLxezF3MP3s3gbAF8y",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-6ohHjjnQySCdoHNkuqnsSd",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-Wmr8wF9aWmovdd7QEFMeRd",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-3yEULPW9dp9ULcoxoy858h",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-SobwvCqhQyqY8xbwxwinXc",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-51o51EC7vdxPimkFKd2YT1",
+      "status": "completed",
+      "source_path": "agents/generated/brushx-media-asset-agent.agent.md"
+    },
+    {
+      "id": "file-K89H37VkpAGeHMagmzAfaw",
+      "status": "completed",
+      "source_path": "agents/generated/voicex-data-contract-agent.agent.md"
+    },
+    {
+      "id": "file-ExEYome1K94yC9QBC81Mgh",
+      "status": "completed",
+      "source_path": "agents/generated/voicex-experience-composition-agent.agent.md"
+    },
+    {
+      "id": "file-TmXVGrvY1nqG7kGrAhmjjF",
+      "status": "completed",
+      "source_path": "agents/generated/voicex-orchestrator-agent.agent.md"
+    },
+    {
+      "id": "file-HM6RXhnKSdDHJ8CCk4Xq6g",
+      "status": "completed",
+      "source_path": "agents/generated/voicex-qagent-controller.agent.md"
+    },
+    {
+      "id": "file-X3N7ZKXWy4gpnA2ZDJrQzQ",
+      "status": "completed",
+      "source_path": "agents/generated/voicex-runtime-packaging-agent.agent.md"
+    },
+    {
+      "id": "file-KGMoF8dfMVdNCq3xp2nFGz",
+      "status": "completed",
+      "source_path": "agents/generated/gymx-application-architecture-agent.agent.md"
+    },
+    {
+      "id": "file-Mf6YeYFShHFX7qKxsBdNWD",
+      "status": "completed",
+      "source_path": "agents/generated/gymx-data-contract-agent.agent.md"
+    },
+    {
+      "id": "file-QRg9h3psegyC71iztWYJhm",
+      "status": "completed",
+      "source_path": "agents/generated/gymx-experience-composition-agent.agent.md"
+    },
+    {
+      "id": "file-BJ56mymE8N7iNpLbU5cZoW",
+      "status": "completed",
+      "source_path": "agents/generated/gymx-governance-security-agent.agent.md"
+    },
+    {
+      "id": "file-VyV8rUJKvZmkvCmWzGbRQn",
+      "status": "completed",
+      "source_path": "agents/generated/gymx-orchestrator-agent.agent.md"
+    },
+    {
+      "id": "file-APUHzQbcgQZDjEvDB7PmNZ",
+      "status": "completed",
+      "source_path": "agents/generated/gymx-qagent-controller.agent.md"
+    },
+    {
+      "id": "file-C7dvEsUYqnsqzRjsPQ3Edd",
+      "status": "completed",
+      "source_path": "agents/generated/gymx-runtime-packaging-agent.agent.md"
+    },
+    {
+      "id": "file-HMnrg76fUNoyeGzPf4AwoQ",
+      "status": "completed",
+      "source_path": "agents/generated/gymx-media-asset-agent.agent.md"
+    },
+    {
+      "id": "file-AJP3FbRgiNnRi3uh1j4LiH",
+      "status": "completed",
+      "source_path": "agents/generated/bag-commerce-studio-commerce-catalog-agent.agent.md"
+    },
+    {
+      "id": "file-GWLnTFTtVpvQRFpi5EHGCp",
+      "status": "completed",
+      "source_path": "agents/generated/bag-commerce-studio-data-contract-agent.agent.md"
+    },
+    {
+      "id": "file-G6REnhe7Ft4afbkHLjw4Cr",
+      "status": "completed",
+      "source_path": "agents/generated/bag-commerce-studio-experience-composition-agent.agent.md"
+    },
+    {
+      "id": "file-3Yt6oqtxu1aUJ9c4RKzYLg",
+      "status": "completed",
+      "source_path": "agents/generated/bag-commerce-studio-orchestrator-agent.agent.md"
+    },
+    {
+      "id": "file-AXwqdzfZUuu45V51CqSmxA",
+      "status": "completed",
+      "source_path": "agents/generated/bag-commerce-studio-qagent-controller.agent.md"
+    },
+    {
+      "id": "file-H8y2xkDrHEhFD7vvejM3b6",
+      "status": "completed",
+      "source_path": "agents/generated/bag-commerce-studio-runtime-packaging-agent.agent.md"
+    },
+    {
+      "id": "file-EbPtSJuVK5G1hUgYmjBLRF",
+      "status": "completed",
+      "source_path": "agents/generated/bag-commerce-studio-media-asset-agent.agent.md"
+    },
+    {
+      "id": "file-V1hun9wacG4opQgJm8kDuK",
+      "status": "completed",
+      "source_path": "agents/generated/adx-data-contract-agent.agent.md"
+    },
+    {
+      "id": "file-UsyuGXKTFoDqKXv3Jm6FR7",
+      "status": "completed",
+      "source_path": "agents/generated/adx-experience-composition-agent.agent.md"
+    },
+    {
+      "id": "file-Na1R4mHt1oLezsVYhFgkee",
+      "status": "completed",
+      "source_path": "agents/generated/adx-media-asset-agent.agent.md"
+    },
+    {
+      "id": "file-JcEWLVuWASQGe3qn5weuXR",
+      "status": "completed",
+      "source_path": "agents/generated/adx-orchestrator-agent.agent.md"
+    },
+    {
+      "id": "file-S2aRSRNcAvr7bEVDXw2ygU",
+      "status": "completed",
+      "source_path": "agents/generated/adx-qagent-controller.agent.md"
+    },
+    {
+      "id": "file-MNP3uSp5isPsxkmifFgtUk",
+      "status": "completed",
+      "source_path": "agents/generated/adx-runtime-packaging-agent.agent.md"
+    },
+    {
+      "id": "file-6U3hADFShBBNtn2r6Bz6aK",
+      "status": "completed",
+      "source_path": "agents/generated/databricksx-data-contract-agent.agent.md"
+    },
+    {
+      "id": "file-Q4Q441vSqAQgK7u7UZREJg",
+      "status": "completed",
+      "source_path": "agents/generated/databricksx-experience-composition-agent.agent.md"
+    },
+    {
+      "id": "file-NDrf4bFsVnKZCFCitrJphw",
+      "status": "completed",
+      "source_path": "agents/generated/databricksx-orchestrator-agent.agent.md"
+    },
+    {
+      "id": "file-V73eogtmq15XCN1dxXA9nJ",
+      "status": "completed",
+      "source_path": "agents/generated/databricksx-qagent-controller.agent.md"
+    },
+    {
+      "id": "file-RAdGHgN7zQqS4Sjk9WGxfK",
+      "status": "completed",
+      "source_path": "agents/generated/databricksx-runtime-packaging-agent.agent.md"
+    },
+    {
+      "id": "file-2w8nBSTvBoxWPZufCVUg9f",
+      "status": "completed",
+      "source_path": "agents/generated/databricksx-qagent-controller.agent.md"
+    },
+    {
+      "id": "file-4fdmxjcs774p2uDjVQuWXp",
+      "status": "completed",
+      "source_path": "agents/generated/plutonix-fullstack-agent.agent.md"
+    },
+    {
+      "id": "file-C5bFepNgU7tjaeRwKQgkZD",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/agents/plutonix-fullstack-agent.v1.0.0.md"
+    },
+    {
+      "id": "file-G5JmoqvHzeCif3g6agyTGV",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/projects/builderx-agentic-d3-market-ready-001.summary.md"
+    },
+    {
+      "id": "file-SuPGwKUiCveQ2i6v3odFQ3",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/projects/builderx-agentic-d3-market-ready-002.summary.md"
+    },
+    {
+      "id": "file-MNJs15pwkmrPqz3XBjihUB",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/projects/builderx-container-restart-001.summary.md"
+    },
+    {
+      "id": "file-JaUXc5AP6EcGucXEhjeBWc",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/projects/builderx-generated-file-ops-001.summary.md"
+    },
+    {
+      "id": "file-23sgHaMJzbjA4jVGAogzc4",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/projects/builderx-hot-reload-stability-001.summary.md"
+    },
+    {
+      "id": "file-E3LDEqiJbdLbRRTPLV4rzc",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/projects/builderx-large-001.summary.md"
+    },
+    {
+      "id": "file-AKpBKiJpvE9ei9s1dG7z4u",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/projects/builderx-layout-agentic-d3-001.summary.md"
+    },
+    {
+      "id": "file-U5PUr115edUL6DZRx3gCoh",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/projects/builderx-mcp-chat-001.summary.md"
+    },
+    {
+      "id": "file-CtJHpZpUdZQzSeJnCqk3Ea",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/projects/builderx-mcp-console-trace-001.summary.md"
+    },
+    {
+      "id": "file-FHpvZNRvpyphVj1Jhtx7ZF",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/projects/builderx-mcp-runtime-log-001.summary.md"
+    },
+    {
+      "id": "file-Kao7BF6pVsEQaQ2dAPnCu3",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/projects/builderx-orchestrator-mcp-001.summary.md"
+    },
+    {
+      "id": "file-F8TQjkTq6rb8dD5dy2WFYj",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/projects/builderx-runtime-log-400-001.summary.md"
+    },
+    {
+      "id": "file-Sq7MgDedHs5tTbBFQVTyve",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/prompts/builderx-agentic-d3-market-ready-001.builderx-fullstack-agent.task.prompt.md"
+    },
+    {
+      "id": "file-9w9cwC8zuKa3SftcQ2Cr56",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/prompts/builderx-agentic-d3-market-ready-001.builderx-fullstack-agent.validation.prompt.md"
+    },
+    {
+      "id": "file-674b3eDnXnRJ7zmmud5nHd",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/prompts/builderx-agentic-d3-market-ready-001.design-team.workshop.prompt.md"
+    },
+    {
+      "id": "file-D1FEh58BYPbH5rCMDPNQ3K",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/prompts/builderx-large-001.builderx-fullstack-agent.builderx-large-task.prompt.md"
+    },
+    {
+      "id": "file-DTRRy3JEvHEmgi6s9LurF3",
+      "status": "completed",
+      "source_path": "agents/generated/project-execution-agent.agent.md"
+    },
+    {
+      "id": "file-N6bTRSX5JTkdY5U1mqHQvF",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/projects/wf-geofinderx-business-search-20260628.summary.md"
+    },
+    {
+      "id": "file-4NWgdYxpMTQ8YDohj6KXaU",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/prompts/wf-geofinderx-business-search-20260628.project-execution-agent.actual-backend-correction.prompt.md"
+    },
+    {
+      "id": "file-6r2HxWeV65GXN4rmQYEgbx",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/prompts/wf-geofinderx-business-search-20260628.project-execution-agent.backend-unavailable-correction.prompt.md"
+    },
+    {
+      "id": "file-TFBKznrC1zyexxxt1RJwnS",
+      "status": "completed",
+      "source_path": "agents/generated/project-execution-agent.agent.md"
+    },
+    {
+      "id": "file-Q97g1V5VfDePKSG1E1PZVK",
+      "status": "completed",
+      "source_path": "agents/generated/cvmakerx-artifact-production-agent.agent.md"
+    },
+    {
+      "id": "file-S3JeVyRPdrQ5Nag997rzaV",
+      "status": "completed",
+      "source_path": "agents/generated/cvmakerx-orchestrator-agent.agent.md"
+    },
+    {
+      "id": "file-AjG7VPhhUio6ccLFJ5XHY8",
+      "status": "completed",
+      "source_path": "agents/generated/cvmakerx-qagent-controller.agent.md"
+    },
+    {
+      "id": "file-Q7Gp9ybUAAEUq6pz7FBjbm",
+      "status": "completed",
+      "source_path": "agents/generated/cvmakerx-runtime-packaging-agent.agent.md"
+    },
+    {
+      "id": "file-AEY9ZwSathNP6Wv9c9oMsd",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-QjjEQeUSzCM2xyJcr88HAS",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-DdSJfrCvEFUJ8szwgXiuyL",
+      "status": "completed",
+      "source_path": "agents/generated/databricksx-data-contract-agent.agent.md"
+    },
+    {
+      "id": "file-CnX8MrsSZ7o9j2rvJcff5M",
+      "status": "completed",
+      "source_path": "agents/generated/databricksx-design-workshop-review-agent.agent.md"
+    },
+    {
+      "id": "file-DTLNHjpPEi3hoZ8qVLJmpV",
+      "status": "completed",
+      "source_path": "agents/generated/databricksx-experience-composition-agent.agent.md"
+    },
+    {
+      "id": "file-9TZW9QK9TuUcd1i5CknuZk",
+      "status": "completed",
+      "source_path": "agents/generated/databricksx-functionality-api-backend-src-server-js-get-api-databricks-compute-clusters-agent.agent.md"
+    },
+    {
+      "id": "file-SAvFZVxSYLxCQDD33wLpod",
+      "status": "completed",
+      "source_path": "agents/generated/databricksx-functionality-api-backend-src-server-js-get-api-databricks-sql-history-agent.agent.md"
+    },
+    {
+      "id": "file-3ps3S2u9HZtxhaGM3w7njG",
+      "status": "completed",
+      "source_path": "agents/generated/databricksx-functionality-api-backend-src-server-js-get-api-databricks-sql-statements-statementid-agent.agent.md"
+    },
+    {
+      "id": "file-2WmevLroDsU1DHPzLTwj1r",
+      "status": "completed",
+      "source_path": "agents/generated/databricksx-functionality-api-backend-src-server-js-get-api-databricks-sql-warehouses-agent.agent.md"
+    },
+    {
+      "id": "file-F2S9sToQBdGAEbAPesoB9e",
+      "status": "completed",
+      "source_path": "agents/generated/databricksx-functionality-api-backend-src-server-js-get-api-health-agent.agent.md"
+    },
+    {
+      "id": "file-RWDEUVbd3XLrR4h7ZAsib1",
+      "status": "completed",
+      "source_path": "agents/generated/databricksx-functionality-api-backend-src-server-js-get-api-local-compute-config-agent.agent.md"
+    },
+    {
+      "id": "file-9KHzKsJFnR4aGdjG5sqTTV",
+      "status": "completed",
+      "source_path": "agents/generated/databricksx-functionality-api-backend-src-server-js-get-api-local-notebook-agent.agent.md"
+    },
+    {
+      "id": "file-SpdAThn45zJ5VnFCNMkcn4",
+      "status": "completed",
+      "source_path": "agents/generated/databricksx-functionality-api-backend-src-server-js-post-api-databricks-sql-statements-agent.agent.md"
+    },
+    {
+      "id": "file-7fEUrSg5KphQQLNoVYMG21",
+      "status": "completed",
+      "source_path": "agents/generated/databricksx-functionality-api-backend-src-server-js-get-api-integrations-databricks-status-agent.agent.md"
+    },
+    {
+      "id": "file-EMSam3fvSWTXM5zvfAerpR",
+      "status": "completed",
+      "source_path": "agents/generated/databricksx-functionality-api-backend-src-server-js-post-api-databricks-sql-statements-statementid-agent.agent.md"
+    },
+    {
+      "id": "file-8a9Tit13hPu14WaQrMpipS",
+      "status": "completed",
+      "source_path": "agents/generated/databricksx-functionality-api-backend-src-server-js-post-api-databricks-workspace-notebook-export-agent.agent.md"
+    },
+    {
+      "id": "file-P6ZCY19n2Le8bWnfydGzjs",
+      "status": "completed",
+      "source_path": "agents/generated/databricksx-functionality-api-backend-src-server-js-get-api-local-notebook-runs-agent.agent.md"
+    },
+    {
+      "id": "file-J3EPC1sK2eyHRg1e3wsL2s",
+      "status": "completed",
+      "source_path": "agents/generated/databricksx-functionality-api-backend-src-server-js-post-api-local-compute-config-agent.agent.md"
+    },
+    {
+      "id": "file-FivPsekXbGjTdSt51fwBD5",
+      "status": "completed",
+      "source_path": "agents/generated/databricksx-functionality-api-backend-src-server-js-post-api-local-notebook-agent.agent.md"
+    },
+    {
+      "id": "file-Kp8uedEdLL6zfqcKKx75Jm",
+      "status": "completed",
+      "source_path": "agents/generated/databricksx-functionality-api-backend-src-server-js-post-api-local-notebook-runs-agent.agent.md"
+    },
+    {
+      "id": "file-65vGjBnSd6NnCLnBeJHk5q",
+      "status": "completed",
+      "source_path": "agents/generated/databricksx-functionality-integration-backend-src-server-js-agent.agent.md"
+    },
+    {
+      "id": "file-JcrjTZUDHp4ajKtPfXbEYZ",
+      "status": "completed",
+      "source_path": "agents/generated/databricksx-functionality-integration-configs-openai-vector-store-config-json-agent.agent.md"
+    },
+    {
+      "id": "file-54M9E5oxo3ax8tuaBwPjCf",
+      "status": "completed",
+      "source_path": "agents/generated/databricksx-functionality-integration-agentic-system-d3-agentic-system-d3-js-agent.agent.md"
+    },
+    {
+      "id": "file-DcP8Fd5RfECeWxgqCAbrHA",
+      "status": "completed",
+      "source_path": "agents/generated/databricksx-functionality-integration-deliverables-bootstrap-20260807070021-delivery-manifest-json-agent.agent.md"
+    },
+    {
+      "id": "file-YPtHrsRveoqcqXPQMn3Wbn",
+      "status": "completed",
+      "source_path": "agents/generated/databricksx-functionality-integration-memory-pending-sync-bootstrap-20260807070021-vector-sync-jso-agent.agent.md"
+    },
+    {
+      "id": "file-Kyju9cFWaf2rrv6H9zNSzw",
+      "status": "completed",
+      "source_path": "agents/generated/databricksx-functionality-integration-memory-vector-provider-resolution-json-agent.agent.md"
+    },
+    {
+      "id": "file-EQBfj6W2jXp37249nPu3pk",
+      "status": "completed",
+      "source_path": "agents/generated/databricksx-functionality-integration-observability-agent-memory-latest-sync-json-agent.agent.md"
+    },
+    {
+      "id": "file-PJQWQvjy7vCWA8JYKMt44p",
+      "status": "completed",
+      "source_path": "agents/generated/databricksx-functionality-integration-observability-agent-memory-vector-store-verification-json-agent.agent.md"
+    },
+    {
+      "id": "file-WRvuY7ENP6DQTCrvZ9YeEM",
+      "status": "completed",
+      "source_path": "agents/generated/databricksx-functionality-integration-observability-bootstrap-20260807070021-agent-memory-sync-jso-agent.agent.md"
+    },
+    {
+      "id": "file-5LgsA4LQQSzLPJsYhRJCZy",
+      "status": "completed",
+      "source_path": "agents/generated/databricksx-functionality-integration-observability-bootstrap-20260807070021-execution-trace-json-agent.agent.md"
+    },
+    {
+      "id": "file-NY6Z4KfqzPmvSU3tSNPR9h",
+      "status": "completed",
+      "source_path": "agents/generated/databricksx-functionality-integration-observability-token-economics-bootstrap-20260807070021-token-agent.agent.md"
+    },
+    {
+      "id": "file-APGdKgF6EyXZng7gvLAfMn",
+      "status": "completed",
+      "source_path": "agents/generated/databricksx-functionality-integration-observability-token-economics-bootstrap-token-report-json-agent.agent.md"
+    },
+    {
+      "id": "file-KXsR8zGkoNPvAYaWf7X76q",
+      "status": "completed",
+      "source_path": "agents/generated/databricksx-functionality-integration-observability-token-economics-latest-token-plan-json-agent.agent.md"
+    },
+    {
+      "id": "file-QnAQjuLtGNcnA6zFrZ1sUg",
+      "status": "completed",
+      "source_path": "agents/generated/databricksx-functionality-integration-scripts-bootstrap-orchestrator-local-mjs-agent.agent.md"
+    },
+    {
+      "id": "file-2sWv4HhKbG2xvE3RpCbYFD",
+      "status": "completed",
+      "source_path": "agents/generated/databricksx-functionality-integration-scripts-huggingface-models-mjs-agent.agent.md"
+    },
+    {
+      "id": "file-JpGLhg66RxgpdpLPUDAVxR",
+      "status": "completed",
+      "source_path": "agents/generated/databricksx-functionality-integration-scripts-sync-agent-knowledge-to-vector-store-ts-agent.agent.md"
+    },
+    {
+      "id": "file-EN9kQWwpHBCzSgM3qKHoMr",
+      "status": "completed",
+      "source_path": "agents/generated/databricksx-functionality-integration-scripts-verify-openai-vector-store-ts-agent.agent.md"
+    },
+    {
+      "id": "file-Ao91z1WxKa6yp2T1jj4shy",
+      "status": "completed",
+      "source_path": "agents/generated/databricksx-functionality-integration-src-generated-generatedpage-jsx-agent.agent.md"
+    },
+    {
+      "id": "file-KPM7RPoyjtLm3wspZ1FRtb",
+      "status": "completed",
+      "source_path": "agents/generated/databricksx-functionality-integration-tests-agent-memory-vector-store-sync-test-ts-agent.agent.md"
+    },
+    {
+      "id": "file-EwJ8RcZo2EE9Gj2rYUkJ3X",
+      "status": "completed",
+      "source_path": "agents/generated/databricksx-functionality-security-backend-src-server-js-agent.agent.md"
+    },
+    {
+      "id": "file-Hu7BufxicNZDTFXKfHaHHC",
+      "status": "completed",
+      "source_path": "agents/generated/databricksx-functionality-security-src-generated-datasource-js-agent.agent.md"
+    },
+    {
+      "id": "file-EG2WxnPzMVrhqDBEMy5P3p",
+      "status": "completed",
+      "source_path": "agents/generated/databricksx-functionality-test-scripts-huggingface-models-mjs-agent.agent.md"
+    },
+    {
+      "id": "file-Y2duduxxJn57mYSGCVcYR9",
+      "status": "completed",
+      "source_path": "agents/generated/databricksx-functionality-test-tests-agent-memory-agent-scoring-test-ts-agent.agent.md"
+    },
+    {
+      "id": "file-8vH8voDx3aMNbeddx6n2Ca",
+      "status": "completed",
+      "source_path": "agents/generated/databricksx-functionality-test-tests-agent-memory-agent-selection-test-ts-agent.agent.md"
+    },
+    {
+      "id": "file-DymoRpKzzY8pXjzp25GMSQ",
+      "status": "completed",
+      "source_path": "agents/generated/databricksx-functionality-test-tests-agent-memory-repeated-request-detector-test-ts-agent.agent.md"
+    },
+    {
+      "id": "file-LiUS7oRDDqa1wGaDj89dBH",
+      "status": "completed",
+      "source_path": "agents/generated/databricksx-functionality-test-tests-agent-memory-vector-store-sync-test-ts-agent.agent.md"
+    },
+    {
+      "id": "file-J6RQra1PV3SovVt1Go34kB",
+      "status": "completed",
+      "source_path": "agents/generated/databricksx-orchestrator-agent.agent.md"
+    },
+    {
+      "id": "file-2CViBvVoNCnKjCPXAvr8Mx",
+      "status": "completed",
+      "source_path": "agents/generated/databricksx-qagent-controller.agent.md"
+    },
+    {
+      "id": "file-W7bKBpn9ybCai8qLcY9RfS",
+      "status": "completed",
+      "source_path": "agents/generated/databricksx-runtime-packaging-agent.agent.md"
+    },
+    {
+      "id": "file-M1Hyc1Mpqkd8itTJ2QNaZa",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/prompts/08a1b-r3-semantic-triage.project-execution-agent.task.prompt.md"
+    },
+    {
+      "id": "file-XKG79LGGp14v6bbSCeKAuw",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/prompts/08a1c-r4-reconstructed-disposition.task.prompt.md"
+    },
+    {
+      "id": "file-Vnxek4JBHf41o3A9SnoYef",
+      "status": "completed",
+      "source_path": "agents/generated/adx-data-contract-agent.agent.md"
+    },
+    {
+      "id": "file-1Lr51g5rEFynN4RP5BCpLT",
+      "status": "completed",
+      "source_path": "agents/generated/adx-experience-composition-agent.agent.md"
+    },
+    {
+      "id": "file-Aa9h76bSdJVS6LSDFkUzRZ",
+      "status": "completed",
+      "source_path": "agents/generated/adx-functionality-api-venv-local-flux-lib-python3-12-site-packages-fastapi-applications-py-agent.agent.md"
+    },
+    {
+      "id": "file-3X5i6mmKfNYCbDWmvxDfhs",
+      "status": "completed",
+      "source_path": "agents/generated/adx-functionality-api-venv-local-flux-lib-python3-12-site-packages-fastapi-background-py-p-agent.agent.md"
+    },
+    {
+      "id": "file-YV9C9hmec4HbG6EoaHBkhv",
+      "status": "completed",
+      "source_path": "agents/generated/adx-functionality-api-venv-local-flux-lib-python3-12-site-packages-fastapi-datastructures--agent.agent.md"
+    },
+    {
+      "id": "file-BcoU4Ge1CEokRxAe1rrtjx",
+      "status": "completed",
+      "source_path": "agents/generated/adx-functionality-api-venv-local-flux-lib-python3-12-site-packages-fastapi-exceptions-py-g-agent.agent.md"
+    },
+    {
+      "id": "file-WegCCzaVNuS9pX7QksshQZ",
+      "status": "completed",
+      "source_path": "agents/generated/adx-functionality-api-venv-local-flux-lib-python3-12-site-packages-fastapi-openapi-constan-agent.agent.md"
+    },
+    {
+      "id": "file-VzQNZahz82UGYCnrhcWuVs",
+      "status": "completed",
+      "source_path": "agents/generated/adx-functionality-api-venv-local-flux-lib-python3-12-site-packages-fastapi-openapi-docs-py-agent.agent.md"
+    },
+    {
+      "id": "file-Lw57EdfGduUsGBH3YEjdcX",
+      "status": "completed",
+      "source_path": "agents/generated/adx-functionality-api-venv-local-flux-lib-python3-12-site-packages-fastapi-openapi-models--agent.agent.md"
+    },
+    {
+      "id": "file-8ucxpAoBBFBty3QymtjGKM",
+      "status": "completed",
+      "source_path": "agents/generated/adx-functionality-api-venv-local-flux-lib-python3-12-site-packages-fastapi-openapi-utils-p-agent.agent.md"
+    },
+    {
+      "id": "file-5DvaSW56ArpyK7iMkNseBa",
+      "status": "completed",
+      "source_path": "agents/generated/adx-functionality-api-venv-local-flux-lib-python3-12-site-packages-fastapi-param-functions-agent.agent.md"
+    },
+    {
+      "id": "file-DYg8V99NptzGaQsivovuZt",
+      "status": "completed",
+      "source_path": "agents/generated/adx-functionality-api-venv-local-flux-lib-python3-12-site-packages-fastapi-routing-py-dele-agent.agent.md"
+    },
+    {
+      "id": "file-DFvFmB8mRDgZ8zMxD5xAYB",
+      "status": "completed",
+      "source_path": "agents/generated/adx-functionality-api-venv-local-flux-lib-python3-12-site-packages-fastapi-routing-py-get--agent.agent.md"
+    },
+    {
+      "id": "file-NEjk1NjFJwy5iGYhkkAqXx",
+      "status": "completed",
+      "source_path": "agents/generated/adx-functionality-api-venv-local-flux-lib-python3-12-site-packages-fastapi-routing-py-patc-agent.agent.md"
+    },
+    {
+      "id": "file-9Qc8HLn4padwfr6ErU6n4h",
+      "status": "completed",
+      "source_path": "agents/generated/adx-functionality-api-venv-local-flux-lib-python3-12-site-packages-fastapi-routing-py-post-agent.agent.md"
+    },
+    {
+      "id": "file-JnXPBD8owBSaxVmjifdEJn",
+      "status": "completed",
+      "source_path": "agents/generated/adx-functionality-api-venv-local-flux-lib-python3-12-site-packages-fastapi-routing-py-put--agent.agent.md"
+    },
+    {
+      "id": "file-J3kfrVBCtmSeft1A5m8yR3",
+      "status": "completed",
+      "source_path": "agents/generated/adx-functionality-api-venv-local-flux-lib-python3-12-site-packages-fastapi-security-api-ke-agent.agent.md"
+    },
+    {
+      "id": "file-AhuJG462jiVAJzNsmpMXmv",
+      "status": "completed",
+      "source_path": "agents/generated/adx-functionality-api-venv-local-flux-lib-python3-12-site-packages-fastapi-security-http-p-agent.agent.md"
+    },
+    {
+      "id": "file-8RFk1HY6WQHhuUWvfHx22S",
+      "status": "completed",
+      "source_path": "agents/generated/adx-functionality-api-venv-local-flux-lib-python3-12-site-packages-fastapi-security-oauth2-agent.agent.md"
+    },
+    {
+      "id": "file-C7pL4TsYQifE1WqQiWk71N",
+      "status": "completed",
+      "source_path": "agents/generated/adx-functionality-integration-venv-local-flux-lib-python3-12-site-packages-pip-internal-ne-agent.agent.md"
+    },
+    {
+      "id": "file-WFrTopeuYBVE9pQZeYUDC5",
+      "status": "completed",
+      "source_path": "agents/generated/adx-functionality-security-venv-local-flux-lib-python3-12-site-packages-anyio-pytest-plugi-agent.agent.md"
+    },
+    {
+      "id": "file-72KQjkBwBvsn4wwQMujyVS",
+      "status": "completed",
+      "source_path": "agents/generated/adx-functionality-security-venv-local-flux-lib-python3-12-site-packages-anyio-streams-tls--agent.agent.md"
+    },
+    {
+      "id": "file-JcXtFP6rqBnrsx1ea51Q9f",
+      "status": "completed",
+      "source_path": "agents/generated/adx-functionality-security-venv-local-flux-lib-python3-12-site-packages-click-termui-py-agent.agent.md"
+    },
+    {
+      "id": "file-WrA73dnWqUdiCSD1u7wbQc",
+      "status": "completed",
+      "source_path": "agents/generated/adx-functionality-security-venv-local-flux-lib-python3-12-site-packages-fastapi-applicatio-agent.agent.md"
+    },
+    {
+      "id": "file-N4PnmwtwjcPGrYo4irYrJc",
+      "status": "completed",
+      "source_path": "agents/generated/adx-functionality-security-venv-local-flux-lib-python3-12-site-packages-fastapi-exceptions-agent.agent.md"
+    },
+    {
+      "id": "file-GcERxxGVqmFgFKMmfzrTgP",
+      "status": "completed",
+      "source_path": "agents/generated/adx-functionality-security-venv-local-flux-lib-python3-12-site-packages-fastapi-openapi-do-agent.agent.md"
+    },
+    {
+      "id": "file-WwZfevuXZbkRrv6jS4HJwP",
+      "status": "completed",
+      "source_path": "agents/generated/adx-functionality-security-venv-local-flux-lib-python3-12-site-packages-fastapi-routing-py-agent.agent.md"
+    },
+    {
+      "id": "file-2sazeN9tyCmKkR1154AdUM",
+      "status": "completed",
+      "source_path": "agents/generated/adx-functionality-security-venv-local-flux-lib-python3-12-site-packages-fastapi-security-a-agent.agent.md"
+    },
+    {
+      "id": "file-SQYyU8jL5xVDwHN5PDVQDD",
+      "status": "completed",
+      "source_path": "agents/generated/adx-functionality-security-venv-local-flux-lib-python3-12-site-packages-fastapi-security-h-agent.agent.md"
+    },
+    {
+      "id": "file-24XFrohp1JVo5dT5roXGv3",
+      "status": "completed",
+      "source_path": "agents/generated/adx-functionality-security-venv-local-flux-lib-python3-12-site-packages-fastapi-security-o-agent.agent.md"
+    },
+    {
+      "id": "file-YKsawAuECfpAcJgnbUFN8u",
+      "status": "completed",
+      "source_path": "agents/generated/adx-functionality-security-venv-local-flux-lib-python3-12-site-packages-pip-internal-build-agent.agent.md"
+    },
+    {
+      "id": "file-PQxSEKocMs6tow3HuThMM9",
+      "status": "completed",
+      "source_path": "agents/generated/adx-functionality-security-venv-local-flux-lib-python3-12-site-packages-pip-internal-cli-c-agent.agent.md"
+    },
+    {
+      "id": "file-L1RDct6LRuzgpc83QNSovp",
+      "status": "completed",
+      "source_path": "agents/generated/adx-functionality-security-venv-local-flux-lib-python3-12-site-packages-pip-internal-cli-i-agent.agent.md"
+    },
+    {
+      "id": "file-ACtqYeAL2bWbeNfJ4MH1T6",
+      "status": "completed",
+      "source_path": "agents/generated/adx-functionality-security-venv-local-flux-lib-python3-12-site-packages-pip-internal-cli-r-agent.agent.md"
+    },
+    {
+      "id": "file-HEHNHq3WdQNZjNTBgq8Wor",
+      "status": "completed",
+      "source_path": "agents/generated/adx-functionality-security-venv-local-flux-lib-python3-12-site-packages-pip-internal-comma-agent.agent.md"
+    },
+    {
+      "id": "file-88wazkLpXdgmHJZeicjSmA",
+      "status": "completed",
+      "source_path": "agents/generated/adx-functionality-security-venv-local-flux-lib-python3-12-site-packages-pip-internal-confi-agent.agent.md"
+    },
+    {
+      "id": "file-FFfngvoodrBKRLgzq5YZtA",
+      "status": "completed",
+      "source_path": "agents/generated/adx-functionality-security-venv-local-flux-lib-python3-12-site-packages-pip-internal-excep-agent.agent.md"
+    },
+    {
+      "id": "file-34sgmuMUEYU5jnjuYUzTZ3",
+      "status": "completed",
+      "source_path": "agents/generated/adx-functionality-security-venv-local-flux-lib-python3-12-site-packages-pip-internal-index-agent.agent.md"
+    },
+    {
+      "id": "file-SRmohEvUaE5pMpjh876jtP",
+      "status": "completed",
+      "source_path": "agents/generated/adx-functionality-security-venv-local-flux-lib-python3-12-site-packages-pip-internal-netwo-agent.agent.md"
+    },
+    {
+      "id": "file-Q2VUdmXvEcTR3dsJicLS5r",
+      "status": "completed",
+      "source_path": "agents/generated/adx-functionality-security-venv-local-flux-lib-python3-12-site-packages-pip-internal-opera-agent.agent.md"
+    },
+    {
+      "id": "file-VKtF4V2QUWpDL243nhxf7F",
+      "status": "completed",
+      "source_path": "agents/generated/adx-functionality-security-venv-local-flux-lib-python3-12-site-packages-pip-internal-req-r-agent.agent.md"
+    },
+    {
+      "id": "file-AVCTAuQGNUwoXuJMbpfUV1",
+      "status": "completed",
+      "source_path": "agents/generated/adx-functionality-security-venv-local-flux-lib-python3-12-site-packages-pip-internal-self--agent.agent.md"
+    },
+    {
+      "id": "file-E7jamzbHEDnE6gCQiFokQm",
+      "status": "completed",
+      "source_path": "agents/generated/adx-functionality-security-venv-local-flux-lib-python3-12-site-packages-pip-internal-utils-agent.agent.md"
+    },
+    {
+      "id": "file-4dqF7v2fQaHoro2aQsSMCQ",
+      "status": "completed",
+      "source_path": "agents/generated/adx-functionality-test-venv-local-flux-lib-python3-12-site-packages-click-exceptions-py-agent.agent.md"
+    },
+    {
+      "id": "file-2S8wuFnqxai1C8uQ34Gr53",
+      "status": "completed",
+      "source_path": "agents/generated/adx-functionality-test-venv-local-flux-lib-python3-12-site-packages-fastapi-openapi-docs-p-agent.agent.md"
+    },
+    {
+      "id": "file-AtHvGsXR8cp2PpRxTqNyzN",
+      "status": "completed",
+      "source_path": "agents/generated/adx-orchestrator-agent.agent.md"
+    },
+    {
+      "id": "file-8XuWTK3kQUFGUs9p8SKGFJ",
+      "status": "completed",
+      "source_path": "agents/generated/adx-qagent-controller.agent.md"
+    },
+    {
+      "id": "file-6KE1ckv5gemHXqa6HE7fGi",
+      "status": "completed",
+      "source_path": "agents/generated/adx-runtime-packaging-agent.agent.md"
+    },
+    {
+      "id": "file-Ja8UFVwigFfZg95oT7BpPL",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/projects/agentic-system-dependencies-explore-2026-08-14.summary.md"
+    },
+    {
+      "id": "file-R2FJszYjyvCW8K7cfP5v1D",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/prompts/agentic-system-dependencies-explore-20260814.architecture_review.agentic-system-dependencies-explore-architecture-review.prompt.md"
+    },
+    {
+      "id": "file-7SeaLuaUcsb9a7xHgBZ3Ly",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/prompts/agentic-system-dependencies-explore-20260814.data_science_review.agentic-system-dependencies-explore-data-review.prompt.md"
+    },
+    {
+      "id": "file-64LPdbFgCQHon7MrFGvpYP",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/prompts/agentic-system-dependencies-explore-20260814.design_review.agentic-system-dependencies-explore-design-review.prompt.md"
+    },
+    {
+      "id": "file-XKXm7uybsGCiR86sVUxeju",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/prompts/agentic-system-dependencies-explore-20260814.plutonix-fullstack-agent.agentic-system-dependencies-explore-task.prompt.md"
+    },
+    {
+      "id": "file-7RHUUcFCJWjh6Ju74fN2dK",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/projects/agentic-system-architecture-rails-2026-08-14.summary.md"
+    },
+    {
+      "id": "file-MFpEW3LiKQAyjwunHuo6tv",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/prompts/agentic-system-architecture-rails-20260814.architecture-review.validation.prompt.md"
+    },
+    {
+      "id": "file-TMbBBYemthEKVsVqwUawwJ",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/prompts/agentic-system-architecture-rails-20260814.data-review.validation.prompt.md"
+    },
+    {
+      "id": "file-NqcVaYJmtMsdzemTgL7FeC",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/prompts/agentic-system-architecture-rails-20260814.design-review.validation.prompt.md"
+    },
+    {
+      "id": "file-YSmBvt9xw3H3eUuu1A72VB",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/prompts/agentic-system-architecture-rails-20260814.plutonix-fullstack-agent.task.prompt.md"
+    },
+    {
+      "id": "file-QJfwHzMmLm1fCr49sVSBD9",
+      "status": "completed",
+      "source_path": "agents/generated/brushx-data-contract-agent.agent.md"
+    },
+    {
+      "id": "file-RWw2kW6GY1xgEHbZYh6Wcc",
+      "status": "completed",
+      "source_path": "agents/generated/brushx-design-workshop-review-agent.agent.md"
+    },
+    {
+      "id": "file-7zzD5bLuHwiC2XwoxzGD6h",
+      "status": "completed",
+      "source_path": "agents/generated/brushx-experience-composition-agent.agent.md"
+    },
+    {
+      "id": "file-V894fvGQxqpthMU6MEFriM",
+      "status": "completed",
+      "source_path": "agents/generated/brushx-functionality-api-backend-src-server-js-get-api-health-agent.agent.md"
+    },
+    {
+      "id": "file-HFA73AWnuUKoy58C1YAgNT",
+      "status": "completed",
+      "source_path": "agents/generated/brushx-functionality-api-backend-src-server-js-get-api-openai-status-agent.agent.md"
+    },
+    {
+      "id": "file-6RgEPkgvztBzEdLvKrSBoz",
+      "status": "completed",
+      "source_path": "agents/generated/brushx-functionality-api-backend-src-server-js-post-api-openai-generate-agent.agent.md"
+    },
+    {
+      "id": "file-EGNxKaWyu71PBUsp7Ywp5s",
+      "status": "completed",
+      "source_path": "agents/generated/brushx-functionality-api-schemas-openapi-planning-schema-json-contract-agent.agent.md"
+    },
+    {
+      "id": "file-BSmX5yw1b4URn52NaMmZfD",
+      "status": "completed",
+      "source_path": "agents/generated/brushx-functionality-integration-agentic-system-d3-agentic-system-d3-js-agent.agent.md"
+    },
+    {
+      "id": "file-4orRivr3RvoHeH42xGxckE",
+      "status": "completed",
+      "source_path": "agents/generated/brushx-functionality-integration-backend-src-server-js-agent.agent.md"
+    },
+    {
+      "id": "file-TX7PGp1uQ8w7dfimN3FDRL",
+      "status": "completed",
+      "source_path": "agents/generated/brushx-functionality-integration-graph-agent-functionality-map-json-agent.agent.md"
+    },
+    {
+      "id": "file-6g66NmfKcDRAUTUcudJpGj",
+      "status": "completed",
+      "source_path": "agents/generated/brushx-functionality-integration-graph-workspace-graph-json-agent.agent.md"
+    },
+    {
+      "id": "file-VGx17dE73V1cR6hN78bUjg",
+      "status": "completed",
+      "source_path": "agents/generated/brushx-functionality-integration-memory-vector-provider-resolution-json-agent.agent.md"
+    },
+    {
+      "id": "file-KiUoRYHDkZzU8GkyDKJf85",
+      "status": "completed",
+      "source_path": "agents/generated/brushx-functionality-integration-observability-agent-memory-env-check-json-agent.agent.md"
+    },
+    {
+      "id": "file-SK9Gfyfw4PYKj5uKcWbJkj",
+      "status": "completed",
+      "source_path": "agents/generated/brushx-functionality-integration-observability-agent-memory-latest-sync-json-agent.agent.md"
+    },
+    {
+      "id": "file-UobzHQVSKiXNQbFKAdpX4j",
+      "status": "completed",
+      "source_path": "agents/generated/brushx-functionality-integration-observability-agent-memory-vector-store-verification-json-agent.agent.md"
+    },
+    {
+      "id": "file-GLMABZSuZ3pyqh7MVroG34",
+      "status": "completed",
+      "source_path": "agents/generated/brushx-functionality-integration-observability-vector-memory-chromadb-verification-json-agent.agent.md"
+    },
+    {
+      "id": "file-6kix2rmAp5goL6mu6G7hP4",
+      "status": "completed",
+      "source_path": "agents/generated/brushx-functionality-integration-observability-vector-memory-latest-vector-write-json-agent.agent.md"
+    },
+    {
+      "id": "file-7ZE63K3Yo7wdtpkgknWyoD",
+      "status": "completed",
+      "source_path": "agents/generated/brushx-functionality-integration-registry-agents-vector-sync-index-json-agent.agent.md"
+    },
+    {
+      "id": "file-AxxbPjZ4G3AHamxyEFeWHx",
+      "status": "completed",
+      "source_path": "agents/generated/brushx-functionality-integration-registry-vector-vector-provider-registry-json-agent.agent.md"
+    },
+    {
+      "id": "file-FMTiYSPaKjTu8otQY5ZL6B",
+      "status": "completed",
+      "source_path": "agents/generated/brushx-functionality-integration-scripts-sync-agent-knowledge-to-vector-store-ts-agent.agent.md"
+    },
+    {
+      "id": "file-A6Lyxdd91JmuN1bwWZMJUj",
+      "status": "completed",
+      "source_path": "agents/generated/brushx-functionality-integration-scripts-verify-bootstrap-artifacts-mjs-agent.agent.md"
+    },
+    {
+      "id": "file-JE14Hm12s6nfBz3fTJDEmv",
+      "status": "completed",
+      "source_path": "agents/generated/brushx-functionality-integration-scripts-verify-openai-vector-store-ts-agent.agent.md"
+    },
+    {
+      "id": "file-2tvTdym2yuehsgEjurNSJV",
+      "status": "completed",
+      "source_path": "agents/generated/brushx-functionality-integration-src-generated-datasource-js-agent.agent.md"
+    },
+    {
+      "id": "file-4RweEJQugVwMt1eXkdV2aM",
+      "status": "completed",
+      "source_path": "agents/generated/brushx-functionality-integration-src-generated-metadata-json-agent.agent.md"
+    },
+    {
+      "id": "file-M143hhaR1XZC7XRrh1GWJo",
+      "status": "completed",
+      "source_path": "agents/generated/brushx-functionality-integration-src-generated-pages-creativeworkspacepage-jsx-agent.agent.md"
+    },
+    {
+      "id": "file-LJcaZ6dp7XpMRjT9pgzwjZ",
+      "status": "completed",
+      "source_path": "agents/generated/brushx-functionality-integration-topology-d3-agentic-system-graph-json-agent.agent.md"
+    },
+    {
+      "id": "file-RaagDXeTHTLZpuCdYidBJn",
+      "status": "completed",
+      "source_path": "agents/generated/brushx-functionality-integration-vite-config-js-agent.agent.md"
+    },
+    {
+      "id": "file-AqUR2WoHfpoTcLrVx9aCzZ",
+      "status": "completed",
+      "source_path": "agents/generated/brushx-functionality-security-backend-src-server-js-agent.agent.md"
+    },
+    {
+      "id": "file-F6BbddnxtYUPM5TAXNnraT",
+      "status": "completed",
+      "source_path": "agents/generated/brushx-functionality-security-graph-agent-functionality-map-json-agent.agent.md"
+    },
+    {
+      "id": "file-FQJZ8pwQ6P2L8VxSXZmDK1",
+      "status": "completed",
+      "source_path": "agents/generated/brushx-functionality-security-scripts-sync-agent-knowledge-to-vector-store-ts-agent.agent.md"
+    },
+    {
+      "id": "file-VoZYhn72Zzu3SrThhEAoHP",
+      "status": "completed",
+      "source_path": "agents/generated/brushx-functionality-security-scripts-verify-openai-vector-store-ts-agent.agent.md"
+    },
+    {
+      "id": "file-29kX3cgkxm7PSK5cC5xSYo",
+      "status": "completed",
+      "source_path": "agents/generated/brushx-functionality-security-src-generated-pages-creativeworkspacepage-jsx-agent.agent.md"
+    },
+    {
+      "id": "file-U4LfJAud9xByiG2gTLv6LB",
+      "status": "completed",
+      "source_path": "agents/generated/brushx-functionality-security-vite-config-js-agent.agent.md"
+    },
+    {
+      "id": "file-2dib7vKukLYtgsbvfgVxke",
+      "status": "completed",
+      "source_path": "agents/generated/brushx-orchestrator-agent.agent.md"
+    },
+    {
+      "id": "file-7VSbAPtvHYA3bGx7Ru6eme",
+      "status": "completed",
+      "source_path": "agents/generated/brushx-qagent-controller.agent.md"
+    },
+    {
+      "id": "file-3k8JFDY2c4yjm1sSECeXfJ",
+      "status": "completed",
+      "source_path": "agents/generated/brushx-runtime-packaging-agent.agent.md"
+    },
+    {
+      "id": "file-1dYDRCyybYGU7CQsfxPyja",
+      "status": "completed",
+      "source_path": "agents/generated/application-architecture-agent.agent.md"
+    },
+    {
+      "id": "file-2wzorn3tvM23tSPjNKogpB",
+      "status": "completed",
+      "source_path": "agents/generated/artifact-production-agent.agent.md"
+    },
+    {
+      "id": "file-6r64trftbULUGag8G1csUe",
+      "status": "completed",
+      "source_path": "agents/generated/data-contract-agent.agent.md"
+    },
+    {
+      "id": "file-7Mj3KgstK37U5RiDSLWnGR",
+      "status": "completed",
+      "source_path": "agents/generated/design-workshop-review-agent.agent.md"
+    },
+    {
+      "id": "file-DMTmFspA8fbS9Sfzys7GHd",
+      "status": "completed",
+      "source_path": "agents/generated/experience-composition-agent.agent.md"
+    },
+    {
+      "id": "file-2na1wVhbMDPHvKUbEoiXHb",
+      "status": "completed",
+      "source_path": "agents/generated/governance-security-agent.agent.md"
+    },
+    {
+      "id": "file-MwkEsHyE1Fub2AxEsxsff8",
+      "status": "completed",
+      "source_path": "agents/generated/project-orchestrator-agent.agent.md"
+    },
+    {
+      "id": "file-BGeDzvAdTVFy8L8sjwEDfp",
+      "status": "completed",
+      "source_path": "agents/generated/qagent-controller.agent.md"
+    },
+    {
+      "id": "file-43SkPLR641i9wXzSTnYLJ2",
+      "status": "completed",
+      "source_path": "agents/generated/runtime-packaging-agent.agent.md"
+    },
+    {
+      "id": "file-VZmRfqmfJSWGRJGtqBGtMb",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/projects/agent-definition-reuse-fix-2026-08-15.summary.md"
+    },
+    {
+      "id": "file-U16J1Bb2ovdc5U2A11pfWG",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/prompts/agent-definition-reuse-fix-20260815.project-execution-agent.task.prompt.md"
+    },
+    {
+      "id": "file-LhNx1MDimieGqRjFn4sYsB",
+      "status": "completed",
+      "source_path": "agents/generated/application-architecture-agent.agent.md"
+    },
+    {
+      "id": "file-MQML1A8A2tjWgXAd8waUj9",
+      "status": "completed",
+      "source_path": "agents/generated/artifact-production-agent.agent.md"
+    },
+    {
+      "id": "file-UwQedTkXCZDs14nxMMUqhG",
+      "status": "completed",
+      "source_path": "agents/generated/governance-security-agent.agent.md"
+    },
+    {
+      "id": "file-XGN7pew13LrUfwFX4w3Y8Q",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/projects/architecture-feature-force-hierarchy-2026-08-15.summary.md"
+    },
+    {
+      "id": "file-UpcGyMbTNUS44kL9NBRLFy",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/prompts/architecture-feature-force-hierarchy-20260815.project-execution-agent.task.prompt.md"
+    },
+    {
+      "id": "file-XLFWVEYPicUsRSUhny4Nhi",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/projects/architecture-feature-force-hierarchy-2026-08-15.summary.md"
+    },
+    {
+      "id": "file-5uVZye1ftnRXfTVbnNppHM",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/projects/architecture-feature-relations-2026-08-15.summary.md"
+    },
+    {
+      "id": "file-LXDDt7UeE9LCPHRsHyDX5c",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/projects/architecture-ui-feature-gravity-20260816.summary.md"
+    },
+    {
+      "id": "file-PmXWYxa9QTwH951Q8oWrrj",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/prompts/architecture-feature-force-hierarchy-20260815.project-execution-agent.direct-relationships-correction.prompt.md"
+    },
+    {
+      "id": "file-6MqkxUQ2wXUGnJWXHNoXya",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/prompts/architecture-feature-relations-20260815.project-execution-agent.task.prompt.md"
+    },
+    {
+      "id": "file-TaFB4yrSmNdpJ7QMbm9x1s",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-JwXanFGmxF9YgboqSBxjb9",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-BE9ohGXp77dB5EEMAko2Gh",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-4uBZmdoL7o9mA8uoodUzDC",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-BbU9vbfjThrxUZ47p2iFpA",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-MS5S3nCEs3ragrKEqwj8sX",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-4tRw8NTYfRTPdFVCTRxJVD",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-WP4UMpZamYuriJ87x3jjNj",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-478mjrzk81EA1c6Q7TqY4N",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-WsZLbpah6N18RMyfu1hbyZ",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-ViuW1Qz6BzwJNgG6UGWzC2",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-KCtUKGw4kFzBawpxGSkgW8",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-SDP6hKnqvWTeTDowLToU7Q",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-48w7HWaunbhJdTdZfts8Mx",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-DXWZhUY7NE8g5QrnkLPvD5",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-EEmb8odDEaqWmQpVQCe47u",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-17ysrskNncKxx5MmzP4Tur",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-L6fbqxAov7Q1yY4n82do1o",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-N98ma82UK64rodrXip4hEG",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-Km5PDTkxDXz7bexFtfuMJr",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-85CfPnrgPAzezDnTEsSD35",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-Ybhj2phNzhPPtB3jUZJ6PF",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-2PBEzoJTLzCS236sSQtDW8",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-XyYwg9FJH865QN23uHLbi2",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-Hi1YTiU5quiAFXJV8Y7k7F",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-8FRkzTU4QRR96sGeCHnM6J",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-HQxRtEya6d6gVj8eLhWLcs",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-KM1S29gR9Z3nWsphfW3jEr",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-F227LPmS755ECR4uNWFzgZ",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-S7dvdLoVN3eCoAKq6Fe2Dk",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-SKGSaAK9bApN665vdMpEYo",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-2p3ovbxvWzCTZLFz6gXprd",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-JmiTF471g3WpcomgW67V6i",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-Rq8j1WAzMZ9mnUKqmMTkJk",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-T2Zhz8S5t2XqQLgrAJQJwM",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-6XKc1zQuTc2qzng2Th9SCr",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-X1Pye478ZmUS3nVsoBJzuH",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-RfMtEAB3JQQPWTJih3WZn6",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-2d5oGrTH6eEd7YPsB8eabe",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-KEM9eQSMAce57EHKdGncGe",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-S51n6sxyePEev7xNNkRuy2",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-2mZZyqarxyV3u9MNrassZx",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-VtJHzZHD5AgiELZbNkGqjj",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-JpUfHRXVefHh78pjtwDPe4",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-J1gFswBxP6GwZcmQFmHaLe",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-RqgWk3i29twF7UoH24H7fN",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-JVvaRfFaxcM2cCvdzdCqov",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-S6jicCAwMCHnUUgypzWqg5",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-LU35Uj8zE31zTQzKPtPQDo",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-9gzMYRo46CRfyfj6trbp3p",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-9AJbHg3m89c14CqvnF4Zd1",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-LXxCjheZ96vjBcyYseHgkU",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-3EqyneZn7Fzdz5Qmp1Avqa",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-8vhm3nR7xarYPnqLvpHTUx",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-1yZxZ7LEAWUBeWPCuQLTNe",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-AgDqxQaBRPxikyQYAoSkp3",
+      "status": "completed",
+      "source_path": ""
+    },
+    {
+      "id": "file-A8AcVWGYv1CA9mKUetq1TR",
+      "status": "completed",
+      "source_path": "agents/generated/media-asset-agent.agent.md"
+    },
+    {
+      "id": "file-1huUTbMqZuKssCaNToaAob",
+      "status": "completed",
+      "source_path": "agents/generated/project-orchestrator-agent.agent.md"
+    },
+    {
+      "id": "file-KkzQgSSx1mbhzGP6DXq6Hm",
+      "status": "completed",
+      "source_path": "agents/generated/ui-functionality-mapper-agent.agent.md"
+    },
+    {
+      "id": "file-XZNnDmXtUnq67ivL2qi2N4",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/projects/gotham-studio-control-plane-20260827.summary.md"
+    },
+    {
+      "id": "file-U5iNch1hzhXiMon2vnCZnC",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/prompts/gotham-studio-control-plane-20260827.project-execution-agent.task.prompt.md"
+    }
+  ],
+  "status": "success"
 }

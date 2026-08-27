@@ -262,7 +262,7 @@ export class DecisionContinuityWorkflowQueue {
     return result;
   }
 
-  async dispatchOutbox({ limit = 100 } = {}) {
+  async dispatchOutbox({ limit = 100, tenantId = null, workspaceId = null } = {}) {
     const size = finiteInteger(limit, 100, { name: "outbox dispatch limit", min: 1, max: 500 });
     return this.transaction(async (client) => {
       const rows = await client.query(
@@ -271,16 +271,18 @@ export class DecisionContinuityWorkflowQueue {
             WHERE dispatch_status IN ('pending', 'leased')
               AND available_at <= clock_timestamp()
               AND (leased_until IS NULL OR leased_until < clock_timestamp())
+              AND ($2::text IS NULL OR tenant_id = $2)
+              AND ($3::text IS NULL OR workspace_id = $3)
             ORDER BY outbox_id
             FOR UPDATE SKIP LOCKED
             LIMIT $1
          )
          UPDATE decision_continuity_outbox AS outbox
-            SET dispatch_status = 'published', published_at = clock_timestamp(), lease_owner = $2, leased_until = NULL, attempts = attempts + 1
+            SET dispatch_status = 'published', published_at = clock_timestamp(), lease_owner = $4, leased_until = NULL, attempts = attempts + 1
            FROM candidates
           WHERE outbox.outbox_id = candidates.outbox_id
          RETURNING outbox.outbox_id`,
-        [size, this.workerId]
+        [size, tenantId || null, workspaceId || null, this.workerId]
       );
       return rows.rowCount;
     });

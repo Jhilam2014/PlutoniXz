@@ -1,0 +1,8 @@
+{
+  "schema_version": "plutonix-vector-sync-schedule/v1",
+  "day": "2026-08-28",
+  "time_zone": "Asia/Kolkata",
+  "scheduled_runs": 1,
+  "max_runs_per_day": 3,
+  "last_scheduled_at": "2026-08-27T18:58:00.471Z"
+}

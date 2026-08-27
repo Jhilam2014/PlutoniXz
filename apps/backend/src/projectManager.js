@@ -18,8 +18,9 @@ import {
   startContainer,
   stopContainer
 } from "./dockerClient.js";
-import { ensureProjectAgentTopologies, removeProjectAgentTopology, syncProjectAgentTopology } from "./projectAgents.js";
+import { ensureProjectAgentTopologies, removeProjectAgentTopology, syncProjectAgentIdentity, syncProjectAgentTopology } from "./projectAgents.js";
 import { ensureProjectHuggingFaceModelWorkspace, ensureProjectQAgenticFramework, installProjectOrchestratorSeed } from "./projectBootstrap.js";
+import { normalizeEnterpriseTag } from "./enterprisePortfolio.js";
 
 const runningProjects = new Map();
 const ignoredWorkspaceEntries = new Set(["node_modules", "dist", ".git", ".vite"]);
@@ -33,6 +34,44 @@ const largeModelArtifactExtensions = new Set([
   ".safetensors"
 ]);
 const maxExportableFileBytes = Number(process.env.PLUTONIX_MAX_EXPORT_FILE_BYTES || 512 * 1024 * 1024);
+const PROJECT_ORIGINS = new Set(["plutonix_created", "imported", "unknown_legacy"]);
+
+export function projectProvenance(project = {}) {
+  const explicit = project?.provenance && typeof project.provenance === "object" ? project.provenance : {};
+  const explicitOrigin = String(explicit.origin || project?.origin || "").trim().toLowerCase();
+  if (PROJECT_ORIGINS.has(explicitOrigin)) {
+    return {
+      ...explicit,
+      origin: explicitOrigin,
+      recordedAt: String(explicit.recordedAt || project?.createdAt || ""),
+      source: String(explicit.source || (project?.origin ? "legacy_origin_field" : "project_registry"))
+    };
+  }
+  // Runtime status is not provenance. The one safe legacy exception is an
+  // untouched imported record; running/stopped legacy records remain unknown.
+  if (project?.status === "imported") {
+    return {
+      origin: "imported",
+      recordedAt: String(project?.createdAt || ""),
+      source: "legacy_import_status"
+    };
+  }
+  // `productDecision` is written by PlutoniX project creation and is not
+  // populated by the archive-import path. It is therefore durable legacy
+  // evidence of creation, unlike mutable runtime status.
+  if (project?.productDecision && typeof project.productDecision === "object" && Object.keys(project.productDecision).length) {
+    return {
+      origin: "plutonix_created",
+      recordedAt: String(project?.createdAt || ""),
+      source: "legacy_plutonix_product_decision"
+    };
+  }
+  return {
+    origin: "unknown_legacy",
+    recordedAt: "",
+    source: "provenance_not_recorded"
+  };
+}
 
 function slugify(value) {
   return String(value || "project")
@@ -179,8 +218,11 @@ async function removeProjectIgnoreEntry(folderName) {
 }
 
 function publicProject(project) {
+  const provenance = projectProvenance(project);
   return {
     ...project,
+    provenance,
+    origin: provenance.origin,
     previewUrl: projectUrl(project.port),
     containerName: project.isDefault ? defaultContainerName() : projectContainerName(project)
   };
@@ -778,6 +820,51 @@ export async function updateProjectIdentity(projectId, updates = {}, options = {
   const requestedWorkspaceName = updates.workspaceName === undefined ? project.folderName : String(updates.workspaceName || "").trim();
   const nextFolderName = slugify(requestedWorkspaceName || nextName);
   if (nextFolderName.length < 2 || nextFolderName.length > 80) throw new Error("Workspace name must be 2-80 characters.");
+  const enterpriseIdProvided = Object.prototype.hasOwnProperty.call(updates, "enterpriseId");
+  const enterpriseNameProvided = Object.prototype.hasOwnProperty.call(updates, "enterpriseName");
+  const enterpriseUpdateRequested = enterpriseIdProvided || enterpriseNameProvided;
+  let enterprise = project.enterprise || null;
+  if (enterpriseUpdateRequested) {
+    const explicitEnterpriseId = enterpriseIdProvided ? String(updates.enterpriseId || "").trim() : "";
+    const explicitEnterpriseName = enterpriseNameProvided ? String(updates.enterpriseName || "").trim() : "";
+    const clearEnterprise = (enterpriseIdProvided && !explicitEnterpriseId && !enterpriseNameProvided)
+      || (enterpriseNameProvided && !explicitEnterpriseName && !enterpriseIdProvided)
+      || (enterpriseIdProvided && enterpriseNameProvided && !explicitEnterpriseId && !explicitEnterpriseName);
+    const requestedEnterpriseId = explicitEnterpriseId
+      || (enterpriseIdProvided
+        ? (explicitEnterpriseName ? slugify(explicitEnterpriseName) : "")
+        : project.enterprise?.id || (explicitEnterpriseName ? slugify(explicitEnterpriseName) : ""));
+    const requestedEnterpriseName = enterpriseNameProvided
+      ? explicitEnterpriseName
+      : (explicitEnterpriseId && explicitEnterpriseId !== project.enterprise?.id
+        ? explicitEnterpriseId
+        : project.enterprise?.name || explicitEnterpriseId);
+    if (clearEnterprise || (!requestedEnterpriseName && !requestedEnterpriseId)) {
+      enterprise = null;
+    } else {
+      const normalizedEnterprise = normalizeEnterpriseTag({
+        enterpriseId: requestedEnterpriseId,
+        enterpriseName: requestedEnterpriseName || requestedEnterpriseId
+      });
+      if (!normalizedEnterprise.enterpriseId || normalizedEnterprise.enterpriseId.length < 2) {
+        throw new Error("Enterprise ID must be 2-80 characters.");
+      }
+      if (!/^[a-z0-9][a-z0-9-]*$/.test(normalizedEnterprise.enterpriseId)) {
+        throw new Error("Enterprise ID may contain lowercase letters, numbers, and hyphens only.");
+      }
+      if (normalizedEnterprise.enterpriseName.length < 2 || normalizedEnterprise.enterpriseName.length > 80) {
+        throw new Error("Enterprise name must be 2-80 characters.");
+      }
+      const sameEnterprise = project.enterprise?.id === normalizedEnterprise.enterpriseId
+        && project.enterprise?.name === normalizedEnterprise.enterpriseName;
+      enterprise = {
+        id: normalizedEnterprise.enterpriseId,
+        name: normalizedEnterprise.enterpriseName,
+        taggedAt: sameEnterprise && project.enterprise?.taggedAt ? project.enterprise.taggedAt : new Date().toISOString(),
+        taggedByUserId: options.user?.id || project.enterprise?.taggedByUserId || "anonymous"
+      };
+    }
+  }
 
   let workspaceDir = project.workspaceDir;
   if (nextFolderName !== project.folderName) {
@@ -811,19 +898,13 @@ export async function updateProjectIdentity(projectId, updates = {}, options = {
     name: nextName,
     folderName: nextFolderName,
     workspaceDir,
+    enterprise,
     status: nextFolderName !== project.folderName ? "stopped" : project.status,
     updatedAt: new Date().toISOString()
   };
   projects[index] = updatedProject;
   await writeRegistry(projects);
-  await removeProjectAgentTopology(project);
-  await syncProjectAgentTopology(publicProject(updatedProject), {
-    objective: `Maintain and improve ${nextName}.`,
-    pageType: "managed_app_project",
-    topic: nextName,
-    sections: ["project", "runtime", "playground"],
-    media: updatedProject.media || []
-  });
+  await syncProjectAgentIdentity(publicProject(updatedProject));
   return publicProject(updatedProject);
 }
 
@@ -929,6 +1010,7 @@ export async function createProject(name, structuredRequest = null, options = {}
     throw error;
   }
 
+  const createdAt = new Date().toISOString();
   const project = {
     id,
     name,
@@ -936,14 +1018,19 @@ export async function createProject(name, structuredRequest = null, options = {}
     port,
     workspaceDir,
     status: "created",
+    provenance: {
+      origin: "plutonix_created",
+      recordedAt: createdAt,
+      source: "plutonix_project_creation"
+    },
     ownerUserId: options.user?.id || "anonymous",
     ownerName: options.user?.name || "Local user",
     brandingPalette: options.brandingPalette || null,
     productDecision: structuredRequest?.productDecision || null,
     previewStrategy: structuredRequest?.productDecision?.previewStrategy || "browser",
     media: [],
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
+    createdAt,
+    updatedAt: createdAt
   };
   projects.push(project);
   await writeRegistry(projects);
@@ -985,6 +1072,7 @@ export async function importProject(name, archivePath, options = {}) {
   await ensureProjectFiles(workspaceDir, port);
   await linkTemplateNodeModules(workspaceDir);
   await ensureProjectIgnored(folderName);
+  const createdAt = new Date().toISOString();
   const project = {
     id,
     name,
@@ -992,11 +1080,16 @@ export async function importProject(name, archivePath, options = {}) {
     port,
     workspaceDir,
     status: "imported",
+    provenance: {
+      origin: "imported",
+      recordedAt: createdAt,
+      source: "plutonix_project_import"
+    },
     ownerUserId: options.user?.id || "anonymous",
     ownerName: options.user?.name || "Local user",
     media: [],
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
+    createdAt,
+    updatedAt: createdAt
   };
   projects.push(project);
   await writeRegistry(projects);

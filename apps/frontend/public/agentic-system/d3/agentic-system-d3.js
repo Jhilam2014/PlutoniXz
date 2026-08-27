@@ -45,6 +45,11 @@ const selectionAnnouncementEl = document.getElementById("selection-announcement"
 const productVideoDialogEl = document.getElementById("product-video-dialog");
 const productVideoShellEl = productVideoDialogEl?.querySelector(".product-video-shell");
 const productVideoPlayerEl = document.getElementById("product-video-player");
+const flowFeatureControlsEl = document.getElementById("flow-feature-controls");
+const flowFeatureSelectEl = document.getElementById("flow-feature-select");
+const flowFeaturePreviousEl = document.getElementById("flow-feature-previous");
+const flowFeatureNextEl = document.getElementById("flow-feature-next");
+const flowFeaturePositionEl = document.getElementById("flow-feature-position");
 const params = new URLSearchParams(window.location.search);
 const requestedView = VIEW_MODES[params.get("view")] ? params.get("view") : "overview";
 const requestedProject = params.get("project")?.trim() || "";
@@ -138,6 +143,7 @@ const state = {
   expandedClusters: new Set(),
   expandedSubfunctionalities: new Set(),
   selectedId: "",
+  flowMajorFeatureId: "",
   currentZoom: 1,
   transform: d3.zoomIdentity,
   inspectorOpen: false,
@@ -161,6 +167,7 @@ const state = {
 // centralized prevents the retired Architecture Branches view from gaining a
 // second rendering path again.
 const isExploreArchitecture = () => state.viewMode === "explore";
+const isFunctionalityFlow = () => state.viewMode === "flow";
 
 function escapeHtml(value) {
   return String(value ?? "")
@@ -245,6 +252,10 @@ function runtimeStatusLabel(node) {
 
 function nodeSubtitle(node) {
   const type = visualType(node);
+  if (node.metadata?.deliveryOrder) {
+    const basis = node.metadata?.timelineInferred ? "inferred" : "recorded";
+    return `Step ${node.metadata.deliveryOrder} · ${node.metadata.deliveryPhase || "delivery sequence"} · ${basis}`;
+  }
   if (node.metadata?.architectureLens && ["orchestrator", "worker", "qagent", "reviewer", "human"].includes(type)) {
     return `${agentLabel(node)} · ${node.metadata?.assignmentScope === "shared" ? "shared" : "project-exclusive"}`;
   }
@@ -437,7 +448,7 @@ function populateControls(model) {
   controls.agentType.replaceChildren();
   controls.status.replaceChildren();
   controls.relationshipType.replaceChildren();
-  addOption(controls.project, "", "");
+  addOption(controls.project, "", "All projects");
   addOption(controls.agentType, "all", "All types");
   addOption(controls.status, "all", "All status");
   addOption(controls.relationshipType, "all", "All relations");
@@ -479,7 +490,7 @@ function renderLegend() {
       .map(([status, label]) => `<span><i class="status-dot ${status}" style="--mark:${statusPalette[status]}">${statusMark({ statusGroup: status })}</i>${escapeHtml(label)}</span>`)
       .join("")}</div>
     <div class="legend-subheading">Connection kind</div>
-    <div class="legend-group relation-legend">${architectureLens ? "<span><i class=\"line architecture\"></i>Feature relationship</span><span>Feature clusters group source-backed functionality. Select a node to inspect ownership, evidence, and connection details.</span><span>Thin connectors gain emphasis only for the selected node.</span>" : dependencyLens ? "<span><i class=\"line solid\"></i>Directed dependency</span><span>Left = upstream providers · centre = focus / cycles · right = downstream and descendants</span>" : "<span><i class=\"line solid\"></i>Invocation</span><span><i class=\"line architecture\"></i>Architecture</span><span><i class=\"line dashed\"></i>Memory/data</span><span><i class=\"line dotted\"></i>Optional</span>"}</div>
+    <div class="legend-group relation-legend">${architectureLens ? "<span><i class=\"line architecture\"></i>Feature relationship</span><span>Feature clusters group source-backed functionality. Select a node to inspect ownership, evidence, and connection details.</span><span>Thin connectors gain emphasis only for the selected node.</span>" : isFunctionalityFlow() ? "<span><i class=\"line solid\"></i>Recorded source relationship</span><span>Read left to right as an application map; ownership is contextual, not a causal step.</span><span>Control transitions appear only when their source relationship is recorded.</span>" : dependencyLens ? "<span><i class=\"line solid\"></i>Directed dependency</span><span>Left = upstream providers · centre = focus / cycles · right = downstream and descendants</span><span>Feature rows use delivery order when source dependencies support it; inferred imported-project order is labelled in Insight.</span>" : "<span><i class=\"line solid\"></i>Invocation</span><span><i class=\"line architecture\"></i>Architecture</span><span><i class=\"line dashed\"></i>Memory/data</span><span><i class=\"line dotted\"></i>Optional</span>"}</div>
   `;
 }
 
@@ -568,6 +579,17 @@ function renderCounts(model, visible, telemetry = {}) {
       <div class="metric"><b>${outgoing}</b><span>Direct outputs</span></div>
       <div class="metric"><b>${reachableDepth}</b><span>Max dependency depth</span></div>
     `;
+  } else if (isFunctionalityFlow()) {
+    const stages = new Set(visible.items.map((item) => item.functionalityFlowStage).filter(Boolean));
+    const relationships = visible.links.length;
+    const majorFeatureCount = visible.flow?.majorFeatures?.length || 0;
+    const controlTransitions = visible.flow?.controlRelationshipCount || 0;
+    countsEl.innerHTML = `
+      <div class="metric"><b>${majorFeatureCount}</b><span>Major features</span></div>
+      <div class="metric"><b>${visible.items.length}</b><span>Feature view entities</span></div>
+      <div class="metric"><b>${stages.size}</b><span>Map stages</span></div>
+      <div class="metric"><b>${controlTransitions}/${relationships}</b><span>Recorded control links</span></div>
+    `;
   } else {
     countsEl.innerHTML = `
       <div class="metric"><b>${agents.length}</b><span>Agents</span></div>
@@ -599,6 +621,11 @@ function renderBreadcrumb(visible) {
     breadcrumbEl.innerHTML = `${escapeHtml(VIEW_MODES[state.viewMode])} <span aria-hidden="true">/</span> <span class="crumb-current">Feature clusters &amp; agent ownership</span>`;
     return;
   }
+  if (isFunctionalityFlow()) {
+    const selectedFeature = visible.flow?.majorFeatures?.find((item) => item.id === visible.flow?.selectedMajorFeatureId);
+    breadcrumbEl.innerHTML = `${escapeHtml(VIEW_MODES[state.viewMode])} <span aria-hidden="true">/</span> <span class="crumb-current">${escapeHtml(selectedFeature?.label || "Major feature")}</span> <span class="focus-depth">${escapeHtml(visible.flow?.evidenceLabel || "Source-derived application map")}</span>`;
+    return;
+  }
   const selectedVisible = visible.items.find((item) => item.id === state.selectedId);
   if (selectedVisible?.kind === "cluster") {
     breadcrumbEl.innerHTML = `${escapeHtml(VIEW_MODES[state.viewMode])} <span aria-hidden="true">/</span> <span class="crumb-current">${escapeHtml(selectedVisible.label)}</span>`;
@@ -609,6 +636,43 @@ function renderBreadcrumb(visible) {
     return;
   }
   breadcrumbEl.innerHTML = `${visible.focus.breadcrumb.map(escapeHtml).join(' <span aria-hidden="true">/</span> ')} <span class="focus-depth">related nodes</span>`;
+}
+
+function renderFlowFeatureControls(flow) {
+  if (!flowFeatureControlsEl) return;
+  const majorFeatures = flow?.majorFeatures || [];
+  const active = isFunctionalityFlow() && majorFeatures.length > 0;
+  flowFeatureControlsEl.hidden = !active;
+  if (!active) return;
+
+  const selectedId = flow.selectedMajorFeatureId || majorFeatures[0].id;
+  const selectedIndex = Math.max(0, majorFeatures.findIndex((feature) => feature.id === selectedId));
+  if (state.flowMajorFeatureId !== selectedId) state.flowMajorFeatureId = selectedId;
+  const optionsChanged = flowFeatureSelectEl.options.length !== majorFeatures.length
+    || Array.from(flowFeatureSelectEl.options).some((option, index) => option.value !== majorFeatures[index]?.id);
+  if (optionsChanged) {
+    const options = document.createDocumentFragment();
+    majorFeatures.forEach((feature) => {
+      const option = document.createElement("option");
+      option.value = feature.id;
+      option.textContent = feature.label;
+      options.append(option);
+    });
+    flowFeatureSelectEl.replaceChildren(options);
+  }
+  flowFeatureSelectEl.value = selectedId;
+  flowFeaturePreviousEl.disabled = selectedIndex === 0;
+  flowFeatureNextEl.disabled = selectedIndex === majorFeatures.length - 1;
+  flowFeaturePositionEl.textContent = `${selectedIndex + 1} of ${majorFeatures.length}`;
+}
+
+function selectFlowMajorFeature(featureId) {
+  if (!featureId || state.flowMajorFeatureId === featureId) return;
+  state.flowMajorFeatureId = featureId;
+  state.selectedId = "";
+  state.inspectorTab = "overview";
+  render();
+  window.requestAnimationFrame(() => fitSelection());
 }
 
 function formatFreshness(date) {
@@ -784,9 +848,51 @@ function renderArchitectureScaffold(items, edgePlan) {
 
 function renderLensScaffold(items) {
   lensLayer.selectAll("*").remove();
+  if (isFunctionalityFlow()) {
+    const stages = [...new Map(items
+      .filter((item) => item.functionalityFlow)
+      .map((item) => [item.functionalityFlowStage, item])).values()]
+      .sort((left, right) => left.functionalityFlowStageIndex - right.functionalityFlowStageIndex);
+    const group = lensLayer.append("g").attr("class", "functionality-flow-stages");
+    const virtualHeight = Math.max(height, ...items.map((item) => item.functionalityFlowVirtualHeight || 0));
+    const stage = group.selectAll("g.functionality-flow-stage").data(stages).join("g").attr("class", "functionality-flow-stage");
+    stage.append("rect")
+      .attr("x", (item) => item.x - 112)
+      .attr("y", 18)
+      .attr("width", 224)
+      .attr("height", Math.max(0, virtualHeight - 36))
+      .attr("rx", 16);
+    stage.append("text").attr("x", (item) => item.x).attr("y", 46).attr("text-anchor", "middle")
+      .text((item) => item.functionalityFlowStageLabel);
+    return;
+  }
   if (state.viewMode === "dependency") {
     const virtualWidth = Math.max(width, ...items.map((item) => item.dependencyVirtualWidth || 0));
     const virtualHeight = Math.max(height, ...items.map((item) => item.dependencyVirtualHeight || 0));
+    const checkpoints = items
+      .filter((item) => item.dependencyLayout === "feature-timeline" && item.dependencyTimelineCheckpoint)
+      .slice()
+      .sort((left, right) => left.x - right.x);
+    if (checkpoints.length >= 2) {
+      const group = lensLayer.append("g").attr("class", "dependency-feature-timeline");
+      const lineY = checkpoints[0].y;
+      group.append("line")
+        .attr("class", "dependency-timeline-rail")
+        .attr("x1", checkpoints[0].x)
+        .attr("y1", lineY)
+        .attr("x2", checkpoints.at(-1).x)
+        .attr("y2", lineY);
+      const checkpoint = group.selectAll("g.dependency-timeline-checkpoint").data(checkpoints).join("g")
+        .attr("class", "dependency-timeline-checkpoint");
+      checkpoint.append("circle").attr("cx", (item) => item.x).attr("cy", (item) => item.y).attr("r", 35);
+      checkpoint.append("text").attr("x", (item) => item.x).attr("y", (item) => item.y - 52).attr("text-anchor", "middle")
+        .text((item) => `Step ${item.dependencyTimelineStep}`);
+      checkpoint.append("text").attr("class", "dependency-timeline-phase").attr("x", (item) => item.x).attr("y", (item) => item.y + 58).attr("text-anchor", "middle")
+        .text((item) => item.deliveryPhase || "Feature checkpoint");
+      group.append("text").attr("class", "dependency-timeline-title").attr("x", 24).attr("y", 34)
+        .text("Feature delivery timeline · associated agents, APIs, services, and data surround each checkpoint");
+      return;
+    }
     const fallbackWidth = virtualWidth / 3;
     const roleDefinition = [
       ["upstream", "Upstream providers", "What it needs"],
@@ -798,7 +904,11 @@ function renderLensScaffold(items) {
       if (!members.length) return { id, label, note, x: index * fallbackWidth + 12, width: Math.max(132, fallbackWidth - 24) };
       const minX = Math.min(...members.map((item) => item.x - layoutNodeBounds(item).halfWidth)) - 32;
       const maxX = Math.max(...members.map((item) => item.x + layoutNodeBounds(item).halfWidth)) + 32;
-      return { id, label, note, x: Math.max(8, minX), width: Math.max(132, maxX - minX) };
+      const timelineMembers = members.filter((item) => item.deliveryOrder);
+      const timelineNote = timelineMembers.length
+        ? `Delivery sequence ${Math.min(...timelineMembers.map((item) => item.deliveryOrder))}–${Math.max(...timelineMembers.map((item) => item.deliveryOrder))}`
+        : note;
+      return { id, label, note: timelineNote, x: Math.max(8, minX), width: Math.max(132, maxX - minX) };
     });
     const group = lensLayer.append("g").attr("class", "dependency-lanes");
     const lane = group.selectAll("g.dependency-lane").data(roles).join("g").attr("class", (row) => `dependency-lane ${row.id}`);
@@ -1016,6 +1126,7 @@ function linkPath(link, nodeById) {
   const source = nodeById.get(nodeId(link.source));
   const target = nodeById.get(nodeId(link.target));
   if (!source || !target) return "";
+  if (link.kind === "functionality-flow") return localArchitecturePath(source, target);
   if (source.metadata?.architectureLens && target.metadata?.architectureLens) {
     if (link.kind === "zone-rail" || link.kind === "zone-spine" || link.kind === "zone-stub") {
       const targets = (link.targetIds || [link.target]).map((id) => nodeById.get(nodeId(id))).filter(Boolean);
@@ -1171,7 +1282,7 @@ function clusterCard(selection) {
         .attr("class", "project-node-subtitle")
         .attr("x", 0)
         .attr("y", 87)
-        .text((item) => `${item.counts.agents} agents · ${item.capabilityClusters?.length || 0} groups`);
+        .text((item) => `${item.inventory?.features || 0} features · ${item.inventory?.apis || 0} APIs · ${item.inventory?.dataStores || 0} data`);
       group.append("text").attr("class", "cluster-toggle project-toggle").attr("x", 0).attr("y", 104).text((item) => (state.expandedClusters.has(item.id) ? "Collapse" : "Open"));
       return;
     }
@@ -1472,6 +1583,10 @@ function renderDetails(model, node) {
         : node.statusGroup === "failed"
           ? "Failure status reported; open logs for details."
           : "No errors or warnings reported.";
+    const deliveryOrder = Number(node.metadata?.deliveryOrder || 0);
+    const deliveryTimeline = deliveryOrder
+      ? `<section class="insight-section detail-grid"><h3>Feature delivery timeline</h3><dl><div><dt>Sequence</dt><dd>Step ${deliveryOrder}</dd></div><div><dt>Phase</dt><dd>${escapeHtml(node.metadata?.deliveryPhase || "Dependency sequence")}</dd></div><div><dt>Basis</dt><dd>${escapeHtml(node.metadata?.timelineInferred ? `Inferred from observed dependencies${node.metadata?.projectOrigin === "imported" ? " (imported project)" : ""}` : node.metadata?.chronologyBasis || "Recorded")}</dd></div><div><dt>Confidence</dt><dd>${node.metadata?.timelineInferred ? `${Math.round(Number(node.metadata?.timelineConfidence || 0) * 100)}%` : "Recorded"}</dd></div></dl></section>`
+      : "";
     const tabContent = {
       overview: `
         <section class="insight-section purpose-summary">
@@ -1482,6 +1597,7 @@ function renderDetails(model, node) {
           <span>Current task</span>
           <strong>${escapeHtml(currentTask)}</strong>
         </section>
+        ${deliveryTimeline}
         <section class="insight-section detail-grid">
           <h3>Functionality hierarchy</h3>
           <dl>
@@ -1840,6 +1956,7 @@ function render() {
   const model = state.graph;
   if (!model) return;
   const fullVisible = visibleGraphForState(model, { ...state, storage: window.localStorage }, width, height, dagre);
+  renderFlowFeatureControls(fullVisible.flow);
   if (state.viewMode === "dependency" && fullVisible.lens?.anchorId && !fullVisible.items.some((item) => item.id === state.selectedId)) {
     state.selectedId = fullVisible.lens.anchorId;
     state.inspectorTab = "overview";
@@ -1851,7 +1968,7 @@ function render() {
     linkCount: fullVisible.links.length,
     lastFrameMs: state.renderMetrics.lastFrameMs
   });
-  const completeTopologyView = ["explore", "dependency"].includes(state.viewMode);
+  const completeTopologyView = ["explore", "dependency", "flow"].includes(state.viewMode);
   const strategy = completeTopologyView
     ? {
         ...baselineStrategy,
@@ -1907,13 +2024,10 @@ function render() {
     graphStateEl.innerHTML =
       !state.filters.project
         ? `<strong>Select a project</strong><span>Choose one managed project from the Project menu to open its PlutoniX topology.</span>`
-        : state.viewMode === "live"
-        ? `<strong>No live execution signal</strong><span>The current topology snapshot does not report an active runtime execution. Refresh to check again.</span><button type="button" id="graph-state-action">Refresh runtime</button>`
         : `<strong>No matching entities</strong><span>Adjust the active filters or clear them to restore this project's topology.</span><button type="button" id="graph-state-action">Clear filters</button>`;
     graphStateEl.hidden = false;
     graphStateEl.querySelector("#graph-state-action")?.addEventListener("click", () => {
-      if (state.viewMode === "live") refreshGraph();
-      else clearFilters();
+      clearFilters();
     });
   } else {
     graphStateEl.hidden = true;
@@ -1941,6 +2055,8 @@ function render() {
       .attr("class", (row) => `link relation-${visualRelationshipStyle(row, sourceLinkById).className} ${visualLinkMatchesFocus(row, focusLinkKeys, sourceLinkById) ? "focus-link" : ""}`)
       .classed("explore-link", () => isExploreArchitecture())
       .classed("dependency-link", () => state.viewMode === "dependency")
+      .classed("functionality-flow-link", () => isFunctionalityFlow())
+      .classed("ownership-link", (row) => isFunctionalityFlow() && String(row.type || "").toLowerCase() === "implements")
       .classed("context-link", (row) => visualLinkMatchesNode(row, state.selectedId, sourceLinkById))
       .classed("architecture-selected-link", (row) => isExploreArchitecture() && visualLinkMatchesNode(row, state.selectedId, sourceLinkById))
       .classed("architecture-zone-rail", (row) => row.kind === "zone-rail")
@@ -2453,9 +2569,6 @@ async function refreshGraph(options = {}) {
 function updateAutoRefresh() {
   window.clearInterval(state.autoRefreshTimer);
   state.autoRefreshTimer = null;
-  if (state.viewMode === "live") {
-    state.autoRefreshTimer = window.setInterval(() => refreshGraph({ background: true }), 15000);
-  }
 }
 
 function bindControls() {
@@ -2480,6 +2593,7 @@ function bindControls() {
   controls.project.addEventListener("change", () => {
     resetProgressiveRender();
     state.filters.project = controls.project.value;
+    state.flowMajorFeatureId = "";
     updateFilterCount();
     render();
   });
@@ -2500,6 +2614,17 @@ function bindControls() {
     state.filters.relationshipType = controls.relationshipType.value;
     updateFilterCount();
     render();
+  });
+  flowFeatureSelectEl?.addEventListener("change", () => selectFlowMajorFeature(flowFeatureSelectEl.value));
+  flowFeaturePreviousEl?.addEventListener("click", () => {
+    const options = Array.from(flowFeatureSelectEl?.options || []);
+    const currentIndex = options.findIndex((option) => option.value === state.flowMajorFeatureId);
+    selectFlowMajorFeature(options[currentIndex - 1]?.value);
+  });
+  flowFeatureNextEl?.addEventListener("click", () => {
+    const options = Array.from(flowFeatureSelectEl?.options || []);
+    const currentIndex = options.findIndex((option) => option.value === state.flowMajorFeatureId);
+    selectFlowMajorFeature(options[currentIndex + 1]?.value);
   });
   document.querySelectorAll("[data-view-mode]").forEach((button) => {
     button.addEventListener("click", () => setActiveView(button.dataset.viewMode));

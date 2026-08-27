@@ -1,0 +1,36 @@
+{
+  "workflow_id": "gotham-studio-control-plane-20260827",
+  "delivered_at": "2026-08-27T17:59:12Z",
+  "status": "delivered",
+  "deliverables": [
+    { "path": "apps/backend/src/gothamStudio", "summary": "Provider-neutral domain, scoped atomic repository, policy-enforcing service, intent router, strict API routes, bounded reconciler, and Databricks/Azure ML adapters." },
+    { "path": "apps/backend/src/server.js", "summary": "Studio initialization, protected route registration, normalized status, ML objective routing, Gotham activity references, and reconciler lifecycle integration." },
+    { "path": "apps/frontend/src/gotham-studio", "summary": "Dark high-density internal workspace with Overview, Jobs, Pipelines, Experiments, Models, Providers, contextual Gotham command bar, and capability-driven job controls." },
+    { "path": "database/migrations/012_gotham_studio.sql", "summary": "Optional normalized PostgreSQL projection for scoped Studio domain records." },
+    { "path": "schemas/gotham-studio.schema.json", "summary": "Provider-neutral JSON Schema for pipeline, job, experiment, and model records." },
+    { "path": "docs/gotham-studio.md", "summary": "Architecture, setup, API, policy, security, persistence, adapter support, and operational limitations." },
+    { "path": "AGENTS.md", "summary": "Additive Gotham Studio execution, provider, security, honest-data, traceability, and validation contract." },
+    { "path": "graph/workspace-graph.json", "summary": "Incremental workflow, control-plane, provider, persistence, UI, and validation projection." },
+    { "path": "topology/d3/agentic-system-graph.json", "summary": "D3-visible Gotham Studio topology synchronized without removing generated project nodes." },
+    { "path": "memory/agent-knowledge", "summary": "Sanitized prompt ledger and project summary uploaded and remotely verified." }
+  ],
+  "validation": {
+    "backend_full_suite": { "status": "passed", "passed": 237, "failed": 0 },
+    "frontend_full_suite": { "status": "passed", "passed": 155, "failed": 0 },
+    "post_change_backend_contracts": { "status": "passed", "passed": 14, "failed": 0 },
+    "post_change_frontend_contracts": { "status": "passed", "passed": 8, "failed": 0 },
+    "frontend_build": { "status": "passed", "note": "Vite reported only its existing bundle-size advisory." },
+    "repository_validation": { "status": "passed", "checked": 16 },
+    "format_check": { "status": "passed", "command": "git diff --check" },
+    "vector_memory": { "status": "passed", "task_files_uploaded": 2, "attached_file_count": 666 },
+    "visual_browser_smoke_test": { "status": "not_run", "reason": "The required browser-control surface was unavailable." },
+    "live_provider_connection": { "status": "not_run", "reason": "No real Databricks or Azure ML job was launched; operators verify configured connections from Providers / Setup." }
+  },
+  "data_handling": {
+    "real_data_source_used": "Persisted Studio records and provider responses only.",
+    "mock_demo_data_used": false,
+    "external_ml_compute_submitted": false,
+    "provider_credentials_exposed_to_frontend": false,
+    "automatic_deployment_enabled": false
+  }
+}

@@ -127,18 +127,15 @@ export function inferHuggingFaceModelIntent(instruction = "") {
 }
 
 export function localModelRoutingForTask({ taskType = "Medium", workflowMode = "executor", target = "project", instruction = "" } = {}) {
-  const normalizedTask = String(taskType || "Medium").toLowerCase();
-  const small = normalizedTask === "simple" || normalizedTask === "small" || /\b(small|simple|quick|minor)\b/i.test(instruction);
-  const selfImprovement = target === "self-improvement" || target === "system";
   return {
-    preferredProvider: small || selfImprovement ? "huggingface-local" : "codex-orchestrated",
-    enforceLocalHuggingFace: Boolean(small || selfImprovement),
-    reason: selfImprovement
-      ? "Self-improvement planner tasks prefer local Hugging Face models for low-cost bounded reasoning."
-      : small
-        ? "Small PlutoniX tasks prefer local Hugging Face models before paid/remote model calls."
-        : "Task is not classified as small; normal PlutoniX orchestration remains available.",
-    workflowMode
+    preferredProvider: "governed-brainx",
+    enforceLocalHuggingFace: false,
+    requiresGovernedRoute: true,
+    reason: "Task size and instruction keywords are advisory only. AIX must select a registered model through enterprise policy, budget, data, region, licence, and health gates.",
+    workflowMode,
+    target,
+    taskType,
+    instructionClass: /\b(hugging\s*face|huggingface|\bhf\b)\b/i.test(instruction) ? "huggingface_candidate_requested" : "standard"
   };
 }
 
@@ -153,8 +150,9 @@ function partialDownloadsEnabled() {
   return /^(1|true|yes)$/i.test(String(process.env.HF_MODEL_PARTIAL_DOWNLOAD || ""));
 }
 
-export function huggingFaceDownloadArgs(repoId, localDir, { allowPartial = false, include = "", exclude = "" } = {}) {
+export function huggingFaceDownloadArgs(repoId, localDir, { revision = "", allowPartial = false, include = "", exclude = "" } = {}) {
   const args = ["download", repoId, "--local-dir", localDir];
+  if (revision) args.push("--revision", revision);
   if (allowPartial) {
     for (const pattern of splitPatterns(include)) args.push("--include", pattern);
     for (const pattern of splitPatterns(exclude)) args.push("--exclude", pattern);
@@ -241,8 +239,8 @@ export function createHuggingFaceModelPool({ root, emit = () => {} } = {}) {
     }
   }
 
-  async function fetchModelCard(repoId) {
-    const response = await fetch(`https://huggingface.co/${repoId}/raw/main/README.md`);
+  async function fetchModelCard(repoId, revision = "main") {
+    const response = await fetch(`https://huggingface.co/${repoId}/raw/${encodeURIComponent(revision)}/README.md`);
     if (!response.ok) return { readme: "", readmePath: "", status: `readme_unavailable_${response.status}` };
     const readme = await response.text();
     const readmePath = path.join(readmeRoot, `${safeFileBase(repoId)}.md`);
@@ -251,8 +249,23 @@ export function createHuggingFaceModelPool({ root, emit = () => {} } = {}) {
     return { readme: readme.slice(0, 20000), readmePath, status: "readme_saved" };
   }
 
-  async function downloadModel({ repoId, task = "", sourceInstruction = "", dryRun = false } = {}) {
+  async function downloadModel({ repoId, task = "", sourceInstruction = "", dryRun = false, governedApproval = null } = {}) {
     if (!repoId) throw new Error("repoId is required.");
+    const approval = governedApproval && typeof governedApproval === "object" ? governedApproval : null;
+    const revision = String(approval?.immutableRevision || "").trim();
+    const approved = approval?.status === "approved" && /^[a-f0-9]{40,64}$/i.test(revision)
+      && /^[a-f0-9]{64}$/i.test(String(approval?.artifactChecksum || ""));
+    if (!approved) {
+      return record({
+        type: "download",
+        status: "blocked",
+        repoId,
+        task,
+        sourceInstruction: compact(sourceInstruction),
+        reason: "governed_registration_and_human_approval_required",
+        note: "Hugging Face artifacts are staged only after a pinned BrainX registration, artefact verification, policy review, and explicit human approval."
+      });
+    }
     const localDir = path.join(modelsRoot, safeFileBase(repoId));
     const size = await fetchModelSize(repoId);
     emit("hf-model-size-estimated", `Selected Hugging Face model ${repoId} size: ${size.sizeLabel}`, {
@@ -262,12 +275,13 @@ export function createHuggingFaceModelPool({ root, emit = () => {} } = {}) {
       sizeLabel: size.sizeLabel,
       sizeSource: size.sizeSource
     });
-    const card = await fetchModelCard(repoId);
+    const card = await fetchModelCard(repoId, revision).catch(() => ({ readme: "", readmePath: "", status: "not_fetched" }));
     if (dryRun) {
       return record({
         type: "download",
         status: "planned",
         repoId,
+        immutableRevision: revision,
         task,
         localDir,
         readmePath: card.readmePath,
@@ -281,6 +295,7 @@ export function createHuggingFaceModelPool({ root, emit = () => {} } = {}) {
     const allowPartial = partialDownloadsEnabled();
     const downloadMode = allowPartial ? "partial-explicit" : "full-repository-with-weights";
     const downloadArgs = huggingFaceDownloadArgs(repoId, localDir, {
+      revision,
       allowPartial,
       include: process.env.HF_MODEL_INCLUDE,
       exclude: process.env.HF_MODEL_EXCLUDE
@@ -298,6 +313,7 @@ export function createHuggingFaceModelPool({ root, emit = () => {} } = {}) {
         type: "download",
         status: "completed",
         repoId,
+        immutableRevision: revision,
         task,
         localDir,
         readmePath: card.readmePath,
@@ -312,6 +328,7 @@ export function createHuggingFaceModelPool({ root, emit = () => {} } = {}) {
         type: "download",
         status: "failed",
         repoId,
+        immutableRevision: revision,
         task,
         localDir,
         readmePath: card.readmePath,
@@ -353,21 +370,18 @@ export function createHuggingFaceModelPool({ root, emit = () => {} } = {}) {
   async function prepareFromInstruction({ instruction = "", limit = 3, autoDownload = false } = {}) {
     const intent = inferHuggingFaceModelIntent(instruction);
     if (!intent.requested) return { intent, actions: [] };
-    const actions = [];
-    const modelIds = intent.explicitModelIds.length
-      ? intent.explicitModelIds
-      : intent.searchRequested
-        ? (await searchModels({ query: instruction, task: intent.task, limit })).map((model) => model.id)
-        : [];
-    for (const repoId of modelIds.slice(0, limit)) {
-      actions.push(await downloadModel({
-        repoId,
-        task: intent.task,
-        sourceInstruction: instruction,
-        dryRun: !autoDownload
-      }));
-    }
-    return { intent, actions };
+    const candidates = intent.explicitModelIds.slice(0, limit).map((repoId) => ({
+      repoId,
+      task: intent.task,
+      status: "requires_governed_registration",
+      reason: "Pinned revision, artifact checksum, licence, hardware, policy, and human approval are required before acquisition."
+    }));
+    return {
+      intent,
+      actions: candidates,
+      status: autoDownload ? "blocked_governed_approval_required" : "staged_candidates_only",
+      search: intent.searchRequested ? "not_performed_without_an_approved_research_source" : "not_requested"
+    };
   }
 
   async function status() {

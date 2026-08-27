@@ -12,3 +12,28 @@ MERGE (a)-[:OWNS]->(g)
 MERGE (a)-[:OWNS]->(v)
 MERGE (g)-[:VISUALIZED_BY]->(d)
 MERGE (v)-[:VISUALIZED_BY]->(d);
+
+// Gotham Studio control-plane projection. Applying this to a live Neo4j
+// deployment remains an explicit operator action.
+MATCH (p:Project {id: 'project:orchestrator-agent-001'}),
+      (a:Agent {id: 'project-execution-agent'}),
+      (g:ApplicationFunctionality {id: 'neo4j-graph'}),
+      (m:ApplicationFunctionality {id: 'agent-memory'})
+MERGE (sw:Workflow {id: 'gotham-studio-control-plane-20260827', name: 'Gotham Studio AI/ML Control Plane', status: 'completed'})
+MERGE (studio:ApplicationFunctionality {id: 'gotham-studio', name: 'Gotham Studio', status: 'implemented'})
+SET studio.provider_neutral = true, studio.project_scoped = true
+MERGE (provider:ApplicationFunctionality {id: 'gotham-studio-provider-boundary', name: 'ML Execution Provider Boundary', status: 'implemented'})
+SET provider.providers = ['databricks', 'azure-ml'], provider.credentials = 'backend_only'
+MERGE (ledger:ApplicationFunctionality {id: 'gotham-studio-persistence', name: 'Studio Execution Ledger', status: 'implemented'})
+SET ledger.scope = ['tenant', 'workspace', 'project']
+MERGE (studioPage:D3Page {id: 'gotham-studio', path: 'apps/frontend/src/gotham-studio/GothamStudio.jsx', status: 'implemented'})
+MERGE (studioValidation:Validation {id: 'gotham-studio-contract', name: 'Gotham Studio Contract Validation', status: 'passed'})
+MERGE (p)-[:CONTAINS]->(sw)
+MERGE (sw)-[:ASSIGNED_TO]->(a)
+MERGE (sw)-[:IMPLEMENTS]->(studio)
+MERGE (studio)-[:USES]->(provider)
+MERGE (studio)-[:PERSISTS_TO]->(ledger)
+MERGE (studio)-[:VISUALIZED_BY]->(studioPage)
+MERGE (sw)-[:VALIDATED_BY]->(studioValidation)
+MERGE (studio)-[:REPRESENTED_IN]->(g)
+MERGE (studio)-[:RECORDS_MEMORY_IN]->(m);

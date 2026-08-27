@@ -1,19 +1,18 @@
 {
-  "workflow_id": "architecture-feature-force-hierarchy-20260815",
+  "workflow_id": "delivery-decision-graph-compact-dialog-20260822",
   "task_size": "medium",
   "context_budget": "medium_context",
-  "reason": "The correction crosses source discovery, application hierarchy projection, D3 force layout, cache versioning, and focused regression tests.",
+  "reason": "The Delivery Decision Graph required a presentation-level redesign across its D3 layout, interaction lifecycle, and dialog surface: replace fixed semantic columns with chronology-seeded relationship clusters, keep the default view brief, and provide an accessible enlarged detail graph without changing evidence semantics.",
   "files_read": [
-    "apps/backend/src/projectBranchDiscovery.js",
-    "apps/backend/src/projectAgents.js",
-    "apps/backend/src/server.js",
-    "apps/backend/test/projectBranchDiscovery.test.js",
-    "apps/frontend/public/agentic-system/d3/agentic-system-model.js",
-    "apps/frontend/public/agentic-system/d3/agentic-system-d3.js",
-    "apps/frontend/public/agentic-system/d3/agentic-system.css",
-    "apps/frontend/public/agentic-system/d3/index.html",
-    "apps/frontend/test/agentic-system-model.test.mjs",
-    "topology/d3/agentic-system-graph.json"
+    "apps/frontend/src/components/agentic-system/ApplicationDecisionMappingCanvas.jsx",
+    "apps/frontend/src/components/agentic-system/applicationDecisionMappingCanvas.css",
+    "apps/frontend/src/PlutonixAnalysisWorkspace.jsx",
+    "apps/frontend/src/App.jsx",
+    "apps/frontend/test/application-decision-map-model.test.mjs",
+    "AGENTS.md",
+    "schemas/token-observability.schema.json",
+    "runtime/observability/token-publisher.service.ts",
+    "observability/token-economics/latest-token-plan.json"
   ],
-  "created_at": "2026-08-15T17:54:48Z"
+  "created_at": "2026-08-22T11:48:23Z"
 }

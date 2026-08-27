@@ -25,17 +25,16 @@ test("detects relevant model search requests", () => {
   assert.equal(intent.task, "summarization");
 });
 
-test("routes small and self-improvement work to local Hugging Face", () => {
-  assert.deepEqual(localModelRoutingForTask({ taskType: "Simple", workflowMode: "debugger" }), {
-    preferredProvider: "huggingface-local",
-    enforceLocalHuggingFace: true,
-    reason: "Small PlutoniX tasks prefer local Hugging Face models before paid/remote model calls.",
-    workflowMode: "debugger"
-  });
+test("treats local Hugging Face signals as governed candidates rather than an executor route", () => {
+  const route = localModelRoutingForTask({ taskType: "Simple", workflowMode: "debugger" });
+  assert.equal(route.preferredProvider, "governed-brainx");
+  assert.equal(route.enforceLocalHuggingFace, false);
+  assert.equal(route.requiresGovernedRoute, true);
+  assert.equal(route.workflowMode, "debugger");
 
   const systemRouting = localModelRoutingForTask({ taskType: "Hard", target: "self-improvement" });
-  assert.equal(systemRouting.preferredProvider, "huggingface-local");
-  assert.equal(systemRouting.enforceLocalHuggingFace, true);
+  assert.equal(systemRouting.preferredProvider, "governed-brainx");
+  assert.equal(systemRouting.enforceLocalHuggingFace, false);
 });
 
 test("downloads complete Hugging Face repositories by default", () => {
@@ -44,6 +43,11 @@ test("downloads complete Hugging Face repositories by default", () => {
   assert.deepEqual(args, ["download", "Wan-AI/Wan2.1-I2V-14B-720P", "--local-dir", "/tmp/hf/wan"]);
   assert.equal(args.includes("--include"), false);
   assert.equal(args.includes("--exclude"), false);
+});
+
+test("pins a reviewed Hugging Face revision in the staged download command", () => {
+  const args = huggingFaceDownloadArgs("org/model", "/tmp/hf/model", { revision: "a".repeat(40) });
+  assert.deepEqual(args, ["download", "org/model", "--local-dir", "/tmp/hf/model", "--revision", "a".repeat(40)]);
 });
 
 test("allows partial Hugging Face downloads only when explicitly enabled", () => {

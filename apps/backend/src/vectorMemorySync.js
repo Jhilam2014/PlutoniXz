@@ -5,7 +5,10 @@ import { plutonixRoot, openAiConfigFor, workspaceRoot } from "./globalAgentKnowl
 
 const SYNC_FILE_EXTENSIONS = new Set([".md", ".txt", ".json"]);
 const DEFAULT_MIN_PENDING_FILES = 5;
+const DEFAULT_MAX_RUNS_PER_DAY = 3;
+const DEFAULT_SYNC_TIME_ZONE = "Asia/Kolkata";
 let activeSyncPromise = null;
+let activeSchedulePromise = null;
 let lastScheduledAt = 0;
 
 function uniquePaths(rows) {
@@ -100,6 +103,75 @@ export function vectorSyncMinimumPendingFiles(value = process.env.AGENT_MEMORY_S
   return Number.isFinite(configured) && configured > 0
     ? Math.max(1, Math.floor(configured))
     : DEFAULT_MIN_PENDING_FILES;
+}
+
+export function vectorSyncMaximumRunsPerDay(value = process.env.AGENT_MEMORY_SYNC_MAX_RUNS_PER_DAY) {
+  const configured = Number(value);
+  return Number.isFinite(configured) && configured > 0
+    ? Math.max(1, Math.min(24, Math.floor(configured)))
+    : DEFAULT_MAX_RUNS_PER_DAY;
+}
+
+function vectorSyncDayKey(now = new Date(), timeZone = process.env.AGENT_MEMORY_SYNC_TIME_ZONE || DEFAULT_SYNC_TIME_ZONE) {
+  try {
+    const parts = new Intl.DateTimeFormat("en", {
+      timeZone,
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit"
+    }).formatToParts(now);
+    const values = Object.fromEntries(parts.map((part) => [part.type, part.value]));
+    return `${values.year}-${values.month}-${values.day}`;
+  } catch {
+    return now.toISOString().slice(0, 10);
+  }
+}
+
+export function vectorSyncDailyDecision({
+  scheduledRuns = 0,
+  maxRunsPerDay = vectorSyncMaximumRunsPerDay()
+} = {}) {
+  const safeScheduledRuns = Math.max(0, Math.floor(Number(scheduledRuns) || 0));
+  const safeMaxRunsPerDay = vectorSyncMaximumRunsPerDay(maxRunsPerDay);
+  if (safeScheduledRuns >= safeMaxRunsPerDay) {
+    return {
+      shouldRun: false,
+      status: "skipped",
+      reason: "daily_run_limit_reached",
+      scheduledRuns: safeScheduledRuns,
+      maxRunsPerDay: safeMaxRunsPerDay
+    };
+  }
+  return {
+    shouldRun: true,
+    status: "ready",
+    reason: "daily_run_slot_available",
+    scheduledRuns: safeScheduledRuns,
+    maxRunsPerDay: safeMaxRunsPerDay
+  };
+}
+
+function vectorSyncScheduleStatePath() {
+  return path.join(plutonixRoot(), "observability", "agent-memory", "vector-sync-schedule.json");
+}
+
+async function claimDailyVectorSyncSlot({ now = new Date(), maxRunsPerDay, timeZone, statePath = vectorSyncScheduleStatePath() } = {}) {
+  const day = vectorSyncDayKey(now, timeZone);
+  const previous = await readJson(statePath, {});
+  const scheduledRuns = previous.day === day ? Number(previous.scheduled_runs || 0) : 0;
+  const decision = vectorSyncDailyDecision({ scheduledRuns, maxRunsPerDay });
+  if (!decision.shouldRun) return { ...decision, day, statePath };
+
+  const state = {
+    schema_version: "plutonix-vector-sync-schedule/v1",
+    day,
+    time_zone: String(timeZone || process.env.AGENT_MEMORY_SYNC_TIME_ZONE || DEFAULT_SYNC_TIME_ZONE),
+    scheduled_runs: scheduledRuns + 1,
+    max_runs_per_day: decision.maxRunsPerDay,
+    last_scheduled_at: now.toISOString()
+  };
+  await writeJson(statePath, state);
+  return { ...decision, scheduledRuns: state.scheduled_runs, day, statePath };
 }
 
 export function vectorSyncDecision({ systemIdle = true, pendingSyncCount = 0, minPendingFiles = vectorSyncMinimumPendingFiles() } = {}) {
@@ -458,26 +530,38 @@ export function scheduleAgentMemorySync({
   emit = null,
   minSpacingMs = 60_000,
   isSystemIdle = () => true,
-  minPendingFiles = vectorSyncMinimumPendingFiles()
+  minPendingFiles = vectorSyncMinimumPendingFiles(),
+  maxRunsPerDay = vectorSyncMaximumRunsPerDay(),
+  timeZone = process.env.AGENT_MEMORY_SYNC_TIME_ZONE || DEFAULT_SYNC_TIME_ZONE,
+  now = () => new Date(),
+  scheduleStatePath = vectorSyncScheduleStatePath()
 } = {}) {
   if (activeSyncPromise) return activeSyncPromise;
-  return Promise.resolve(isSystemIdle()).then((systemIdle) => {
+  if (activeSchedulePromise) return activeSchedulePromise;
+  activeSchedulePromise = Promise.resolve(isSystemIdle()).then((systemIdle) => {
     if (activeSyncPromise) return activeSyncPromise;
     if (!systemIdle) {
-      const summary = deferredSummary({
-        workflowId: `plutonix-vector-sync-${Date.now()}`,
-        reason,
-        startedAt: new Date().toISOString(),
-        pendingSyncCount: 0,
-        decision: vectorSyncDecision({ systemIdle: false, minPendingFiles })
-      });
-      emit?.("vector-sync-deferred", "Vector memory sync queued until the system is idle.", summary);
-      return summary;
+      // Gotham may hold the workspace for a long time. Do not create a noisy
+      // deferred event on every periodic tick; its completion schedules one
+      // normal idle check instead.
+      return null;
     }
-    const now = Date.now();
-    if (now - lastScheduledAt < minSpacingMs) return null;
-    lastScheduledAt = now;
-    activeSyncPromise = syncKnownAgentKnowledgeRoots({ reason, emit, isSystemIdle, minPendingFiles })
+    const scheduledAt = now();
+    const scheduledAtMs = scheduledAt.getTime();
+    if (scheduledAtMs - lastScheduledAt < minSpacingMs) return null;
+    return claimDailyVectorSyncSlot({ now: scheduledAt, maxRunsPerDay, timeZone, statePath: scheduleStatePath }).then((dailyDecision) => {
+      if (!dailyDecision.shouldRun) return {
+        workflow_id: `plutonix-vector-sync-${scheduledAtMs}`,
+        status: "skipped",
+        reason,
+        skipped_reason: dailyDecision.reason,
+        scheduled_runs: dailyDecision.scheduledRuns,
+        max_runs_per_day: dailyDecision.maxRunsPerDay,
+        day: dailyDecision.day,
+        completed_at: scheduledAt.toISOString()
+      };
+      lastScheduledAt = scheduledAtMs;
+      activeSyncPromise = syncKnownAgentKnowledgeRoots({ reason, emit, isSystemIdle, minPendingFiles })
       .catch(async (error) => {
         const summary = {
           workflow_id: `plutonix-vector-sync-${Date.now()}`,
@@ -499,6 +583,10 @@ export function scheduleAgentMemorySync({
       .finally(() => {
         activeSyncPromise = null;
       });
-    return activeSyncPromise;
+      return activeSyncPromise;
+    });
+  }).finally(() => {
+    activeSchedulePromise = null;
   });
+  return activeSchedulePromise;
 }

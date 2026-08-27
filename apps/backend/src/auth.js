@@ -221,10 +221,61 @@ export async function verifyOidcToken(token, { env = process.env } = {}) {
   };
 }
 
+function googleIdentityEnvironment(credential, env = process.env) {
+  const clientId = String(env.GOOGLE_CLIENT_ID || env.VITE_GOOGLE_CLIENT_ID || "").trim();
+  if (!clientId) {
+    throw new AuthenticationError(
+      "Google sign-in is not configured on the backend: GOOGLE_CLIENT_ID is required.",
+      { code: "google_identity_configuration_invalid", status: 503 }
+    );
+  }
+
+  // The issuer claim is untrusted at this point, but it can only select one of
+  // Google's two documented issuer spellings. Signature and claim validation
+  // still happen below against Google's fixed JWKS endpoint and this client ID.
+  const issuer = String(parseJwt(credential).claims.iss || "");
+  if (!["https://accounts.google.com", "accounts.google.com"].includes(issuer)) {
+    throw new AuthenticationError("The Google identity token issuer is not accepted.", { code: "invalid_issuer" });
+  }
+
+  return {
+    ...env,
+    OIDC_ISSUER: issuer,
+    OIDC_AUDIENCE: clientId,
+    OIDC_JWKS_URL: "https://www.googleapis.com/oauth2/v3/certs",
+    OIDC_ALLOWED_ALGORITHMS: "RS256",
+    OIDC_ACCEPTED_TOKEN_TYPES: "JWT"
+  };
+}
+
+export async function verifyGoogleIdentityToken(credential, { env = process.env } = {}) {
+  const token = String(credential || "").trim();
+  if (!token) throw new AuthenticationError("A Google identity credential is required.", { code: "google_credential_required" });
+  const identity = await verifyOidcToken(token, { env: googleIdentityEnvironment(token, env) });
+  const pictureClaim = String(parseJwt(token).claims.picture || "").trim();
+  let picture = "";
+  try {
+    const url = new URL(pictureClaim);
+    if (url.protocol === "https:" && (url.hostname === "googleusercontent.com" || url.hostname.endsWith(".googleusercontent.com"))) {
+      picture = url.toString().slice(0, 2048);
+    }
+  } catch {
+    // A missing or non-Google image never prevents an otherwise valid login.
+  }
+  return { ...identity, picture };
+}
+
 export async function externalIdentityFromRequest(req, { env = process.env } = {}) {
   const authorization = String(req.get?.("authorization") || "");
   const match = authorization.match(/^Bearer\s+(.+)$/i);
-  if (match) return verifyOidcToken(match[1], { env });
+  if (match) {
+    const hasEnterpriseOidc = Boolean(String(env.OIDC_ISSUER || "").trim() && String(env.OIDC_AUDIENCE || "").trim());
+    const hasGoogleIdentity = Boolean(String(env.GOOGLE_CLIENT_ID || env.VITE_GOOGLE_CLIENT_ID || "").trim());
+    if (!isProduction(env) && !hasEnterpriseOidc && hasGoogleIdentity) {
+      return verifyGoogleIdentityToken(match[1], { env });
+    }
+    return verifyOidcToken(match[1], { env });
+  }
   if (developmentAuthEnabled(env)) {
     const subject = String(req.get?.("x-plutonix-dev-subject") || "").trim();
     if (subject && subject.length <= 200) {
@@ -259,8 +310,8 @@ export function userFromRequest(req) {
 }
 
 export async function authenticateGooglePayload(body = {}, { env = process.env } = {}) {
-  const identity = await verifyOidcToken(body.credential, { env });
-  return { id: `${identity.issuer}:${identity.subject}`, name: identity.displayName || "Verified user", email: identity.email, picture: "", authProvider: "oidc" };
+  const identity = await verifyGoogleIdentityToken(body.credential, { env });
+  return { id: `${identity.issuer}:${identity.subject}`, name: identity.displayName || "Verified user", email: identity.email, picture: identity.picture, authProvider: "oidc" };
 }
 
 export function restrictedIntent(text) {

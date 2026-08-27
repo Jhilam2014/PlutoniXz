@@ -49,8 +49,9 @@ import { runProjectOrchestratorBootstrap } from "./projectBootstrap.js";
 import { deleteGlobalAgent, listGlobalAgents } from "./globalAgentKnowledge.js";
 import { scheduleAgentMemorySync, syncKnownAgentKnowledgeRoots } from "./vectorMemorySync.js";
 import { registerHostingRoutes } from "./hosting/hosting-conversation.controller.js";
-import { AuthenticationError, assertProductionIdentityConfiguration, authenticateGooglePayload, restrictedIntent, userFromRequest } from "./auth.js";
+import { AuthenticationError, assertProductionIdentityConfiguration, authenticateGooglePayload, externalIdentityFromRequest, restrictedIntent, userFromRequest } from "./auth.js";
 import { readAgentEfficiencySummary, summarizeAgentTokenEconomy } from "./tokenEconomy.js";
+import { createGothamAccountUsageService } from "./gothamAccountUsage.js";
 import { createDecisionContinuityStore, DecisionContinuityError } from "./decisionContinuity.js";
 import { buildDecisionContinuityGraph, compareDecisionBranches } from "./decisionContinuityProjection.js";
 import { DecisionContinuityWorkflowQueue } from "./decisionContinuityWorkflow.js";
@@ -60,7 +61,15 @@ import { GovernedPromotionController, GovernedPromotionError, PostgresGovernedPr
 import { QAgentDecisionContinuityService } from "./qagentDecisionContinuity.js";
 import { BrainXModelRegistry } from "./brainxModelRegistry.js";
 import { SuggestionIntelGovernance } from "./suggestionIntelGovernance.js";
+import { EnterpriseGovernanceService } from "./enterpriseGovernance.js";
+import { ResearchXService, resolveResearchXConfig } from "./researchX.js";
+import { AgenticXKnowledgeGateway } from "./agenticXKnowledge.js";
+import { GovernedAIXRouter } from "./aixRouting.js";
+import { DecisionXBuildCapture } from "./decisionXCapture.js";
 import { assertProductionOperationalConfiguration, operationalTelemetry } from "./operationalSecurity.js";
+import { buildEnterprisePortfolioAnalysis } from "./enterprisePortfolio.js";
+import { createGothamStudio, detectMlExecutionIntent, registerGothamStudioRoutes } from "./gothamStudio/index.js";
+import { GothamStudioError } from "./gothamStudio/domain.js";
 
 export const app = express();
 const port = Number(process.env.PORT || 8080);
@@ -77,6 +86,13 @@ let governedPromotionController = null;
 let qagentDecisionContinuity = null;
 let brainxModelRegistry = null;
 let suggestionIntelGovernance = null;
+let enterpriseGovernance = null;
+let researchXService = null;
+let agenticXKnowledgeGateway = null;
+let aixRouter = null;
+let decisionXBuildCapture = null;
+let gothamAccountUsageService = null;
+let gothamStudioService = null;
 let gothamSandboxReadiness = {
   status: "not_checked",
   component: "workspace_sandbox",
@@ -219,6 +235,71 @@ function brainxWorkspace(scope, req) {
   return String(req.query?.workspaceId || (scope.workspaceId === "*" ? "default" : scope.workspaceId || "default"));
 }
 
+// Existing generation endpoints have a legacy user/session surface. Build
+// capture and governed routing may use that endpoint only after independently
+// resolving strict OIDC/RBAC scope; a missing scope preserves the legacy
+// executor rather than treating a project tag or local user as authority.
+async function optionalEnterpriseBrainBuildScope(req, projectWorkspaceId = "") {
+  try {
+    const scope = await identityAccessStore.authorizeRequest(req, {
+      permission: DECISION_PERMISSIONS.BRAINX_READ,
+      principalTypes: ["human"],
+      action: "enterprise_brain.build"
+    });
+    const requestedWorkspace = String(projectWorkspaceId || "").trim();
+    if (requestedWorkspace && scope.workspaceId !== "*" && scope.workspaceId !== requestedWorkspace) return null;
+    return scope;
+  } catch {
+    return null;
+  }
+}
+
+function enterpriseBrainMutationInput(req, fallback) {
+  const supplied = String(req.body?.idempotencyKey || req.get("idempotency-key") || "").trim();
+  return {
+    ...(req.body || {}),
+    idempotencyKey: supplied || decisionContinuityIdempotencyKey(req, fallback)
+  };
+}
+
+function enterpriseBrainWorkspace(scope, req) {
+  const requested = String(req.query?.workspaceId || req.body?.workspaceId || (scope.workspaceId === "*" ? "default" : scope.workspaceId || "default")).trim();
+  if (!requested || requested.length > 160) {
+    throw new DecisionContinuityError("A valid enterprise Brain workspace is required.", { code: "invalid_workspace_context", status: 400 });
+  }
+  if (scope.workspaceId !== "*" && scope.workspaceId !== requested) {
+    throw new AuthorizationError("The requested enterprise Brain workspace is unavailable.", { code: "workspace_scope_denied", status: 403 });
+  }
+  return requested;
+}
+
+function enterpriseBrainInput(scope, req, input = {}) {
+  return {
+    ...(input || {}),
+    tenantId: scope.tenantId,
+    workspaceId: enterpriseBrainWorkspace(scope, req)
+  };
+}
+
+function enterpriseBrainLimit(value, fallback = 100) {
+  const parsed = Number(value);
+  return Number.isInteger(parsed) && parsed >= 1 ? Math.min(parsed, 250) : fallback;
+}
+
+function enterpriseBrainMethod(names) {
+  const method = names.find((name) => typeof enterpriseGovernance?.[name] === "function");
+  if (!method) {
+    throw new DecisionContinuityError("The Enterprise Brain governance authority is unavailable.", { code: "enterprise_brain_unavailable", status: 503 });
+  }
+  return enterpriseGovernance[method].bind(enterpriseGovernance);
+}
+
+async function callEnterpriseBrain(names, input, scope) {
+  const method = enterpriseBrainMethod(names);
+  const { tenantId, workspaceId, ...payload } = input || {};
+  return method(payload, { tenantId: tenantId || scope.tenantId, workspaceId: workspaceId || enterpriseBrainWorkspace(scope, { query: {}, body: {} }), actor: scope.actor });
+}
+
 async function suggestionScope(req, res, permission) {
   try {
     const scope = await identityAccessStore.authorizeRequest(req, { permission, principalTypes: ["human"], action: `suggestion.${permission}` });
@@ -253,15 +334,69 @@ const istTimeFormatter = new Intl.DateTimeFormat("en-IN", {
   timeZone: "Asia/Kolkata"
 });
 
+function enterpriseSharingAgreementsPath() {
+  return process.env.ENTERPRISE_SHARING_AGREEMENTS_PATH
+    || path.join(process.env.PLUTONIX_PROJECT_ROOT || process.cwd(), "runtime", "enterprise-sharing", "agreements.json");
+}
+
+async function readEnterpriseSharingAgreements() {
+  const filePath = enterpriseSharingAgreementsPath();
+  try {
+    const rows = JSON.parse(await fs.promises.readFile(filePath, "utf8"));
+    if (!Array.isArray(rows)) return { status: "invalid", configured: true, agreements: [], error: "Agreement registry must be a JSON array." };
+    return { status: "configured", configured: true, agreements: rows, error: "" };
+  } catch (error) {
+    if (error.code === "ENOENT") return { status: "unconfigured", configured: false, agreements: [], error: "" };
+    return { status: "invalid", configured: true, agreements: [], error: "Agreement registry could not be read; sharing remains denied." };
+  }
+}
+
+const EnterpriseBuildDecisionContextSchema = z.object({
+  policySnapshotId: z.string().min(1).max(160).optional(),
+  budgetId: z.string().min(1).max(160).optional(),
+  data: z.object({
+    classification: z.enum(["public", "internal", "confidential", "restricted"]),
+    region: z.string().min(1).max(80),
+    egress: z.string().min(1).max(160),
+    retentionDays: z.number().int().min(0).max(36500),
+    transformations: z.array(z.string().min(1).max(160)).max(64).default([]),
+    complianceControlIds: z.array(z.string().min(1).max(160)).max(128).default([]),
+    commercialUse: z.boolean().optional()
+  }).strict(),
+  evidence: z.array(z.object({
+    id: z.string().min(1).max(160),
+    controlIds: z.array(z.string().min(1).max(160)).min(1).max(64),
+    status: z.enum(["verified", "unknown", "stale", "expired", "invalid", "unauthorized"]),
+    authorized: z.boolean(),
+    observedAt: z.string().datetime(),
+    expiresAt: z.string().datetime().optional()
+  }).strict()).max(256).default([]),
+  impactLevel: z.enum(["low", "medium", "high", "critical"]).default("low"),
+  approval: z.object({
+    approved: z.literal(true),
+    approverId: z.string().min(1).max(160),
+    approvedAt: z.string().datetime(),
+    evidenceId: z.string().min(1).max(160)
+  }).strict().optional()
+}).strict();
+
 const GenerateSchema = z.object({
   instruction: z.string().min(12).max(MAX_INSTRUCTION_CHARS),
   projectId: z.string().optional(),
+  workspaceId: z.string().max(180).optional(),
   target: z.discriminatedUnion("type", [
     z.object({ type: z.literal("project"), projectId: z.string().optional() }),
     z.object({ type: z.literal("system"), systemId: z.literal("plutonix") })
   ]).optional(),
   taskType: z.enum(["Simple", "Medium", "Large", "Hard", "simple", "medium", "large", "hard", "small", "complex"]).optional(),
   workflowMode: z.enum(["planner", "debugger", "executor"]).optional(),
+  studioContext: z.object({
+    selectedJobId: z.string().max(180).optional(),
+    selectedPipelineId: z.string().max(180).optional(),
+    selectedExperimentId: z.string().max(180).optional(),
+    selectedModelId: z.string().max(180).optional(),
+    selectedFunctionalityId: z.string().max(180).optional()
+  }).strict().optional(),
   intel: z.object({
     enabled: z.boolean().optional(),
     profileId: z.string().regex(/^[a-z][a-z0-9-]{2,80}$/).optional(),
@@ -275,7 +410,11 @@ const GenerateSchema = z.object({
     id: z.string().min(1).max(120),
     label: z.string().min(1).max(160),
     value: z.string().min(1).max(12000)
-  })).max(3).optional()
+  })).max(3).optional(),
+  // This is evidence supplied for a strict OIDC-scoped governed build. It is
+  // never an authorization substitute: application binding, policy snapshot,
+  // budget, evidence freshness, and approvals are verified server-side.
+  enterpriseDecisionContext: EnterpriseBuildDecisionContextSchema.optional()
 });
 const NewProjectSchema = z.object({
   name: z.string().min(2).max(80),
@@ -315,10 +454,25 @@ const ProjectImportSchema = z.object({
 });
 const ProjectIdentitySchema = z.object({
   name: z.string().min(2).max(80).optional(),
-  workspaceName: z.string().min(2).max(80).optional()
-}).refine((value) => value.name !== undefined || value.workspaceName !== undefined, {
-  message: "Project name or workspace name is required."
+  workspaceName: z.string().min(2).max(80).optional(),
+  enterpriseId: z.string().max(80).refine((value) => !value || /^[a-z0-9][a-z0-9-]*$/.test(value), {
+    message: "Enterprise ID may contain lowercase letters, numbers, and hyphens only."
+  }).optional(),
+  enterpriseName: z.string().max(80).refine((value) => !value || value.trim().length >= 2, {
+    message: "Enterprise name must be at least 2 characters."
+  }).optional()
+}).refine((value) => value.name !== undefined || value.workspaceName !== undefined || value.enterpriseId !== undefined || value.enterpriseName !== undefined, {
+  message: "Project name, workspace name, or enterprise tag is required."
 });
+const ProjectEnterpriseAssignmentSchema = z.object({
+  enterprise: z.union([
+    z.null(),
+    z.object({
+      id: z.string().min(2).max(80).regex(/^[a-z0-9][a-z0-9-]*$/, "Enterprise ID may contain lowercase letters, numbers, and hyphens only."),
+      name: z.string().trim().min(2).max(80)
+    }).strict()
+  ])
+}).strict();
 const ApifyInvestorPullSchema = z.object({
   query: z.string().min(3).max(240).optional(),
   label: z.string().max(120).optional(),
@@ -2708,6 +2862,39 @@ brainxModelRegistry = new BrainXModelRegistry({
   env: process.env,
   identityAccess: identityAccessStore
 });
+// Enterprise BrainX is an additive policy/budget/access layer over the
+// existing Decision Continuity authority. It has no legacy portfolio or JSON
+// agreement authority and remains inert until a tenant is explicitly enabled.
+enterpriseGovernance = new EnterpriseGovernanceService({
+  store: decisionContinuityStore,
+  env: process.env
+});
+researchXService = new ResearchXService({
+  store: decisionContinuityStore,
+  governance: enterpriseGovernance,
+  config: resolveResearchXConfig(process.env),
+  // The API process intentionally has no fetch adapter. Allowlisted network
+  // research runs only in the separate disabled-by-default worker profile.
+  sourceFetcher: null,
+  actor: { type: "service", id: "researchx-api-control-plane" }
+});
+agenticXKnowledgeGateway = new AgenticXKnowledgeGateway({
+  governance: enterpriseGovernance,
+  env: process.env
+});
+aixRouter = new GovernedAIXRouter({
+  registry: brainxModelRegistry,
+  governance: enterpriseGovernance
+});
+decisionXBuildCapture = new DecisionXBuildCapture({
+  store: decisionContinuityStore,
+  governance: enterpriseGovernance,
+  logger: (type, error) => event(type, "DecisionX build capture was retained as a non-blocking audit failure.", {
+    code: error?.code || "decisionx_capture_error"
+  })
+});
+gothamAccountUsageService = createGothamAccountUsageService();
+gothamStudioService = createGothamStudio({ root: plutonixProjectRoot(), env: process.env, emit: event });
 suggestionIntelGovernance = new SuggestionIntelGovernance({ store: decisionContinuityStore });
 governedPromotionController = new GovernedPromotionController({
   store: new PostgresGovernedPromotionStore({ databaseUrl: process.env.DECISION_CONTINUITY_DATABASE_URL || process.env.DATABASE_URL }),
@@ -2719,6 +2906,31 @@ governedPromotionController = new GovernedPromotionController({
 if (String(process.env.GOVERNED_PROMOTIONS_ENABLED || "").toLowerCase() === "true" && String(process.env.GOVERNED_PROMOTION_SELF_IMPROVEMENT_ENABLED || "").toLowerCase() === "true") {
   await governedPromotionController.hydrateRuntime();
 }
+
+registerGothamStudioRoutes(app, {
+  service: gothamStudioService,
+  authorize: async (req, res, permission) => {
+    const scope = await identityAccessStore.authorizeRequest(req, {
+      permission: permission === "operate" ? DECISION_PERMISSIONS.OPERATE : DECISION_PERMISSIONS.READ,
+      principalTypes: ["human"],
+      action: `gotham_studio.${permission}`
+    });
+    res.locals.operationalTenantId = scope.tenantId;
+    res.locals.operationalPrincipalType = scope.principal.type;
+    return scope;
+  },
+  resolveProject: async (req, authorization, scope) => {
+    if (scope.projectId !== scope.workspaceId) {
+      throw new GothamStudioError("Gotham Studio uses the selected project as its workspace boundary.", { code: "studio_workspace_mismatch", status: 404 });
+    }
+    const user = decisionProjectUser(req, authorization);
+    const project = scope.projectId === "default"
+      ? await getProject(scope.projectId, { user })
+      : await getProjectDecisionContinuity(scope.projectId, { user, tenantId: authorization.tenantId });
+    if (!project) throw new GothamStudioError("The selected Studio project is unavailable.", { code: "studio_project_not_found", status: 404 });
+    return project;
+  }
+});
 
 function durableDecisionWorkflowsEnabled() {
   return String(process.env.DECISION_CONTINUITY_DURABLE_WORKFLOWS || (process.env.NODE_ENV === "production" ? "true" : "false")).toLowerCase() === "true";
@@ -2876,10 +3088,58 @@ app.get("/api/status", async (_req, res) => {
       enabled: String(process.env.GOVERNED_PROMOTIONS_ENABLED || "").toLowerCase() === "true" && String(process.env.GOVERNED_PROMOTION_SELF_IMPROVEMENT_ENABLED || "").toLowerCase() === "true",
       contract: "content-addressed candidate; deterministic validation; independent evaluation; versioned policy; expiring human approval; bounded canary; operational rollback"
     },
+    gothamStudio: {
+      status: "ready",
+      contract: "logical-job-control-plane",
+      providers: gothamStudioService.providerRegistry.list().map((provider) => ({ id: provider.id, status: provider.status }))
+    },
     generatedSiteDir: process.env.GENERATED_SITE_DIR || "/workspace/generated-site",
     generatedSiteContainer: process.env.GENERATED_SITE_CONTAINER || "plutonix-generated-site",
     restartMode: String(process.env.RESTART_GENERATED_CONTAINER || "false").toLowerCase() === "true" ? "docker-socket" : "vite-hot-reload"
   });
+});
+
+function gothamUsageOwnerKey(identity = {}) {
+  const issuer = String(identity.issuer || "").trim();
+  const subject = String(identity.subject || "").trim();
+  if (!issuer || !subject) return "";
+  return crypto.createHash("sha256").update(`${issuer}:${subject}`).digest("hex").slice(0, 32);
+}
+
+async function gothamUsageOwner(req) {
+  try {
+    const identity = await externalIdentityFromRequest(req);
+    return {
+      issuer: identity.issuer,
+      subject: identity.subject,
+      displayName: identity.displayName,
+      email: identity.email,
+      authMode: identity.tokenType
+    };
+  } catch {
+    // Generation remains backwards-compatible for legacy local projects;
+    // usage is only persisted where an identity was actually verified.
+    return null;
+  }
+}
+
+app.get("/api/gotham/account-usage", async (req, res) => {
+  const owner = await gothamUsageOwner(req);
+  if (!owner) {
+    return res.status(401).json({
+      status: "authentication_required",
+      error: "Sign in with a verified PlutoniX profile to view Account & Usage."
+    });
+  }
+  try {
+    const projectId = String(req.query?.projectId || "").trim().slice(0, 160);
+    const refresh = String(req.query?.refresh || "").toLowerCase() === "true";
+    const snapshot = await gothamAccountUsageService.read({ owner, projectId, refresh });
+    res.setHeader("cache-control", "no-store");
+    return res.json(snapshot);
+  } catch {
+    return res.status(500).json({ status: "failed", error: "Account & Usage is temporarily unavailable." });
+  }
 });
 
 async function governedPromotionScope(req, res, permission, { principalTypes = ["human"] } = {}) {
@@ -3087,14 +3347,15 @@ decisionContinuityRoute("branch_list", async (req, res) => {
   if (!scope) return;
   try {
     const statuses = String(req.query.statuses || "").split(",").map((value) => value.trim()).filter(Boolean);
-    const branches = await decisionContinuityStore.listBranches({
+    const page = await decisionContinuityStore.listBranchesPage({
       tenantId: scope.tenantId,
       workspaceId: String(req.query.workspaceId || "").trim() || undefined,
       decisionId: String(req.query.decisionId || "").trim() || undefined,
       statuses,
-      limit: req.query.limit
+      limit: req.query.limit,
+      offset: req.query.offset
     });
-    res.json({ status: "ok", branches });
+    res.json({ status: "ok", branches: page.branches, pagination: page.pagination });
   } catch (error) {
     respondDecisionContinuityError(res, error);
   }
@@ -3121,11 +3382,21 @@ decisionContinuityRoute("graph", async (req, res) => {
   if (!scope) return;
   try {
     const workspaceId = String(req.query.workspaceId || "").trim() || undefined;
-    const [branches, events] = await Promise.all([
-      decisionContinuityStore.listBranches({ tenantId: scope.tenantId, workspaceId, limit: 250 }),
+    const [page, events] = await Promise.all([
+      decisionContinuityStore.listBranchesPage({
+        tenantId: scope.tenantId,
+        workspaceId,
+        limit: req.query.limit === undefined ? 250 : req.query.limit,
+        offset: req.query.offset
+      }),
       decisionContinuityStore.listEvents({ tenantId: scope.tenantId, workspaceId, limit: 500 })
     ]);
-    res.json({ status: "ok", graph: buildDecisionContinuityGraph({ branches, events }) });
+    const branchIds = new Set(page.branches.map((branch) => branch.id));
+    const pageEvents = events.filter((event) => {
+      const branchId = event.payload?.branchId || event.payload?.branch?.id || event.payload?.request?.branchId;
+      return branchIds.has(branchId);
+    });
+    res.json({ status: "ok", graph: buildDecisionContinuityGraph({ branches: page.branches, events: pageEvents }), pagination: page.pagination });
   } catch (error) {
     respondDecisionContinuityError(res, error);
   }
@@ -3319,6 +3590,178 @@ app.post("/api/brainx/registrations/:registrationId/health", requireDecisionCont
   try { res.json({ status: "ok", registration: await brainxModelRegistry.setHealth({ registrationId: req.params.registrationId, ...req.body }, { tenantId: scope.tenantId, workspaceId: brainxWorkspace(scope, req), actor: scope.actor }) }); } catch (error) { respondDecisionContinuityError(res, error); }
 });
 
+// Enterprise Brain APIs intentionally use the strict OIDC/RBAC BrainX scope.
+// They do not accept legacy project tags, browser-only agreement JSON, or a
+// portfolio projection as authorization. Writes are immutable or append-only
+// records in the Decision Continuity authority; no endpoint executes a model,
+// deploys code, changes a provider, or starts unrestricted research.
+app.get("/api/enterprise-brain/overview", async (req, res) => {
+  const scope = await brainxScope(req, res, DECISION_PERMISSIONS.BRAINX_READ);
+  if (!scope) return;
+  try {
+    const input = enterpriseBrainInput(scope, req);
+    const [overview, researchRuns] = await Promise.all([
+      callEnterpriseBrain(["overview"], enterpriseBrainInput(scope, req, { recentLimit: enterpriseBrainLimit(req.query.limit, 20) }), scope),
+      researchXService.listRuns({ ...input, limit: req.query.limit || 50 }).catch(() => [])
+    ]);
+    const payload = overview && typeof overview === "object" ? overview : {};
+    res.json({
+      status: "ok",
+      feature: {
+        enabled: Boolean(aixRouter.isEnabledForTenant(scope.tenantId)),
+        mode: aixRouter.isEnabledForTenant(scope.tenantId) ? "governed_control_plane" : "baseline"
+      },
+      ...payload,
+      policy: payload.policy || payload.policySnapshots?.[0] || null,
+      modelRouteReceipts: payload.modelRouteReceipts || payload.recent?.modelRoutes || [],
+      decisionContexts: payload.decisionContexts || payload.recent?.decisions || [],
+      reuseReceipts: payload.reuseReceipts || payload.recent?.knowledgeReuse || [],
+      researchRuns: payload.researchRuns || researchRuns,
+      notice: payload.notice || "Enterprise Brain is a reviewable control-plane foundation. It does not certify compliance, execute providers, or autonomously deploy changes."
+    });
+  } catch (error) { respondDecisionContinuityError(res, error); }
+});
+
+app.get("/api/enterprise-brain/applications/bindings", async (req, res) => {
+  const scope = await brainxScope(req, res, DECISION_PERMISSIONS.BRAINX_READ);
+  if (!scope) return;
+  try { const input = enterpriseBrainInput(scope, req, { enterpriseId: req.query.enterpriseId || undefined, limit: enterpriseBrainLimit(req.query.limit) }); res.json({ status: "ok", bindings: await callEnterpriseBrain(["listApplicationBindings"], input, scope) }); } catch (error) { respondDecisionContinuityError(res, error); }
+});
+
+app.get("/api/enterprise-brain/applications/:applicationId/binding", async (req, res) => {
+  const scope = await brainxScope(req, res, DECISION_PERMISSIONS.BRAINX_READ);
+  if (!scope) return;
+  try { const input = enterpriseBrainInput(scope, req, { applicationId: req.params.applicationId }); res.json({ status: "ok", binding: await callEnterpriseBrain(["getApplicationBinding"], input, scope) }); } catch (error) { respondDecisionContinuityError(res, error); }
+});
+
+app.post("/api/enterprise-brain/applications/:applicationId/binding", requireDecisionContinuityJsonBody, async (req, res) => {
+  const scope = await brainxScope(req, res, DECISION_PERMISSIONS.BRAINX_ADMIN);
+  if (!scope) return;
+  try {
+    const mutation = enterpriseBrainMutationInput(req, `enterprise-binding:${req.params.applicationId}`);
+    const input = enterpriseBrainInput(scope, req, { ...mutation, applicationId: req.params.applicationId });
+    const binding = await callEnterpriseBrain(["bindApplication"], input, scope);
+    res.status(binding?.status === "bound" ? 201 : 200).json({ status: binding?.status || "ok", binding: binding?.binding || binding });
+  } catch (error) { respondDecisionContinuityError(res, error); }
+});
+
+app.get("/api/enterprise-brain/policies", async (req, res) => {
+  const scope = await brainxScope(req, res, DECISION_PERMISSIONS.BRAINX_READ);
+  if (!scope) return;
+  try { const input = enterpriseBrainInput(scope, req, { enterpriseId: req.query.enterpriseId || undefined, limit: enterpriseBrainLimit(req.query.limit) }); res.json({ status: "ok", policies: await callEnterpriseBrain(["listPolicySnapshots"], input, scope) }); } catch (error) { respondDecisionContinuityError(res, error); }
+});
+
+app.get("/api/enterprise-brain/policies/:policyId", async (req, res) => {
+  const scope = await brainxScope(req, res, DECISION_PERMISSIONS.BRAINX_READ);
+  if (!scope) return;
+  try { const input = enterpriseBrainInput(scope, req, { policySnapshotId: req.params.policyId }); res.json({ status: "ok", policy: await callEnterpriseBrain(["readPolicy", "getPolicy"], input, scope) }); } catch (error) { respondDecisionContinuityError(res, error); }
+});
+
+app.post("/api/enterprise-brain/policies", requireDecisionContinuityJsonBody, async (req, res) => {
+  const scope = await brainxScope(req, res, DECISION_PERMISSIONS.BRAINX_ADMIN);
+  if (!scope) return;
+  try {
+    const input = enterpriseBrainInput(scope, req, enterpriseBrainMutationInput(req, "enterprise-policy"));
+    const policy = await callEnterpriseBrain(["setPolicy"], input, scope);
+    res.status(policy?.status === "created" ? 201 : 200).json({ status: policy?.status || "ok", policy: policy?.policy || policy });
+  } catch (error) { respondDecisionContinuityError(res, error); }
+});
+
+app.get("/api/enterprise-brain/budgets", async (req, res) => {
+  const scope = await brainxScope(req, res, DECISION_PERMISSIONS.BRAINX_READ);
+  if (!scope) return;
+  try { const input = enterpriseBrainInput(scope, req, { enterpriseId: req.query.enterpriseId || undefined, applicationId: req.query.applicationId || undefined, limit: enterpriseBrainLimit(req.query.limit) }); res.json({ status: "ok", budgets: await callEnterpriseBrain(["listBudgets"], input, scope) }); } catch (error) { respondDecisionContinuityError(res, error); }
+});
+
+app.get("/api/enterprise-brain/budgets/:budgetId", async (req, res) => {
+  const scope = await brainxScope(req, res, DECISION_PERMISSIONS.BRAINX_READ);
+  if (!scope) return;
+  try { const input = enterpriseBrainInput(scope, req, { budgetId: req.params.budgetId }); res.json({ status: "ok", budget: await callEnterpriseBrain(["getBudget"], input, scope) }); } catch (error) { respondDecisionContinuityError(res, error); }
+});
+
+app.post("/api/enterprise-brain/budgets", requireDecisionContinuityJsonBody, async (req, res) => {
+  const scope = await brainxScope(req, res, DECISION_PERMISSIONS.BRAINX_ADMIN);
+  if (!scope) return;
+  try {
+    const input = enterpriseBrainInput(scope, req, enterpriseBrainMutationInput(req, "enterprise-budget"));
+    const budget = await callEnterpriseBrain(["createBudget"], input, scope);
+    res.status(budget?.status === "created" ? 201 : 200).json({ status: budget?.status || "ok", budget: budget?.budget || budget });
+  } catch (error) { respondDecisionContinuityError(res, error); }
+});
+
+app.get("/api/enterprise-brain/decision-contexts", async (req, res) => {
+  const scope = await brainxScope(req, res, DECISION_PERMISSIONS.BRAINX_READ);
+  if (!scope) return;
+  try { const input = enterpriseBrainInput(scope, req, { branchId: req.query.branchId || undefined, applicationId: req.query.applicationId || undefined, limit: enterpriseBrainLimit(req.query.limit) }); res.json({ status: "ok", decisionContexts: await callEnterpriseBrain(["listDecisionContexts"], input, scope) }); } catch (error) { respondDecisionContinuityError(res, error); }
+});
+
+app.get("/api/enterprise-brain/model-route-receipts", async (req, res) => {
+  const scope = await brainxScope(req, res, DECISION_PERMISSIONS.BRAINX_READ);
+  if (!scope) return;
+  try { const input = enterpriseBrainInput(scope, req, { applicationId: req.query.applicationId || undefined, routeId: req.query.routeId || undefined, limit: enterpriseBrainLimit(req.query.limit) }); res.json({ status: "ok", modelRouteReceipts: await callEnterpriseBrain(["listModelRouteReceipts"], input, scope) }); } catch (error) { respondDecisionContinuityError(res, error); }
+});
+
+app.get("/api/enterprise-brain/agenticx/reuse-receipts", async (req, res) => {
+  const scope = await brainxScope(req, res, DECISION_PERMISSIONS.BRAINX_READ);
+  if (!scope) return;
+  try { const input = enterpriseBrainInput(scope, req, { sourceApplicationId: req.query.sourceApplicationId || undefined, targetApplicationId: req.query.targetApplicationId || undefined, status: req.query.status || undefined, limit: enterpriseBrainLimit(req.query.limit) }); res.json({ status: "ok", reuseReceipts: await callEnterpriseBrain(["listKnowledgeReuseReceipts"], input, scope) }); } catch (error) { respondDecisionContinuityError(res, error); }
+});
+
+app.post("/api/enterprise-brain/agenticx/knowledge", requireDecisionContinuityJsonBody, async (req, res) => {
+  const scope = await brainxScope(req, res, DECISION_PERMISSIONS.BRAINX_ADMIN);
+  if (!scope) return;
+  try {
+    const input = enterpriseBrainInput(scope, req, enterpriseBrainMutationInput(req, "agenticx-knowledge"));
+    const result = await agenticXKnowledgeGateway.register(input, { tenantId: input.tenantId, workspaceId: input.workspaceId, actor: scope.actor, idempotencyKey: input.idempotencyKey });
+    res.status(result.status === "registered" ? 201 : 200).json({ status: result.status, knowledge: result.knowledge });
+  } catch (error) { respondDecisionContinuityError(res, error); }
+});
+
+app.get("/api/enterprise-brain/research/sources", async (req, res) => {
+  const scope = await brainxScope(req, res, DECISION_PERMISSIONS.BRAINX_READ);
+  if (!scope) return;
+  try { const input = enterpriseBrainInput(scope, req); res.json({ status: "ok", sources: await researchXService.listSources(input) }); } catch (error) { respondDecisionContinuityError(res, error); }
+});
+
+app.post("/api/enterprise-brain/research/sources", requireDecisionContinuityJsonBody, async (req, res) => {
+  const scope = await brainxScope(req, res, DECISION_PERMISSIONS.BRAINX_ADMIN);
+  if (!scope) return;
+  try {
+    const scoped = enterpriseBrainInput(scope, req, enterpriseBrainMutationInput(req, "researchx-source"));
+    const { tenantId, workspaceId, ...sourceInput } = scoped;
+    const result = await researchXService.createSource(sourceInput, { tenantId, workspaceId, actor: scope.actor });
+    res.status(result.status === "created" ? 201 : 200).json({ status: result.status, source: result.source });
+  } catch (error) { respondDecisionContinuityError(res, error); }
+});
+
+app.post("/api/enterprise-brain/research/sources/:sourceId/retire", requireDecisionContinuityJsonBody, async (req, res) => {
+  const scope = await brainxScope(req, res, DECISION_PERMISSIONS.BRAINX_ADMIN);
+  if (!scope) return;
+  try {
+    const input = enterpriseBrainInput(scope, req, enterpriseBrainMutationInput(req, `researchx-retire:${req.params.sourceId}`));
+    const result = await researchXService.deleteSource(req.params.sourceId, { tenantId: input.tenantId, workspaceId: input.workspaceId, actor: scope.actor });
+    res.json({ status: result.status, source: result.source });
+  } catch (error) { respondDecisionContinuityError(res, error); }
+});
+
+app.get("/api/enterprise-brain/research/runs", async (req, res) => {
+  const scope = await brainxScope(req, res, DECISION_PERMISSIONS.BRAINX_READ);
+  if (!scope) return;
+  try { const input = enterpriseBrainInput(scope, req, { sourceId: req.query.sourceId || undefined, limit: req.query.limit }); res.json({ status: "ok", runs: await researchXService.listRuns(input) }); } catch (error) { respondDecisionContinuityError(res, error); }
+});
+
+app.post("/api/enterprise-brain/research/sources/:sourceId/runs", requireDecisionContinuityJsonBody, async (req, res) => {
+  const scope = await brainxScope(req, res, DECISION_PERMISSIONS.BRAINX_ADMIN);
+  if (!scope) return;
+  try {
+    const input = enterpriseBrainInput(scope, req, enterpriseBrainMutationInput(req, `researchx-run:${req.params.sourceId}`));
+    const result = await researchXService.runSource({ sourceId: req.params.sourceId, tenantId: input.tenantId, workspaceId: input.workspaceId, idempotencyKey: input.idempotencyKey, actor: scope.actor });
+    // The API process has no source fetch adapter. This route is useful to
+    // expose the reviewable skipped result; only the worker profile may fetch.
+    res.status(result.status === "completed" ? 200 : 202).json({ status: result.status, run: result.run });
+  } catch (error) { respondDecisionContinuityError(res, error); }
+});
+
 decisionContinuityRoute("evaluation", async (req, res) => {
   const scope = await decisionContinuityScope(req, res, "evaluation");
   if (!scope) return;
@@ -3453,7 +3896,12 @@ app.post("/api/auth/google", async (req, res) => {
   try {
     res.json({ status: "ok", user: await authenticateGooglePayload(req.body || {}) });
   } catch (error) {
-    res.status(401).json({ status: "failed", error: error.message });
+    const knownError = error instanceof AuthenticationError;
+    res.status(knownError ? error.status : 500).json({
+      status: "failed",
+      code: knownError ? error.code : "google_authentication_failed",
+      error: knownError ? error.message : "Google sign-in could not be completed."
+    });
   }
 });
 
@@ -3463,6 +3911,95 @@ app.get("/api/projects", async (req, res) => {
     user: userFromRequest(req),
     projects: await listProjects({ user: userFromRequest(req) })
   });
+});
+
+app.get("/api/enterprise-portfolio", async (req, res) => {
+  try {
+    const user = userFromRequest(req);
+    const [projects, baseGraph, globalAgents, agreementRegistry] = await Promise.all([
+      listProjects({ user }),
+      buildAgenticSystemGraph(),
+      listGlobalAgents(),
+      readEnterpriseSharingAgreements()
+    ]);
+    const managedProjects = projects.filter((project) => !project.isDefault);
+    const graph = mergeAgenticSystemGraph(baseGraph, globalAgents);
+    const portfolio = buildEnterprisePortfolioAnalysis({
+      projects: managedProjects,
+      graph,
+      agreements: agreementRegistry.agreements
+    });
+    res.json({
+      status: "ok",
+      portfolio,
+      agreementRegistry: {
+        status: agreementRegistry.status,
+        configured: agreementRegistry.configured,
+        error: agreementRegistry.error
+      },
+      explanation: "Application dependencies require explicit cross-project causal evidence. Information sharing is separate and remains denied without a same-enterprise, active, direction-and-purpose-bound account agreement."
+    });
+  } catch (error) {
+    res.status(500).json({ status: "failed", error: error.message || "Enterprise portfolio analysis is unavailable." });
+  }
+});
+
+app.get("/api/projects/:projectId/decision-map", async (req, res) => {
+  const user = userFromRequest(req);
+  try {
+    const project = await getProject(req.params.projectId, { user });
+    if (!project || project.isDefault) return res.status(404).json({ status: "failed", error: "Project not found." });
+    // This local read contract performs only the bounded, redacted static
+    // source scan. It never calls a model, writes ledger dispositions, or
+    // claims to reconstruct decisions for an imported application.
+    const fingerprint = await analyzeProjectArchitecture({ project, env: process.env, skipModel: true });
+    const recorded = await readProjectArchitectureAnalysis({
+      root: plutonixProjectRoot(),
+      projectId: project.id,
+      sourceDigest: fingerprint.sourceDigest
+    });
+    const exactRecorded = recorded?.version >= ANALYSIS_VERSION ? recorded : null;
+    const currentSourceAvailable = Number(fingerprint.scan?.fileCount || 0) > 0
+      && (fingerprint.majorFunctionalities || fingerprint.functionalities || []).length > 0;
+    const latestRecorded = !exactRecorded && !currentSourceAvailable
+      ? await readLatestProjectArchitectureAnalysis({ root: plutonixProjectRoot(), projectId: project.id })
+      : null;
+    const staleRecorded = (latestRecorded?.majorFunctionalities || latestRecorded?.functionalities || []).length
+      ? latestRecorded
+      : null;
+    const report = exactRecorded || staleRecorded || fingerprint;
+    const analysisSource = exactRecorded
+      ? "recorded_source_analysis"
+      : staleRecorded
+        ? "stale_recorded_source_analysis"
+        : "live_bounded_source_scan";
+    return res.json({
+      status: "ok",
+      project: {
+        id: project.id,
+        name: project.name,
+        origin: project.origin || project.provenance?.origin || "unknown_legacy",
+        provenance: project.provenance || null
+      },
+      analysisSource,
+      sourceStatus: {
+        currentSourceAvailable,
+        stale: analysisSource === "stale_recorded_source_analysis",
+        currentScanFileCount: Number(fingerprint.scan?.fileCount || 0),
+        recordedAt: analysisSource.includes("recorded") ? report.analyzedAt || "" : ""
+      },
+      historicalClaimPolicy: "source_analysis_never_asserts_historical_selection_deferral_or_rejection",
+      report: publicArchitectureAnalysis({
+        ...report,
+        projectOrigin: project.origin || project.provenance?.origin || report.projectOrigin || "unknown_legacy"
+      })
+    });
+  } catch (error) {
+    return res.status(error.message === "Project not found." ? 404 : 500).json({
+      status: "failed",
+      error: error.message || "Application decision map is unavailable."
+    });
+  }
 });
 
 app.get("/api/project-instructions", (req, res) => {
@@ -3532,7 +4069,7 @@ app.post("/api/self-improvement/system-instruction", async (req, res) => {
     const taskType = req.body?.taskType || "Simple";
     const hfPreparation = await huggingFaceModelPool.prepareFromInstruction({
       instruction,
-      autoDownload: String(process.env.PLUTONIX_HF_AUTO_DOWNLOAD || "1") === "1"
+      autoDownload: String(process.env.PLUTONIX_HF_AUTO_DOWNLOAD || "0") === "1"
     });
     const modelRouting = localModelRoutingForTask({
       taskType,
@@ -4893,19 +5430,48 @@ app.patch("/api/projects/:projectId", async (req, res) => {
   const user = userFromRequest(req);
   const parsed = ProjectIdentitySchema.safeParse(req.body || {});
   if (!parsed.success) {
-    return res.status(400).json({ status: "failed", error: "Project name and workspace name must be 2-80 characters." });
+    return res.status(400).json({ status: "failed", error: "Project, workspace, and enterprise identity values are invalid." });
   }
   try {
     const project = await updateProjectIdentity(req.params.projectId, parsed.data, { user });
-    event("project-renamed", `Project ${project.name} identity was updated`, {
+    event("project-identity-updated", `Project ${project.name} identity was updated`, {
       projectId: project.id,
       projectName: project.name,
       workspaceName: project.folderName,
-      workspaceDir: project.workspaceDir
+      workspaceDir: project.workspaceDir,
+      enterpriseId: project.enterprise?.id || "",
+      enterpriseName: project.enterprise?.name || ""
     });
     return res.json({ status: "succeeded", project });
   } catch (error) {
     const status = error.message === "Project not found." ? 404 : /cannot|must|already|outside/i.test(error.message) ? 400 : 500;
+    return res.status(status).json({ status: "failed", error: error.message });
+  }
+});
+
+app.patch("/api/projects/:projectId/enterprise", async (req, res) => {
+  const user = userFromRequest(req);
+  const parsed = ProjectEnterpriseAssignmentSchema.safeParse(req.body || {});
+  if (!parsed.success) {
+    return res.status(400).json({ status: "failed", error: "Enterprise assignment must be null or contain a valid enterprise ID and name." });
+  }
+  const requestedEnterprise = parsed.data.enterprise;
+  try {
+    const project = await updateProjectIdentity(req.params.projectId, {
+      enterpriseId: requestedEnterprise?.id || "",
+      enterpriseName: requestedEnterprise?.name || ""
+    }, { user });
+    event(requestedEnterprise ? "project-enterprise-assigned" : "project-enterprise-unassigned", requestedEnterprise
+      ? `Project ${project.name} was assigned to ${project.enterprise?.name || requestedEnterprise.name}`
+      : `Project ${project.name} enterprise assignment was removed`, {
+      projectId: project.id,
+      projectName: project.name,
+      enterpriseId: project.enterprise?.id || "",
+      enterpriseName: project.enterprise?.name || ""
+    });
+    return res.json({ status: "succeeded", project });
+  } catch (error) {
+    const status = error.message === "Project not found." ? 404 : /cannot|must|already|outside|invalid/i.test(error.message) ? 400 : 500;
     return res.status(status).json({ status: "failed", error: error.message });
   }
 });
@@ -5225,6 +5791,7 @@ async function handleSystemImprovementRequest(_req, res, { parsed, executionMode
 
 async function handleGenerateRequest(req, res, { executionMode = "direct" } = {}) {
   const user = userFromRequest(req);
+  const verifiedUsageOwner = await gothamUsageOwner(req);
   const executionStartedAt = new Date();
   const parsed = GenerateSchema.safeParse(req.body);
   if (!parsed.success) {
@@ -5241,7 +5808,7 @@ async function handleGenerateRequest(req, res, { executionMode = "direct" } = {}
   });
   const workflowMode = requestIntent.workflowMode;
   const taskType = requestIntent.taskType;
-  const modelRouting = localModelRoutingForTask({
+  let modelRouting = localModelRoutingForTask({
     taskType,
     workflowMode,
     target: parsed.data.target?.type === "system" ? "system" : "project",
@@ -5249,12 +5816,310 @@ async function handleGenerateRequest(req, res, { executionMode = "direct" } = {}
   });
   const hfModelPreparation = await huggingFaceModelPool.prepareFromInstruction({
     instruction: parsed.data.instruction,
-    autoDownload: String(process.env.PLUTONIX_HF_AUTO_DOWNLOAD || "1") === "1"
+    autoDownload: String(process.env.PLUTONIX_HF_AUTO_DOWNLOAD || "0") === "1"
   });
   if (parsed.data.target?.type === "system") {
     return handleSystemImprovementRequest(req, res, { parsed, executionMode, user, executionStartedAt });
   }
   const selectedProject = await getProject(parsed.data.target?.projectId || parsed.data.projectId, { user });
+  const mlExecutionIntent = detectMlExecutionIntent(parsed.data.instruction, parsed.data.studioContext);
+  if (mlExecutionIntent.detected && selectedProject) {
+    try {
+      const studioAuthorization = await identityAccessStore.authorizeRequest(req, {
+        permission: workflowMode === "executor" ? DECISION_PERMISSIONS.OPERATE : DECISION_PERMISSIONS.READ,
+        principalTypes: ["human"],
+        action: workflowMode === "executor" ? "gotham_studio.propose" : "gotham_studio.plan"
+      });
+      const workspaceId = parsed.data.workspaceId || selectedProject.id;
+      if (workspaceId !== selectedProject.id || (studioAuthorization.workspaceId !== "*" && studioAuthorization.workspaceId !== workspaceId)) {
+        throw new GothamStudioError("The requested Studio workspace is unavailable.", { code: "studio_scope_not_found", status: 404 });
+      }
+      const scope = { tenantId: studioAuthorization.tenantId, workspaceId, projectId: selectedProject.id };
+      const studioExecution = await gothamStudioService.createGothamProposal({
+        instruction: parsed.data.instruction,
+        projectName: selectedProject.name,
+        workflowMode,
+        functionalityId: parsed.data.studioContext?.selectedFunctionalityId || "",
+        studioContext: parsed.data.studioContext
+      }, scope, studioAuthorization.actor);
+      const activeAgents = [{
+        id: "plutonix-fullstack-agent",
+        name: "PlutoniX Fullstack Agent",
+        role: workflowMode === "planner" ? "Planner" : workflowMode === "debugger" ? "Debugger" : "Executor",
+        status: "completed",
+        action: studioExecution.contextual
+          ? "Reviewed the selected Studio resource without creating or submitting compute."
+          : workflowMode === "executor"
+          ? "Created a bounded logical Studio proposal without launching external compute."
+          : "Prepared an ML execution proposal without launching external compute."
+      }];
+      const studioFunctionalities = [
+        { id: "gotham-studio", label: "Gotham Studio execution", detail: "Provider-neutral logical ML execution control plane." }
+      ];
+      if (studioExecution.pipeline) studioFunctionalities.push({
+        id: studioExecution.pipeline.id,
+        label: studioExecution.pipeline.name,
+        detail: "Project-scoped pipeline definition.",
+        parentFunctionalityId: "gotham-studio"
+      });
+      if (studioExecution.job) studioFunctionalities.push({
+        id: studioExecution.job.id,
+        label: studioExecution.job.id,
+        detail: studioExecution.contextual ? `Selected logical job in ${studioExecution.job.logicalState}.` : "External compute remains unsubmitted pending a complete provider specification and explicit Executor action.",
+        parentFunctionalityId: studioExecution.pipeline?.id || "gotham-studio"
+      });
+      if (studioExecution.experiment) studioFunctionalities.push({
+        id: studioExecution.experiment.id,
+        label: studioExecution.experiment.name,
+        detail: "Selected provider-backed experiment evidence.",
+        parentFunctionalityId: studioExecution.job?.id || studioExecution.pipeline?.id || "gotham-studio"
+      });
+      if (studioExecution.model) studioFunctionalities.push({
+        id: studioExecution.model.id,
+        label: studioExecution.model.name,
+        detail: "Selected provider-backed model record.",
+        parentFunctionalityId: studioExecution.job?.id || studioExecution.pipeline?.id || "gotham-studio"
+      });
+      if (!studioExecution.contextual && !studioExecution.pipeline && !studioExecution.job) {
+        studioFunctionalities.push(
+          { id: "ml-pipeline-proposal", label: studioExecution.proposal.pipeline.name, detail: "Non-executing pipeline proposal.", parentFunctionalityId: "gotham-studio" },
+          { id: "ml-job-proposal", label: "Logical ML job proposal", detail: "No durable job or provider execution was created.", parentFunctionalityId: "ml-pipeline-proposal" }
+        );
+      }
+      const functionalityGraph = buildFunctionalityGraph({
+        projectId: selectedProject.id,
+        projectName: selectedProject.name,
+        structuredRequest: { objective: studioExecution.proposal.objective },
+        functionalities: studioFunctionalities,
+        activeAgents,
+        status: workflowMode === "planner" ? "planned" : "proposed"
+      });
+      functionalityGraph.nodes = functionalityGraph.nodes.map((node) => node.sourceId === studioExecution.job?.id
+        ? { ...node, studioResource: { type: "ml_job", id: studioExecution.job.id } }
+        : node.sourceId === studioExecution.pipeline?.id
+          ? { ...node, studioResource: { type: "ml_pipeline", id: studioExecution.pipeline.id } }
+          : node);
+      const flowPath = {
+        status: workflowMode === "planner" ? "planned" : "proposed",
+        selectedPath: "gotham-studio-control-plane",
+        confidence: mlExecutionIntent.confidence,
+        deterministic: true,
+        projectName: selectedProject.name,
+        taskType,
+        workflowMode,
+        summary: studioExecution.contextual
+          ? "Gotham reviewed the selected Studio resource in project scope. No new logical job or external compute was created."
+          : workflowMode === "executor"
+          ? "Gotham routed the ML objective to Studio and created durable logical records. No external compute was launched."
+          : `Gotham ${workflowMode === "planner" ? "Planner" : "Debugger"} produced a non-executing Studio proposal.`,
+        activeAgents,
+        functionalityGraph,
+        nodes: studioExecution.contextual ? [
+          { id: "studio-context", label: "Selected Studio resource", state: "completed", detail: mlExecutionIntent.reason },
+          { id: "context-review", label: "Contextual review", state: "completed", detail: "Reused the selected project-scoped record without creating a duplicate." },
+          { id: "physical-execution", label: "Physical provider execution", state: "disabled", detail: "No provider submission was triggered by this conversation." }
+        ] : [
+          { id: "ml-intent", label: "ML execution objective", state: "completed", detail: mlExecutionIntent.reason },
+          { id: "studio-proposal", label: "Studio proposal", state: "completed", detail: studioExecution.proposal.objective },
+          { id: "provider-specification", label: "Provider specification", state: studioExecution.proposal.requiredInputs.length ? "pending" : "completed", detail: studioExecution.proposal.requiredInputs.join(" ") },
+          { id: "physical-execution", label: "Physical provider execution", state: "pending", detail: "Requires a complete provider specification and an explicit Executor submission." }
+        ],
+        executedDecisions: [
+          { id: "control-plane", label: "Execution path", value: "Gotham Studio", reason: "ML execution objectives use the provider-neutral Studio boundary." },
+          { id: "compute-safety", label: "External compute", value: "not submitted", reason: "Natural-language intent alone never authorizes external compute spend." }
+        ],
+        evidence: studioExecution.contextual
+          ? [studioExecution.job?.error?.summary, studioExecution.job?.providerStatusMessage].filter(Boolean)
+          : studioExecution.proposal.requiredInputs,
+        nextRecommendation: studioExecution.contextual && studioExecution.job
+          ? `Open ${studioExecution.job.id} in Gotham Studio to refresh provider state or use its supported evidence and lifecycle controls.`
+          : studioExecution.contextual
+            ? "Return to Gotham Studio to continue with the selected resource."
+            : studioExecution.job
+          ? `Open ${studioExecution.job.id} in Gotham Studio, complete its provider specification, and submit it from Executor mode.`
+          : "Review the proposal, then use Executor mode to create a durable Studio job."
+      };
+      event(studioExecution.contextual ? "studio.context.reviewed" : "studio.proposal.created", studioExecution.contextual
+        ? `Gotham reviewed the selected Studio resource${studioExecution.job ? ` ${studioExecution.job.id}` : ""}.`
+        : `Gotham routed this ML objective to Studio${studioExecution.job ? ` as ${studioExecution.job.id}` : ""}.`, {
+        projectId: selectedProject.id,
+        projectName: selectedProject.name,
+        workspaceId,
+        workflowMode,
+        studioJobId: studioExecution.job?.id || "",
+        studioPipelineId: studioExecution.pipeline?.id || "",
+        status: flowPath.status
+      });
+      persistProjectInstruction({
+        projectId: selectedProject.id,
+        projectName: selectedProject.name,
+        taskType,
+        workflowMode,
+        instruction: parsed.data.instruction,
+        status: flowPath.status,
+        startedAt: executionStartedAt.toISOString(),
+        completedAt: new Date().toISOString(),
+        durationMs: Date.now() - executionStartedAt.getTime(),
+        flowPath,
+        changedFiles: []
+      });
+      return res.json({
+        status: flowPath.status,
+        buildId: studioExecution.job?.id || `studio_plan_${Date.now()}`,
+        files: [],
+        fileOperations: [],
+        studioExecution,
+        flowPath,
+        executionMode,
+        workflowMode
+      });
+    } catch (error) {
+      const status = Number(error.status || 500);
+      return res.status(status).json({ status: "failed", code: error.code || "studio_proposal_failed", error: error.message || "Gotham Studio proposal failed." });
+    }
+  }
+  const enterpriseBuildScope = selectedProject && !selectedProject.isDefault
+    ? await optionalEnterpriseBrainBuildScope(req, selectedProject.id)
+    : null;
+  const buildCorrelationId = String(req.get("x-request-id") || `generate_${crypto.createHash("sha256").update(`${selectedProject?.id || "default"}:${parsed.data.instruction}`).digest("hex").slice(0, 32)}`).slice(0, 160);
+  const suppliedEnterpriseDecisionContext = parsed.data.enterpriseDecisionContext || null;
+  let governedAIXRoute = { status: "baseline", route: null };
+  let agenticXKnowledge = { status: "not_requested", knowledge: [], receipt: null };
+  let enterpriseDecisionContext = null;
+  if (enterpriseBuildScope) {
+    governedAIXRoute = await aixRouter.route({
+      tenantId: enterpriseBuildScope.tenantId,
+      workspaceId: selectedProject.id,
+      actor: enterpriseBuildScope.actor,
+      applicationId: selectedProject.id,
+      input: parsed.data.instruction,
+      taskRole: "generation",
+      policySnapshotId: suppliedEnterpriseDecisionContext?.policySnapshotId,
+      budgetId: suppliedEnterpriseDecisionContext?.budgetId,
+      data: suppliedEnterpriseDecisionContext?.data,
+      evidence: (suppliedEnterpriseDecisionContext?.evidence || []).map((evidence) => ({
+        ...evidence,
+        tenantId: enterpriseBuildScope.tenantId,
+        workspaceId: selectedProject.id
+      })),
+      impactLevel: suppliedEnterpriseDecisionContext?.impactLevel || "low",
+      approval: suppliedEnterpriseDecisionContext?.approval,
+      workflow: { correlationId: buildCorrelationId, requestId: String(req.get("x-request-id") || "").slice(0, 160) },
+      idempotencyKey: String(req.get("idempotency-key") || `aix:${buildCorrelationId}`).slice(0, 240)
+    });
+    if (governedAIXRoute.status === "no_eligible_model") {
+      const deniedRoute = governedAIXRoute.route || {};
+      const deniedEnterpriseDecisionContext = {
+        applicationId: selectedProject.id,
+        ...(deniedRoute.policySnapshotId ? { policySnapshotId: deniedRoute.policySnapshotId } : {}),
+        ...(deniedRoute.budgetId ? { budgetScopeId: deniedRoute.budgetId } : {}),
+        evidenceRefs: [deniedRoute.receiptId || deniedRoute.id, ...(suppliedEnterpriseDecisionContext?.evidence || []).map((item) => item.id)].filter(Boolean),
+        classification: suppliedEnterpriseDecisionContext?.data?.classification || "internal",
+        ...(suppliedEnterpriseDecisionContext?.data?.region ? { region: suppliedEnterpriseDecisionContext.data.region } : {}),
+        purpose: "application_development"
+      };
+      const deniedDecisionX = await decisionXBuildCapture.capturePlannedSafely({
+        tenantId: enterpriseBuildScope.tenantId,
+        workspaceId: selectedProject.id,
+        actor: enterpriseBuildScope.actor,
+        project: selectedProject,
+        instruction: parsed.data.instruction,
+        buildKey: buildCorrelationId,
+        workflow: {
+          correlationId: buildCorrelationId,
+          requestId: String(req.get("x-request-id") || "").slice(0, 160),
+          proposedPath: "governed_model_route",
+          selectedPath: "aix_no_eligible_model",
+          flowPath: {
+            selectedPath: "aix_no_eligible_model",
+            rejectedPaths: (deniedRoute.excludedCandidates || []).map((candidate) => ({
+              id: candidate.registrationId,
+              reason: (candidate.reasonCodes || []).join(", "),
+              constraint: "enterprise_model_policy"
+            }))
+          },
+          agentId: "brainx-aix-router"
+        },
+        routeResult: governedAIXRoute,
+        enterpriseDecisionContext: deniedEnterpriseDecisionContext
+      });
+      if (deniedDecisionX.branch?.id) {
+        await decisionXBuildCapture.captureOutcomeSafely({
+          tenantId: enterpriseBuildScope.tenantId,
+          workspaceId: selectedProject.id,
+          actor: enterpriseBuildScope.actor,
+          branchId: deniedDecisionX.branch.id,
+          buildKey: buildCorrelationId,
+          status: "stopped",
+          validation: { status: "policy_denied", routeReceiptId: deniedRoute.receiptId || deniedRoute.id || null },
+          routeResult: governedAIXRoute,
+          error: "No eligible model was available under the configured enterprise policy and budget."
+        });
+      }
+      return res.status(409).json({
+        status: "no_eligible_model",
+        error: "No model is eligible under the tenant's configured BrainX policy and budget. Review the recorded AIX route receipt before changing a policy or executor.",
+        modelRouting: { ...modelRouting, governedRoute: governedAIXRoute.route },
+        aixRoute: governedAIXRoute.route,
+        decisionX: deniedDecisionX ? { status: deniedDecisionX.status, branchId: deniedDecisionX.branch?.id || null } : null,
+        executionMode,
+        workflowMode
+      });
+    }
+    if (governedAIXRoute.status === "routed") {
+      const route = governedAIXRoute.route;
+      modelRouting = {
+        ...modelRouting,
+        preferredProvider: route.selectedProvider || route.provider || modelRouting.preferredProvider,
+        selectedModelId: route.executionModel || route.selectedModelId || route.modelId || null,
+        governedRoute: route,
+        requiresGovernedRoute: true
+      };
+      enterpriseDecisionContext = {
+        applicationId: selectedProject.id,
+        ...(route.enterpriseId ? { enterpriseId: route.enterpriseId } : {}),
+        affectedApplicationIds: Array.isArray(route.affectedApplicationIds) ? route.affectedApplicationIds : [],
+        ...(route.policySnapshotId ? { policySnapshotId: route.policySnapshotId } : {}),
+        ...(route.budgetId ? { budgetScopeId: route.budgetId } : {}),
+        evidenceRefs: [route.receiptId || route.id, ...(suppliedEnterpriseDecisionContext?.evidence || []).map((item) => item.id)].filter(Boolean),
+        classification: route.data?.classification || "internal",
+        ...(route.data?.region ? { region: route.data.region } : {}),
+        purpose: "application_development"
+      };
+      try {
+        agenticXKnowledge = await agenticXKnowledgeGateway.retrieve({
+          tenantId: enterpriseBuildScope.tenantId,
+          workspaceId: selectedProject.id,
+          actor: enterpriseBuildScope.actor,
+          purpose: "application_development",
+          data: route.data,
+          region: route.data?.region,
+          egress: route.data?.egress,
+          maxClassification: route.data?.classification,
+          transformation: "summary",
+          retentionDays: route.data?.retentionDays,
+          complianceControlIds: route.data?.complianceControlIds,
+          targetApplicationId: selectedProject.id,
+          policySnapshotId: route.policySnapshotId || undefined,
+          // Route receipts are audit facts, not authorization evidence. Only
+          // caller-supplied, scope-bound policy evidence may authorize reuse.
+          evidence: (suppliedEnterpriseDecisionContext?.evidence || []).map((evidence) => ({
+            ...evidence,
+            tenantId: enterpriseBuildScope.tenantId,
+            workspaceId: selectedProject.id
+          })),
+          impactLevel: suppliedEnterpriseDecisionContext?.impactLevel || "low",
+          approval: suppliedEnterpriseDecisionContext?.approval,
+          idempotencyKey: `agenticx:${buildCorrelationId}`
+        });
+      } catch (error) {
+        // Knowledge reuse is advisory context. A denial is persisted by the
+        // gateway when possible and must not weaken a successfully governed
+        // model route or cause an existing build to become unavailable.
+        agenticXKnowledge = { status: "denied", knowledge: [], receipt: null, denialReasons: [error?.code || "knowledge_retrieval_failed"] };
+      }
+    }
+  }
   if ((!selectedProject || selectedProject.isDefault) && workflowMode !== "planner") {
     const requestPreflight = analyzeRealDataNeed({
       instruction: parsed.data.instruction,
@@ -5354,6 +6219,13 @@ async function handleGenerateRequest(req, res, { executionMode = "direct" } = {}
   orchestrated.structuredRequest.taskType = taskType;
   orchestrated.structuredRequest.modelRouting = modelRouting;
   orchestrated.structuredRequest.huggingFaceModelPool = hfModelPreparation;
+  orchestrated.structuredRequest.aixRoute = governedAIXRoute.route || null;
+  orchestrated.structuredRequest.agenticXKnowledge = {
+    status: agenticXKnowledge.status,
+    knowledge: Array.isArray(agenticXKnowledge.knowledge) ? agenticXKnowledge.knowledge : [],
+    receiptId: agenticXKnowledge.receipt?.id || null,
+    denialReasons: Array.isArray(agenticXKnowledge.denialReasons) ? agenticXKnowledge.denialReasons : []
+  };
   orchestrated.structuredRequest.intentInference = requestIntent.inferredBugFix
     ? { kind: "bug_fix", reason: requestIntent.reason }
     : { kind: "standard", reason: requestIntent.reason };
@@ -5542,6 +6414,32 @@ async function handleGenerateRequest(req, res, { executionMode = "direct" } = {}
       flowPath,
       changedFiles: []
     });
+    let decisionX = null;
+    if (enterpriseBuildScope) {
+      decisionX = await decisionXBuildCapture.capturePlannedSafely({
+        tenantId: enterpriseBuildScope.tenantId,
+        workspaceId: selectedProject.id,
+        actor: enterpriseBuildScope.actor,
+        project: selectedProject,
+        instruction: parsed.data.instruction,
+        buildKey: buildCorrelationId,
+        workflow: { correlationId: buildCorrelationId, selectedPath: flowPath.selectedPath, flowPath, agentId: "plutonix-fullstack-agent" },
+        routeResult: governedAIXRoute,
+        enterpriseDecisionContext
+      });
+      if (decisionX.branch?.id) {
+        await decisionXBuildCapture.captureOutcomeSafely({
+          tenantId: enterpriseBuildScope.tenantId,
+          workspaceId: selectedProject.id,
+          actor: enterpriseBuildScope.actor,
+          branchId: decisionX.branch.id,
+          buildKey: buildCorrelationId,
+          status: "planned",
+          validation: { status: "planner_only", flowPath },
+          routeResult: governedAIXRoute
+        });
+      }
+    }
     return res.json({
       status: "planned",
       buildId: `planner_${Date.now()}`,
@@ -5550,6 +6448,7 @@ async function handleGenerateRequest(req, res, { executionMode = "direct" } = {}
       orchestrated: orchestrated.structuredRequest,
       flowPath,
       plan,
+      decisionX: decisionX ? { status: decisionX.status, branchId: decisionX.branch?.id || null } : null,
       executionMode,
       workflowMode
     });
@@ -5581,6 +6480,28 @@ async function handleGenerateRequest(req, res, { executionMode = "direct" } = {}
   }
   orchestrationEnvelope.adaptiveRoute = adaptiveRoute;
   orchestrated.structuredRequest.orchestrationEnvelope = orchestrationEnvelope;
+  const decisionXCapture = enterpriseBuildScope
+    ? await decisionXBuildCapture.capturePlannedSafely({
+        tenantId: enterpriseBuildScope.tenantId,
+        workspaceId: selectedProject.id,
+        actor: enterpriseBuildScope.actor,
+        project: selectedProject,
+        instruction: parsed.data.instruction,
+        buildKey: orchestrationEnvelope.parentWorkflowId || buildCorrelationId,
+        workflow: {
+          correlationId: orchestrationEnvelope.parentWorkflowId || buildCorrelationId,
+          requestId: String(req.get("x-request-id") || "").slice(0, 160),
+          selectedPath: "plutonix-global-orchestration",
+          proposedPath: adaptiveRoute.mode,
+          agentId: adaptiveRoute.executionAgent || "plutonix-fullstack-agent"
+        },
+        routeResult: governedAIXRoute,
+        enterpriseDecisionContext
+      })
+    : null;
+  orchestrated.structuredRequest.decisionX = decisionXCapture
+    ? { status: decisionXCapture.status, branchId: decisionXCapture.branch?.id || null }
+    : null;
   const activeExecutionKey = gothamExecutionKey(user, selectedProject?.id || "");
   if (activeGothamExecutions.has(activeExecutionKey)) {
     return res.status(409).json({
@@ -5722,6 +6643,8 @@ async function handleGenerateRequest(req, res, { executionMode = "direct" } = {}
       projectName: selectedProject?.name || "PlutoniX default workspace",
       taskType,
       workflowMode,
+      gothamUsageOwnerKey: gothamUsageOwnerKey(verifiedUsageOwner),
+      model: governedAIXRoute.status === "routed" ? (governedAIXRoute.route?.executionModel || governedAIXRoute.route?.selectedModelId || governedAIXRoute.route?.modelId || undefined) : undefined,
       signal: activeExecution.controller.signal
     };
     result = executionMode === "mcp"
@@ -5824,6 +6747,25 @@ async function handleGenerateRequest(req, res, { executionMode = "direct" } = {}
       result,
       useProjectOrchestrator
     });
+    const decisionXOutcome = decisionXCapture?.branch?.id
+      ? await decisionXBuildCapture.captureOutcomeSafely({
+          tenantId: enterpriseBuildScope.tenantId,
+          workspaceId: selectedProject.id,
+          actor: enterpriseBuildScope.actor,
+          branchId: decisionXCapture.branch.id,
+          buildKey: orchestrationEnvelope.parentWorkflowId || buildCorrelationId,
+          status: "succeeded",
+          buildId: result.buildId,
+          changedFiles: result.files || [],
+          validation: {
+            status: "passed",
+            productShapeValidation: result.productShapeValidation || null,
+            inputConsumption: result.inputConsumption || null,
+            flowPath
+          },
+          routeResult: governedAIXRoute
+        })
+      : null;
     persistWhatNextKnowledge(flowPath, {
       source: "plutonix-gotham-chat",
       projectId: selectedProject?.id || "",
@@ -5884,7 +6826,7 @@ async function handleGenerateRequest(req, res, { executionMode = "direct" } = {}
       });
       return null;
     });
-    return res.json({ ...result, restart, orchestrated: orchestrated.structuredRequest, flowPath, mediaCleanup, executionMode, workflowMode });
+    return res.json({ ...result, restart, orchestrated: orchestrated.structuredRequest, flowPath, mediaCleanup, executionMode, workflowMode, decisionX: decisionXOutcome ? { status: decisionXOutcome.status, branchId: decisionXOutcome.branch?.id || decisionXCapture?.branch?.id || null } : orchestrated.structuredRequest.decisionX });
   } catch (error) {
     if (intelRuntime) {
       const cancelled = activeExecution.controller.signal.aborted || /stopped by the user|cancelled/i.test(error.message);
@@ -5918,6 +6860,20 @@ async function handleGenerateRequest(req, res, { executionMode = "direct" } = {}
           result: repairedResult,
           useProjectOrchestrator
         });
+        const decisionXOutcome = decisionXCapture?.branch?.id
+          ? await decisionXBuildCapture.captureOutcomeSafely({
+              tenantId: enterpriseBuildScope.tenantId,
+              workspaceId: selectedProject.id,
+              actor: enterpriseBuildScope.actor,
+              branchId: decisionXCapture.branch.id,
+              buildKey: orchestrationEnvelope.parentWorkflowId || buildCorrelationId,
+              status: "succeeded",
+              buildId: repairedResult.buildId,
+              changedFiles: repairedResult.files || [],
+              validation: { status: "passed_after_repair", flowPath, repair: repairOutcome.repair || null },
+              routeResult: governedAIXRoute
+            })
+          : null;
         persistWhatNextKnowledge(flowPath, {
           source: "plutonix-gotham-chat",
           projectId: selectedProject?.id || "",
@@ -5978,7 +6934,8 @@ async function handleGenerateRequest(req, res, { executionMode = "direct" } = {}
           mediaCleanup,
           executionMode,
           workflowMode,
-          repair: repairOutcome.repair
+          repair: repairOutcome.repair,
+          decisionX: decisionXOutcome ? { status: decisionXOutcome.status, branchId: decisionXOutcome.branch?.id || decisionXCapture?.branch?.id || null } : orchestrated.structuredRequest.decisionX
         });
       }
     } catch (repairError) {
@@ -6006,6 +6963,20 @@ async function handleGenerateRequest(req, res, { executionMode = "direct" } = {}
       error: error.message,
       useProjectOrchestrator
     });
+    const decisionXOutcome = decisionXCapture?.branch?.id
+      ? await decisionXBuildCapture.captureOutcomeSafely({
+          tenantId: enterpriseBuildScope.tenantId,
+          workspaceId: selectedProject.id,
+          actor: enterpriseBuildScope.actor,
+          branchId: decisionXCapture.branch.id,
+          buildKey: orchestrationEnvelope.parentWorkflowId || buildCorrelationId,
+          status: activeExecution.controller.signal.aborted ? "stopped" : "failed",
+          changedFiles: result?.files || [],
+          validation: { status: "failed", flowPath },
+          routeResult: governedAIXRoute,
+          error: error.message
+        })
+      : null;
     persistWhatNextKnowledge(flowPath, {
       source: "plutonix-gotham-chat",
       projectId: selectedProject?.id || "",
@@ -6056,7 +7027,8 @@ async function handleGenerateRequest(req, res, { executionMode = "direct" } = {}
       parentWorkflowId: orchestrationEnvelope.parentWorkflowId,
       childExecutionIds: orchestrationEnvelope.childExecutionIds,
       flowPath,
-      mediaCleanup
+      mediaCleanup,
+      decisionX: decisionXOutcome ? { status: decisionXOutcome.status, branchId: decisionXOutcome.branch?.id || decisionXCapture?.branch?.id || null } : orchestrated.structuredRequest.decisionX
     });
   } finally {
     activeGothamExecutions.delete(activeExecutionKey);
@@ -6081,6 +7053,8 @@ app.use((err, _req, res, _next) => {
 });
 
 export async function closePlutonixServerResources() {
+  gothamStudioService?.stopReconciler();
+  await gothamStudioService?.repository?.close?.();
   if (decisionContinuityWorkflow?.pool) {
     await decisionContinuityWorkflow.pool.end();
     decisionContinuityWorkflow.pool = null;
@@ -6098,6 +7072,7 @@ export async function closePlutonixServerResources() {
 export function startPlutonixServer({ listenPort = port, host = "0.0.0.0" } = {}) {
   return app.listen(listenPort, host, async () => {
   console.log(`PlutoniX backend listening on ${listenPort}`);
+  gothamStudioService?.startReconciler();
   try {
     await refreshGothamSandboxReadiness({ source: "backend-startup" });
   } catch (error) {
@@ -6136,7 +7111,10 @@ export function startPlutonixServer({ listenPort = port, host = "0.0.0.0" } = {}
   } catch (error) {
     console.error(`Failed to start managed project previews: ${error.message}`);
   }
-  const syncIntervalMs = Number(process.env.AGENT_MEMORY_SYNC_INTERVAL_MS || 300000);
+  // A bounded memory projection should not compete with active product work.
+  // Three evenly-spaced checks per day are sufficient; the sync module also
+  // enforces its persisted daily budget for workflow-idle requests.
+  const syncIntervalMs = Number(process.env.AGENT_MEMORY_SYNC_INTERVAL_MS || 8 * 60 * 60 * 1000);
   setTimeout(() => scheduleIdleVectorSync("backend-startup"), 8000);
   setInterval(() => scheduleIdleVectorSync("periodic"), Math.max(60000, syncIntervalMs));
   });

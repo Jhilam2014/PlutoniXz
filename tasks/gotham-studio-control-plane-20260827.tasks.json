@@ -1,0 +1,12 @@
+{
+  "workflow_id": "gotham-studio-control-plane-20260827",
+  "tasks": [
+    { "task_id": "discover-existing-system", "description": "Inspect repository policy, identity, project routing, activity, graph, memory, and existing workspace conventions.", "status": "completed" },
+    { "task_id": "define-studio-domain", "description": "Define provider-neutral pipeline, job, experiment, model, provider-check, lifecycle, constraints, and secret-safety contracts.", "status": "completed" },
+    { "task_id": "implement-provider-boundary", "description": "Implement capability registry plus Databricks Jobs 2.2/MLflow and Azure ML ARM Jobs adapters.", "status": "completed" },
+    { "task_id": "implement-control-plane-api", "description": "Implement scoped persistence, lifecycle operations, policy gates, reconciliation, intent routing, API routes, and activity events.", "status": "completed" },
+    { "task_id": "implement-studio-workspace", "description": "Implement the internal Gotham Studio views, job controls, provider setup, empty states, and Builder/graph traceability.", "status": "completed" },
+    { "task_id": "record-system-artifacts", "description": "Update AGENTS, docs, environment contract, workflow registry, D3/Neo4j graph, memory, and delivery evidence.", "status": "completed" },
+    { "task_id": "validate-control-plane", "description": "Run focused provider/domain/frontend tests, production build, full regressions, formatting, and supported visual checks.", "status": "completed" }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "workflow_id": "gotham-studio-control-plane-20260827",
+  "status": "completed",
+  "task_size": "large",
+  "product_shape": "existing_product_change",
+  "context_budget": "targeted_large_context",
+  "agents_reused": ["project-execution-agent"],
+  "agent_creation": "skipped_exact_reuse",
+  "external_ml_compute_submitted": false,
+  "stages": [
+    { "id": "discovery", "status": "completed", "evidence": "project-discovery.scan.json" },
+    { "id": "domain_and_persistence", "status": "completed", "evidence": "apps/backend/src/gothamStudio and database/migrations/012_gotham_studio.sql" },
+    { "id": "provider_adapters", "status": "completed", "evidence": "Databricks and Azure ML HTTP boundary tests" },
+    { "id": "api_and_gotham_routing", "status": "completed", "evidence": "strict scoped routes, guarded intent route, activity references" },
+    { "id": "workspace_ui", "status": "completed", "evidence": "apps/frontend/src/gotham-studio and production Vite build" },
+    { "id": "graphs_and_memory", "status": "completed", "evidence": "local D3/Neo4j projections plus verified OpenAI Vector Store attachment" },
+    { "id": "validation", "status": "completed", "evidence": "237 backend regressions, 155 frontend regressions, 14 post-change backend contract tests, 8 post-change frontend contract tests" }
+  ],
+  "graph_update": {
+    "d3": "incrementally_synchronized",
+    "neo4j_artifact": "updated",
+    "neo4j_live_apply": "not_run_operator_controlled"
+  },
+  "memory_update": {
+    "status": "success",
+    "task_files_uploaded": 2,
+    "sync_failures": 0,
+    "remote_verification": "success",
+    "attached_file_count_at_verification": 666
+  },
+  "visual_validation": {
+    "status": "not_run",
+    "reason": "The browser skill's required interactive control surface was unavailable in this session."
+  },
+  "completed_at": "2026-08-27T17:59:12Z"
+}

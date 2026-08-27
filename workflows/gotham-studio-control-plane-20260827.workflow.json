@@ -1,0 +1,14 @@
+{
+  "workflow_id": "gotham-studio-control-plane-20260827",
+  "name": "Gotham Studio AI/ML execution control plane",
+  "workflow_class": ["software_engineering", "ml_control_plane", "provider_integration", "security", "dashboard_ui"],
+  "task_size": "large",
+  "objective": "Add a real, provider-neutral, project-scoped AI/ML execution workspace inside Gotham Builder with Databricks and Azure ML adapters, durable logical state, policy gates, lifecycle evidence, and honest capability-driven UI.",
+  "product_shape": "existing_product_change",
+  "status": "completed",
+  "created_at": "2026-08-27T17:40:51Z",
+  "updated_at": "2026-08-27T17:40:51Z",
+  "agent_id": "project-execution-agent",
+  "reuse_decision": "exact_reuse",
+  "external_compute_submitted": false
+}

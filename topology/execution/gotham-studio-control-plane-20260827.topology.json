@@ -1,0 +1,22 @@
+{
+  "workflow_id": "gotham-studio-control-plane-20260827",
+  "status": "completed",
+  "nodes": [
+    { "id": "discover-existing-system", "type": "task", "status": "completed" },
+    { "id": "define-studio-domain", "type": "task", "status": "completed" },
+    { "id": "implement-provider-boundary", "type": "task", "status": "completed" },
+    { "id": "implement-control-plane-api", "type": "task", "status": "completed" },
+    { "id": "implement-studio-workspace", "type": "task", "status": "completed" },
+    { "id": "record-system-artifacts", "type": "task", "status": "completed" },
+    { "id": "validate-control-plane", "type": "validation", "status": "completed" }
+  ],
+  "links": [
+    { "source": "discover-existing-system", "target": "define-studio-domain", "type": "informs" },
+    { "source": "define-studio-domain", "target": "implement-provider-boundary", "type": "precedes" },
+    { "source": "define-studio-domain", "target": "implement-control-plane-api", "type": "precedes" },
+    { "source": "implement-provider-boundary", "target": "implement-studio-workspace", "type": "informs" },
+    { "source": "implement-control-plane-api", "target": "implement-studio-workspace", "type": "precedes" },
+    { "source": "implement-studio-workspace", "target": "record-system-artifacts", "type": "precedes" },
+    { "source": "record-system-artifacts", "target": "validate-control-plane", "type": "precedes" }
+  ]
+}

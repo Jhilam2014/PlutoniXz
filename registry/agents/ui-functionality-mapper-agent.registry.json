@@ -1,0 +1,55 @@
+{
+  "agent_id": "ui-functionality-mapper-agent",
+  "agent_name": "UI Functionality Mapper Agent",
+  "role": "ui-functionality-mapper",
+  "definitionType": "AgentDefinition",
+  "scope": "global_reusable",
+  "version": "1.0.0",
+  "status": "active",
+  "capability_score": {
+    "capabilityScore": 60,
+    "deliverableAccuracyScore": 50,
+    "reliabilityScore": 50,
+    "adaptabilityScore": 70,
+    "reuseConfidenceScore": 40,
+    "successCount": 0,
+    "failureCount": 0,
+    "repeatedCorrectionCount": 0
+  },
+  "projectAssignments": [
+    {
+      "id": "project-agent-assignment:voicetranscriptgenx-QcKNlU:ui-functionality-mapper-agent",
+      "projectId": "voicetranscriptgenx-QcKNlU",
+      "agentId": "ui-functionality-mapper-agent",
+      "role": "ui-functionality-mapper",
+      "projectResponsibility": "Convert screenshots, Figma frames, product images, and named-app visual references into a ui_node_to_functionality map with behavior, state, data/API contracts, and validation criteria.",
+      "status": "active",
+      "contextPath": ".agentic/orchestrator-agent.md",
+      "createdAt": "2026-08-27T04:25:31.062Z"
+    }
+  ],
+  "reuse_decisions": [
+    {
+      "id": "agent-reuse:voicetranscriptgenx-QcKNlU:ui-functionality-mapper-agent",
+      "projectExecution": "voicetranscriptgenx-QcKNlU",
+      "selectedAgent": "ui-functionality-mapper-agent",
+      "requestedRole": "ui-functionality-mapper",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global ui-functionality-mapper definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-27T04:25:31.062Z"
+    }
+  ],
+  "latest_reuse_decision": {
+    "id": "agent-reuse:voicetranscriptgenx-QcKNlU:ui-functionality-mapper-agent",
+    "projectExecution": "voicetranscriptgenx-QcKNlU",
+    "selectedAgent": "ui-functionality-mapper-agent",
+    "requestedRole": "ui-functionality-mapper",
+    "decisionType": "exact_reuse",
+    "reuseConfidenceScore": 100,
+    "similarityScore": 1,
+    "reason": "Reused the existing global ui-functionality-mapper definition; project context is stored in a separate assignment.",
+    "createdAt": "2026-08-27T04:25:31.062Z"
+  }
+}

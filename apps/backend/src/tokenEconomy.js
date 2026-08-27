@@ -157,6 +157,11 @@ export async function recordAgentTokenUsage(record) {
     instructionHash: record.instructionHash || "",
     instructionSummary: String(record.instructionSummary || "").replace(/\s+/g, " ").trim().slice(0, 240),
     taskType: record.taskType || "",
+    // Gotham account usage is owner-scoped. This digest is intentionally
+    // opaque and is never a provider credential or account identifier.
+    gothamUsageOwnerKey: String(record.gothamUsageOwnerKey || "").slice(0, 80),
+    provider: String(record.provider || "").slice(0, 48),
+    executionModel: String(record.executionModel || record.model || "").slice(0, 160),
     inputTokens,
     outputTokens,
     totalTokens,

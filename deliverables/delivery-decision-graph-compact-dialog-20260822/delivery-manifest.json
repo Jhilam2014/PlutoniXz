@@ -1,0 +1,22 @@
+{
+  "workflow_id": "delivery-decision-graph-compact-dialog-20260822",
+  "delivered_at": "2026-08-22T11:48:23Z",
+  "status": "delivered",
+  "deliverables": [
+    { "path": "apps/frontend/src/components/agentic-system/ApplicationDecisionMappingCanvas.jsx", "summary": "Replaces fixed type columns with chronology-seeded build clusters, mounts the D3 graph only in an accessible expandable dialog, and supports full node dragging plus keyboard inspection." },
+    { "path": "apps/frontend/src/components/agentic-system/applicationDecisionMappingCanvas.css", "summary": "Adds the compact default relationship summary and responsive modal/detail workspace styling." }
+  ],
+  "validation": {
+    "frontend_tests": { "status": "passed", "passed": 128, "failed": 0 },
+    "frontend_build": { "status": "passed", "note": "Vite reported only its existing bundle-size advisory." },
+    "format_check": { "status": "passed", "command": "git diff --check" },
+    "independent_review": { "status": "passed", "scope": "freeform drag behavior, keyboard node inspection, dialog lifecycle, focus, and root-node dragging" },
+    "visual_browser_smoke_test": { "status": "not_run", "reason": "The browser automation bridge was not available in this execution context." }
+  },
+  "data_handling": {
+    "real_data_source_used": "Existing source-backed delivery timeline, build-event, topology, and decision-branch records.",
+    "database_or_api_created": "None",
+    "mock_demo_data_used": false,
+    "production_components_with_hardcoded_business_data": "None"
+  }
+}

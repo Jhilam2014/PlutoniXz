@@ -1,7 +1,20 @@
 import crypto from "node:crypto";
-import { DecisionContinuityError, FileDecisionContinuityStore } from "./decisionContinuity.js";
+import {
+  BRANCH_STATUSES,
+  DecisionContinuityError,
+  FileDecisionContinuityStore,
+  branchPaginationMetadata,
+  normalizeBranchPagination
+} from "./decisionContinuity.js";
 
-const CURRENT_ENTITY_TYPES = ["branch", "observation", "reconsideration", "approval", "canary", "condition_event", "qagent_run", "qagent_effect", "brainx_registration", "brainx_policy", "brainx_route", "brainx_execution", "brainx_effect", "brainx_control", "brainx_circuit_breaker", "governed_suggestion", "intel_capability_proposal"];
+const CURRENT_ENTITY_TYPES = [
+  "branch", "observation", "reconsideration", "approval", "canary", "condition_event", "qagent_run", "qagent_effect",
+  "brainx_registration", "brainx_policy", "brainx_route", "brainx_execution", "brainx_effect", "brainx_control", "brainx_circuit_breaker",
+  "governed_suggestion", "intel_capability_proposal",
+  "enterprise_governance_binding", "enterprise_governance_policy", "enterprise_governance_budget", "enterprise_governance_reservation",
+  "enterprise_governance_decision_context", "enterprise_governance_knowledge_receipt", "enterprise_governance_idempotency",
+  "researchx_source", "researchx_run", "researchx_effect", "agenticx_knowledge", "agenticx_reuse_receipt"
+];
 const RETRYABLE_CODES = new Set(["40001", "40P01", "23505"]);
 const ADVISORY_LOCK_ID = 483_310_029;
 
@@ -44,7 +57,19 @@ function emptyState() {
     brainxControls: {},
     brainxCircuitBreakers: {},
     governedSuggestions: {},
-    intelCapabilityProposals: {}
+    intelCapabilityProposals: {},
+    enterpriseGovernanceBindings: {},
+    enterpriseGovernancePolicies: {},
+    enterpriseGovernanceBudgets: {},
+    enterpriseGovernanceReservations: {},
+    enterpriseGovernanceDecisionContexts: {},
+    enterpriseGovernanceKnowledgeReceipts: {},
+    enterpriseGovernanceIdempotency: {},
+    researchXSources: {},
+    researchXRuns: {},
+    researchXEffects: {},
+    agenticXKnowledge: {},
+    agenticXReuseReceipts: {}
   };
 }
 
@@ -87,9 +112,20 @@ function recordEntries(state, events = []) {
     brainx_registration: state.brainxRegistrations || {}, brainx_policy: state.brainxPolicies || {}, brainx_route: state.brainxRoutes || {},
     brainx_execution: state.brainxExecutions || {}, brainx_effect: state.brainxEffects || {}, brainx_control: state.brainxControls || {},
     brainx_circuit_breaker: state.brainxCircuitBreakers || {}, governed_suggestion: state.governedSuggestions || {},
-    intel_capability_proposal: state.intelCapabilityProposals || {}
+    intel_capability_proposal: state.intelCapabilityProposals || {},
+    enterprise_governance_binding: state.enterpriseGovernanceBindings || {},
+    enterprise_governance_policy: state.enterpriseGovernancePolicies || {},
+    enterprise_governance_budget: state.enterpriseGovernanceBudgets || {},
+    enterprise_governance_reservation: state.enterpriseGovernanceReservations || {},
+    enterprise_governance_decision_context: state.enterpriseGovernanceDecisionContexts || {},
+    enterprise_governance_knowledge_receipt: state.enterpriseGovernanceKnowledgeReceipts || {},
+    enterprise_governance_idempotency: state.enterpriseGovernanceIdempotency || {},
+    researchx_source: state.researchXSources || {}, researchx_run: state.researchXRuns || {}, researchx_effect: state.researchXEffects || {},
+    agenticx_knowledge: state.agenticXKnowledge || {}, agenticx_reuse_receipt: state.agenticXReuseReceipts || {}
   })) {
-    for (const record of Object.values(records)) rows.push({ type, id: record.id, tenantId: record.tenantId, workspaceId: record.workspaceId, revision: record.revision || 1, record });
+    for (const [key, record] of Object.entries(records)) {
+      rows.push({ type, id: record.id || key, tenantId: record.tenantId, workspaceId: record.workspaceId, revision: record.revision || 1, record });
+    }
   }
   return rows;
 }
@@ -115,6 +151,18 @@ function stateFromRows(rows = []) {
     else if (row.entity_type === "brainx_circuit_breaker") state.brainxCircuitBreakers[row.entity_id] = record;
     else if (row.entity_type === "governed_suggestion") state.governedSuggestions[row.entity_id] = record;
     else if (row.entity_type === "intel_capability_proposal") state.intelCapabilityProposals[row.entity_id] = record;
+    else if (row.entity_type === "enterprise_governance_binding") state.enterpriseGovernanceBindings[row.entity_id] = record;
+    else if (row.entity_type === "enterprise_governance_policy") state.enterpriseGovernancePolicies[row.entity_id] = record;
+    else if (row.entity_type === "enterprise_governance_budget") state.enterpriseGovernanceBudgets[row.entity_id] = record;
+    else if (row.entity_type === "enterprise_governance_reservation") state.enterpriseGovernanceReservations[row.entity_id] = record;
+    else if (row.entity_type === "enterprise_governance_decision_context") state.enterpriseGovernanceDecisionContexts[row.entity_id] = record;
+    else if (row.entity_type === "enterprise_governance_knowledge_receipt") state.enterpriseGovernanceKnowledgeReceipts[row.entity_id] = record;
+    else if (row.entity_type === "enterprise_governance_idempotency") state.enterpriseGovernanceIdempotency[row.entity_id] = record;
+    else if (row.entity_type === "researchx_source") state.researchXSources[row.entity_id] = record;
+    else if (row.entity_type === "researchx_run") state.researchXRuns[row.entity_id] = record;
+    else if (row.entity_type === "researchx_effect") state.researchXEffects[row.entity_id] = record;
+    else if (row.entity_type === "agenticx_knowledge") state.agenticXKnowledge[row.entity_id] = record;
+    else if (row.entity_type === "agenticx_reuse_receipt") state.agenticXReuseReceipts[row.entity_id] = record;
   }
   return state;
 }
@@ -204,6 +252,60 @@ export class PostgresDecisionContinuityStore extends FileDecisionContinuityStore
       [CURRENT_ENTITY_TYPES]
     );
     return stateFromRows(result.rows);
+  }
+
+  async listBranchesPage({ tenantId, workspaceId, decisionId, statuses, limit, offset } = {}) {
+    if (!tenantId) throw new DecisionContinuityError("A tenant-scoped identity is required.", { code: "tenant_required", status: 401 });
+    const pagination = normalizeBranchPagination({ limit, offset });
+    const allowedStatuses = Array.isArray(statuses) ? statuses.filter((status) => BRANCH_STATUSES.includes(status)) : [];
+    const parameters = [
+      tenantId,
+      workspaceId || null,
+      decisionId || null,
+      allowedStatuses
+    ];
+    const pool = await this.database();
+    try {
+      const [count, page] = await Promise.all([
+        pool.query(
+          `SELECT count(*)::int AS total
+             FROM decision_continuity_current_state
+            WHERE tenant_id = $1
+              AND entity_type = 'branch'
+              AND ($2::text IS NULL OR workspace_id = $2)
+              AND ($3::text IS NULL OR record->>'decisionId' = $3)
+              AND (cardinality($4::text[]) = 0 OR record->>'status' = ANY($4::text[]))`,
+          parameters
+        ),
+        pool.query(
+          `SELECT record
+             FROM decision_continuity_current_state
+            WHERE tenant_id = $1
+              AND entity_type = 'branch'
+              AND ($2::text IS NULL OR workspace_id = $2)
+              AND ($3::text IS NULL OR record->>'decisionId' = $3)
+              AND (cardinality($4::text[]) = 0 OR record->>'status' = ANY($4::text[]))
+            ORDER BY record->>'updatedAt' DESC NULLS LAST, entity_id DESC
+            LIMIT $5 OFFSET $6`,
+          [...parameters, pagination.limit, pagination.offset]
+        )
+      ]);
+      const branches = page.rows.map((row) => clone(row.record));
+      return {
+        branches,
+        pagination: branchPaginationMetadata({
+          ...pagination,
+          total: Number(count.rows[0]?.total || 0),
+          returned: branches.length
+        })
+      };
+    } catch (error) {
+      throw this.databaseError(error);
+    }
+  }
+
+  async listBranches(options = {}) {
+    return (await this.listBranchesPage(options)).branches;
   }
 
   databaseError(error) {

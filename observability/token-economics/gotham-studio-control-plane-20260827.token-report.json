@@ -1,0 +1,16 @@
+{
+  "workflow_id": "gotham-studio-control-plane-20260827",
+  "mode": "token-minimal_with_targeted_large_context",
+  "task_size": "large",
+  "agents_used": ["project-execution-agent"],
+  "new_agents_created": 0,
+  "provider_token_usage": "unavailable",
+  "exact_token_counts_invented": false,
+  "context_decisions": [
+    "Read canonical repository instructions completely.",
+    "Inspected only source boundaries needed for identity, project access, Gotham activity, graphs, memory, backend routes, and workspace integration.",
+    "Used focused provider and Studio tests before broader regressions.",
+    "Updated graph projections incrementally while preserving generated project topology."
+  ],
+  "recorded_at": "2026-08-27T17:40:51Z"
+}

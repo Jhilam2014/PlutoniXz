@@ -9,8 +9,8 @@ const valueFor = (flag) => {
   const index = rawArgs.indexOf(flag);
   return index >= 0 ? rawArgs[index + 1] : undefined;
 };
-const databaseUrl = process.env.DECISION_CONTINUITY_DATABASE_URL || process.env.DATABASE_URL;
-if (!databaseUrl) throw new Error("DECISION_CONTINUITY_DATABASE_URL (or DATABASE_URL) is required to run migrations.");
+const databaseUrl = process.env.GOTHAM_STUDIO_DATABASE_URL || process.env.DECISION_CONTINUITY_DATABASE_URL || process.env.DATABASE_URL;
+if (!databaseUrl) throw new Error("GOTHAM_STUDIO_DATABASE_URL, DECISION_CONTINUITY_DATABASE_URL, or DATABASE_URL is required to run migrations.");
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const migrationRoots = [process.env.PLUTONIX_PROJECT_ROOT, path.resolve(scriptDir, "../../..")].filter(Boolean);
@@ -27,7 +27,7 @@ for (const root of migrationRoots) {
 }
 if (!migrationDir) throw new Error("Decision-continuity migration files are unavailable from the configured project root.");
 let files = (await fs.readdir(migrationDir))
-  .filter((name) => /^(?:00[2-9]|010)_(?:decision_continuity|governed_promotion|brainx_model_registry|suggestion_intel_governance).*\.sql$/.test(name))
+  .filter((name) => /^(?:00[2-9]|01[0-2])_(?:decision_continuity|governed_promotion|brainx_model_registry|suggestion_intel_governance|enterprise_brainx_governance|gotham_studio).*\.sql$/.test(name))
   .sort();
 const upTo = valueFor("--to");
 if (upTo) {

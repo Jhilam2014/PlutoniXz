@@ -1,6 +1,6 @@
 # BrainX governed model registry
 
-BrainX is an optional model-governance layer inside the existing Decision Continuity authority. It is not a general Hugging Face downloader, model marketplace, accelerator scheduler, cloud-job launcher, prompt store, coding agent, policy engine, or promotion path. With its feature flag unset, every tenant remains on the established baseline.
+BrainX is an optional model-governance layer inside the existing Decision Continuity authority. It is not a general Hugging Face downloader, model marketplace, accelerator scheduler, cloud-job launcher, prompt store, coding agent, policy engine, or promotion path. With its feature flag unset, every tenant remains on the established baseline. The Enterprise BrainX rollout composes this registry with immutable enterprise policy, budget, DecisionX, ResearchX, and AgenticX receipts; it does not replace the registry boundary.
 
 ## Boundary and roles
 
@@ -30,6 +30,14 @@ Only an `isolated_fixture` adapter is usable here. The adapter receives a bounde
 
 Model output must satisfy the strict `brainx-output/v1` schema and pass the deterministic boundary validator. The ledger retains digest, byte count, schema/validator result, aggregate token/latency/cost metadata, and pricing provenance—not prompt/output text or credentials. Output is always marked untrusted and has no wired path to QAgent tools, code execution, constraints, policy, approval, or promotion. Append-only Decision Continuity events provide the auditable usage history; dashboard totals are explicitly operational attribution, never a causal quality claim.
 
+## Enterprise Core routing
+
+AIX is the policy-aware selection seam for registered candidates. Before it considers an OpenAI/Codex or Hugging Face registration, it requires the calling application’s immutable enterprise binding, a current policy snapshot, matching fresh evidence, and an available budget envelope/reservation. It evaluates task role, classification, region, egress, licence, immutable artifact/provenance, health, hardware, latency, and estimated cost. Each selected or denied route writes a reviewable receipt with candidate exclusions, policy/budget references, and estimated cost separated from actual usage evidence.
+
+When BrainX is disabled, existing executor behavior remains unchanged. When a governed tenant has no eligible model, the route ends with `no_eligible_model`; it never silently falls back around policy. AIX itself does not call a provider. A selected OpenAI/Codex registration may describe the existing executor’s approved model configuration, while Hugging Face candidates are intentionally recorded as unavailable for live inference in this rollout.
+
+Automatic Hugging Face downloads remain disabled (`PLUTONIX_HF_AUTO_DOWNLOAD=false`). Any future local inference adapter needs a separate immutable revision, checksum, provenance, licence, hardware, and human-approval gate. No provider spend is asserted until the separate execution adapter supplies actual usage evidence. See [Enterprise BrainX governance](enterprise-brainx-governance.md) for the full cross-domain contract.
+
 ## API and access
 
 Read-only human `brainx:read` endpoints are `GET /api/brainx/overview`, `/registrations`, `/routes`, and `/controls`. Human `brainx:admin` endpoints create an immutable registration, set tenant policy, change health, and set a scoped kill control. There is intentionally no browser/API model-execution endpoint. The separate service-only execution interface is internal and requires `brainx:execute`.
@@ -57,6 +65,11 @@ BRAINX_MAX_COST_USD=0.25
 BRAINX_CIRCUIT_FAILURE_THRESHOLD=2
 BRAINX_LIVE_PROVIDER_ENABLED=false
 BRAINX_LIVE_PROVIDER_MAX_COST_USD=0
+PLUTONIX_HF_AUTO_DOWNLOAD=false
+AIX_GOVERNED_ROUTING_ENABLED=false
+AIX_MAX_ROUTE_COST_USD=1
+AIX_MAX_LATENCY_MS=60000
+AIX_PERMITTED_TASK_ROLES=generation
 ```
 
 The optional live-provider preflight is a pinned, budget-capped planning check only. It does not perform a network call; live evaluation requires a separately approved implementation and deployment review.

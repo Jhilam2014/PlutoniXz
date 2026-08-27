@@ -10,9 +10,11 @@
     "test:integration": "node --test --test-concurrency=1 test/integration/*.test.js",
     "test:decision-continuity": "npm run decision-continuity:migrate && npm run test:integration",
     "decision-continuity:migrate": "node scripts/migrate-decision-continuity-postgres.mjs",
+    "gotham-studio:migrate": "node scripts/migrate-decision-continuity-postgres.mjs --to 012_gotham_studio.sql",
     "decision-continuity:smoke": "node scripts/decision-continuity-smoke.mjs",
     "decision-continuity:import": "node scripts/import-decision-continuity-jsonl.mjs",
-    "decision-continuity:worker": "node scripts/decision-continuity-worker.mjs"
+    "decision-continuity:worker": "node scripts/decision-continuity-worker.mjs",
+    "researchx:worker": "node --env-file-if-exists=../../.env scripts/researchx-worker.mjs"
   },
   "dependencies": {
     "adm-zip": "^0.6.0",

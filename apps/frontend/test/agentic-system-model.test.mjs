@@ -8,7 +8,9 @@ import {
   architectureNodeRadius,
   buildClusters,
   buildArchitectureBranchSummary,
+  buildFunctionalityFlow,
   buildDependencyLens,
+  createFunctionalityFlowLayout,
   createDependencyLayout,
   createArchitectureFreeForceSeedLayout,
   createArchitectureForceSeedLayout,
@@ -228,6 +230,36 @@ test("selection persists while filters change and overview starts under object l
   );
   assert.ok(visible.items.length <= 24, "collapsed overview keeps the initial graph under the 25-object acceptance limit");
   assert.ok(visible.items.every((item) => item.clusterLevel === "project"), "collapsed overview starts at project level");
+});
+
+test("blank Overview opens as a portfolio of project folders with source inventory counts", () => {
+  const graph = sampleGraph();
+  const visible = visibleGraphForState(
+    graph,
+    {
+      filters: { project: "", agentType: "all", status: "all", relationshipType: "all" },
+      viewMode: "overview",
+      expandedClusters: new Set(),
+      selectedId: "",
+      storage: null
+    },
+    1200,
+    760
+  );
+  const alpha = visible.items.find((item) => item.project === "Alpha");
+
+  assert.ok(alpha, "the project folder is visible before a project is selected");
+  assert.equal(alpha.kind, "cluster");
+  assert.ok(alpha.inventory.total > 0, "folder inventory is sourced from the project topology");
+});
+
+test("detailed canvases require a project scope instead of merging unrelated applications", () => {
+  const graph = sampleGraph();
+  const filters = { project: "", agentType: "all", status: "all", relationshipType: "all" };
+  for (const viewMode of ["dependency", "flow", "explore"]) {
+    const visible = visibleGraphForState(graph, { filters, viewMode, expandedClusters: new Set(), selectedId: "", storage: null }, 1200, 760);
+    assert.equal(visible.items.length, 0, `${viewMode} waits for a project scope`);
+  }
 });
 
 test("Explore renders the source-backed feature and branch canvas", () => {
@@ -526,7 +558,145 @@ test("dependency lens keeps directed upstream and downstream data in distinct ca
   assert.ok(byId.get("agent:alpha-orch").x < byId.get("agent:alpha-worker").x);
   assert.ok(byId.get("agent:alpha-reviewer").x > byId.get("agent:alpha-worker").x);
   assert.ok(lens.links.every((link) => byId.has(link.source) && byId.has(link.target)));
-  assert.equal(selectDependencyAnchor(filtered.nodes, filtered.links, ""), "agent:alpha-worker");
+  assert.equal(selectDependencyAnchor(filtered.nodes, filtered.links, ""), "functionality:alpha:orders-api");
+});
+
+test("dependency canvas retains agent ownership and orders source-backed features by inferred delivery sequence", () => {
+  const graph = normalizeGraph({
+    nodes: [
+      { id: "agent:builder", type: "agent", label: "Data Contract Agent", metadata: { projectName: "Imported app" } },
+      { id: "database", type: "database", label: "Orders database", metadata: { projectName: "Imported app", deliveryOrder: 1, deliveryPhase: "Data foundation", deliveryPhaseRank: 0, timelineInferred: true, projectOrigin: "imported" } },
+      { id: "service", type: "service", label: "Orders service", metadata: { projectName: "Imported app", deliveryOrder: 2, deliveryPhase: "Service layer", deliveryPhaseRank: 1, timelineInferred: true, projectOrigin: "imported" } },
+      { id: "api", type: "api", label: "GET /orders", metadata: { projectName: "Imported app", deliveryOrder: 3, deliveryPhase: "API and integration", deliveryPhaseRank: 2, timelineInferred: true, projectOrigin: "imported" } },
+      { id: "page", type: "page", label: "Orders page", metadata: { projectName: "Imported app", deliveryOrder: 4, deliveryPhase: "User experience", deliveryPhaseRank: 3, timelineInferred: true, projectOrigin: "imported" } }
+    ],
+    links: [
+      { source: "agent:builder", target: "database", type: "implements" },
+      { source: "page", target: "api", type: "ui_calls_api" },
+      { source: "api", target: "service", type: "api_calls_service" },
+      { source: "service", target: "database", type: "service_uses_database" }
+    ]
+  });
+  const lens = buildDependencyLens(graph.nodes, graph.links, "page");
+  const laidOut = createDependencyLayout(lens.nodes, lens.links, 1200, 760);
+  const byId = new Map(laidOut.map((node) => [node.id, node]));
+
+  assert.equal(byId.get("database").deliveryOrder, 1);
+  assert.equal(byId.get("page").deliveryOrder, 4);
+  assert.equal(byId.get("database").timelineInferred, true);
+  assert.equal(byId.get("database").projectOrigin, "imported");
+  assert.ok(byId.has("agent:builder"), "assigned agent remains connected in the dependency lens");
+});
+
+test("dependency canvas lays feature checkpoints horizontally and places supporting services around them", () => {
+  const graph = normalizeGraph({
+    nodes: [
+      { id: "orders-page", type: "page", label: "Orders", metadata: { projectName: "Shop", deliveryOrder: 4, deliveryPhase: "User experience", controlFlowSequence: true } },
+      { id: "returns-page", type: "page", label: "Returns", metadata: { projectName: "Shop", deliveryOrder: 8, deliveryPhase: "User experience", controlFlowSequence: true } },
+      { id: "orders-api", type: "api", label: "Orders API", metadata: { projectName: "Shop", deliveryOrder: 3, deliveryPhase: "API and integration" } },
+      { id: "returns-service", type: "service", label: "Returns service", metadata: { projectName: "Shop", deliveryOrder: 2, deliveryPhase: "Service layer" } },
+      { id: "orders-agent", type: "agent", label: "Experience Agent", metadata: { projectName: "Shop" } }
+    ],
+    links: [
+      { source: "orders-page", target: "orders-api", type: "ui_calls_api" },
+      { source: "returns-page", target: "returns-service", type: "ui_uses_service" },
+      { source: "orders-agent", target: "orders-page", type: "implements" }
+    ]
+  });
+  const laidOut = createDependencyLayout(graph.nodes, graph.links, 1200, 760);
+  const byId = new Map(laidOut.map((node) => [node.id, node]));
+
+  assert.equal(byId.get("orders-page").dependencyLayout, "feature-timeline");
+  assert.equal(byId.get("returns-page").dependencyLayout, "feature-timeline");
+  assert.ok(byId.get("orders-page").x < byId.get("returns-page").x, "feature checkpoints read left to right");
+  assert.notEqual(byId.get("orders-api").y, byId.get("orders-page").y, "API is placed around its feature checkpoint");
+  assert.notEqual(byId.get("orders-agent").y, byId.get("orders-page").y, "agent is placed around its owned feature checkpoint");
+});
+
+test("functionality flow creates non-overlapping architecture columns with literal data-flow links", () => {
+  const nodes = [
+    { id: "agent", type: "agent", label: "Experience Agent", metadata: { applicationTopology: false } },
+    { id: "page", type: "page", label: "Orders page", metadata: { applicationTopology: true } },
+    { id: "api", type: "api", label: "Orders API", metadata: { applicationTopology: true } },
+    { id: "service", type: "service", label: "Orders service", metadata: { applicationTopology: true } },
+    { id: "database", type: "database", label: "Orders database", metadata: { applicationTopology: true } }
+  ];
+  const links = [
+    { source: "agent", target: "page", type: "implements" },
+    { source: "page", target: "api", type: "ui_calls_api" },
+    { source: "api", target: "service", type: "api_calls_service" },
+    { source: "service", target: "database", type: "service_uses_database" }
+  ];
+  const flow = buildFunctionalityFlow(nodes, links);
+  const laidOut = createFunctionalityFlowLayout(flow.nodes, flow.links, 1200, 760);
+  const byId = new Map(laidOut.map((node) => [node.id, node]));
+
+  assert.equal(flow.links.length, links.length);
+  assert.equal(byId.get("agent").x, byId.get("page").x, "ownership is contextual to the implemented feature, not a causal stage");
+  assert.ok(byId.get("page").x < byId.get("api").x);
+  assert.ok(byId.get("api").x < byId.get("service").x);
+  assert.ok(byId.get("service").x < byId.get("database").x);
+  assert.equal(byId.get("page").functionalityFlowStageLabel, "Application control");
+  assert.equal(byId.get("api").functionalityFlowStageLabel, "API boundary");
+  assert.equal(byId.get("database").functionalityFlowStageLabel, "State change");
+  for (let leftIndex = 0; leftIndex < laidOut.length; leftIndex += 1) {
+    for (let rightIndex = leftIndex + 1; rightIndex < laidOut.length; rightIndex += 1) {
+      assert.equal(layoutBoundsIntersect(laidOut[leftIndex], laidOut[rightIndex], 12), false);
+    }
+  }
+});
+
+test("functionality flow focuses one major feature while grouping its children, agents, and connected services", () => {
+  const nodes = [
+    { id: "orders-agent", type: "agent", label: "Orders Agent" },
+    { id: "returns-agent", type: "agent", label: "Returns Agent" },
+    { id: "orders", type: "page", label: "Orders", metadata: { applicationTopology: true, deliveryOrder: 1 } },
+    { id: "orders-filter", type: "ui_element", label: "Orders filters", metadata: { applicationTopology: true, parentEntityNodeId: "orders" } },
+    { id: "orders-api", type: "api", label: "Orders API", metadata: { applicationTopology: true } },
+    { id: "orders-service", type: "service", label: "Orders service", metadata: { applicationTopology: true } },
+    { id: "orders-db", type: "database", label: "Orders DB", metadata: { applicationTopology: true } },
+    { id: "returns", type: "page", label: "Returns", metadata: { applicationTopology: true, deliveryOrder: 2 } },
+    { id: "returns-api", type: "api", label: "Returns API", metadata: { applicationTopology: true } }
+  ];
+  const links = [
+    { source: "orders-agent", target: "orders", type: "implements" },
+    { source: "orders", target: "orders-filter", type: "contains_ui_element" },
+    { source: "orders", target: "orders-api", type: "ui_calls_api" },
+    { source: "orders-api", target: "orders-service", type: "api_calls_service" },
+    { source: "orders-service", target: "orders-db", type: "service_uses_database" },
+    { source: "returns-agent", target: "returns", type: "implements" },
+    { source: "returns", target: "returns-api", type: "ui_calls_api" }
+  ];
+
+  const flow = buildFunctionalityFlow(nodes, links, "orders");
+  const includedIds = new Set(flow.nodes.map((node) => node.id));
+
+  assert.deepEqual(flow.majorFeatures.map((feature) => feature.id), ["orders", "returns"]);
+  assert.equal(flow.selectedMajorFeatureId, "orders");
+  ["orders", "orders-filter", "orders-agent", "orders-api", "orders-service", "orders-db"].forEach((id) => assert.ok(includedIds.has(id), `${id} is grouped in the selected feature view`));
+  ["returns", "returns-agent", "returns-api"].forEach((id) => assert.equal(includedIds.has(id), false, `${id} remains in its own major feature view`));
+  const laidOut = createFunctionalityFlowLayout(flow.nodes, flow.links, 1200, 760);
+  const byId = new Map(laidOut.map((node) => [node.id, node]));
+  assert.ok(byId.get("orders").x < byId.get("orders-filter").x, "child UI action follows its application control");
+  assert.ok(byId.get("orders-filter").x < byId.get("orders-api").x, "control flow continues from user action to API boundary");
+});
+
+test("functionality flow labels source-only composition without inventing an end-to-end control path", () => {
+  const flow = buildFunctionalityFlow(
+    [
+      { id: "feature", type: "feature", label: "Orders", metadata: { applicationTopology: true } },
+      { id: "api", type: "api", label: "Orders API", metadata: { applicationTopology: true } },
+      { id: "database", type: "database", label: "Orders DB", metadata: { applicationTopology: true } }
+    ],
+    [
+      { source: "feature", target: "api", type: "contains_application_entity" },
+      { source: "api", target: "database", type: "api_uses_database" }
+    ],
+    "feature"
+  );
+
+  assert.equal(flow.controlRelationshipCount, 0);
+  assert.match(flow.evidenceLabel, /no end-to-end control path recorded/);
 });
 
 test("dependency view defaults to a measurable topology anchor and retains its complete reachable chain", () => {
@@ -544,9 +714,9 @@ test("dependency view defaults to a measurable topology anchor and retains its c
     760
   );
 
-  assert.equal(visible.lens.anchorId, "agent:alpha-worker");
+  assert.equal(visible.lens.anchorId, "functionality:alpha:orders-api");
   assert.ok(visible.items.every((node) => ["upstream", "focus", "downstream", "shared"].includes(node.dependencyRole)));
-  assert.equal(visible.items.length, 7, "the dependency view keeps the full reachable component");
+  assert.equal(visible.items.length, 5, "the dependency view keeps the full reachable component for the preferred application anchor");
 });
 
 test("Explore preserves every source-backed feature while dependency inspection retains every descendant level", () => {
@@ -588,7 +758,7 @@ test("selection never removes filtered nodes outside the dependency lens", () =>
     storage: null
   };
 
-  for (const viewMode of ["overview", "explore", "live"]) {
+  for (const viewMode of ["overview", "explore"]) {
     const withoutSelection = visibleGraphForState(graph, { ...baseState, viewMode, selectedId: "" }, 1200, 760);
     const withSelection = visibleGraphForState(graph, { ...baseState, viewMode, selectedId: "agent:alpha-worker" }, 1200, 760);
     assert.deepEqual(
@@ -902,7 +1072,7 @@ test("the inspector contract exposes functionality hierarchy, factual efficiency
     "agentProfileHref",
     "constrainNodeDrag",
     "layoutNodeBounds",
-    "const completeTopologyView = [\"explore\", \"dependency\"].includes(state.viewMode)",
+    "const completeTopologyView = [\"explore\", \"dependency\", \"flow\"].includes(state.viewMode)",
     "createArchitectureEdgePlan",
     "architectureRailNetwork",
     "renderArchitectureScaffold",
@@ -937,14 +1107,16 @@ test("the inspector contract exposes functionality hierarchy, factual efficiency
 
 test("Architecture analysis is owned by the PlutoniX page instead of project tools", () => {
   const app = fs.readFileSync(new URL("../src/App.jsx", import.meta.url), "utf8");
+  const analysisWorkspace = fs.readFileSync(new URL("../src/PlutonixAnalysisWorkspace.jsx", import.meta.url), "utf8");
   const projectToolsStart = app.indexOf('<div className="project-tools">');
   const projectToolsEnd = app.indexOf("</details>", projectToolsStart);
   const projectTools = app.slice(projectToolsStart, projectToolsEnd);
   assert.equal(projectTools.includes("analyzeArchitectureBranches"), false, "project tools no longer mount Architecture analysis");
-  assert.ok(app.includes('className="plutonix-architecture-toolbar"'), "the PlutoniX page owns the Architecture analysis control");
+  assert.ok(app.includes("onAnalyzeArchitecture={analyzeArchitectureBranches}"), "the PlutoniX page passes Architecture analysis into its analysis workspace");
+  assert.ok(analysisWorkspace.includes("onClick={onAnalyzeArchitecture}"), "the analysis workspace owns the Architecture analysis control");
   assert.ok(app.includes('requestedFrom: "plutonix-page"'), "analysis telemetry records the PlutoniX surface");
-  assert.ok(app.includes("disabled={!selectedProject || isAnalyzingArchitecture}"), "an already analysed selected project remains eligible for re-analysis");
-  assert.equal(app.includes("disabled={!selectedProject || selectedProject.isDefault || isAnalyzingArchitecture}"), false, "the shared project is not blocked by the retired managed-project restriction");
+  assert.ok(analysisWorkspace.includes("disabled={!onAnalyzeArchitecture || analyzingArchitecture}"), "an already analysed selected application remains eligible for re-analysis");
+  assert.equal(analysisWorkspace.includes("selectedProject.isDefault"), false, "the shared project is not blocked by the retired managed-project restriction");
 });
 
 test("development hot reload preserves the in-memory authorization used by Architecture analysis", () => {

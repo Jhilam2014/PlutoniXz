@@ -4,7 +4,20 @@ set -euo pipefail
 ROOT="${0:A:h}"
 CAPTURES="$ROOT/captures"
 RENDER="$ROOT/render"
-mkdir -p "$RENDER"
+PUBLIC_MEDIA="$ROOT/../../apps/frontend/public/media/product-video"
+SYNTHESIZER_RATE="${PLUTONIX_DEMO_NARRATION_RATE:-180}"
+mkdir -p "$RENDER" "$PUBLIC_MEDIA"
+
+if ! command -v say >/dev/null 2>&1; then
+  echo "The macOS say command is required to render narration." >&2
+  exit 1
+fi
+if ! command -v ffmpeg >/dev/null 2>&1; then
+  echo "ffmpeg is required to render the product video." >&2
+  exit 1
+fi
+
+say -r "$SYNTHESIZER_RATE" -f "$ROOT/narration.txt" -o "$RENDER/narration.aiff"
 node "$ROOT/create-title-overlays.mjs"
 
 make_scene() {
@@ -36,13 +49,13 @@ make_scene() {
 }
 
 make_scene "01" "01-builder-workspace.png" "7.5" "center"
-make_scene "02" "02-gotham-builder.png" "8.0" "right"
-make_scene "03" "03-required-data.png" "8.5" "center"
-make_scene "04" "04-functionality-analysis.png" "9.5" "center"
-make_scene "05" "05-agentic-system-d3.png" "8.0" "center"
-make_scene "06" "06-agentic-system-d3-explore.png" "9.0" "center"
-make_scene "07" "07-control-plane.png" "8.0" "center"
-make_scene "08" "08-agent-memory.png" "7.5" "left"
+make_scene "02" "02-builder-evidence-gate.png" "8.0" "right"
+make_scene "03" "03-analysis-portfolio.png" "8.5" "center"
+make_scene "04" "04-portfolio-intelligence.png" "8.5" "center"
+make_scene "05" "05-application-decisions.png" "8.5" "center"
+make_scene "06" "06-governed-brainx.png" "8.0" "left"
+make_scene "07" "07-delivery-decision-graph.png" "9.0" "center"
+make_scene "08" "08-product-document.png" "8.0" "left"
 make_scene "09" "09-hosting.png" "8.0" "left"
 make_scene "10" "10-builder-close.png" "8.5" "center"
 
@@ -63,10 +76,10 @@ ffmpeg -loglevel error -y \
     [0:v][1:v]xfade=transition=fade:duration=0.5:offset=7.0[v1];
     [v1][2:v]xfade=transition=fade:duration=0.5:offset=14.5[v2];
     [v2][3:v]xfade=transition=fade:duration=0.5:offset=22.5[v3];
-    [v3][4:v]xfade=transition=fade:duration=0.5:offset=31.5[v4];
-    [v4][5:v]xfade=transition=fade:duration=0.5:offset=39.0[v5];
-    [v5][6:v]xfade=transition=fade:duration=0.5:offset=47.5[v6];
-    [v6][7:v]xfade=transition=fade:duration=0.5:offset=55.0[v7];
+    [v3][4:v]xfade=transition=fade:duration=0.5:offset=30.5[v4];
+    [v4][5:v]xfade=transition=fade:duration=0.5:offset=38.5[v5];
+    [v5][6:v]xfade=transition=fade:duration=0.5:offset=46.0[v6];
+    [v6][7:v]xfade=transition=fade:duration=0.5:offset=54.5[v7];
     [v7][8:v]xfade=transition=fade:duration=0.5:offset=62.0[v8];
     [v8][9:v]xfade=transition=fade:duration=0.5:offset=69.5,fade=t=in:st=0:d=0.6,fade=t=out:st=77.2:d=0.8[vout];
     [10:a]adelay=700|700,volume=1.25,highpass=f=80,lowpass=f=12000,apad=whole_dur=78[narration];
@@ -78,4 +91,14 @@ ffmpeg -loglevel error -y \
   -c:a aac -b:a 192k -ar 48000 -movflags +faststart \
   "$ROOT/plutonix-product-video.mp4"
 
-ffmpeg -loglevel error -y -ss 00:00:42 -i "$ROOT/plutonix-product-video.mp4" -frames:v 1 "$ROOT/poster.png"
+ffmpeg -loglevel error -y -ss 00:00:39 -i "$ROOT/plutonix-product-video.mp4" -frames:v 1 "$ROOT/poster.png"
+ffmpeg -loglevel error -y -i "$ROOT/plutonix-product-video.mp4" -vf "fps=1/8,scale=384:216,tile=5x2:padding=8:margin=8" -frames:v 1 "$ROOT/video-contact-sheet.png"
+
+cp "$ROOT/plutonix-product-video.mp4" "$PUBLIC_MEDIA/plutonix-product-video.mp4"
+cp "$ROOT/poster.png" "$PUBLIC_MEDIA/plutonix-product-video-poster.png"
+cp "$ROOT/captions.vtt" "$PUBLIC_MEDIA/plutonix-product-video.vtt"
+cmp "$ROOT/plutonix-product-video.mp4" "$PUBLIC_MEDIA/plutonix-product-video.mp4"
+cmp "$ROOT/poster.png" "$PUBLIC_MEDIA/plutonix-product-video-poster.png"
+cmp "$ROOT/captions.vtt" "$PUBLIC_MEDIA/plutonix-product-video.vtt"
+
+ffprobe -v error -show_entries format=duration:stream=codec_name,codec_type,width,height -of json "$ROOT/plutonix-product-video.mp4"

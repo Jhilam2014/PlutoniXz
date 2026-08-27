@@ -8,7 +8,14 @@
     "neo4j_status": "ready",
     "vector_provider": "chroma_local_generated",
     "vector_status": "pending_install",
-    "latest_workflow_id": "08a1b-r3-semantic-triage"
+    "latest_workflow_id": "gotham-studio-control-plane-20260827",
+    "gotham_studio": {
+      "status": "implemented",
+      "providers": [
+        "databricks",
+        "azure-ml"
+      ]
+    }
   },
   "nodes": [
     {
@@ -178,6 +185,89 @@
       "metadata": {
         "required": "FROZEN_R2_RAW_CORRELATION_REPRODUCTION_REQUIRED"
       }
+    },
+    {
+      "id": "workflow:gotham-studio-control-plane-20260827",
+      "type": "workflow",
+      "label": "Gotham Studio AI/ML Control Plane",
+      "group": "workflow",
+      "risk_level": "high",
+      "status": "completed",
+      "metadata": {
+        "productShape": "existing_product_change",
+        "externalCompute": "explicit_executor_only"
+      }
+    },
+    {
+      "id": "functionality:gotham-studio",
+      "type": "functionality",
+      "label": "Gotham Studio",
+      "group": "ml-control-plane",
+      "risk_level": "high",
+      "status": "implemented",
+      "metadata": {
+        "projectScoped": true,
+        "providerNeutral": true,
+        "route": "/api/gotham-studio"
+      }
+    },
+    {
+      "id": "functionality:gotham-studio-provider-boundary",
+      "type": "service",
+      "label": "ML Execution Provider Boundary",
+      "group": "ml-provider",
+      "risk_level": "high",
+      "status": "implemented",
+      "metadata": {
+        "providers": [
+          "databricks",
+          "azure-ml"
+        ],
+        "credentials": "backend_only"
+      }
+    },
+    {
+      "id": "functionality:gotham-studio-persistence",
+      "type": "database",
+      "label": "Studio Execution Ledger",
+      "group": "data",
+      "risk_level": "high",
+      "status": "implemented",
+      "metadata": {
+        "productionRepository": "postgresql",
+        "developmentFallback": "atomic_json",
+        "scopedBy": [
+          "tenant",
+          "workspace",
+          "project"
+        ]
+      }
+    },
+    {
+      "id": "page:gotham-studio",
+      "type": "page",
+      "label": "Gotham Studio Workspace",
+      "group": "dashboard-ui",
+      "risk_level": "medium",
+      "status": "implemented",
+      "metadata": {
+        "internalTo": "Gotham Builder",
+        "workspace": "gotham-studio"
+      }
+    },
+    {
+      "id": "validation:gotham-studio-contract",
+      "type": "validation",
+      "label": "Gotham Studio Contract Validation",
+      "group": "validation",
+      "risk_level": "high",
+      "status": "passed",
+      "metadata": {
+        "backendContractTests": 17,
+        "frontendContractTests": 8,
+        "frontendBuild": "passed",
+        "visualBrowser": "unavailable"
+      }
     }
   ],
   "links": [
@@ -322,6 +412,71 @@
       "source": "agent:project-execution-agent",
       "target": "workflow:08a1b-r3-semantic-triage",
       "type": "assigned_to",
+      "weight": 1,
+      "metadata": {}
+    },
+    {
+      "source": "project:orchestrator-agent-001",
+      "target": "workflow:gotham-studio-control-plane-20260827",
+      "type": "contains",
+      "weight": 1,
+      "metadata": {}
+    },
+    {
+      "source": "agent:project-execution-agent",
+      "target": "workflow:gotham-studio-control-plane-20260827",
+      "type": "assigned_to",
+      "weight": 1,
+      "metadata": {
+        "reuseDecision": "exact_reuse"
+      }
+    },
+    {
+      "source": "workflow:gotham-studio-control-plane-20260827",
+      "target": "functionality:gotham-studio",
+      "type": "implements",
+      "weight": 1,
+      "metadata": {}
+    },
+    {
+      "source": "functionality:gotham-studio",
+      "target": "functionality:gotham-studio-provider-boundary",
+      "type": "uses",
+      "weight": 1,
+      "metadata": {}
+    },
+    {
+      "source": "functionality:gotham-studio",
+      "target": "functionality:gotham-studio-persistence",
+      "type": "persists_to",
+      "weight": 1,
+      "metadata": {}
+    },
+    {
+      "source": "functionality:gotham-studio",
+      "target": "page:gotham-studio",
+      "type": "visualized_by",
+      "weight": 1,
+      "metadata": {}
+    },
+    {
+      "source": "workflow:gotham-studio-control-plane-20260827",
+      "target": "validation:gotham-studio-contract",
+      "type": "validates",
+      "weight": 1,
+      "metadata": {}
+    },
+    {
+      "source": "functionality:gotham-studio",
+      "target": "functionality:agent-memory",
+      "type": "records_memory_in",
+      "weight": 1,
+      "metadata": {}
+    },
+    {
+      "source": "functionality:gotham-studio",
+      "target": "functionality:neo4j-graph",
+      "type": "represented_in",
       "weight": 1,
       "metadata": {}
     }

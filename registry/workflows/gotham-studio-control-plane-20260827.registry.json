@@ -1,0 +1,13 @@
+{
+  "workflow_id": "gotham-studio-control-plane-20260827",
+  "status": "completed",
+  "agent_id": "project-execution-agent",
+  "reuse_decision": {
+    "decisionType": "exact_reuse",
+    "reuseConfidenceScore": 96,
+    "similarityScore": 0.94,
+    "reason": "The existing project execution agent owns cross-cutting implementation, validation, graph, and memory work. Provider adapters are bounded application services and do not justify new persistent agent identities."
+  },
+  "created_at": "2026-08-27T17:40:51Z",
+  "updated_at": "2026-08-27T17:40:51Z"
+}

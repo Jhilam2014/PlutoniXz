@@ -4,15 +4,15 @@ import { fileURLToPath } from "node:url";
 
 const outputDir = path.join(path.dirname(fileURLToPath(import.meta.url)), "render");
 const titles = [
-  ["01", "PLUTONIX", "From instruction to a working digital product"],
-  ["02", "GOTHAM BUILDER", "Plan, execute and refine in one operational workspace"],
-  ["03", "REAL DATA, NOT INVENTED DATA", "Minimal source requests before agents continue"],
-  ["04", "FUNCTIONALITY ANALYSIS", "Every requirement, sub-function and assigned agent"],
-  ["05", "PLUTONIX GRAPHICAL MODEL", "Project-first topology across every active build"],
-  ["06", "EXPLORE THE GRAPH", "Trace relationships and inspect every node"],
-  ["07", "CONTROL PLANE", "Health, approval gates and self-improvement evidence"],
-  ["08", "GLOBAL AGENT MEMORY", "Inspectable capabilities, roles and vector status"],
-  ["09", "CLOUD HOSTING", "Controlled deployment with runtime and provider choices"],
+  ["01", "PLUTONIX", "From instruction to the right primary deliverable"],
+  ["02", "BUILDER + EVIDENCE GATES", "Shape the request; supply only the missing context"],
+  ["03", "ANALYSIS PORTFOLIO", "Source-backed application inventory and decision posture"],
+  ["04", "PORTFOLIO INTELLIGENCE", "Explicit scopes, private App BrainX, and recorded links"],
+  ["05", "APPLICATION DECISIONS", "Observed source, selected, deferred, and rejected stay distinct"],
+  ["06", "GOVERNED ENTERPRISE BRAINX", "Separate authorization for DecisionX, AIX, ResearchX, and AgenticX receipts"],
+  ["07", "DELIVERY DECISION GRAPH", "Build context, functionality, outcomes, agents, and services"],
+  ["08", "PRODUCT DOCUMENT", "Current workflow, strategy, and safety boundaries"],
+  ["09", "MOCK-SAFE CLOUD HOSTING", "Review, approval, health checks, and rollback"],
   ["10", "BUILD WITH EVIDENCE", "PlutoniX"]
 ];
 

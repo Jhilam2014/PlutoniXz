@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import crypto from "node:crypto";
 import test from "node:test";
-import { AuthenticationError, assertProductionIdentityConfiguration, externalIdentityFromRequest, userFromRequest, verifyOidcToken } from "../src/auth.js";
+import { AuthenticationError, assertProductionIdentityConfiguration, authenticateGooglePayload, externalIdentityFromRequest, userFromRequest, verifyGoogleIdentityToken, verifyOidcToken } from "../src/auth.js";
 
 const issuer = "https://issuer.test/plutonix-unit";
 const audience = "plutonix-api";
@@ -53,7 +53,36 @@ test("OIDC verifier rejects unsigned, expired, wrong issuer/audience/type, and t
   await rejectsCode(verifyOidcToken(signedToken({ claims: { aud: "another-api" } }), { env }), "invalid_audience");
   await rejectsCode(verifyOidcToken(signedToken({ header: { typ: "not-a-jwt" } }), { env }), "invalid_token_type");
   const token = signedToken();
-  await rejectsCode(verifyOidcToken(`${token.slice(0, -1)}x`, { env }), "invalid_signature");
+  const signatureStart = token.lastIndexOf(".") + 1;
+  const replacement = token[signatureStart] === "A" ? "B" : "A";
+  await rejectsCode(verifyOidcToken(`${token.slice(0, signatureStart)}${replacement}${token.slice(signatureStart + 1)}`, { env }), "invalid_signature");
+});
+
+test("Google sign-in uses its client ID instead of unrelated enterprise OIDC settings", async () => {
+  const credential = signedToken({ claims: {
+    iss: "https://accounts.google.com",
+    aud: "google-studio-client",
+    name: "Ada Lovelace",
+    email: "ada@example.test",
+    picture: "https://lh3.googleusercontent.com/a/profile-photo"
+  } });
+  const env = {
+    NODE_ENV: "test",
+    GOOGLE_CLIENT_ID: "google-studio-client",
+    OIDC_ISSUER: "https://enterprise-issuer.test",
+    OIDC_AUDIENCE: "enterprise-api",
+    OIDC_JWKS_JSON: JSON.stringify({ keys }),
+    OIDC_CLOCK_SKEW_SECONDS: "0"
+  };
+
+  const identity = await verifyGoogleIdentityToken(credential, { env });
+  assert.equal(identity.displayName, "Ada Lovelace");
+  const user = await authenticateGooglePayload({ credential }, { env });
+  assert.equal(user.name, "Ada Lovelace");
+  assert.equal(user.email, "ada@example.test");
+  assert.equal(user.picture, "https://lh3.googleusercontent.com/a/profile-photo");
+  await rejectsCode(verifyGoogleIdentityToken(credential, { env: { ...env, GOOGLE_CLIENT_ID: "wrong-client" } }), "invalid_audience");
+  await rejectsCode(verifyGoogleIdentityToken(credential, { env: { NODE_ENV: "test" } }), "google_identity_configuration_invalid");
 });
 
 test("development header identities require the explicit non-production flag and production guards fail closed", async () => {
@@ -75,6 +104,28 @@ test("development header identities require the explicit non-production flag and
   assert.doesNotThrow(
     () => assertProductionIdentityConfiguration({ NODE_ENV: "production", PLUTONIX_AUTH_MODE: "oidc", OIDC_ISSUER: issuer, OIDC_AUDIENCE: audience, PLUTONIX_CORS_ORIGINS: "https://app.example" })
   );
+});
+
+test("non-production bearer authentication uses Google only when enterprise OIDC is absent", async () => {
+  const credential = signedToken({ claims: { iss: "https://accounts.google.com", aud: "google-studio-client" } });
+  const request = { get: (name) => name === "authorization" ? `Bearer ${credential}` : "" };
+  const identity = await externalIdentityFromRequest(request, {
+    env: {
+      NODE_ENV: "development",
+      GOOGLE_CLIENT_ID: "google-studio-client",
+      OIDC_JWKS_JSON: JSON.stringify({ keys }),
+      OIDC_CLOCK_SKEW_SECONDS: "0"
+    }
+  });
+  assert.equal(identity.issuer, "https://accounts.google.com");
+  assert.equal(identity.subject, "unit-subject");
+
+  await rejectsCode(externalIdentityFromRequest(request, {
+    env: {
+      NODE_ENV: "production",
+      GOOGLE_CLIENT_ID: "google-studio-client"
+    }
+  }), "identity_configuration_invalid");
 });
 
 test("development profile projects use the same subject alias as the Decision Continuity identity", () => {

@@ -1,5 +1,11 @@
 # PlutoniX Graphical Model Design Workshop
 
+> Superseded for the PlutoniX Analysis workspace on 2026-08-19. The former
+> Overview, Dependencies, Functionality Flow, Explore, BrainX, and decision
+> canvases were replaced by the enterprise/application analysis contract in
+> `docs/plutonix-analysis-workshop.md`. This document remains as historical
+> design evidence for the standalone mandatory Agentic System D3 artifact.
+
 Status: Active living plan  
 Last reviewed: 2026-07-24  
 Workflow: `plutonix-agentic-d3-market-ready-001`
@@ -36,10 +42,43 @@ The first desktop and mobile audits found two release blockers: the toolbar forc
 - Every graph workflow needs a keyboard and HTML-list equivalent.
 - Preserve stable positions. Expanding one branch must not randomly rearrange unrelated branches.
 
+## 2026-08-18 Canvas Representation Contract
+
+An architecture review, data-visualization review, and Apple Human Interface
+Guidelines review aligned on a clearer division of responsibility between the
+four canvases:
+
+| Canvas | Operator question | Default representation | Truth boundary |
+| --- | --- | --- | --- |
+| Overview | What projects exist and where should I go next? | Finder-style project folders and capability disclosure | Portfolio counts are source inventory, not runtime execution. |
+| Dependencies | What does this selected capability use and affect? | Directed upstream → focus → downstream impact lens | Discovery order is not an execution timeline. Ownership is context, not causality. |
+| Functionality Flow | What source-backed application structure is recorded for this feature? | One selected, left-to-right application map | Render an end-to-end control transition only when its relationship is recorded. |
+| Explore architecture | How is the selected application composed? | Source-derived architecture map with details on demand | Surface source evidence and unresolved relationships without inventing behavior. |
+
+The current topology is dominated by containment, ownership, and API-to-data
+relationships. It does not by itself prove UI-to-API-to-service runtime paths.
+The Functionality Flow canvas therefore labels source-only projections as an
+**application map** and places implementing agents as contextual annotations,
+not causal stages. An execution/control timeline is permitted only when the
+source contributes an explicit `controlFlowSequence` or recorded control
+relationship.
+
+Interaction rules:
+
+- Overview opens as the high-level project folder grid; no project selection is
+  required to understand the portfolio.
+- Detailed canvases require a project scope, preventing cross-project visual
+  noise and arbitrary default journeys.
+- Selection is committed by click or keyboard; hover remains a preview and
+  details stay in the Inspector or accessible outline.
+- On compact screens, Explore preserves the full canvas width and relies on
+  the existing bottom-sheet Inspector rather than reserving a permanent
+  architecture sidebar.
+
 ## Current Information Architecture
 
 - Product bar: source, freshness, agent count, visible count, failures, warnings, and refresh.
-- Persistent views: Overview, Dependencies, Live execution, and Explore.
+- Persistent views: Overview, Dependencies, Functionality Flow, and Explore.
 - Primary commands: search, project scope, runtime status, progressive filters, graph actions.
 - Overview: collapsed project clusters ordered by operational severity.
 - Project drill-down: capability clusters with stable parent placement.

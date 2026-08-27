@@ -1,0 +1,10 @@
+{
+  "workflow_id": "delivery-decision-graph-compact-dialog-20260822",
+  "tasks": [
+    { "task_id": "inspect-delivery-map", "description": "Trace the mounted Delivery Decision Graph, fixed layout, and existing dialog conventions.", "status": "completed" },
+    { "task_id": "replace-fixed-columns", "description": "Seed chronological build clusters with local functionality and decision relationships instead of permanent type columns.", "status": "completed" },
+    { "task_id": "add-brief-dialog-flow", "description": "Keep a concise default relationship summary and mount the interactive graph only in an expandable detail dialog.", "status": "completed" },
+    { "task_id": "support-freeform-access", "description": "Allow every graph node to drag in both dimensions and provide keyboard node inspection inside the dialog.", "status": "completed" },
+    { "task_id": "validate-delivery-graph", "description": "Run the frontend suite, production build, formatting check, and independent interaction review.", "status": "completed" }
+  ]
+}
