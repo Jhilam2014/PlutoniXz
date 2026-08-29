@@ -1,7 +1,7 @@
 {
   "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
-  "checked_at": "2026-08-27T17:54:47.530Z",
-  "attached_file_count": 666,
+  "checked_at": "2026-08-27T21:46:24.208Z",
+  "attached_file_count": 667,
   "uploaded_files": [
     {
       "id": "file-JEmZn6nVAg6ymPnjCCXUL3",
@@ -3332,6 +3332,11 @@
       "id": "file-U5iNch1hzhXiMon2vnCZnC",
       "status": "completed",
       "source_path": "memory/agent-knowledge/prompts/gotham-studio-control-plane-20260827.project-execution-agent.task.prompt.md"
+    },
+    {
+      "id": "file-85WcQ8MpK1uKBfuvir6wJm",
+      "status": "completed",
+      "source_path": "memory/agent-knowledge/projects/gotham-studio-control-plane-20260827.summary.md"
     }
   ],
   "status": "success"

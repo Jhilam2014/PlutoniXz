@@ -18,7 +18,7 @@ import {
   startContainer,
   stopContainer
 } from "./dockerClient.js";
-import { ensureProjectAgentTopologies, removeProjectAgentTopology, syncProjectAgentIdentity, syncProjectAgentTopology } from "./projectAgents.js";
+import { ensureProjectAgentTopologies, prepareProjectAgentTopology, removeProjectAgentTopology, syncProjectAgentIdentity, syncProjectAgentTopology } from "./projectAgents.js";
 import { ensureProjectHuggingFaceModelWorkspace, ensureProjectQAgenticFramework, installProjectOrchestratorSeed } from "./projectBootstrap.js";
 import { normalizeEnterpriseTag } from "./enterprisePortfolio.js";
 
@@ -1035,7 +1035,7 @@ export async function createProject(name, structuredRequest = null, options = {}
   projects.push(project);
   await writeRegistry(projects);
   await ensureProjectQAgenticFramework(workspaceDir, project, { source: "plutonix-new-project-generation" });
-  await syncProjectAgentTopology(
+  await prepareProjectAgentTopology(
     publicProject(project),
     structuredRequest || {
       objective: `Create and maintain ${name}.`,

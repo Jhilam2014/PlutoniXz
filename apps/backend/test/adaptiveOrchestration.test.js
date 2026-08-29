@@ -49,6 +49,27 @@ test("honors the model-call ceiling", () => {
   assert.equal(route.plannedModelCalls, 1);
 });
 
+test("reads canonical prior outcomes without activating rejected or deferred branches", () => {
+  const canonicalDecision = {
+    workflowId: "workflow-a",
+    status: "succeeded",
+    selectedBranches: [{ id: "selected-a", disposition: "selected" }],
+    rejectedBranches: [{ id: "rejected-a", disposition: "rejected" }],
+    deferredBranches: [{ id: "deferred-a", disposition: "deferred" }]
+  };
+  const route = selectAdaptiveRoute({
+    instruction: "Add media duration metadata to the analysis report.",
+    taskType: "Medium",
+    project: managedProject,
+    canonicalDecisions: [canonicalDecision]
+  });
+  assert.equal(route.continuityWorkflowId, "workflow-a");
+  assert.equal(route.continuityStatus, "succeeded");
+  assert.equal(route.mode, "delegated");
+  assert.equal(canonicalDecision.rejectedBranches[0].disposition, "rejected");
+  assert.equal(canonicalDecision.deferredBranches[0].disposition, "deferred");
+});
+
 test("retries only transient workflow failures", () => {
   assert.equal(isTransientWorkflowError(new Error("produced no output for 60 seconds")), true);
   assert.equal(isTransientWorkflowError(new Error("gotham_models_manager::cache: failed to load models cache: missing field `supports_reasoning_summaries`")), true);

@@ -2,9 +2,10 @@ import fs from "fs-extra";
 import path from "node:path";
 import { summarizeAgentTokenEconomy } from "./tokenEconomy.js";
 
-const DEFAULT_INTERVAL_MS = 5 * 60 * 1000;
 const MAX_LOG_ROWS = 220;
 const MAX_INSTRUCTION_ROWS = 120;
+const DEFAULT_MAX_DAILY_AUDITS = 3;
+const DEFAULT_AUDIT_TIME_ZONE = "Asia/Kolkata";
 
 function plutonixRoot() {
   if (process.env.PLUTONIX_PROJECT_ROOT) return process.env.PLUTONIX_PROJECT_ROOT;
@@ -268,30 +269,113 @@ function severityRank(value = "") {
   return { critical: 4, high: 3, medium: 2, low: 1 }[value] || 0;
 }
 
+function dailyKey(value, timeZone) {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit"
+  }).formatToParts(value instanceof Date ? value : new Date(value));
+  const byType = Object.fromEntries(parts.map((part) => [part.type, part.value]));
+  return `${byType.year}-${byType.month}-${byType.day}`;
+}
+
+function healthAuditError(message, code, statusCode) {
+  const error = new Error(message);
+  error.code = code;
+  error.statusCode = statusCode;
+  return error;
+}
+
 export function createOrchestratorHealthMonitor({
   emit = () => {},
   getRuntimeEvents = () => [],
   getInstructionTimeline = () => [],
-  onSelfHeal = null
+  getTokenEconomy = summarizeAgentTokenEconomy,
+  onSelfHeal = null,
+  root: configuredRoot = plutonixRoot(),
+  now = () => new Date(),
+  maxDailyAudits = Number(process.env.PLUTONIX_ORCHESTRATOR_HEALTH_MAX_DAILY_AUDITS || DEFAULT_MAX_DAILY_AUDITS),
+  timeZone = process.env.PLUTONIX_ORCHESTRATOR_HEALTH_TIME_ZONE || DEFAULT_AUDIT_TIME_ZONE
 } = {}) {
-  const root = plutonixRoot();
+  const root = configuredRoot;
   const auditRoot = path.join(root, "observability", "orchestrator-health");
   const latestReportPath = path.join(auditRoot, "latest-health-report.json");
+  const dailyBudgetPath = path.join(auditRoot, "daily-audit-budget.json");
   const overlayPath = path.join(root, "runtime", "agents", "health", "agent-health-overrides.json");
-  let timer = null;
   let running = false;
   let lastSelfHealSignature = "";
+  const dailyLimit = Math.max(1, Math.min(3, Number.isFinite(maxDailyAudits) ? Math.floor(maxDailyAudits) : DEFAULT_MAX_DAILY_AUDITS));
 
-  const audit = async ({ reason = "periodic" } = {}) => {
+  const readDailyBudget = async () => {
+    const day = dailyKey(now(), timeZone);
+    const stored = await fs.readJson(dailyBudgetPath).catch(() => null);
+    if (stored?.day === day && Array.isArray(stored.attempts)) {
+      return { ...stored, maxDailyAudits: dailyLimit, timeZone };
+    }
+    return {
+      schemaVersion: "plutonix-orchestrator-health-budget/v1",
+      day,
+      timeZone,
+      maxDailyAudits: dailyLimit,
+      attempts: []
+    };
+  };
+
+  const writeDailyBudget = async (budget) => {
+    await fs.ensureDir(auditRoot);
+    await fs.writeJson(dailyBudgetPath, budget, { spaces: 2 });
+  };
+
+  const quota = async () => {
+    const budget = await readDailyBudget();
+    const used = budget.attempts.length;
+    return {
+      day: budget.day,
+      timeZone,
+      maxDailyAudits: dailyLimit,
+      used,
+      remaining: Math.max(0, dailyLimit - used)
+    };
+  };
+
+  const status = async () => ({
+    mode: "manual",
+    scheduled: false,
+    running,
+    quota: await quota(),
+    latestReport: await fs.readJson(latestReportPath).catch(() => null)
+  });
+
+  const audit = async ({ reason = "control-panel-user-request", requestedBy = "control-panel-user" } = {}) => {
     if (running) {
-      if (await fs.pathExists(latestReportPath)) return fs.readJson(latestReportPath);
-      return null;
+      throw healthAuditError("An orchestrator health audit is already running.", "orchestrator_health_audit_in_progress", 409);
     }
     running = true;
+    let budget = null;
+    let attempt = null;
     try {
+      budget = await readDailyBudget();
+      if (budget.attempts.length >= dailyLimit) {
+        throw healthAuditError(
+          `The daily orchestrator health-audit limit of ${dailyLimit} has been reached for ${budget.day} (${timeZone}).`,
+          "orchestrator_health_daily_limit_reached",
+          429
+        );
+      }
+      const requestedAt = now().toISOString();
+      attempt = {
+        id: `health-audit-${budget.day}-${budget.attempts.length + 1}`,
+        requestedAt,
+        requestedBy: String(requestedBy || "control-panel-user").slice(0, 120),
+        reason: String(reason || "control-panel-user-request").slice(0, 120),
+        status: "running"
+      };
+      budget.attempts.push(attempt);
+      await writeDailyBudget(budget);
       const runtimeAnalysis = analyzeRuntimeEvents(getRuntimeEvents());
       const instructionAnalysis = analyzeInstructions(getInstructionTimeline());
-      const tokenEconomy = await summarizeAgentTokenEconomy();
+      const tokenEconomy = await getTokenEconomy();
       const tokenAnalysis = analyzeTokenWaste(tokenEconomy);
       const issues = [...runtimeAnalysis.issues, ...instructionAnalysis.issues, ...tokenAnalysis.issues]
         .sort((left, right) => severityRank(right.severity) - severityRank(left.severity));
@@ -299,7 +383,7 @@ export function createOrchestratorHealthMonitor({
       const agents = buildAgentHealth(runtimeAgents, tokenEconomy, issues);
       const report = {
         status: issues.some((row) => row.severity === "critical") ? "critical" : issues.some((row) => row.severity === "high") ? "degraded" : "healthy",
-        generatedAt: new Date().toISOString(),
+        generatedAt: now().toISOString(),
         reason,
         scope: "plutonix-orchestrator-health",
         userActivitySummary: {
@@ -370,7 +454,20 @@ export function createOrchestratorHealthMonitor({
           });
         });
       }
+      attempt.status = "completed";
+      attempt.completedAt = now().toISOString();
+      attempt.reportStatus = report.status;
+      attempt.issueCount = issues.length;
+      await writeDailyBudget(budget);
       return report;
+    } catch (error) {
+      if (attempt && budget) {
+        attempt.status = "failed";
+        attempt.completedAt = now().toISOString();
+        attempt.errorCode = String(error.code || "orchestrator_health_audit_failed").slice(0, 120);
+        await writeDailyBudget(budget).catch(() => {});
+      }
+      throw error;
     } finally {
       running = false;
     }
@@ -378,19 +475,10 @@ export function createOrchestratorHealthMonitor({
 
   return {
     start() {
-      if (timer || String(process.env.PLUTONIX_ORCHESTRATOR_HEALTH_MONITOR || "1") === "0") return;
-      const intervalMs = Math.max(30_000, Number(process.env.PLUTONIX_ORCHESTRATOR_HEALTH_INTERVAL_MS || DEFAULT_INTERVAL_MS));
-      audit({ reason: "startup" }).catch((error) => emit("orchestrator-health-audit-failed", error.message, { status: "failed" }));
-      timer = setInterval(() => {
-        audit({ reason: "periodic" }).catch((error) => emit("orchestrator-health-audit-failed", error.message, { status: "failed" }));
-      }, intervalMs);
-      timer.unref?.();
+      return { mode: "manual", scheduled: false, maxDailyAudits: dailyLimit };
     },
-    stop() {
-      if (!timer) return;
-      clearInterval(timer);
-      timer = null;
-    },
-    audit
+    stop() {},
+    audit,
+    status
   };
 }

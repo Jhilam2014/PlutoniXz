@@ -3,7 +3,32 @@ import test from "node:test";
 
 process.env.PLUTONIX_SERVER_AUTOSTART = "false";
 
-const { gothamInstructionFlowPath, hydratePersistedWorkflowRoute } = await import("../src/server.js");
+const { activeGothamExecutionStatus, gothamInstructionFlowPath, hydratePersistedWorkflowRoute } = await import("../src/server.js");
+
+test("active Gotham execution status supports owner-scoped browser reattachment", () => {
+  const active = new Map([
+    ["user-a:project-a", {
+      controller: new AbortController(),
+      parentWorkflowId: "workflow-a",
+      projectId: "project-a",
+      projectName: "Project A",
+      instruction: "Add the requested transcript filter.",
+      taskType: "Auto",
+      resolvedTaskType: "Simple",
+      workflowMode: "executor",
+      executionMode: "direct",
+      startedAt: "2026-08-29T10:00:00.000Z"
+    }],
+    ["user-b:project-b", { controller: new AbortController(), parentWorkflowId: "workflow-b", projectId: "project-b" }]
+  ]);
+  const status = activeGothamExecutionStatus(active, { userId: "user-a", projectId: "project-a" });
+  assert.equal(status.status, "running");
+  assert.equal(status.execution.parentWorkflowId, "workflow-a");
+  assert.equal(status.execution.instruction, "Add the requested transcript filter.");
+  assert.equal(status.execution.resolvedTaskType, "Simple");
+  assert.equal(status.executions.some((execution) => execution.parentWorkflowId === "workflow-b"), false);
+  assert.equal(activeGothamExecutionStatus(active, { userId: "user-a", projectId: "project-b" }).status, "idle");
+});
 
 test("keeps the selected adaptive route when Gotham fails before returning a result", () => {
   const adaptiveRoute = {

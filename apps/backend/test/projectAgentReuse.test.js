@@ -3,7 +3,8 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
-import { buildProjectAgentTopology, syncProjectAgentTopology } from "../src/projectAgents.js";
+import { buildProjectAgentTopology, prepareProjectAgentTopology, publishProjectAgentTopology, syncProjectAgentTopology } from "../src/projectAgents.js";
+import { createCanonicalWorkflowDecisionRecord, persistCanonicalWorkflowDecision } from "../src/workflowDecisionContinuity.js";
 
 const environmentKeys = [
   "PLUTONIX_PROJECT_ROOT",
@@ -71,6 +72,69 @@ test("artifact-specific instructions stay on assignments instead of shared defin
   assert.doesNotMatch(definition.responsibility, /PDF|workbook/i);
   assert.match(assignment.projectResponsibility, /workbook/i);
   assert.equal(workbook.agentReuseDecisions.find((item) => item.selectedAgent === definition.id).decisionType, "exact_reuse");
+});
+
+test("preparation binds local topology without rebuilding shared graph projections", async (context) => {
+  const previousEnvironment = Object.fromEntries(environmentKeys.map((key) => [key, process.env[key]]));
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "plutonix-agent-prepare-"));
+  const workspaceDir = path.join(root, "workspace");
+  const graphPath = path.join(root, "topology", "agentic-system-graph.json");
+  const frontendGraphPath = path.join(root, "frontend", "agentic-system-graph.json");
+  const neo4jPath = path.join(root, "graph", "generated-project-agents.cypher");
+  await fs.mkdir(workspaceDir, { recursive: true });
+  Object.assign(process.env, {
+    PLUTONIX_PROJECT_ROOT: root,
+    PROJECT_AGENT_RUNTIME_ROOT: path.join(root, "runtime", "agents", "projects"),
+    PROJECT_AGENT_MARKDOWN_ROOT: path.join(root, "agents", "generated"),
+    PROJECT_AGENT_ARCHIVE_ROOT: path.join(root, "agents", "archived"),
+    PROJECT_AGENT_REUSE_DECISION_ROOT: path.join(root, "registry", "agent-reuse-decisions"),
+    PROJECT_AGENT_REGISTRY_ROOT: path.join(root, "registry", "agents"),
+    PROJECT_AGENT_NEO4J_PATH: neo4jPath,
+    AGENTIC_SYSTEM_GRAPH_PATH: graphPath,
+    FRONTEND_AGENTIC_SYSTEM_GRAPH_PATH: frontendGraphPath,
+    DELETED_AGENTS_PATH: path.join(root, "runtime", "agents", "deleted-agents.json")
+  });
+  context.after(async () => {
+    for (const [key, value] of Object.entries(previousEnvironment)) {
+      if (value === undefined) delete process.env[key];
+      else process.env[key] = value;
+    }
+    await fs.rm(root, { recursive: true, force: true });
+  });
+
+  const prepared = await prepareProjectAgentTopology(project("prepared-project", workspaceDir), mediumRequest);
+  assert.match(prepared.topologyDigest, /^[a-f0-9]{64}$/);
+  await assert.rejects(fs.access(graphPath));
+  await assert.rejects(fs.access(frontendGraphPath));
+  await assert.rejects(fs.access(neo4jPath));
+  await fs.access(path.join(workspaceDir, ".agentic", "orchestrator-agent.md"));
+
+  persistCanonicalWorkflowDecision(createCanonicalWorkflowDecisionRecord({
+    workflowId: "workflow-graph-convergence",
+    projectId: "prepared-project",
+    projectName: "prepared project",
+    status: "succeeded",
+    selectedPath: "project-local-orchestrator",
+    dispositions: {
+      selectedBranches: [{ id: "selected-branch", disposition: "selected", reason: "approved" }],
+      rejectedBranches: [{ id: "rejected-branch", disposition: "rejected", reason: "constraint" }],
+      deferredBranches: [{ id: "deferred-branch", disposition: "deferred", reason: "approval pending" }]
+    },
+    publicationId: "publication-prepare-test",
+    publicationIdempotencyKey: "prepare-test"
+  }), { root });
+  await publishProjectAgentTopology({ publicationId: "publication-prepare-test", idempotencyKey: "prepare-test" });
+  await fs.access(graphPath);
+  await fs.access(frontendGraphPath);
+  await fs.access(neo4jPath);
+  const graph = JSON.parse(await fs.readFile(graphPath, "utf8"));
+  const dispositions = graph.nodes.filter((node) => node.type === "decision_disposition");
+  assert.deepEqual(new Set(dispositions.map((node) => node.status)), new Set(["selected", "rejected", "deferred"]));
+  assert.equal(dispositions.find((node) => node.metadata.decisionKey === "deferred-branch").status, "deferred");
+  assert.equal(graph.metadata.publication_id, "publication-prepare-test");
+  assert.match(await fs.readFile(neo4jPath, "utf8"), /b\.disposition = "deferred"/);
+  const temporaryGraphFiles = (await fs.readdir(path.dirname(graphPath))).filter((file) => file.endsWith(".tmp"));
+  assert.deepEqual(temporaryGraphFiles, []);
 });
 
 test("sync archives legacy project-prefixed definitions and persists reuse decisions", async (context) => {

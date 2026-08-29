@@ -25,7 +25,7 @@
       "projectResponsibility": "Periodically review growing UI/UX surfaces with design strategy, frontend implementation, accessibility, responsive behavior, visual hierarchy, command placement, and professional aesthetic quality while preserving all existing functionality.",
       "status": "active",
       "contextPath": ".agentic/orchestrator-agent.md",
-      "createdAt": "2026-08-27T18:57:09.213Z"
+      "createdAt": "2026-08-29T13:27:45.168Z"
     },
     {
       "id": "project-agent-assignment:geofinderx-2yFsDY:design-workshop-review-agent",
@@ -155,7 +155,7 @@
       "projectResponsibility": "Periodically review growing UI/UX surfaces with design strategy, frontend implementation, accessibility, responsive behavior, visual hierarchy, command placement, and professional aesthetic quality while preserving all existing functionality.",
       "status": "active",
       "contextPath": ".agentic/orchestrator-agent.md",
-      "createdAt": "2026-08-27T07:15:34.632Z"
+      "createdAt": "2026-08-29T14:09:04.191Z"
     }
   ],
   "reuse_decisions": [
@@ -168,7 +168,7 @@
       "reuseConfidenceScore": 100,
       "similarityScore": 1,
       "reason": "Reused the existing global design-workshop-review definition; project context is stored in a separate assignment.",
-      "createdAt": "2026-08-27T18:57:09.212Z"
+      "createdAt": "2026-08-29T13:27:45.164Z"
     },
     {
       "id": "agent-reuse:geofinderx-2yFsDY:design-workshop-review-agent",
@@ -311,18 +311,18 @@
       "reuseConfidenceScore": 100,
       "similarityScore": 1,
       "reason": "Reused the existing global design-workshop-review definition; project context is stored in a separate assignment.",
-      "createdAt": "2026-08-27T07:15:34.632Z"
+      "createdAt": "2026-08-29T14:09:04.190Z"
     }
   ],
   "latest_reuse_decision": {
-    "id": "agent-reuse:mapex-M6rGkR:design-workshop-review-agent",
-    "projectExecution": "mapex-M6rGkR",
+    "id": "agent-reuse:voicetranscriptgenx-QcKNlU:design-workshop-review-agent",
+    "projectExecution": "voicetranscriptgenx-QcKNlU",
     "selectedAgent": "design-workshop-review-agent",
     "requestedRole": "design-workshop-review",
     "decisionType": "exact_reuse",
     "reuseConfidenceScore": 100,
     "similarityScore": 1,
     "reason": "Reused the existing global design-workshop-review definition; project context is stored in a separate assignment.",
-    "createdAt": "2026-08-27T18:57:09.212Z"
+    "createdAt": "2026-08-29T14:09:04.190Z"
   }
 }

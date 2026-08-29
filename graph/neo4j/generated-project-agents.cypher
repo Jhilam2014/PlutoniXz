@@ -8313,471 +8313,513 @@ SET pa.project_id = "voicetranscriptgenx-QcKNlU", pa.agent_id = "design-workshop
 MERGE (p)-[:HAS_AGENT_ASSIGNMENT]->(pa)
 MERGE (pa)-[:ASSIGNS_AGENT]->(a)
 MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-agentic-system-d3-agentic-system-d3-js-agentic-system-d3"})
-SET f.name = "Agentic System D3", f.category = "ui", f.entity_type = "ui_surface", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+SET f.name = "Agentic System D3", f.category = "ui", f.entity_type = "ui_surface", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "989dae2f2ddf17150aece9d6abf3740d638a09f7a4adf20712f4e34e83312122"
 MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-agentic-system-d3-agentic-system-d3-js-agentic-system-d3"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
 MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-agentic-system-d3-agentic-system-d3-js-agentic-system-d3"}) MERGE (a)-[:IMPLEMENTS]->(f)
 MERGE (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-agentic-system-d3-index-html-index"})
-SET f.name = "Index", f.category = "ui", f.entity_type = "ui_surface", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+SET f.name = "Index", f.category = "ui", f.entity_type = "ui_surface", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "989dae2f2ddf17150aece9d6abf3740d638a09f7a4adf20712f4e34e83312122"
 MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-agentic-system-d3-index-html-index"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
 MATCH (a:Agent {id: "experience-composition-agent"}), (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-agentic-system-d3-index-html-index"}) MERGE (a)-[:IMPLEMENTS]->(f)
 MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-project-env-path"})
-SET f.name = "PROJECT_ENV_PATH", f.category = "ui", f.entity_type = "ui_surface", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+SET f.name = "PROJECT_ENV_PATH", f.category = "ui", f.entity_type = "ui_surface", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "989dae2f2ddf17150aece9d6abf3740d638a09f7a4adf20712f4e34e83312122"
 MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-project-env-path"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
 MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-project-env-path"}) MERGE (a)-[:IMPLEMENTS]->(f)
-MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-openai-transcriptions-url"})
-SET f.name = "OPENAI_TRANSCRIPTIONS_URL", f.category = "ui", f.entity_type = "ui_surface", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
-MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-openai-transcriptions-url"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
-MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-openai-transcriptions-url"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-openai-translations-url"})
+SET f.name = "OPENAI_TRANSLATIONS_URL", f.category = "ui", f.entity_type = "ui_surface", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "989dae2f2ddf17150aece9d6abf3740d638a09f7a4adf20712f4e34e83312122"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-openai-translations-url"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-openai-translations-url"}) MERGE (a)-[:IMPLEMENTS]->(f)
 MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-audio-files"})
-SET f.name = "MAX_AUDIO_FILES", f.category = "ui", f.entity_type = "ui_surface", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+SET f.name = "MAX_AUDIO_FILES", f.category = "ui", f.entity_type = "ui_surface", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "989dae2f2ddf17150aece9d6abf3740d638a09f7a4adf20712f4e34e83312122"
 MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-audio-files"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
 MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-audio-files"}) MERGE (a)-[:IMPLEMENTS]->(f)
 MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-audio-file-bytes"})
-SET f.name = "MAX_AUDIO_FILE_BYTES", f.category = "ui", f.entity_type = "ui_surface", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+SET f.name = "MAX_AUDIO_FILE_BYTES", f.category = "ui", f.entity_type = "ui_surface", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "989dae2f2ddf17150aece9d6abf3740d638a09f7a4adf20712f4e34e83312122"
 MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-audio-file-bytes"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
 MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-audio-file-bytes"}) MERGE (a)-[:IMPLEMENTS]->(f)
 MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-total-audio-bytes"})
-SET f.name = "MAX_TOTAL_AUDIO_BYTES", f.category = "ui", f.entity_type = "ui_surface", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+SET f.name = "MAX_TOTAL_AUDIO_BYTES", f.category = "ui", f.entity_type = "ui_surface", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "989dae2f2ddf17150aece9d6abf3740d638a09f7a4adf20712f4e34e83312122"
 MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-total-audio-bytes"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
 MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-total-audio-bytes"}) MERGE (a)-[:IMPLEMENTS]->(f)
 MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-text-context-chars"})
-SET f.name = "MAX_TEXT_CONTEXT_CHARS", f.category = "ui", f.entity_type = "ui_surface", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+SET f.name = "MAX_TEXT_CONTEXT_CHARS", f.category = "ui", f.entity_type = "ui_surface", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "989dae2f2ddf17150aece9d6abf3740d638a09f7a4adf20712f4e34e83312122"
 MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-text-context-chars"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
 MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-text-context-chars"}) MERGE (a)-[:IMPLEMENTS]->(f)
 MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-audio-filename-pattern"})
-SET f.name = "AUDIO_FILENAME_PATTERN", f.category = "ui", f.entity_type = "ui_surface", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+SET f.name = "AUDIO_FILENAME_PATTERN", f.category = "ui", f.entity_type = "ui_surface", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "989dae2f2ddf17150aece9d6abf3740d638a09f7a4adf20712f4e34e83312122"
 MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-audio-filename-pattern"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
 MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-audio-filename-pattern"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-non-english-script-pattern"})
+SET f.name = "NON_ENGLISH_SCRIPT_PATTERN", f.category = "ui", f.entity_type = "ui_surface", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "989dae2f2ddf17150aece9d6abf3740d638a09f7a4adf20712f4e34e83312122"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-non-english-script-pattern"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-non-english-script-pattern"}) MERGE (a)-[:IMPLEMENTS]->(f)
 MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-transcription-rate-limit-window-ms"})
-SET f.name = "TRANSCRIPTION_RATE_LIMIT_WINDOW_MS", f.category = "ui", f.entity_type = "ui_surface", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+SET f.name = "TRANSCRIPTION_RATE_LIMIT_WINDOW_MS", f.category = "ui", f.entity_type = "ui_surface", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "989dae2f2ddf17150aece9d6abf3740d638a09f7a4adf20712f4e34e83312122"
 MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-transcription-rate-limit-window-ms"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
 MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-transcription-rate-limit-window-ms"}) MERGE (a)-[:IMPLEMENTS]->(f)
 MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-transcription-rate-limit-max-requests"})
-SET f.name = "TRANSCRIPTION_RATE_LIMIT_MAX_REQUESTS", f.category = "ui", f.entity_type = "ui_surface", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+SET f.name = "TRANSCRIPTION_RATE_LIMIT_MAX_REQUESTS", f.category = "ui", f.entity_type = "ui_surface", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "989dae2f2ddf17150aece9d6abf3740d638a09f7a4adf20712f4e34e83312122"
 MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-transcription-rate-limit-max-requests"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
 MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-transcription-rate-limit-max-requests"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-source-languages"})
+SET f.name = "SOURCE_LANGUAGES", f.category = "ui", f.entity_type = "ui_surface", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "989dae2f2ddf17150aece9d6abf3740d638a09f7a4adf20712f4e34e83312122"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-source-languages"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-source-languages"}) MERGE (a)-[:IMPLEMENTS]->(f)
 MERGE (f:API {id: "functionality:voicetranscriptgenx-QcKNlU:api-backend-src-server-js-get-api-health"})
-SET f.name = "GET /api/health", f.category = "api", f.entity_type = "api_route", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+SET f.name = "GET /api/health", f.category = "api", f.entity_type = "api_route", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "989dae2f2ddf17150aece9d6abf3740d638a09f7a4adf20712f4e34e83312122"
 MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:API {id: "functionality:voicetranscriptgenx-QcKNlU:api-backend-src-server-js-get-api-health"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
 MATCH (a:Agent {id: "project-orchestrator-agent"}), (f:API {id: "functionality:voicetranscriptgenx-QcKNlU:api-backend-src-server-js-get-api-health"}) MERGE (a)-[:IMPLEMENTS]->(f)
 MERGE (f:API {id: "functionality:voicetranscriptgenx-QcKNlU:api-backend-src-server-js-get-api-transcriptions-status"})
-SET f.name = "GET /api/transcriptions/status", f.category = "api", f.entity_type = "api_route", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+SET f.name = "GET /api/transcriptions/status", f.category = "api", f.entity_type = "api_route", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "989dae2f2ddf17150aece9d6abf3740d638a09f7a4adf20712f4e34e83312122"
 MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:API {id: "functionality:voicetranscriptgenx-QcKNlU:api-backend-src-server-js-get-api-transcriptions-status"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
 MATCH (a:Agent {id: "project-orchestrator-agent"}), (f:API {id: "functionality:voicetranscriptgenx-QcKNlU:api-backend-src-server-js-get-api-transcriptions-status"}) MERGE (a)-[:IMPLEMENTS]->(f)
 MERGE (f:API {id: "functionality:voicetranscriptgenx-QcKNlU:api-backend-src-server-js-post-api-transcriptions"})
-SET f.name = "POST /api/transcriptions", f.category = "api", f.entity_type = "api_route", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+SET f.name = "POST /api/transcriptions", f.category = "api", f.entity_type = "api_route", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "989dae2f2ddf17150aece9d6abf3740d638a09f7a4adf20712f4e34e83312122"
 MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:API {id: "functionality:voicetranscriptgenx-QcKNlU:api-backend-src-server-js-post-api-transcriptions"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
 MATCH (a:Agent {id: "project-orchestrator-agent"}), (f:API {id: "functionality:voicetranscriptgenx-QcKNlU:api-backend-src-server-js-post-api-transcriptions"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-backend-src-server-js-table-is"})
+SET f.name = "Table: is", f.category = "data", f.entity_type = "database_table", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "989dae2f2ddf17150aece9d6abf3740d638a09f7a4adf20712f4e34e83312122"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-backend-src-server-js-table-is"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "data-contract-agent"}), (f:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-backend-src-server-js-table-is"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-backend-src-server-js-table-configuration"})
+SET f.name = "Table: configuration", f.category = "data", f.entity_type = "database_table", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "989dae2f2ddf17150aece9d6abf3740d638a09f7a4adf20712f4e34e83312122"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-backend-src-server-js-table-configuration"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "data-contract-agent"}), (f:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-backend-src-server-js-table-configuration"}) MERGE (a)-[:IMPLEMENTS]->(f)
 MERGE (f:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-deliverables-validation-plutonix-12a7b495-166f-4037-9e58-024e379f85"})
-SET f.name = "Table: response", f.category = "data", f.entity_type = "database_table", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+SET f.name = "Table: response", f.category = "data", f.entity_type = "database_table", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "989dae2f2ddf17150aece9d6abf3740d638a09f7a4adf20712f4e34e83312122"
 MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-deliverables-validation-plutonix-12a7b495-166f-4037-9e58-024e379f85"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
 MATCH (a:Agent {id: "data-contract-agent"}), (f:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-deliverables-validation-plutonix-12a7b495-166f-4037-9e58-024e379f85"}) MERGE (a)-[:IMPLEMENTS]->(f)
 MERGE (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-index-html-index"})
-SET f.name = "Index", f.category = "ui", f.entity_type = "ui_surface", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+SET f.name = "Index", f.category = "ui", f.entity_type = "ui_surface", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "989dae2f2ddf17150aece9d6abf3740d638a09f7a4adf20712f4e34e83312122"
 MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-index-html-index"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
 MATCH (a:Agent {id: "experience-composition-agent"}), (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-index-html-index"}) MERGE (a)-[:IMPLEMENTS]->(f)
 MERGE (f:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-scripts-huggingface-models-mjs-table-of"})
-SET f.name = "Table: of", f.category = "data", f.entity_type = "database_table", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+SET f.name = "Table: of", f.category = "data", f.entity_type = "database_table", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "989dae2f2ddf17150aece9d6abf3740d638a09f7a4adf20712f4e34e83312122"
 MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-scripts-huggingface-models-mjs-table-of"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
 MATCH (a:Agent {id: "data-contract-agent"}), (f:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-scripts-huggingface-models-mjs-table-of"}) MERGE (a)-[:IMPLEMENTS]->(f)
 MERGE (f:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-scripts-huggingface-models-mjs-table-card"})
-SET f.name = "Table: card", f.category = "data", f.entity_type = "database_table", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+SET f.name = "Table: card", f.category = "data", f.entity_type = "database_table", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "989dae2f2ddf17150aece9d6abf3740d638a09f7a4adf20712f4e34e83312122"
 MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-scripts-huggingface-models-mjs-table-card"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
 MATCH (a:Agent {id: "data-contract-agent"}), (f:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-scripts-huggingface-models-mjs-table-card"}) MERGE (a)-[:IMPLEMENTS]->(f)
 MERGE (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-app-jsx-app"})
-SET f.name = "App", f.category = "ui", f.entity_type = "ui_surface", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+SET f.name = "App", f.category = "ui", f.entity_type = "ui_surface", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "989dae2f2ddf17150aece9d6abf3740d638a09f7a4adf20712f4e34e83312122"
 MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-app-jsx-app"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
 MATCH (a:Agent {id: "experience-composition-agent"}), (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-app-jsx-app"}) MERGE (a)-[:IMPLEMENTS]->(f)
 MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-icon"})
-SET f.name = "Icon", f.category = "ui", f.entity_type = "ui_surface", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+SET f.name = "Icon", f.category = "ui", f.entity_type = "ui_surface", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "989dae2f2ddf17150aece9d6abf3740d638a09f7a4adf20712f4e34e83312122"
 MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-icon"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
 MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-icon"}) MERGE (a)-[:IMPLEMENTS]->(f)
 MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-statusbadge"})
-SET f.name = "StatusBadge", f.category = "ui", f.entity_type = "ui_surface", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+SET f.name = "StatusBadge", f.category = "ui", f.entity_type = "ui_surface", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "989dae2f2ddf17150aece9d6abf3740d638a09f7a4adf20712f4e34e83312122"
 MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-statusbadge"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
 MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-statusbadge"}) MERGE (a)-[:IMPLEMENTS]->(f)
 MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-trackrow"})
-SET f.name = "TrackRow", f.category = "ui", f.entity_type = "ui_surface", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+SET f.name = "TrackRow", f.category = "ui", f.entity_type = "ui_surface", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "989dae2f2ddf17150aece9d6abf3740d638a09f7a4adf20712f4e34e83312122"
 MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-trackrow"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
 MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-trackrow"}) MERGE (a)-[:IMPLEMENTS]->(f)
-MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-3494"})
-SET f.name = "onRemove(track.id)}", f.category = "ui", f.entity_type = "ui_element", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
-MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-3494"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
-MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-3494"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-4183"})
+SET f.name = "onRemove(track.id)}", f.category = "ui", f.entity_type = "ui_element", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "989dae2f2ddf17150aece9d6abf3740d638a09f7a4adf20712f4e34e83312122"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-4183"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-4183"}) MERGE (a)-[:IMPLEMENTS]->(f)
 MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-emptyaudiostate"})
-SET f.name = "EmptyAudioState", f.category = "ui", f.entity_type = "ui_surface", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+SET f.name = "EmptyAudioState", f.category = "ui", f.entity_type = "ui_surface", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "989dae2f2ddf17150aece9d6abf3740d638a09f7a4adf20712f4e34e83312122"
 MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-emptyaudiostate"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
 MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-emptyaudiostate"}) MERGE (a)-[:IMPLEMENTS]->(f)
-MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-4148"})
-SET f.name = "Input 2", f.category = "ui", f.entity_type = "ui_element", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
-MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-4148"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
-MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-4148"}) MERGE (a)-[:IMPLEMENTS]->(f)
-MERGE (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-4148-onchange"})
-SET f.name = "On Select", f.category = "ui", f.entity_type = "ui_feature", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
-MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-4148-onchange"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
-MATCH (a:Agent {id: "experience-composition-agent"}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-4148-onchange"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-4837"})
+SET f.name = "Input 2", f.category = "ui", f.entity_type = "ui_element", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "989dae2f2ddf17150aece9d6abf3740d638a09f7a4adf20712f4e34e83312122"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-4837"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-4837"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-4837-onchange"})
+SET f.name = "On Select", f.category = "ui", f.entity_type = "ui_feature", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "989dae2f2ddf17150aece9d6abf3740d638a09f7a4adf20712f4e34e83312122"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-4837-onchange"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-4837-onchange"}) MERGE (a)-[:IMPLEMENTS]->(f)
 MERGE (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"})
-SET f.name = "GeneratedPage", f.category = "ui", f.entity_type = "ui_surface", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+SET f.name = "GeneratedPage", f.category = "ui", f.entity_type = "ui_surface", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "989dae2f2ddf17150aece9d6abf3740d638a09f7a4adf20712f4e34e83312122"
 MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
 MATCH (a:Agent {id: "experience-composition-agent"}), (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}) MERGE (a)-[:IMPLEMENTS]->(f)
-MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-a-13166"})
-SET f.name = "Media Studio workspace", f.category = "ui", f.entity_type = "ui_element", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
-MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-a-13166"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
-MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-a-13166"}) MERGE (a)-[:IMPLEMENTS]->(f)
-MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-13577"})
-SET f.name = "workspaceInputRef.current?.click()}>", f.category = "ui", f.entity_type = "ui_element", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
-MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-13577"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
-MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-13577"}) MERGE (a)-[:IMPLEMENTS]->(f)
-MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-13777"})
-SET f.name = "Button 5", f.category = "ui", f.entity_type = "ui_element", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
-MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-13777"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
-MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-13777"}) MERGE (a)-[:IMPLEMENTS]->(f)
-MERGE (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-13777-onclick"})
-SET f.name = "Export Workspace", f.category = "ui", f.entity_type = "ui_feature", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
-MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-13777-onclick"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
-MATCH (a:Agent {id: "experience-composition-agent"}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-13777-onclick"}) MERGE (a)-[:IMPLEMENTS]->(f)
-MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-13965"})
-SET f.name = "Input 6", f.category = "ui", f.entity_type = "ui_element", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
-MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-13965"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
-MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-13965"}) MERGE (a)-[:IMPLEMENTS]->(f)
-MERGE (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-13965-onchange"})
-SET f.name = "Import Workspace", f.category = "ui", f.entity_type = "ui_feature", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
-MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-13965-onchange"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
-MATCH (a:Agent {id: "experience-composition-agent"}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-13965-onchange"}) MERGE (a)-[:IMPLEMENTS]->(f)
-MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-15133"})
-SET f.name = "Input 7", f.category = "ui", f.entity_type = "ui_element", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
-MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-15133"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
-MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-15133"}) MERGE (a)-[:IMPLEMENTS]->(f)
-MERGE (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-15133-onchange"})
-SET f.name = "Handle Audio Select", f.category = "ui", f.entity_type = "ui_feature", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
-MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-15133-onchange"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
-MATCH (a:Agent {id: "experience-composition-agent"}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-15133-onchange"}) MERGE (a)-[:IMPLEMENTS]->(f)
-MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-16090"})
-SET f.name = "Button 8", f.category = "ui", f.entity_type = "ui_element", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
-MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-16090"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
-MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-16090"}) MERGE (a)-[:IMPLEMENTS]->(f)
-MERGE (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-16090-onclick"})
-SET f.name = "Restore Staged Tracks", f.category = "ui", f.entity_type = "ui_feature", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
-MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-16090-onclick"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
-MATCH (a:Agent {id: "experience-composition-agent"}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-16090-onclick"}) MERGE (a)-[:IMPLEMENTS]->(f)
-MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-16820"})
-SET f.name = "Input 9", f.category = "ui", f.entity_type = "ui_element", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
-MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-16820"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
-MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-16820"}) MERGE (a)-[:IMPLEMENTS]->(f)
-MERGE (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-16820-onchange"})
-SET f.name = "Handle Text Import", f.category = "ui", f.entity_type = "ui_feature", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
-MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-16820-onchange"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
-MATCH (a:Agent {id: "experience-composition-agent"}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-16820-onchange"}) MERGE (a)-[:IMPLEMENTS]->(f)
-MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-textarea-16977"})
-SET f.name = "setTextCorpus(event.target.value)}", f.category = "ui", f.entity_type = "ui_element", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
-MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-textarea-16977"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
-MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-textarea-16977"}) MERGE (a)-[:IMPLEMENTS]->(f)
-MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-select-18089"})
-SET f.name = "setLanguage(event.target.value)} disabled=", f.category = "ui", f.entity_type = "ui_element", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
-MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-select-18089"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
-MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-select-18089"}) MERGE (a)-[:IMPLEMENTS]->(f)
-MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-select-18585"})
-SET f.name = "setSpeakerHint(event.target.value)} disabled=", f.category = "ui", f.entity_type = "ui_element", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
-MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-select-18585"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
-MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-select-18585"}) MERGE (a)-[:IMPLEMENTS]->(f)
-MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-19907"})
-SET f.name = "Button 13", f.category = "ui", f.entity_type = "ui_element", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
-MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-19907"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
-MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-19907"}) MERGE (a)-[:IMPLEMENTS]->(f)
-MERGE (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-19907-onclick"})
-SET f.name = "Stop Transcription", f.category = "ui", f.entity_type = "ui_feature", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
-MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-19907-onclick"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
-MATCH (a:Agent {id: "experience-composition-agent"}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-19907-onclick"}) MERGE (a)-[:IMPLEMENTS]->(f)
-MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-20112"})
-SET f.name = "Button 14", f.category = "ui", f.entity_type = "ui_element", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
-MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-20112"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
-MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-20112"}) MERGE (a)-[:IMPLEMENTS]->(f)
-MERGE (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-20112-onclick"})
-SET f.name = "Run Transcription", f.category = "ui", f.entity_type = "ui_feature", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
-MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-20112-onclick"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
-MATCH (a:Agent {id: "experience-composition-agent"}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-20112-onclick"}) MERGE (a)-[:IMPLEMENTS]->(f)
-MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-20450"})
-SET f.name = "Button 15", f.category = "ui", f.entity_type = "ui_element", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
-MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-20450"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
-MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-20450"}) MERGE (a)-[:IMPLEMENTS]->(f)
-MERGE (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-20450-onclick"})
-SET f.name = "Run Transcription", f.category = "ui", f.entity_type = "ui_feature", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
-MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-20450-onclick"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
-MATCH (a:Agent {id: "experience-composition-agent"}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-20450-onclick"}) MERGE (a)-[:IMPLEMENTS]->(f)
-MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-textarea-21464"})
-SET f.name = "setTranscript(event.target.value)}", f.category = "ui", f.entity_type = "ui_element", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
-MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-textarea-21464"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
-MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-textarea-21464"}) MERGE (a)-[:IMPLEMENTS]->(f)
-MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-21803"})
-SET f.name = "Button 17", f.category = "ui", f.entity_type = "ui_element", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
-MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-21803"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
-MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-21803"}) MERGE (a)-[:IMPLEMENTS]->(f)
-MERGE (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-21803-onclick"})
-SET f.name = "Copy Transcript", f.category = "ui", f.entity_type = "ui_feature", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
-MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-21803-onclick"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
-MATCH (a:Agent {id: "experience-composition-agent"}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-21803-onclick"}) MERGE (a)-[:IMPLEMENTS]->(f)
-MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-22060"})
-SET f.name = "Button 18", f.category = "ui", f.entity_type = "ui_element", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
-MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-22060"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
-MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-22060"}) MERGE (a)-[:IMPLEMENTS]->(f)
-MERGE (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-22060-onclick"})
-SET f.name = "Export Transcript", f.category = "ui", f.entity_type = "ui_feature", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
-MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-22060-onclick"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
-MATCH (a:Agent {id: "experience-composition-agent"}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-22060-onclick"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-a-14488"})
+SET f.name = "Media Studio workspace", f.category = "ui", f.entity_type = "ui_element", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "989dae2f2ddf17150aece9d6abf3740d638a09f7a4adf20712f4e34e83312122"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-a-14488"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-a-14488"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-14896"})
+SET f.name = "workspaceInputRef.current?.click()}>", f.category = "ui", f.entity_type = "ui_element", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "989dae2f2ddf17150aece9d6abf3740d638a09f7a4adf20712f4e34e83312122"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-14896"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-14896"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-15096"})
+SET f.name = "Button 5", f.category = "ui", f.entity_type = "ui_element", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "989dae2f2ddf17150aece9d6abf3740d638a09f7a4adf20712f4e34e83312122"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-15096"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-15096"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-15096-onclick"})
+SET f.name = "Export Workspace", f.category = "ui", f.entity_type = "ui_feature", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "989dae2f2ddf17150aece9d6abf3740d638a09f7a4adf20712f4e34e83312122"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-15096-onclick"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-15096-onclick"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-15284"})
+SET f.name = "Input 6", f.category = "ui", f.entity_type = "ui_element", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "989dae2f2ddf17150aece9d6abf3740d638a09f7a4adf20712f4e34e83312122"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-15284"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-15284"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-15284-onchange"})
+SET f.name = "Import Workspace", f.category = "ui", f.entity_type = "ui_feature", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "989dae2f2ddf17150aece9d6abf3740d638a09f7a4adf20712f4e34e83312122"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-15284-onchange"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-15284-onchange"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-16484"})
+SET f.name = "Input 7", f.category = "ui", f.entity_type = "ui_element", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "989dae2f2ddf17150aece9d6abf3740d638a09f7a4adf20712f4e34e83312122"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-16484"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-16484"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-16484-onchange"})
+SET f.name = "Handle Audio Select", f.category = "ui", f.entity_type = "ui_feature", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "989dae2f2ddf17150aece9d6abf3740d638a09f7a4adf20712f4e34e83312122"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-16484-onchange"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-16484-onchange"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-17441"})
+SET f.name = "Button 8", f.category = "ui", f.entity_type = "ui_element", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "989dae2f2ddf17150aece9d6abf3740d638a09f7a4adf20712f4e34e83312122"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-17441"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-17441"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-17441-onclick"})
+SET f.name = "Restore Staged Tracks", f.category = "ui", f.entity_type = "ui_feature", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "989dae2f2ddf17150aece9d6abf3740d638a09f7a4adf20712f4e34e83312122"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-17441-onclick"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-17441-onclick"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-18184"})
+SET f.name = "Input 9", f.category = "ui", f.entity_type = "ui_element", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "989dae2f2ddf17150aece9d6abf3740d638a09f7a4adf20712f4e34e83312122"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-18184"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-18184"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-18184-onchange"})
+SET f.name = "Handle Text Import", f.category = "ui", f.entity_type = "ui_feature", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "989dae2f2ddf17150aece9d6abf3740d638a09f7a4adf20712f4e34e83312122"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-18184-onchange"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-18184-onchange"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-textarea-18341"})
+SET f.name = "setTextCorpus(event.target.value)}", f.category = "ui", f.entity_type = "ui_element", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "989dae2f2ddf17150aece9d6abf3740d638a09f7a4adf20712f4e34e83312122"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-textarea-18341"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-textarea-18341"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-select-19554"})
+SET f.name = "setLanguage(event.target.value)}", f.category = "ui", f.entity_type = "ui_element", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "989dae2f2ddf17150aece9d6abf3740d638a09f7a4adf20712f4e34e83312122"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-select-19554"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-select-19554"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-select-20404"})
+SET f.name = "setSpeakerHint(event.target.value)} disabled=", f.category = "ui", f.entity_type = "ui_element", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "989dae2f2ddf17150aece9d6abf3740d638a09f7a4adf20712f4e34e83312122"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-select-20404"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-select-20404"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-21763"})
+SET f.name = "Button 13", f.category = "ui", f.entity_type = "ui_element", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "989dae2f2ddf17150aece9d6abf3740d638a09f7a4adf20712f4e34e83312122"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-21763"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-21763"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-21763-onclick"})
+SET f.name = "Stop Transcription", f.category = "ui", f.entity_type = "ui_feature", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "989dae2f2ddf17150aece9d6abf3740d638a09f7a4adf20712f4e34e83312122"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-21763-onclick"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-21763-onclick"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-21966"})
+SET f.name = "Button 14", f.category = "ui", f.entity_type = "ui_element", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "989dae2f2ddf17150aece9d6abf3740d638a09f7a4adf20712f4e34e83312122"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-21966"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-21966"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-21966-onclick"})
+SET f.name = "Run Transcription", f.category = "ui", f.entity_type = "ui_feature", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "989dae2f2ddf17150aece9d6abf3740d638a09f7a4adf20712f4e34e83312122"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-21966-onclick"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-21966-onclick"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-22337"})
+SET f.name = "Button 15", f.category = "ui", f.entity_type = "ui_element", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "989dae2f2ddf17150aece9d6abf3740d638a09f7a4adf20712f4e34e83312122"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-22337"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-22337"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-22337-onclick"})
+SET f.name = "Run Transcription", f.category = "ui", f.entity_type = "ui_feature", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "989dae2f2ddf17150aece9d6abf3740d638a09f7a4adf20712f4e34e83312122"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-22337-onclick"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-22337-onclick"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-textarea-23909"})
+SET f.name = "setTranscript(event.target.value)}", f.category = "ui", f.entity_type = "ui_element", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "989dae2f2ddf17150aece9d6abf3740d638a09f7a4adf20712f4e34e83312122"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-textarea-23909"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-textarea-23909"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-24258"})
+SET f.name = "Button 17", f.category = "ui", f.entity_type = "ui_element", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "989dae2f2ddf17150aece9d6abf3740d638a09f7a4adf20712f4e34e83312122"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-24258"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-24258"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-24258-onclick"})
+SET f.name = "Copy Transcript", f.category = "ui", f.entity_type = "ui_feature", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "989dae2f2ddf17150aece9d6abf3740d638a09f7a4adf20712f4e34e83312122"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-24258-onclick"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-24258-onclick"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-24515"})
+SET f.name = "Button 18", f.category = "ui", f.entity_type = "ui_element", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "989dae2f2ddf17150aece9d6abf3740d638a09f7a4adf20712f4e34e83312122"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-24515"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-24515"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MERGE (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-24515-onclick"})
+SET f.name = "Export Transcript", f.category = "ui", f.entity_type = "ui_feature", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "989dae2f2ddf17150aece9d6abf3740d638a09f7a4adf20712f4e34e83312122"
+MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-24515-onclick"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-24515-onclick"}) MERGE (a)-[:IMPLEMENTS]->(f)
 MERGE (f:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-src-generated-metadata-json-table-are"})
-SET f.name = "Table: are", f.category = "data", f.entity_type = "database_table", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+SET f.name = "Table: are", f.category = "data", f.entity_type = "database_table", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "989dae2f2ddf17150aece9d6abf3740d638a09f7a4adf20712f4e34e83312122"
 MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-src-generated-metadata-json-table-are"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
 MATCH (a:Agent {id: "data-contract-agent"}), (f:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-src-generated-metadata-json-table-are"}) MERGE (a)-[:IMPLEMENTS]->(f)
 MERGE (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-main-jsx-main"})
-SET f.name = "Main", f.category = "ui", f.entity_type = "ui_surface", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+SET f.name = "Main", f.category = "ui", f.entity_type = "ui_surface", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "989dae2f2ddf17150aece9d6abf3740d638a09f7a4adf20712f4e34e83312122"
 MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-main-jsx-main"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
 MATCH (a:Agent {id: "experience-composition-agent"}), (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-main-jsx-main"}) MERGE (a)-[:IMPLEMENTS]->(f)
 MERGE (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-plutonixreferencebridge-jsx-plutonixreferencebridge"})
-SET f.name = "PlutoniXReferenceBridge", f.category = "ui", f.entity_type = "ui_surface", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "a81f4ef7061ba042b747f11657f83bd853d3c4431b5d2abece6bb28042f73d05"
+SET f.name = "PlutoniXReferenceBridge", f.category = "ui", f.entity_type = "ui_surface", f.project_id = "voicetranscriptgenx-QcKNlU", f.source_digest = "989dae2f2ddf17150aece9d6abf3740d638a09f7a4adf20712f4e34e83312122"
 MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-plutonixreferencebridge-jsx-plutonixreferencebridge"}) MERGE (p)-[:CONTAINS_APPLICATION_ENTITY]->(f)
 MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-plutonixreferencebridge-jsx-plutonixreferencebridge"}) MERGE (a)-[:IMPLEMENTS]->(f)
-MATCH (a:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-13777"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
-MATCH (a:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-13965"}), (b:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-13965-onchange"}) MERGE (a)-[:HAS_UI_FEATURE {confidence: 1}]->(b)
-MATCH (a:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-textarea-21464"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
-MATCH (a:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-13965"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
-MATCH (a:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-20450"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
-MATCH (a:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-select-18585"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
+MATCH (a:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-project-env-path"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-non-english-script-pattern"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
+MATCH (a:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-17441"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
+MATCH (a:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-18184"}), (b:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-18184-onchange"}) MERGE (a)-[:HAS_UI_FEATURE {confidence: 1}]->(b)
+MATCH (a:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-15096"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
+MATCH (a:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-select-19554"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
+MATCH (a:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-project-env-path"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-openai-translations-url"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
+MATCH (a:API {id: "functionality:voicetranscriptgenx-QcKNlU:api-backend-src-server-js-get-api-transcriptions-status"}), (b:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-backend-src-server-js-table-configuration"}) MERGE (a)-[:API_USES_DATABASE {confidence: 1}]->(b)
+MATCH (a:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-textarea-23909"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
+MATCH (a:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-21763"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
 MATCH (a:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-app-jsx-app"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-plutonixreferencebridge-jsx-plutonixreferencebridge"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
+MATCH (a:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-4837"}), (b:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-4837-onchange"}) MERGE (a)-[:HAS_UI_FEATURE {confidence: 1}]->(b)
 MATCH (a:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-app-jsx-app"}), (b:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}) MERGE (a)-[:CONTAINS_FEATURE {confidence: 1}]->(b)
-MATCH (a:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-21803"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
-MATCH (a:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-a-13166"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
-MATCH (a:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-project-env-path"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-transcription-rate-limit-max-requests"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
-MATCH (a:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-20112"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
-MATCH (a:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-textarea-16977"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
+MATCH (a:API {id: "functionality:voicetranscriptgenx-QcKNlU:api-backend-src-server-js-get-api-transcriptions-status"}), (b:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-backend-src-server-js-table-is"}) MERGE (a)-[:API_USES_DATABASE {confidence: 1}]->(b)
+MATCH (a:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-select-20404"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
+MATCH (a:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-16484"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
 MATCH (a:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-project-env-path"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-audio-files"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
-MATCH (a:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-16820"}), (b:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-16820-onchange"}) MERGE (a)-[:HAS_UI_FEATURE {confidence: 1}]->(b)
-MATCH (a:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-19907"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
-MATCH (a:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-22060"}), (b:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-22060-onclick"}) MERGE (a)-[:HAS_UI_FEATURE {confidence: 1}]->(b)
-MATCH (a:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-19907"}), (b:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-19907-onclick"}) MERGE (a)-[:HAS_UI_FEATURE {confidence: 1}]->(b)
-MATCH (a:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-project-env-path"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-openai-transcriptions-url"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
-MATCH (a:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-trackrow"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-3494"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
-MATCH (a:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-4148"}), (b:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-4148-onchange"}) MERGE (a)-[:HAS_UI_FEATURE {confidence: 1}]->(b)
-MATCH (a:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-13777"}), (b:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-13777-onclick"}) MERGE (a)-[:HAS_UI_FEATURE {confidence: 1}]->(b)
-MATCH (a:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-16090"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
+MATCH (a:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-21966"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
+MATCH (a:API {id: "functionality:voicetranscriptgenx-QcKNlU:api-backend-src-server-js-post-api-transcriptions"}), (b:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-backend-src-server-js-table-is"}) MERGE (a)-[:API_USES_DATABASE {confidence: 1}]->(b)
+MATCH (a:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-project-env-path"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-transcription-rate-limit-max-requests"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
+MATCH (a:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-24515"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
+MATCH (a:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-15096"}), (b:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-15096-onclick"}) MERGE (a)-[:HAS_UI_FEATURE {confidence: 1}]->(b)
 MATCH (a:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-project-env-path"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-total-audio-bytes"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
-MATCH (a:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-icon"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
-MATCH (a:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-emptyaudiostate"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-4148"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
-MATCH (a:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-22060"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
-MATCH (a:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-13577"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
-MATCH (a:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-15133"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
-MATCH (a:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-16820"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
-MATCH (a:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-emptyaudiostate"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
-MATCH (a:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-21803"}), (b:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-21803-onclick"}) MERGE (a)-[:HAS_UI_FEATURE {confidence: 1}]->(b)
-MATCH (a:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-main-jsx-main"}), (b:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-app-jsx-app"}) MERGE (a)-[:CONTAINS_FEATURE {confidence: 1}]->(b)
-MATCH (a:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-trackrow"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
-MATCH (a:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-20450"}), (b:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-20450-onclick"}) MERGE (a)-[:HAS_UI_FEATURE {confidence: 1}]->(b)
-MATCH (a:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-project-env-path"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-audio-file-bytes"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
-MATCH (a:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-statusbadge"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
-MATCH (a:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-project-env-path"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-audio-filename-pattern"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
-MATCH (a:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-select-18089"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
-MATCH (a:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-project-env-path"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-text-context-chars"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
-MATCH (a:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-16090"}), (b:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-16090-onclick"}) MERGE (a)-[:HAS_UI_FEATURE {confidence: 1}]->(b)
-MATCH (a:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-20112"}), (b:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-20112-onclick"}) MERGE (a)-[:HAS_UI_FEATURE {confidence: 1}]->(b)
-MATCH (a:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-15133"}), (b:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-15133-onchange"}) MERGE (a)-[:HAS_UI_FEATURE {confidence: 1}]->(b)
+MATCH (a:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-21763"}), (b:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-21763-onclick"}) MERGE (a)-[:HAS_UI_FEATURE {confidence: 1}]->(b)
+MATCH (a:API {id: "functionality:voicetranscriptgenx-QcKNlU:api-backend-src-server-js-post-api-transcriptions"}), (b:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-backend-src-server-js-table-configuration"}) MERGE (a)-[:API_USES_DATABASE {confidence: 1}]->(b)
 MATCH (a:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-project-env-path"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-transcription-rate-limit-window-ms"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
-MERGE (b:Branch {id: "branch:branch_b1badb97-2304-40cb-b7b2-cc95d10fff88"})
-SET b.ledger_id = "branch_b1badb97-2304-40cb-b7b2-cc95d10fff88", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
-MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-agentic-system-d3-agentic-system-d3-js-agentic-system-d3"}), (b:Branch {id: "branch:branch_b1badb97-2304-40cb-b7b2-cc95d10fff88"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
-MERGE (b:Branch {id: "branch:branch_09bf4a6a-731c-421c-a4c5-c18539deab3b"})
-SET b.ledger_id = "branch_09bf4a6a-731c-421c-a4c5-c18539deab3b", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
-MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-agentic-system-d3-agentic-system-d3-js-agentic-system-d3"}), (b:Branch {id: "branch:branch_09bf4a6a-731c-421c-a4c5-c18539deab3b"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
-MERGE (b:Branch {id: "branch:branch_31506395-1d22-4e50-8716-a7a5d81a3e03"})
-SET b.ledger_id = "branch_31506395-1d22-4e50-8716-a7a5d81a3e03", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
-MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-agentic-system-d3-agentic-system-d3-js-agentic-system-d3"}), (b:Branch {id: "branch:branch_31506395-1d22-4e50-8716-a7a5d81a3e03"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
-MERGE (b:Branch {id: "branch:branch_6a399690-c3ea-4867-b038-efabce914e9f"})
-SET b.ledger_id = "branch_6a399690-c3ea-4867-b038-efabce914e9f", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
-MATCH (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-app-jsx-app"}), (b:Branch {id: "branch:branch_6a399690-c3ea-4867-b038-efabce914e9f"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
-MERGE (b:Branch {id: "branch:branch_90e6a45f-d5d1-4a21-afe9-378812507bbe"})
-SET b.ledger_id = "branch_90e6a45f-d5d1-4a21-afe9-378812507bbe", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
-MATCH (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-app-jsx-app"}), (b:Branch {id: "branch:branch_90e6a45f-d5d1-4a21-afe9-378812507bbe"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
-MERGE (b:Branch {id: "branch:branch_0c4ec673-f08a-41b3-9fae-db3fab8379d0"})
-SET b.ledger_id = "branch_0c4ec673-f08a-41b3-9fae-db3fab8379d0", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
-MATCH (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-app-jsx-app"}), (b:Branch {id: "branch:branch_0c4ec673-f08a-41b3-9fae-db3fab8379d0"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
-MERGE (b:Branch {id: "branch:branch_ca3c2834-884f-4d9f-a09f-4ac3c15ff6c5"})
-SET b.ledger_id = "branch_ca3c2834-884f-4d9f-a09f-4ac3c15ff6c5", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
-MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-audio-filename-pattern"}), (b:Branch {id: "branch:branch_ca3c2834-884f-4d9f-a09f-4ac3c15ff6c5"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
-MERGE (b:Branch {id: "branch:branch_b480db18-5087-4ce0-891c-73d97f6d334e"})
-SET b.ledger_id = "branch_b480db18-5087-4ce0-891c-73d97f6d334e", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
-MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-audio-filename-pattern"}), (b:Branch {id: "branch:branch_b480db18-5087-4ce0-891c-73d97f6d334e"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
-MERGE (b:Branch {id: "branch:branch_7e8b05ac-16ec-4b37-a7b9-6c4be1aed4be"})
-SET b.ledger_id = "branch_7e8b05ac-16ec-4b37-a7b9-6c4be1aed4be", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
-MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-audio-filename-pattern"}), (b:Branch {id: "branch:branch_7e8b05ac-16ec-4b37-a7b9-6c4be1aed4be"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
-MERGE (b:Branch {id: "branch:branch_dc50fbd5-9084-4565-adf7-528dce5768d3"})
-SET b.ledger_id = "branch_dc50fbd5-9084-4565-adf7-528dce5768d3", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
-MATCH (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:Branch {id: "branch:branch_dc50fbd5-9084-4565-adf7-528dce5768d3"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
-MERGE (b:Branch {id: "branch:branch_c62beff6-d308-4728-96df-b52f672310e7"})
-SET b.ledger_id = "branch_c62beff6-d308-4728-96df-b52f672310e7", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
-MATCH (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:Branch {id: "branch:branch_c62beff6-d308-4728-96df-b52f672310e7"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
-MERGE (b:Branch {id: "branch:branch_e06de374-99cb-4dc2-8bd5-822e1efe3634"})
-SET b.ledger_id = "branch_e06de374-99cb-4dc2-8bd5-822e1efe3634", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
-MATCH (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:Branch {id: "branch:branch_e06de374-99cb-4dc2-8bd5-822e1efe3634"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
-MERGE (b:Branch {id: "branch:branch_19439244-13da-44a5-8917-51e632933700"})
-SET b.ledger_id = "branch_19439244-13da-44a5-8917-51e632933700", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
-MATCH (f:API {id: "functionality:voicetranscriptgenx-QcKNlU:api-backend-src-server-js-get-api-health"}), (b:Branch {id: "branch:branch_19439244-13da-44a5-8917-51e632933700"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
-MERGE (b:Branch {id: "branch:branch_aaa3bcee-d5c5-43e4-973c-8698ba07146b"})
-SET b.ledger_id = "branch_aaa3bcee-d5c5-43e4-973c-8698ba07146b", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
-MATCH (f:API {id: "functionality:voicetranscriptgenx-QcKNlU:api-backend-src-server-js-get-api-health"}), (b:Branch {id: "branch:branch_aaa3bcee-d5c5-43e4-973c-8698ba07146b"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
-MERGE (b:Branch {id: "branch:branch_1db20e4a-6b7c-41ef-a2b3-f17d46ef3ae0"})
-SET b.ledger_id = "branch_1db20e4a-6b7c-41ef-a2b3-f17d46ef3ae0", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
-MATCH (f:API {id: "functionality:voicetranscriptgenx-QcKNlU:api-backend-src-server-js-get-api-health"}), (b:Branch {id: "branch:branch_1db20e4a-6b7c-41ef-a2b3-f17d46ef3ae0"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
-MERGE (b:Branch {id: "branch:branch_69b14c6d-6298-4c0c-8724-dff73ca4ce93"})
-SET b.ledger_id = "branch_69b14c6d-6298-4c0c-8724-dff73ca4ce93", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
-MATCH (f:API {id: "functionality:voicetranscriptgenx-QcKNlU:api-backend-src-server-js-get-api-transcriptions-status"}), (b:Branch {id: "branch:branch_69b14c6d-6298-4c0c-8724-dff73ca4ce93"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
-MERGE (b:Branch {id: "branch:branch_88b19fa0-8095-4b6c-b0e2-5ddb7173570d"})
-SET b.ledger_id = "branch_88b19fa0-8095-4b6c-b0e2-5ddb7173570d", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
-MATCH (f:API {id: "functionality:voicetranscriptgenx-QcKNlU:api-backend-src-server-js-get-api-transcriptions-status"}), (b:Branch {id: "branch:branch_88b19fa0-8095-4b6c-b0e2-5ddb7173570d"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
-MERGE (b:Branch {id: "branch:branch_aa8e397a-42fa-47b2-b1f6-0a44af27b1e5"})
-SET b.ledger_id = "branch_aa8e397a-42fa-47b2-b1f6-0a44af27b1e5", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
-MATCH (f:API {id: "functionality:voicetranscriptgenx-QcKNlU:api-backend-src-server-js-get-api-transcriptions-status"}), (b:Branch {id: "branch:branch_aa8e397a-42fa-47b2-b1f6-0a44af27b1e5"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
-MERGE (b:Branch {id: "branch:branch_144df7c1-aade-42ee-b95c-df8ba55f0b09"})
-SET b.ledger_id = "branch_144df7c1-aade-42ee-b95c-df8ba55f0b09", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
-MATCH (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-agentic-system-d3-index-html-index"}), (b:Branch {id: "branch:branch_144df7c1-aade-42ee-b95c-df8ba55f0b09"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
-MERGE (b:Branch {id: "branch:branch_30a70f21-168a-47c4-b57e-be4ad2922b91"})
-SET b.ledger_id = "branch_30a70f21-168a-47c4-b57e-be4ad2922b91", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
-MATCH (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-agentic-system-d3-index-html-index"}), (b:Branch {id: "branch:branch_30a70f21-168a-47c4-b57e-be4ad2922b91"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
-MERGE (b:Branch {id: "branch:branch_80b21dae-410a-4efb-87a5-21787b9ad7b0"})
-SET b.ledger_id = "branch_80b21dae-410a-4efb-87a5-21787b9ad7b0", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
-MATCH (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-agentic-system-d3-index-html-index"}), (b:Branch {id: "branch:branch_80b21dae-410a-4efb-87a5-21787b9ad7b0"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
-MERGE (b:Branch {id: "branch:branch_f5163a80-b586-4347-9459-a57dc689901d"})
-SET b.ledger_id = "branch_f5163a80-b586-4347-9459-a57dc689901d", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
-MATCH (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-index-html-index"}), (b:Branch {id: "branch:branch_f5163a80-b586-4347-9459-a57dc689901d"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
-MERGE (b:Branch {id: "branch:branch_1f4ac02b-8067-4f7c-b35c-638c8fa29da9"})
-SET b.ledger_id = "branch_1f4ac02b-8067-4f7c-b35c-638c8fa29da9", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
-MATCH (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-index-html-index"}), (b:Branch {id: "branch:branch_1f4ac02b-8067-4f7c-b35c-638c8fa29da9"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
-MERGE (b:Branch {id: "branch:branch_82ba67c2-bbe0-4fe3-adec-4b9cccd2a026"})
-SET b.ledger_id = "branch_82ba67c2-bbe0-4fe3-adec-4b9cccd2a026", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
-MATCH (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-index-html-index"}), (b:Branch {id: "branch:branch_82ba67c2-bbe0-4fe3-adec-4b9cccd2a026"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
-MERGE (b:Branch {id: "branch:branch_c935649b-520c-4650-bca2-5b722199d157"})
-SET b.ledger_id = "branch_c935649b-520c-4650-bca2-5b722199d157", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
-MATCH (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-main-jsx-main"}), (b:Branch {id: "branch:branch_c935649b-520c-4650-bca2-5b722199d157"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
-MERGE (b:Branch {id: "branch:branch_10518e20-33b5-4c62-a718-2c8963c48711"})
-SET b.ledger_id = "branch_10518e20-33b5-4c62-a718-2c8963c48711", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
-MATCH (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-main-jsx-main"}), (b:Branch {id: "branch:branch_10518e20-33b5-4c62-a718-2c8963c48711"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
-MERGE (b:Branch {id: "branch:branch_0fcb5d2c-8c3a-4885-9133-0f8a3d5cd46b"})
-SET b.ledger_id = "branch_0fcb5d2c-8c3a-4885-9133-0f8a3d5cd46b", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
-MATCH (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-main-jsx-main"}), (b:Branch {id: "branch:branch_0fcb5d2c-8c3a-4885-9133-0f8a3d5cd46b"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
-MERGE (b:Branch {id: "branch:branch_d1b35683-6af2-417a-92c0-b13cad49681a"})
-SET b.ledger_id = "branch_d1b35683-6af2-417a-92c0-b13cad49681a", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
-MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-audio-file-bytes"}), (b:Branch {id: "branch:branch_d1b35683-6af2-417a-92c0-b13cad49681a"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
-MERGE (b:Branch {id: "branch:branch_7f74d500-b502-4efb-be7d-e62ccd350a5f"})
-SET b.ledger_id = "branch_7f74d500-b502-4efb-be7d-e62ccd350a5f", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
-MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-audio-file-bytes"}), (b:Branch {id: "branch:branch_7f74d500-b502-4efb-be7d-e62ccd350a5f"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
-MERGE (b:Branch {id: "branch:branch_582091fd-406a-444d-b6a0-9d87286a27b3"})
-SET b.ledger_id = "branch_582091fd-406a-444d-b6a0-9d87286a27b3", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
-MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-audio-file-bytes"}), (b:Branch {id: "branch:branch_582091fd-406a-444d-b6a0-9d87286a27b3"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
-MERGE (b:Branch {id: "branch:branch_857aed7a-f48d-4849-8ed3-d5302b647ff0"})
-SET b.ledger_id = "branch_857aed7a-f48d-4849-8ed3-d5302b647ff0", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
-MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-audio-files"}), (b:Branch {id: "branch:branch_857aed7a-f48d-4849-8ed3-d5302b647ff0"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
-MERGE (b:Branch {id: "branch:branch_ba9b24a1-2303-40e5-9651-d22b1780ea74"})
-SET b.ledger_id = "branch_ba9b24a1-2303-40e5-9651-d22b1780ea74", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
-MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-audio-files"}), (b:Branch {id: "branch:branch_ba9b24a1-2303-40e5-9651-d22b1780ea74"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
-MERGE (b:Branch {id: "branch:branch_17cf7031-0c3d-4bfc-a0ce-fe9391f6b65e"})
-SET b.ledger_id = "branch_17cf7031-0c3d-4bfc-a0ce-fe9391f6b65e", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
-MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-audio-files"}), (b:Branch {id: "branch:branch_17cf7031-0c3d-4bfc-a0ce-fe9391f6b65e"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
-MERGE (b:Branch {id: "branch:branch_c9ae86a0-19b9-4d07-b5fa-ee78220137de"})
-SET b.ledger_id = "branch_c9ae86a0-19b9-4d07-b5fa-ee78220137de", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
-MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-text-context-chars"}), (b:Branch {id: "branch:branch_c9ae86a0-19b9-4d07-b5fa-ee78220137de"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
-MERGE (b:Branch {id: "branch:branch_7c1bced9-f81a-492b-a445-99d16ecbb232"})
-SET b.ledger_id = "branch_7c1bced9-f81a-492b-a445-99d16ecbb232", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
-MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-text-context-chars"}), (b:Branch {id: "branch:branch_7c1bced9-f81a-492b-a445-99d16ecbb232"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
-MERGE (b:Branch {id: "branch:branch_9fbac908-5375-4773-8acb-a79fee493fba"})
-SET b.ledger_id = "branch_9fbac908-5375-4773-8acb-a79fee493fba", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
-MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-text-context-chars"}), (b:Branch {id: "branch:branch_9fbac908-5375-4773-8acb-a79fee493fba"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
-MERGE (b:Branch {id: "branch:branch_49cafac5-9ed6-4ea4-a0e1-63b24d5955e4"})
-SET b.ledger_id = "branch_49cafac5-9ed6-4ea4-a0e1-63b24d5955e4", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
-MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-total-audio-bytes"}), (b:Branch {id: "branch:branch_49cafac5-9ed6-4ea4-a0e1-63b24d5955e4"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
-MERGE (b:Branch {id: "branch:branch_a56ca2e8-76ae-4923-90e9-ce3a5b240ea5"})
-SET b.ledger_id = "branch_a56ca2e8-76ae-4923-90e9-ce3a5b240ea5", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
-MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-total-audio-bytes"}), (b:Branch {id: "branch:branch_a56ca2e8-76ae-4923-90e9-ce3a5b240ea5"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
-MERGE (b:Branch {id: "branch:branch_1a01a15b-f1f7-4b5f-bcbd-f9bc0d5b872d"})
-SET b.ledger_id = "branch_1a01a15b-f1f7-4b5f-bcbd-f9bc0d5b872d", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
-MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-total-audio-bytes"}), (b:Branch {id: "branch:branch_1a01a15b-f1f7-4b5f-bcbd-f9bc0d5b872d"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
-MERGE (b:Branch {id: "branch:branch_2ff1d14e-6bdf-4489-bd94-b3a33d5515b8"})
-SET b.ledger_id = "branch_2ff1d14e-6bdf-4489-bd94-b3a33d5515b8", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
-MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-openai-transcriptions-url"}), (b:Branch {id: "branch:branch_2ff1d14e-6bdf-4489-bd94-b3a33d5515b8"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
-MERGE (b:Branch {id: "branch:branch_19e52e03-2658-41ca-b9d5-3b35226f6dad"})
-SET b.ledger_id = "branch_19e52e03-2658-41ca-b9d5-3b35226f6dad", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
-MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-openai-transcriptions-url"}), (b:Branch {id: "branch:branch_19e52e03-2658-41ca-b9d5-3b35226f6dad"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
-MERGE (b:Branch {id: "branch:branch_94363ded-003a-4b31-a83b-ed0b4e1392be"})
-SET b.ledger_id = "branch_94363ded-003a-4b31-a83b-ed0b4e1392be", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
-MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-openai-transcriptions-url"}), (b:Branch {id: "branch:branch_94363ded-003a-4b31-a83b-ed0b4e1392be"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
-MERGE (b:Branch {id: "branch:branch_5e9ea189-9497-4c78-9dc2-36e235e82d41"})
-SET b.ledger_id = "branch_5e9ea189-9497-4c78-9dc2-36e235e82d41", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
-MATCH (f:API {id: "functionality:voicetranscriptgenx-QcKNlU:api-backend-src-server-js-post-api-transcriptions"}), (b:Branch {id: "branch:branch_5e9ea189-9497-4c78-9dc2-36e235e82d41"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
-MERGE (b:Branch {id: "branch:branch_c306b4f1-e10a-412b-af33-3701b5a6aebf"})
-SET b.ledger_id = "branch_c306b4f1-e10a-412b-af33-3701b5a6aebf", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
-MATCH (f:API {id: "functionality:voicetranscriptgenx-QcKNlU:api-backend-src-server-js-post-api-transcriptions"}), (b:Branch {id: "branch:branch_c306b4f1-e10a-412b-af33-3701b5a6aebf"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
-MERGE (b:Branch {id: "branch:branch_3c159330-c510-4949-a5b3-62f8a7bed9d0"})
-SET b.ledger_id = "branch_3c159330-c510-4949-a5b3-62f8a7bed9d0", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
-MATCH (f:API {id: "functionality:voicetranscriptgenx-QcKNlU:api-backend-src-server-js-post-api-transcriptions"}), (b:Branch {id: "branch:branch_3c159330-c510-4949-a5b3-62f8a7bed9d0"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
-MERGE (b:Branch {id: "branch:branch_067d46ea-36e1-4f8a-8149-f1dacb9d28c8"})
-SET b.ledger_id = "branch_067d46ea-36e1-4f8a-8149-f1dacb9d28c8", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
-MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-project-env-path"}), (b:Branch {id: "branch:branch_067d46ea-36e1-4f8a-8149-f1dacb9d28c8"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
-MERGE (b:Branch {id: "branch:branch_b8d16f97-e4b8-411e-94eb-141eb3c3a400"})
-SET b.ledger_id = "branch_b8d16f97-e4b8-411e-94eb-141eb3c3a400", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
-MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-project-env-path"}), (b:Branch {id: "branch:branch_b8d16f97-e4b8-411e-94eb-141eb3c3a400"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
-MERGE (b:Branch {id: "branch:branch_10289caf-8049-4d72-a069-029367dbe9c1"})
-SET b.ledger_id = "branch_10289caf-8049-4d72-a069-029367dbe9c1", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
-MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-project-env-path"}), (b:Branch {id: "branch:branch_10289caf-8049-4d72-a069-029367dbe9c1"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
-MERGE (b:Branch {id: "branch:branch_b140ecdc-6b2c-45cf-a261-9495e527a245"})
-SET b.ledger_id = "branch_b140ecdc-6b2c-45cf-a261-9495e527a245", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
-MATCH (f:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-src-generated-metadata-json-table-are"}), (b:Branch {id: "branch:branch_b140ecdc-6b2c-45cf-a261-9495e527a245"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
-MERGE (b:Branch {id: "branch:branch_08cf4406-fe48-4e67-91c5-3eb74d1bcf7b"})
-SET b.ledger_id = "branch_08cf4406-fe48-4e67-91c5-3eb74d1bcf7b", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
-MATCH (f:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-src-generated-metadata-json-table-are"}), (b:Branch {id: "branch:branch_08cf4406-fe48-4e67-91c5-3eb74d1bcf7b"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
-MERGE (b:Branch {id: "branch:branch_f12f63cf-b1e0-4895-89b9-6786a0f3c0e8"})
-SET b.ledger_id = "branch_f12f63cf-b1e0-4895-89b9-6786a0f3c0e8", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.733
-MATCH (f:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-src-generated-metadata-json-table-are"}), (b:Branch {id: "branch:branch_f12f63cf-b1e0-4895-89b9-6786a0f3c0e8"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
-MERGE (b:Branch {id: "branch:branch_455d5512-8e22-4ff7-80bf-c755bbf17d01"})
-SET b.ledger_id = "branch_455d5512-8e22-4ff7-80bf-c755bbf17d01", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
-MATCH (f:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-scripts-huggingface-models-mjs-table-card"}), (b:Branch {id: "branch:branch_455d5512-8e22-4ff7-80bf-c755bbf17d01"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
-MERGE (b:Branch {id: "branch:branch_8d00045c-6cf1-4e5e-be93-3349bdc239cb"})
-SET b.ledger_id = "branch_8d00045c-6cf1-4e5e-be93-3349bdc239cb", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
-MATCH (f:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-scripts-huggingface-models-mjs-table-card"}), (b:Branch {id: "branch:branch_8d00045c-6cf1-4e5e-be93-3349bdc239cb"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
-MERGE (b:Branch {id: "branch:branch_0400922f-2c37-431a-83ca-cc2b051ae437"})
-SET b.ledger_id = "branch_0400922f-2c37-431a-83ca-cc2b051ae437", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.733
-MATCH (f:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-scripts-huggingface-models-mjs-table-card"}), (b:Branch {id: "branch:branch_0400922f-2c37-431a-83ca-cc2b051ae437"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
-MERGE (b:Branch {id: "branch:branch_f18089b4-a9e3-4f5e-89cd-eebc4e4784ca"})
-SET b.ledger_id = "branch_f18089b4-a9e3-4f5e-89cd-eebc4e4784ca", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
-MATCH (f:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-scripts-huggingface-models-mjs-table-of"}), (b:Branch {id: "branch:branch_f18089b4-a9e3-4f5e-89cd-eebc4e4784ca"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
-MERGE (b:Branch {id: "branch:branch_3eb3b43f-f569-43f6-9b6b-5ccc110eaef9"})
-SET b.ledger_id = "branch_3eb3b43f-f569-43f6-9b6b-5ccc110eaef9", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
-MATCH (f:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-scripts-huggingface-models-mjs-table-of"}), (b:Branch {id: "branch:branch_3eb3b43f-f569-43f6-9b6b-5ccc110eaef9"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
-MERGE (b:Branch {id: "branch:branch_46c84ba0-95f4-4a8d-a02d-c55ca1b616f0"})
-SET b.ledger_id = "branch_46c84ba0-95f4-4a8d-a02d-c55ca1b616f0", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.733
-MATCH (f:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-scripts-huggingface-models-mjs-table-of"}), (b:Branch {id: "branch:branch_46c84ba0-95f4-4a8d-a02d-c55ca1b616f0"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
-MERGE (b:Branch {id: "branch:branch_7021bd31-b575-4f67-9bce-6e6372377dcc"})
-SET b.ledger_id = "branch_7021bd31-b575-4f67-9bce-6e6372377dcc", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
-MATCH (f:ApplicationFunctionality {id: "functionality:voicetranscriptgenx-QcKNlU:data-deliverables-validation-plutonix-12a7b495-166f-4037-9e58-024e379f8540-tr"}), (b:Branch {id: "branch:branch_7021bd31-b575-4f67-9bce-6e6372377dcc"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
-MERGE (b:Branch {id: "branch:branch_38294060-4af7-439b-9231-8e71e57b80db"})
-SET b.ledger_id = "branch_38294060-4af7-439b-9231-8e71e57b80db", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
-MATCH (f:ApplicationFunctionality {id: "functionality:voicetranscriptgenx-QcKNlU:data-deliverables-validation-plutonix-12a7b495-166f-4037-9e58-024e379f8540-tr"}), (b:Branch {id: "branch:branch_38294060-4af7-439b-9231-8e71e57b80db"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
-MERGE (b:Branch {id: "branch:branch_fea821e3-4e13-4a94-94dd-8dff00c2dffa"})
-SET b.ledger_id = "branch_fea821e3-4e13-4a94-94dd-8dff00c2dffa", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.733
-MATCH (f:ApplicationFunctionality {id: "functionality:voicetranscriptgenx-QcKNlU:data-deliverables-validation-plutonix-12a7b495-166f-4037-9e58-024e379f8540-tr"}), (b:Branch {id: "branch:branch_fea821e3-4e13-4a94-94dd-8dff00c2dffa"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
-MERGE (b:Branch {id: "branch:branch_fc7eb376-db09-49a9-a19e-a5b71fc16181"})
-SET b.ledger_id = "branch_fc7eb376-db09-49a9-a19e-a5b71fc16181", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
-MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-transcription-rate-limit-max-requests"}), (b:Branch {id: "branch:branch_fc7eb376-db09-49a9-a19e-a5b71fc16181"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
-MERGE (b:Branch {id: "branch:branch_33cb7999-131a-447a-9116-24a6c89a1c0a"})
-SET b.ledger_id = "branch_33cb7999-131a-447a-9116-24a6c89a1c0a", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
-MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-transcription-rate-limit-max-requests"}), (b:Branch {id: "branch:branch_33cb7999-131a-447a-9116-24a6c89a1c0a"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
-MERGE (b:Branch {id: "branch:branch_e784f00d-cbbe-4c96-9faf-93faa39e3288"})
-SET b.ledger_id = "branch_e784f00d-cbbe-4c96-9faf-93faa39e3288", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
-MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-transcription-rate-limit-max-requests"}), (b:Branch {id: "branch:branch_e784f00d-cbbe-4c96-9faf-93faa39e3288"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
-MERGE (b:Branch {id: "branch:branch_0845a23e-49d1-42c1-b7cd-9fab84dab0b0"})
-SET b.ledger_id = "branch_0845a23e-49d1-42c1-b7cd-9fab84dab0b0", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
-MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-transcription-rate-limit-window-ms"}), (b:Branch {id: "branch:branch_0845a23e-49d1-42c1-b7cd-9fab84dab0b0"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
-MERGE (b:Branch {id: "branch:branch_147a2955-b242-4c07-a400-2e47c3aeba29"})
-SET b.ledger_id = "branch_147a2955-b242-4c07-a400-2e47c3aeba29", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
-MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-transcription-rate-limit-window-ms"}), (b:Branch {id: "branch:branch_147a2955-b242-4c07-a400-2e47c3aeba29"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
-MERGE (b:Branch {id: "branch:branch_63181ab0-cac1-4dd9-841f-f02e388d2f91"})
-SET b.ledger_id = "branch_63181ab0-cac1-4dd9-841f-f02e388d2f91", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
-MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-transcription-rate-limit-window-ms"}), (b:Branch {id: "branch:branch_63181ab0-cac1-4dd9-841f-f02e388d2f91"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MATCH (a:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-24258"}), (b:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-24258-onclick"}) MERGE (a)-[:HAS_UI_FEATURE {confidence: 1}]->(b)
+MATCH (a:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-22337"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
+MATCH (a:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-statusbadge"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
+MATCH (a:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-18184"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
+MATCH (a:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-24258"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
+MATCH (a:API {id: "functionality:voicetranscriptgenx-QcKNlU:api-backend-src-server-js-get-api-health"}), (b:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-backend-src-server-js-table-is"}) MERGE (a)-[:API_USES_DATABASE {confidence: 1}]->(b)
+MATCH (a:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-main-jsx-main"}), (b:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-app-jsx-app"}) MERGE (a)-[:CONTAINS_FEATURE {confidence: 1}]->(b)
+MATCH (a:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-a-14488"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
+MATCH (a:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-icon"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
+MATCH (a:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-15284"}), (b:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-15284-onchange"}) MERGE (a)-[:HAS_UI_FEATURE {confidence: 1}]->(b)
+MATCH (a:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-project-env-path"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-audio-file-bytes"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
+MATCH (a:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-emptyaudiostate"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
+MATCH (a:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-21966"}), (b:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-21966-onclick"}) MERGE (a)-[:HAS_UI_FEATURE {confidence: 1}]->(b)
+MATCH (a:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-trackrow"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-4183"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
+MATCH (a:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-project-env-path"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-audio-filename-pattern"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
+MATCH (a:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-trackrow"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
+MATCH (a:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-24515"}), (b:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-24515-onclick"}) MERGE (a)-[:HAS_UI_FEATURE {confidence: 1}]->(b)
+MATCH (a:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-17441"}), (b:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-17441-onclick"}) MERGE (a)-[:HAS_UI_FEATURE {confidence: 1}]->(b)
+MATCH (a:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-14896"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
+MATCH (a:API {id: "functionality:voicetranscriptgenx-QcKNlU:api-backend-src-server-js-get-api-health"}), (b:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-backend-src-server-js-table-configuration"}) MERGE (a)-[:API_USES_DATABASE {confidence: 1}]->(b)
+MATCH (a:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-project-env-path"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-text-context-chars"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
+MATCH (a:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-22337"}), (b:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-22337-onclick"}) MERGE (a)-[:HAS_UI_FEATURE {confidence: 1}]->(b)
+MATCH (a:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-emptyaudiostate"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-4837"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
+MATCH (a:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-textarea-18341"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
+MATCH (a:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-16484"}), (b:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-16484-onchange"}) MERGE (a)-[:HAS_UI_FEATURE {confidence: 1}]->(b)
+MATCH (a:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-project-env-path"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-source-languages"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
+MATCH (a:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-15284"}) MERGE (a)-[:CONTAINS_UI_ELEMENT {confidence: 1}]->(b)
+MERGE (b:Branch {id: "branch:branch_aaf73e96-cd9a-4156-9a40-d8b694533e29"})
+SET b.ledger_id = "branch_aaf73e96-cd9a-4156-9a40-d8b694533e29", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
+MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-agentic-system-d3-agentic-system-d3-js-agentic-system-d3"}), (b:Branch {id: "branch:branch_aaf73e96-cd9a-4156-9a40-d8b694533e29"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_a79b9023-7dcc-45e3-8a30-86fea90e47e6"})
+SET b.ledger_id = "branch_a79b9023-7dcc-45e3-8a30-86fea90e47e6", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-agentic-system-d3-agentic-system-d3-js-agentic-system-d3"}), (b:Branch {id: "branch:branch_a79b9023-7dcc-45e3-8a30-86fea90e47e6"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_02ca9c87-4c45-4c43-a11b-b691238bdb89"})
+SET b.ledger_id = "branch_02ca9c87-4c45-4c43-a11b-b691238bdb89", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-agentic-system-d3-agentic-system-d3-js-agentic-system-d3"}), (b:Branch {id: "branch:branch_02ca9c87-4c45-4c43-a11b-b691238bdb89"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_c5ae8a65-acff-45c4-b7aa-ebc6e3558749"})
+SET b.ledger_id = "branch_c5ae8a65-acff-45c4-b7aa-ebc6e3558749", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
+MATCH (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-app-jsx-app"}), (b:Branch {id: "branch:branch_c5ae8a65-acff-45c4-b7aa-ebc6e3558749"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_37cb5c65-5b2e-4126-8da3-0332cabf2e6c"})
+SET b.ledger_id = "branch_37cb5c65-5b2e-4126-8da3-0332cabf2e6c", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-app-jsx-app"}), (b:Branch {id: "branch:branch_37cb5c65-5b2e-4126-8da3-0332cabf2e6c"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_d93b64d9-21a2-4200-a365-033c32fe4e0a"})
+SET b.ledger_id = "branch_d93b64d9-21a2-4200-a365-033c32fe4e0a", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-app-jsx-app"}), (b:Branch {id: "branch:branch_d93b64d9-21a2-4200-a365-033c32fe4e0a"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_10c93495-f9ae-49e8-833b-2a0906713549"})
+SET b.ledger_id = "branch_10c93495-f9ae-49e8-833b-2a0906713549", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
+MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-audio-filename-pattern"}), (b:Branch {id: "branch:branch_10c93495-f9ae-49e8-833b-2a0906713549"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_3128d4d0-8258-4f5f-850c-f05de73bee69"})
+SET b.ledger_id = "branch_3128d4d0-8258-4f5f-850c-f05de73bee69", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-audio-filename-pattern"}), (b:Branch {id: "branch:branch_3128d4d0-8258-4f5f-850c-f05de73bee69"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_921b409b-f121-4184-a290-35995df5f238"})
+SET b.ledger_id = "branch_921b409b-f121-4184-a290-35995df5f238", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-audio-filename-pattern"}), (b:Branch {id: "branch:branch_921b409b-f121-4184-a290-35995df5f238"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_59c4733e-2c21-4e46-bffb-468b38a91ce5"})
+SET b.ledger_id = "branch_59c4733e-2c21-4e46-bffb-468b38a91ce5", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
+MATCH (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:Branch {id: "branch:branch_59c4733e-2c21-4e46-bffb-468b38a91ce5"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_6bcf37fc-485b-4bd7-a04d-4bb55d87e562"})
+SET b.ledger_id = "branch_6bcf37fc-485b-4bd7-a04d-4bb55d87e562", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:Branch {id: "branch:branch_6bcf37fc-485b-4bd7-a04d-4bb55d87e562"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_4a34f522-a465-42ea-b9a5-fda083100630"})
+SET b.ledger_id = "branch_4a34f522-a465-42ea-b9a5-fda083100630", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}), (b:Branch {id: "branch:branch_4a34f522-a465-42ea-b9a5-fda083100630"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_be87381c-1423-49bf-becd-9bbfe9ffc328"})
+SET b.ledger_id = "branch_be87381c-1423-49bf-becd-9bbfe9ffc328", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
+MATCH (f:API {id: "functionality:voicetranscriptgenx-QcKNlU:api-backend-src-server-js-get-api-health"}), (b:Branch {id: "branch:branch_be87381c-1423-49bf-becd-9bbfe9ffc328"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_50c46665-9393-4125-a2ba-fffb1ac6d141"})
+SET b.ledger_id = "branch_50c46665-9393-4125-a2ba-fffb1ac6d141", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:API {id: "functionality:voicetranscriptgenx-QcKNlU:api-backend-src-server-js-get-api-health"}), (b:Branch {id: "branch:branch_50c46665-9393-4125-a2ba-fffb1ac6d141"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_728c3820-5c4a-475e-8537-fa0ec6a46239"})
+SET b.ledger_id = "branch_728c3820-5c4a-475e-8537-fa0ec6a46239", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:API {id: "functionality:voicetranscriptgenx-QcKNlU:api-backend-src-server-js-get-api-health"}), (b:Branch {id: "branch:branch_728c3820-5c4a-475e-8537-fa0ec6a46239"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_43cdf7f4-bbfc-45bc-875d-1109c6bc50f9"})
+SET b.ledger_id = "branch_43cdf7f4-bbfc-45bc-875d-1109c6bc50f9", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
+MATCH (f:API {id: "functionality:voicetranscriptgenx-QcKNlU:api-backend-src-server-js-get-api-transcriptions-status"}), (b:Branch {id: "branch:branch_43cdf7f4-bbfc-45bc-875d-1109c6bc50f9"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_280bed4f-462a-4111-a7c1-0b7ea9c94e4c"})
+SET b.ledger_id = "branch_280bed4f-462a-4111-a7c1-0b7ea9c94e4c", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:API {id: "functionality:voicetranscriptgenx-QcKNlU:api-backend-src-server-js-get-api-transcriptions-status"}), (b:Branch {id: "branch:branch_280bed4f-462a-4111-a7c1-0b7ea9c94e4c"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_0eeeef6f-bd15-48c2-93d0-77d2715981b4"})
+SET b.ledger_id = "branch_0eeeef6f-bd15-48c2-93d0-77d2715981b4", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:API {id: "functionality:voicetranscriptgenx-QcKNlU:api-backend-src-server-js-get-api-transcriptions-status"}), (b:Branch {id: "branch:branch_0eeeef6f-bd15-48c2-93d0-77d2715981b4"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_4941bddd-c638-493d-883f-3fa05931733f"})
+SET b.ledger_id = "branch_4941bddd-c638-493d-883f-3fa05931733f", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
+MATCH (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-agentic-system-d3-index-html-index"}), (b:Branch {id: "branch:branch_4941bddd-c638-493d-883f-3fa05931733f"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_63e90205-ea32-469c-a3e2-de2a097a0038"})
+SET b.ledger_id = "branch_63e90205-ea32-469c-a3e2-de2a097a0038", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-agentic-system-d3-index-html-index"}), (b:Branch {id: "branch:branch_63e90205-ea32-469c-a3e2-de2a097a0038"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_be97286f-8822-4b45-873c-501d02d3f9e7"})
+SET b.ledger_id = "branch_be97286f-8822-4b45-873c-501d02d3f9e7", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-agentic-system-d3-index-html-index"}), (b:Branch {id: "branch:branch_be97286f-8822-4b45-873c-501d02d3f9e7"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_d6b5b06b-c492-418f-b50a-24e1bad66022"})
+SET b.ledger_id = "branch_d6b5b06b-c492-418f-b50a-24e1bad66022", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
+MATCH (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-index-html-index"}), (b:Branch {id: "branch:branch_d6b5b06b-c492-418f-b50a-24e1bad66022"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_f68e26fa-39f4-4be4-842f-594fabdf463d"})
+SET b.ledger_id = "branch_f68e26fa-39f4-4be4-842f-594fabdf463d", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-index-html-index"}), (b:Branch {id: "branch:branch_f68e26fa-39f4-4be4-842f-594fabdf463d"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_25c1b1fb-2c00-4221-8ada-f5bed2abb646"})
+SET b.ledger_id = "branch_25c1b1fb-2c00-4221-8ada-f5bed2abb646", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-index-html-index"}), (b:Branch {id: "branch:branch_25c1b1fb-2c00-4221-8ada-f5bed2abb646"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_f0b70eee-a8b5-4bcb-9c8b-271657cf7b45"})
+SET b.ledger_id = "branch_f0b70eee-a8b5-4bcb-9c8b-271657cf7b45", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
+MATCH (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-main-jsx-main"}), (b:Branch {id: "branch:branch_f0b70eee-a8b5-4bcb-9c8b-271657cf7b45"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_edfe0d2a-4188-4083-9e77-29556b511452"})
+SET b.ledger_id = "branch_edfe0d2a-4188-4083-9e77-29556b511452", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-main-jsx-main"}), (b:Branch {id: "branch:branch_edfe0d2a-4188-4083-9e77-29556b511452"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_7eaa01d1-83cb-49c1-9dd4-e6eb3086d441"})
+SET b.ledger_id = "branch_7eaa01d1-83cb-49c1-9dd4-e6eb3086d441", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-main-jsx-main"}), (b:Branch {id: "branch:branch_7eaa01d1-83cb-49c1-9dd4-e6eb3086d441"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_c672fab4-a622-4e7c-b55a-0a0d888d02c0"})
+SET b.ledger_id = "branch_c672fab4-a622-4e7c-b55a-0a0d888d02c0", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
+MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-audio-file-bytes"}), (b:Branch {id: "branch:branch_c672fab4-a622-4e7c-b55a-0a0d888d02c0"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_36639806-2673-42af-a96b-0ab038dbce30"})
+SET b.ledger_id = "branch_36639806-2673-42af-a96b-0ab038dbce30", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-audio-file-bytes"}), (b:Branch {id: "branch:branch_36639806-2673-42af-a96b-0ab038dbce30"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_e554159d-1e52-434b-9997-529f7181170a"})
+SET b.ledger_id = "branch_e554159d-1e52-434b-9997-529f7181170a", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-audio-file-bytes"}), (b:Branch {id: "branch:branch_e554159d-1e52-434b-9997-529f7181170a"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_56584c0c-f2b6-4b2c-8e94-3800d1460843"})
+SET b.ledger_id = "branch_56584c0c-f2b6-4b2c-8e94-3800d1460843", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
+MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-audio-files"}), (b:Branch {id: "branch:branch_56584c0c-f2b6-4b2c-8e94-3800d1460843"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_59120156-d703-454d-a01a-dad96464be30"})
+SET b.ledger_id = "branch_59120156-d703-454d-a01a-dad96464be30", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-audio-files"}), (b:Branch {id: "branch:branch_59120156-d703-454d-a01a-dad96464be30"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_6232cddf-f29d-432f-89e3-7e425cad8a22"})
+SET b.ledger_id = "branch_6232cddf-f29d-432f-89e3-7e425cad8a22", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-audio-files"}), (b:Branch {id: "branch:branch_6232cddf-f29d-432f-89e3-7e425cad8a22"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_b22a4f37-f479-43ee-9d74-87198cd45b75"})
+SET b.ledger_id = "branch_b22a4f37-f479-43ee-9d74-87198cd45b75", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
+MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-text-context-chars"}), (b:Branch {id: "branch:branch_b22a4f37-f479-43ee-9d74-87198cd45b75"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_d3c96b14-d578-43ab-98b0-fe77795b083d"})
+SET b.ledger_id = "branch_d3c96b14-d578-43ab-98b0-fe77795b083d", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-text-context-chars"}), (b:Branch {id: "branch:branch_d3c96b14-d578-43ab-98b0-fe77795b083d"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_c777874e-e660-403e-8faf-2ac54c0d5c42"})
+SET b.ledger_id = "branch_c777874e-e660-403e-8faf-2ac54c0d5c42", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-text-context-chars"}), (b:Branch {id: "branch:branch_c777874e-e660-403e-8faf-2ac54c0d5c42"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_fbbececb-24c0-4eae-bcdf-96f2555a6032"})
+SET b.ledger_id = "branch_fbbececb-24c0-4eae-bcdf-96f2555a6032", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
+MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-total-audio-bytes"}), (b:Branch {id: "branch:branch_fbbececb-24c0-4eae-bcdf-96f2555a6032"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_bc3e04dd-e401-49f5-8c94-0a28d2362187"})
+SET b.ledger_id = "branch_bc3e04dd-e401-49f5-8c94-0a28d2362187", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-total-audio-bytes"}), (b:Branch {id: "branch:branch_bc3e04dd-e401-49f5-8c94-0a28d2362187"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_620188df-e2fd-4324-807d-7408b5557e4a"})
+SET b.ledger_id = "branch_620188df-e2fd-4324-807d-7408b5557e4a", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-total-audio-bytes"}), (b:Branch {id: "branch:branch_620188df-e2fd-4324-807d-7408b5557e4a"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_f93aa7a0-f6fa-4da8-9e85-dd99fef976f5"})
+SET b.ledger_id = "branch_f93aa7a0-f6fa-4da8-9e85-dd99fef976f5", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
+MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-non-english-script-pattern"}), (b:Branch {id: "branch:branch_f93aa7a0-f6fa-4da8-9e85-dd99fef976f5"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_fb8a52a3-c51a-4a38-ad80-bb6fef9adbc9"})
+SET b.ledger_id = "branch_fb8a52a3-c51a-4a38-ad80-bb6fef9adbc9", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-non-english-script-pattern"}), (b:Branch {id: "branch:branch_fb8a52a3-c51a-4a38-ad80-bb6fef9adbc9"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_dbc65285-cd1a-4d59-b029-ca6dbc4396e0"})
+SET b.ledger_id = "branch_dbc65285-cd1a-4d59-b029-ca6dbc4396e0", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-non-english-script-pattern"}), (b:Branch {id: "branch:branch_dbc65285-cd1a-4d59-b029-ca6dbc4396e0"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_8c0d51c0-305d-4713-a907-a8f65b17dc02"})
+SET b.ledger_id = "branch_8c0d51c0-305d-4713-a907-a8f65b17dc02", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
+MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-openai-translations-url"}), (b:Branch {id: "branch:branch_8c0d51c0-305d-4713-a907-a8f65b17dc02"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_a999e204-a5ba-4b29-8689-8cdc343aa1ba"})
+SET b.ledger_id = "branch_a999e204-a5ba-4b29-8689-8cdc343aa1ba", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-openai-translations-url"}), (b:Branch {id: "branch:branch_a999e204-a5ba-4b29-8689-8cdc343aa1ba"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_ccdfdec9-9a29-4475-af50-df66a61a4fb7"})
+SET b.ledger_id = "branch_ccdfdec9-9a29-4475-af50-df66a61a4fb7", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-openai-translations-url"}), (b:Branch {id: "branch:branch_ccdfdec9-9a29-4475-af50-df66a61a4fb7"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_96770e7c-1eab-4e04-8de4-867349a5d443"})
+SET b.ledger_id = "branch_96770e7c-1eab-4e04-8de4-867349a5d443", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
+MATCH (f:API {id: "functionality:voicetranscriptgenx-QcKNlU:api-backend-src-server-js-post-api-transcriptions"}), (b:Branch {id: "branch:branch_96770e7c-1eab-4e04-8de4-867349a5d443"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_70f2913e-8432-4d0c-b800-4b8c62fa7376"})
+SET b.ledger_id = "branch_70f2913e-8432-4d0c-b800-4b8c62fa7376", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:API {id: "functionality:voicetranscriptgenx-QcKNlU:api-backend-src-server-js-post-api-transcriptions"}), (b:Branch {id: "branch:branch_70f2913e-8432-4d0c-b800-4b8c62fa7376"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_c833aa30-d7ef-4fbe-ab4b-c09583ef3b38"})
+SET b.ledger_id = "branch_c833aa30-d7ef-4fbe-ab4b-c09583ef3b38", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:API {id: "functionality:voicetranscriptgenx-QcKNlU:api-backend-src-server-js-post-api-transcriptions"}), (b:Branch {id: "branch:branch_c833aa30-d7ef-4fbe-ab4b-c09583ef3b38"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_f7dd6973-6559-4ecb-9b59-0729fb313df1"})
+SET b.ledger_id = "branch_f7dd6973-6559-4ecb-9b59-0729fb313df1", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
+MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-project-env-path"}), (b:Branch {id: "branch:branch_f7dd6973-6559-4ecb-9b59-0729fb313df1"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_008e3ab8-21a0-4bcf-926d-bde936ad3215"})
+SET b.ledger_id = "branch_008e3ab8-21a0-4bcf-926d-bde936ad3215", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-project-env-path"}), (b:Branch {id: "branch:branch_008e3ab8-21a0-4bcf-926d-bde936ad3215"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_163ad63c-f559-4a11-bf76-f2545978c1d8"})
+SET b.ledger_id = "branch_163ad63c-f559-4a11-bf76-f2545978c1d8", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-project-env-path"}), (b:Branch {id: "branch:branch_163ad63c-f559-4a11-bf76-f2545978c1d8"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_8429e761-ce21-42f1-9ccd-7fb2e368bf13"})
+SET b.ledger_id = "branch_8429e761-ce21-42f1-9ccd-7fb2e368bf13", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
+MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-source-languages"}), (b:Branch {id: "branch:branch_8429e761-ce21-42f1-9ccd-7fb2e368bf13"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_349c7f3d-735b-4072-8082-a7bbc2509df1"})
+SET b.ledger_id = "branch_349c7f3d-735b-4072-8082-a7bbc2509df1", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-source-languages"}), (b:Branch {id: "branch:branch_349c7f3d-735b-4072-8082-a7bbc2509df1"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_8c9a282e-d50e-4a85-828d-5da2e3184de5"})
+SET b.ledger_id = "branch_8c9a282e-d50e-4a85-828d-5da2e3184de5", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-source-languages"}), (b:Branch {id: "branch:branch_8c9a282e-d50e-4a85-828d-5da2e3184de5"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_5bdfce79-f703-4e09-845a-e400c01f981f"})
+SET b.ledger_id = "branch_5bdfce79-f703-4e09-845a-e400c01f981f", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
+MATCH (f:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-src-generated-metadata-json-table-are"}), (b:Branch {id: "branch:branch_5bdfce79-f703-4e09-845a-e400c01f981f"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_d5541808-0969-4583-b759-0dc1c0d6ea99"})
+SET b.ledger_id = "branch_d5541808-0969-4583-b759-0dc1c0d6ea99", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-src-generated-metadata-json-table-are"}), (b:Branch {id: "branch:branch_d5541808-0969-4583-b759-0dc1c0d6ea99"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_f9a0b8ba-755f-4b29-9ecc-6f73df9ae5de"})
+SET b.ledger_id = "branch_f9a0b8ba-755f-4b29-9ecc-6f73df9ae5de", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.733
+MATCH (f:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-src-generated-metadata-json-table-are"}), (b:Branch {id: "branch:branch_f9a0b8ba-755f-4b29-9ecc-6f73df9ae5de"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_93071fb4-bf5e-4441-9c09-063f1f324d2f"})
+SET b.ledger_id = "branch_93071fb4-bf5e-4441-9c09-063f1f324d2f", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
+MATCH (f:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-scripts-huggingface-models-mjs-table-card"}), (b:Branch {id: "branch:branch_93071fb4-bf5e-4441-9c09-063f1f324d2f"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_21e9ebe9-b41a-4e6b-b8cf-9d639a19f254"})
+SET b.ledger_id = "branch_21e9ebe9-b41a-4e6b-b8cf-9d639a19f254", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-scripts-huggingface-models-mjs-table-card"}), (b:Branch {id: "branch:branch_21e9ebe9-b41a-4e6b-b8cf-9d639a19f254"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_891f7dc9-714c-40c6-9c3e-29465cfa3fb9"})
+SET b.ledger_id = "branch_891f7dc9-714c-40c6-9c3e-29465cfa3fb9", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.733
+MATCH (f:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-scripts-huggingface-models-mjs-table-card"}), (b:Branch {id: "branch:branch_891f7dc9-714c-40c6-9c3e-29465cfa3fb9"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_76acabf1-09ed-43f4-8dfe-e4768356e0b8"})
+SET b.ledger_id = "branch_76acabf1-09ed-43f4-8dfe-e4768356e0b8", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
+MATCH (f:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-scripts-huggingface-models-mjs-table-of"}), (b:Branch {id: "branch:branch_76acabf1-09ed-43f4-8dfe-e4768356e0b8"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_1d5cea1f-cb3f-467d-a4f6-7cf9460037c7"})
+SET b.ledger_id = "branch_1d5cea1f-cb3f-467d-a4f6-7cf9460037c7", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-scripts-huggingface-models-mjs-table-of"}), (b:Branch {id: "branch:branch_1d5cea1f-cb3f-467d-a4f6-7cf9460037c7"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_4e059f50-7430-4367-930d-2a052d64eee2"})
+SET b.ledger_id = "branch_4e059f50-7430-4367-930d-2a052d64eee2", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.733
+MATCH (f:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-scripts-huggingface-models-mjs-table-of"}), (b:Branch {id: "branch:branch_4e059f50-7430-4367-930d-2a052d64eee2"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_9e7f4d1a-1676-458d-8c4a-5b290468d757"})
+SET b.ledger_id = "branch_9e7f4d1a-1676-458d-8c4a-5b290468d757", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
+MATCH (f:ApplicationFunctionality {id: "functionality:voicetranscriptgenx-QcKNlU:data-deliverables-validation-plutonix-12a7b495-166f-4037-9e58-024e379f8540-tr"}), (b:Branch {id: "branch:branch_9e7f4d1a-1676-458d-8c4a-5b290468d757"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_2915f0cf-0607-4f83-9202-745554a9f959"})
+SET b.ledger_id = "branch_2915f0cf-0607-4f83-9202-745554a9f959", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:ApplicationFunctionality {id: "functionality:voicetranscriptgenx-QcKNlU:data-deliverables-validation-plutonix-12a7b495-166f-4037-9e58-024e379f8540-tr"}), (b:Branch {id: "branch:branch_2915f0cf-0607-4f83-9202-745554a9f959"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_71fa2099-9509-4322-8ed9-f099786a7b8d"})
+SET b.ledger_id = "branch_71fa2099-9509-4322-8ed9-f099786a7b8d", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.733
+MATCH (f:ApplicationFunctionality {id: "functionality:voicetranscriptgenx-QcKNlU:data-deliverables-validation-plutonix-12a7b495-166f-4037-9e58-024e379f8540-tr"}), (b:Branch {id: "branch:branch_71fa2099-9509-4322-8ed9-f099786a7b8d"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_1299ef47-12c1-45c0-9a40-dfe5158546e9"})
+SET b.ledger_id = "branch_1299ef47-12c1-45c0-9a40-dfe5158546e9", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
+MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-transcription-rate-limit-max-requests"}), (b:Branch {id: "branch:branch_1299ef47-12c1-45c0-9a40-dfe5158546e9"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_cb01be65-e471-46c8-8027-82c57dd6193c"})
+SET b.ledger_id = "branch_cb01be65-e471-46c8-8027-82c57dd6193c", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-transcription-rate-limit-max-requests"}), (b:Branch {id: "branch:branch_cb01be65-e471-46c8-8027-82c57dd6193c"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_404c8e96-f0c1-44c4-a629-0f39d108da5a"})
+SET b.ledger_id = "branch_404c8e96-f0c1-44c4-a629-0f39d108da5a", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-transcription-rate-limit-max-requests"}), (b:Branch {id: "branch:branch_404c8e96-f0c1-44c4-a629-0f39d108da5a"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_545a7fe4-a83d-4433-a6ba-f595b08e549c"})
+SET b.ledger_id = "branch_545a7fe4-a83d-4433-a6ba-f595b08e549c", b.status = "candidate", b.inference_role = "observed_current", b.score = 0
+MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-transcription-rate-limit-window-ms"}), (b:Branch {id: "branch:branch_545a7fe4-a83d-4433-a6ba-f595b08e549c"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_17f6e973-54d1-47e1-a358-ad0183f0ddb8"})
+SET b.ledger_id = "branch_17f6e973-54d1-47e1-a358-ad0183f0ddb8", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-transcription-rate-limit-window-ms"}), (b:Branch {id: "branch:branch_17f6e973-54d1-47e1-a358-ad0183f0ddb8"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
+MERGE (b:Branch {id: "branch:branch_045964c6-56e7-4dcd-a916-43afb1178933"})
+SET b.ledger_id = "branch_045964c6-56e7-4dcd-a916-43afb1178933", b.status = "candidate", b.inference_role = "anticipated_alternative", b.score = 0.818
+MATCH (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-transcription-rate-limit-window-ms"}), (b:Branch {id: "branch:branch_045964c6-56e7-4dcd-a916-43afb1178933"}) MERGE (f)-[:SUPPORTS_ARCHITECTURE_BRANCH]->(b)
 MATCH (a:Agent {id: "plutonix-fullstack-agent"}), (b:Agent {id: "project-orchestrator-agent"}) MERGE (a)-[:RUNTIME_DELEGATES_TO]->(b)
 MATCH (p:Project {id: 'project:voicetranscriptgenx-QcKNlU'}), (a:Agent {id: "project-orchestrator-agent"}) MERGE (p)-[:HAS_ORCHESTRATOR]->(a)
 MATCH (a:Agent {id: "project-orchestrator-agent"}), (b:Agent {id: "qagent-controller"}) MERGE (a)-[:USES_QAGENT_CONTROLLER]->(b)
@@ -8788,17 +8830,21 @@ MATCH (a:Agent {id: "project-orchestrator-agent"}), (b:Agent {id: "design-worksh
 MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-agentic-system-d3-agentic-system-d3-js-agentic-system-d3"}) MERGE (a)-[:IMPLEMENTS]->(f)
 MATCH (a:Agent {id: "experience-composition-agent"}), (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-agentic-system-d3-index-html-index"}) MERGE (a)-[:IMPLEMENTS]->(f)
 MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-project-env-path"}) MERGE (a)-[:IMPLEMENTS]->(f)
-MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-openai-transcriptions-url"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-openai-translations-url"}) MERGE (a)-[:IMPLEMENTS]->(f)
 MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-audio-files"}) MERGE (a)-[:IMPLEMENTS]->(f)
 MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-audio-file-bytes"}) MERGE (a)-[:IMPLEMENTS]->(f)
 MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-total-audio-bytes"}) MERGE (a)-[:IMPLEMENTS]->(f)
 MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-max-text-context-chars"}) MERGE (a)-[:IMPLEMENTS]->(f)
 MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-audio-filename-pattern"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-non-english-script-pattern"}) MERGE (a)-[:IMPLEMENTS]->(f)
 MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-transcription-rate-limit-window-ms"}) MERGE (a)-[:IMPLEMENTS]->(f)
 MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-transcription-rate-limit-max-requests"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-backend-src-server-js-source-languages"}) MERGE (a)-[:IMPLEMENTS]->(f)
 MATCH (a:Agent {id: "project-orchestrator-agent"}), (f:API {id: "functionality:voicetranscriptgenx-QcKNlU:api-backend-src-server-js-get-api-health"}) MERGE (a)-[:IMPLEMENTS]->(f)
 MATCH (a:Agent {id: "project-orchestrator-agent"}), (f:API {id: "functionality:voicetranscriptgenx-QcKNlU:api-backend-src-server-js-get-api-transcriptions-status"}) MERGE (a)-[:IMPLEMENTS]->(f)
 MATCH (a:Agent {id: "project-orchestrator-agent"}), (f:API {id: "functionality:voicetranscriptgenx-QcKNlU:api-backend-src-server-js-post-api-transcriptions"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "data-contract-agent"}), (f:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-backend-src-server-js-table-is"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "data-contract-agent"}), (f:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-backend-src-server-js-table-configuration"}) MERGE (a)-[:IMPLEMENTS]->(f)
 MATCH (a:Agent {id: "data-contract-agent"}), (f:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-deliverables-validation-plutonix-12a7b495-166f-4037-9e58-024e379f85"}) MERGE (a)-[:IMPLEMENTS]->(f)
 MATCH (a:Agent {id: "experience-composition-agent"}), (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-index-html-index"}) MERGE (a)-[:IMPLEMENTS]->(f)
 MATCH (a:Agent {id: "data-contract-agent"}), (f:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-scripts-huggingface-models-mjs-table-of"}) MERGE (a)-[:IMPLEMENTS]->(f)
@@ -8807,37 +8853,37 @@ MATCH (a:Agent {id: "experience-composition-agent"}), (f:Page {id: "functionalit
 MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-icon"}) MERGE (a)-[:IMPLEMENTS]->(f)
 MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-statusbadge"}) MERGE (a)-[:IMPLEMENTS]->(f)
 MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-trackrow"}) MERGE (a)-[:IMPLEMENTS]->(f)
-MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-3494"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-4183"}) MERGE (a)-[:IMPLEMENTS]->(f)
 MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-emptyaudiostate"}) MERGE (a)-[:IMPLEMENTS]->(f)
-MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-4148"}) MERGE (a)-[:IMPLEMENTS]->(f)
-MATCH (a:Agent {id: "experience-composition-agent"}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-4148-onchange"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-4837"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-4837-onchange"}) MERGE (a)-[:IMPLEMENTS]->(f)
 MATCH (a:Agent {id: "experience-composition-agent"}), (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-generatedpage"}) MERGE (a)-[:IMPLEMENTS]->(f)
-MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-a-13166"}) MERGE (a)-[:IMPLEMENTS]->(f)
-MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-13577"}) MERGE (a)-[:IMPLEMENTS]->(f)
-MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-13777"}) MERGE (a)-[:IMPLEMENTS]->(f)
-MATCH (a:Agent {id: "experience-composition-agent"}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-13777-onclick"}) MERGE (a)-[:IMPLEMENTS]->(f)
-MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-13965"}) MERGE (a)-[:IMPLEMENTS]->(f)
-MATCH (a:Agent {id: "experience-composition-agent"}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-13965-onchange"}) MERGE (a)-[:IMPLEMENTS]->(f)
-MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-15133"}) MERGE (a)-[:IMPLEMENTS]->(f)
-MATCH (a:Agent {id: "experience-composition-agent"}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-15133-onchange"}) MERGE (a)-[:IMPLEMENTS]->(f)
-MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-16090"}) MERGE (a)-[:IMPLEMENTS]->(f)
-MATCH (a:Agent {id: "experience-composition-agent"}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-16090-onclick"}) MERGE (a)-[:IMPLEMENTS]->(f)
-MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-16820"}) MERGE (a)-[:IMPLEMENTS]->(f)
-MATCH (a:Agent {id: "experience-composition-agent"}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-16820-onchange"}) MERGE (a)-[:IMPLEMENTS]->(f)
-MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-textarea-16977"}) MERGE (a)-[:IMPLEMENTS]->(f)
-MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-select-18089"}) MERGE (a)-[:IMPLEMENTS]->(f)
-MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-select-18585"}) MERGE (a)-[:IMPLEMENTS]->(f)
-MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-19907"}) MERGE (a)-[:IMPLEMENTS]->(f)
-MATCH (a:Agent {id: "experience-composition-agent"}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-19907-onclick"}) MERGE (a)-[:IMPLEMENTS]->(f)
-MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-20112"}) MERGE (a)-[:IMPLEMENTS]->(f)
-MATCH (a:Agent {id: "experience-composition-agent"}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-20112-onclick"}) MERGE (a)-[:IMPLEMENTS]->(f)
-MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-20450"}) MERGE (a)-[:IMPLEMENTS]->(f)
-MATCH (a:Agent {id: "experience-composition-agent"}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-20450-onclick"}) MERGE (a)-[:IMPLEMENTS]->(f)
-MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-textarea-21464"}) MERGE (a)-[:IMPLEMENTS]->(f)
-MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-21803"}) MERGE (a)-[:IMPLEMENTS]->(f)
-MATCH (a:Agent {id: "experience-composition-agent"}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-21803-onclick"}) MERGE (a)-[:IMPLEMENTS]->(f)
-MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-22060"}) MERGE (a)-[:IMPLEMENTS]->(f)
-MATCH (a:Agent {id: "experience-composition-agent"}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-22060-onclick"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-a-14488"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-14896"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-15096"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-15096-onclick"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-15284"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-15284-onchange"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-16484"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-16484-onchange"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-17441"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-17441-onclick"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-18184"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-input-18184-onchange"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-textarea-18341"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-select-19554"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-select-20404"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-21763"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-21763-onclick"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-21966"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-21966-onclick"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-22337"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-22337-onclick"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-textarea-23909"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-24258"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-24258-onclick"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-24515"}) MERGE (a)-[:IMPLEMENTS]->(f)
+MATCH (a:Agent {id: "experience-composition-agent"}), (f:Feature {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-generated-generatedpage-jsx-button-24515-onclick"}) MERGE (a)-[:IMPLEMENTS]->(f)
 MATCH (a:Agent {id: "data-contract-agent"}), (f:Database {id: "functionality:voicetranscriptgenx-QcKNlU:data-src-generated-metadata-json-table-are"}) MERGE (a)-[:IMPLEMENTS]->(f)
 MATCH (a:Agent {id: "experience-composition-agent"}), (f:Page {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-main-jsx-main"}) MERGE (a)-[:IMPLEMENTS]->(f)
 MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:voicetranscriptgenx-QcKNlU:ui-src-plutonixreferencebridge-jsx-plutonixreferencebridge"}) MERGE (a)-[:IMPLEMENTS]->(f)
@@ -9959,4 +10005,81 @@ MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functio
 MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:whatsappmediaanalyser-oAeSvn:ui-src-generated-pages-landingpage-jsx-button-3963"}) MERGE (a)-[:IMPLEMENTS]->(f)
 MATCH (a:Agent {id: "experience-composition-agent"}), (f:Page {id: "functionality:whatsappmediaanalyser-oAeSvn:ui-src-main-jsx-main"}) MERGE (a)-[:IMPLEMENTS]->(f)
 MATCH (a:Agent {id: "experience-composition-agent"}), (f:UIElement {id: "functionality:whatsappmediaanalyser-oAeSvn:ui-src-plutonixreferencebridge-jsx-plutonixreferencebridge"}) MERGE (a)-[:IMPLEMENTS]->(f)
+
+MERGE (d:WorkflowDecision {id: "workflow-decision:d57ce184e8e5dcb3de0625f96c4da93d"}) SET d.workflow_id = "plutonix_4a5aa068-0280-4dda-a6ba-431aa74237af", d.project_id = "voicetranscriptgenx-QcKNlU", d.status = "succeeded", d.selected_path = "plutonix-global-orchestration", d.recorded_at = "2026-08-29T03:10:24.329Z"
+MERGE (p:Project {id: "voicetranscriptgenx-QcKNlU"}) MERGE (p)-[:HAS_WORKFLOW_DECISION]->(d)
+MERGE (b:DecisionDisposition {id: "decision-disposition:5a32b22309c8d473d6ec3e150565de19"}) SET b.decision_key = "single", b.kind = "execution_path", b.disposition = "rejected", b.reason = "Rejected because task complexity or managed-project ownership justified delegation.", b.human_approved = false, b.reconsideration_eligible = false
+MATCH (d:WorkflowDecision {id: "workflow-decision:d57ce184e8e5dcb3de0625f96c4da93d"}), (b:DecisionDisposition {id: "decision-disposition:5a32b22309c8d473d6ec3e150565de19"}) MERGE (d)-[:RECORDED_DISPOSITION]->(b)
+MERGE (b:DecisionDisposition {id: "decision-disposition:9158c1f00ed4a64a330e267200b6d563"}) SET b.decision_key = "delegated_reviewed", b.kind = "execution_path", b.disposition = "rejected", b.reason = "Rejected because risk, complexity, or the model-call budget did not require an independent reviewer.", b.human_approved = false, b.reconsideration_eligible = false
+MATCH (d:WorkflowDecision {id: "workflow-decision:d57ce184e8e5dcb3de0625f96c4da93d"}), (b:DecisionDisposition {id: "decision-disposition:9158c1f00ed4a64a330e267200b6d563"}) MERGE (d)-[:RECORDED_DISPOSITION]->(b)
+MERGE (b:DecisionDisposition {id: "decision-disposition:ca5a39caa3c881bd3462d62b67526093"}) SET b.decision_key = "template-only", b.kind = "execution_path", b.disposition = "rejected", b.reason = "Rejected because the active project requires project-local agents, memory, and runtime handoff.", b.human_approved = false, b.reconsideration_eligible = false
+MATCH (d:WorkflowDecision {id: "workflow-decision:d57ce184e8e5dcb3de0625f96c4da93d"}), (b:DecisionDisposition {id: "decision-disposition:ca5a39caa3c881bd3462d62b67526093"}) MERGE (d)-[:RECORDED_DISPOSITION]->(b)
+MERGE (b:DecisionDisposition {id: "decision-disposition:fded08fdfb87e64d3f0f5c0eebe46c7b"}) SET b.decision_key = "human-choice-review", b.kind = "execution_path", b.disposition = "rejected", b.reason = "Not selected because path confidence was sufficient.", b.human_approved = false, b.reconsideration_eligible = false
+MATCH (d:WorkflowDecision {id: "workflow-decision:d57ce184e8e5dcb3de0625f96c4da93d"}), (b:DecisionDisposition {id: "decision-disposition:fded08fdfb87e64d3f0f5c0eebe46c7b"}) MERGE (d)-[:RECORDED_DISPOSITION]->(b)
+
+MERGE (d:WorkflowDecision {id: "workflow-decision:f39ff72fdda2f0cefb2fb2c6c0e6a471"}) SET d.workflow_id = "plutonix_23ac68d4-4fc0-4c7b-8051-a431c19a8a17", d.project_id = "voicetranscriptgenx-QcKNlU", d.status = "failed", d.selected_path = "plutonix-global-orchestration", d.recorded_at = "2026-08-29T07:29:34.731Z"
+MERGE (p:Project {id: "voicetranscriptgenx-QcKNlU"}) MERGE (p)-[:HAS_WORKFLOW_DECISION]->(d)
+MERGE (b:DecisionDisposition {id: "decision-disposition:23d96747afb928a6737104962ade11b3"}) SET b.decision_key = "single", b.kind = "execution_path", b.disposition = "rejected", b.reason = "Rejected because task complexity or managed-project ownership justified delegation.", b.human_approved = false, b.reconsideration_eligible = false
+MATCH (d:WorkflowDecision {id: "workflow-decision:f39ff72fdda2f0cefb2fb2c6c0e6a471"}), (b:DecisionDisposition {id: "decision-disposition:23d96747afb928a6737104962ade11b3"}) MERGE (d)-[:RECORDED_DISPOSITION]->(b)
+MERGE (b:DecisionDisposition {id: "decision-disposition:60ba3fedd35b4c3b51d400fd00d4a173"}) SET b.decision_key = "delegated", b.kind = "execution_path", b.disposition = "rejected", b.reason = "Rejected when either delegation was unnecessary or independent review was required.", b.human_approved = false, b.reconsideration_eligible = false
+MATCH (d:WorkflowDecision {id: "workflow-decision:f39ff72fdda2f0cefb2fb2c6c0e6a471"}), (b:DecisionDisposition {id: "decision-disposition:60ba3fedd35b4c3b51d400fd00d4a173"}) MERGE (d)-[:RECORDED_DISPOSITION]->(b)
+MERGE (b:DecisionDisposition {id: "decision-disposition:c51f3d6c02d7cb3bb528eec05eeb8d1d"}) SET b.decision_key = "template-only", b.kind = "execution_path", b.disposition = "rejected", b.reason = "Rejected because the active project requires project-local agents, memory, and runtime handoff.", b.human_approved = false, b.reconsideration_eligible = false
+MATCH (d:WorkflowDecision {id: "workflow-decision:f39ff72fdda2f0cefb2fb2c6c0e6a471"}), (b:DecisionDisposition {id: "decision-disposition:c51f3d6c02d7cb3bb528eec05eeb8d1d"}) MERGE (d)-[:RECORDED_DISPOSITION]->(b)
+MERGE (b:DecisionDisposition {id: "decision-disposition:cfff53ea27470c54be00b245794a8db6"}) SET b.decision_key = "human-choice-review", b.kind = "execution_path", b.disposition = "rejected", b.reason = "Available after the failure; no recovery option has been selected yet.", b.human_approved = false, b.reconsideration_eligible = false
+MATCH (d:WorkflowDecision {id: "workflow-decision:f39ff72fdda2f0cefb2fb2c6c0e6a471"}), (b:DecisionDisposition {id: "decision-disposition:cfff53ea27470c54be00b245794a8db6"}) MERGE (d)-[:RECORDED_DISPOSITION]->(b)
+
+MERGE (d:WorkflowDecision {id: "workflow-decision:c1a9d4e0e4394ab7eed43f8c393b448d"}) SET d.workflow_id = "plutonix_4304a4ea-aed6-4940-b157-dd3b109d3266", d.project_id = "voicetranscriptgenx-QcKNlU", d.status = "failed", d.selected_path = "plutonix-global-orchestration", d.recorded_at = "2026-08-29T07:59:40.951Z"
+MERGE (p:Project {id: "voicetranscriptgenx-QcKNlU"}) MERGE (p)-[:HAS_WORKFLOW_DECISION]->(d)
+MERGE (b:DecisionDisposition {id: "decision-disposition:a632a6752f901f638d62f8c59f414ae4"}) SET b.decision_key = "delegated", b.kind = "execution_path", b.disposition = "rejected", b.reason = "Rejected when either delegation was unnecessary or independent review was required.", b.human_approved = false, b.reconsideration_eligible = false
+MATCH (d:WorkflowDecision {id: "workflow-decision:c1a9d4e0e4394ab7eed43f8c393b448d"}), (b:DecisionDisposition {id: "decision-disposition:a632a6752f901f638d62f8c59f414ae4"}) MERGE (d)-[:RECORDED_DISPOSITION]->(b)
+MERGE (b:DecisionDisposition {id: "decision-disposition:ecf8388ad2e98372fa8af6e89141272f"}) SET b.decision_key = "delegated_reviewed", b.kind = "execution_path", b.disposition = "rejected", b.reason = "Rejected because risk, complexity, or the model-call budget did not require an independent reviewer.", b.human_approved = false, b.reconsideration_eligible = false
+MATCH (d:WorkflowDecision {id: "workflow-decision:c1a9d4e0e4394ab7eed43f8c393b448d"}), (b:DecisionDisposition {id: "decision-disposition:ecf8388ad2e98372fa8af6e89141272f"}) MERGE (d)-[:RECORDED_DISPOSITION]->(b)
+MERGE (b:DecisionDisposition {id: "decision-disposition:f5e56e2cc1d7cb071a0287820da2900e"}) SET b.decision_key = "template-only", b.kind = "execution_path", b.disposition = "rejected", b.reason = "Rejected because the active project requires project-local agents, memory, and runtime handoff.", b.human_approved = false, b.reconsideration_eligible = false
+MATCH (d:WorkflowDecision {id: "workflow-decision:c1a9d4e0e4394ab7eed43f8c393b448d"}), (b:DecisionDisposition {id: "decision-disposition:f5e56e2cc1d7cb071a0287820da2900e"}) MERGE (d)-[:RECORDED_DISPOSITION]->(b)
+MERGE (b:DecisionDisposition {id: "decision-disposition:fefc9028b7d6f552c180cead16f10675"}) SET b.decision_key = "human-choice-review", b.kind = "execution_path", b.disposition = "rejected", b.reason = "Available after the failure; no recovery option has been selected yet.", b.human_approved = false, b.reconsideration_eligible = false
+MATCH (d:WorkflowDecision {id: "workflow-decision:c1a9d4e0e4394ab7eed43f8c393b448d"}), (b:DecisionDisposition {id: "decision-disposition:fefc9028b7d6f552c180cead16f10675"}) MERGE (d)-[:RECORDED_DISPOSITION]->(b)
+
+MERGE (d:WorkflowDecision {id: "workflow-decision:a6ceddf0c2c668ae7b80dae3cfa13c9a"}) SET d.workflow_id = "plutonix_2248ded2-a9fa-40a8-9332-3e18b6b3ea28", d.project_id = "voicetranscriptgenx-QcKNlU", d.status = "succeeded", d.selected_path = "plutonix-global-orchestration", d.recorded_at = "2026-08-29T09:05:46.981Z"
+MERGE (p:Project {id: "voicetranscriptgenx-QcKNlU"}) MERGE (p)-[:HAS_WORKFLOW_DECISION]->(d)
+MERGE (b:DecisionDisposition {id: "decision-disposition:8b2a55bc04921a8f18e0b6cc4cbe225c"}) SET b.decision_key = "delegated", b.kind = "execution_path", b.disposition = "rejected", b.reason = "Rejected when either delegation was unnecessary or independent review was required.", b.human_approved = false, b.reconsideration_eligible = false
+MATCH (d:WorkflowDecision {id: "workflow-decision:a6ceddf0c2c668ae7b80dae3cfa13c9a"}), (b:DecisionDisposition {id: "decision-disposition:8b2a55bc04921a8f18e0b6cc4cbe225c"}) MERGE (d)-[:RECORDED_DISPOSITION]->(b)
+MERGE (b:DecisionDisposition {id: "decision-disposition:07e548d3b4c8d0e3351aaa5f6400652b"}) SET b.decision_key = "delegated_reviewed", b.kind = "execution_path", b.disposition = "rejected", b.reason = "Rejected because risk, complexity, or the model-call budget did not require an independent reviewer.", b.human_approved = false, b.reconsideration_eligible = false
+MATCH (d:WorkflowDecision {id: "workflow-decision:a6ceddf0c2c668ae7b80dae3cfa13c9a"}), (b:DecisionDisposition {id: "decision-disposition:07e548d3b4c8d0e3351aaa5f6400652b"}) MERGE (d)-[:RECORDED_DISPOSITION]->(b)
+MERGE (b:DecisionDisposition {id: "decision-disposition:84c9f88664ab97423d814c661e4be0f4"}) SET b.decision_key = "template-only", b.kind = "execution_path", b.disposition = "rejected", b.reason = "Rejected because the active project requires project-local agents, memory, and runtime handoff.", b.human_approved = false, b.reconsideration_eligible = false
+MATCH (d:WorkflowDecision {id: "workflow-decision:a6ceddf0c2c668ae7b80dae3cfa13c9a"}), (b:DecisionDisposition {id: "decision-disposition:84c9f88664ab97423d814c661e4be0f4"}) MERGE (d)-[:RECORDED_DISPOSITION]->(b)
+MERGE (b:DecisionDisposition {id: "decision-disposition:85c93d3f175e250a9aa05925cddb9631"}) SET b.decision_key = "human-choice-review", b.kind = "execution_path", b.disposition = "rejected", b.reason = "Not selected because path confidence was sufficient.", b.human_approved = false, b.reconsideration_eligible = false
+MATCH (d:WorkflowDecision {id: "workflow-decision:a6ceddf0c2c668ae7b80dae3cfa13c9a"}), (b:DecisionDisposition {id: "decision-disposition:85c93d3f175e250a9aa05925cddb9631"}) MERGE (d)-[:RECORDED_DISPOSITION]->(b)
+
+MERGE (d:WorkflowDecision {id: "workflow-decision:7b8f6fc9a21a0047dbf324b593ad1e85"}) SET d.workflow_id = "plutonix_d08f4935-7fb5-40a7-89ea-ba5426bb8ae8", d.project_id = "voicetranscriptgenx-QcKNlU", d.status = "failed", d.selected_path = "plutonix-global-orchestration", d.recorded_at = "2026-08-29T09:54:47.164Z"
+MERGE (p:Project {id: "voicetranscriptgenx-QcKNlU"}) MERGE (p)-[:HAS_WORKFLOW_DECISION]->(d)
+MERGE (b:DecisionDisposition {id: "decision-disposition:fb8c9b0e65414e6da2a564ad5470e5af"}) SET b.decision_key = "delegated", b.kind = "execution_path", b.disposition = "rejected", b.reason = "Rejected when either delegation was unnecessary or independent review was required.", b.human_approved = false, b.reconsideration_eligible = false
+MATCH (d:WorkflowDecision {id: "workflow-decision:7b8f6fc9a21a0047dbf324b593ad1e85"}), (b:DecisionDisposition {id: "decision-disposition:fb8c9b0e65414e6da2a564ad5470e5af"}) MERGE (d)-[:RECORDED_DISPOSITION]->(b)
+MERGE (b:DecisionDisposition {id: "decision-disposition:f6ecb2c1dd287dc666c1fb3702d1ffa3"}) SET b.decision_key = "delegated_reviewed", b.kind = "execution_path", b.disposition = "rejected", b.reason = "Rejected because risk, complexity, or the model-call budget did not require an independent reviewer.", b.human_approved = false, b.reconsideration_eligible = false
+MATCH (d:WorkflowDecision {id: "workflow-decision:7b8f6fc9a21a0047dbf324b593ad1e85"}), (b:DecisionDisposition {id: "decision-disposition:f6ecb2c1dd287dc666c1fb3702d1ffa3"}) MERGE (d)-[:RECORDED_DISPOSITION]->(b)
+MERGE (b:DecisionDisposition {id: "decision-disposition:c9a9b615b8569de4c9a0263f80cbb2f4"}) SET b.decision_key = "template-only", b.kind = "execution_path", b.disposition = "rejected", b.reason = "Rejected because the active project requires project-local agents, memory, and runtime handoff.", b.human_approved = false, b.reconsideration_eligible = false
+MATCH (d:WorkflowDecision {id: "workflow-decision:7b8f6fc9a21a0047dbf324b593ad1e85"}), (b:DecisionDisposition {id: "decision-disposition:c9a9b615b8569de4c9a0263f80cbb2f4"}) MERGE (d)-[:RECORDED_DISPOSITION]->(b)
+MERGE (b:DecisionDisposition {id: "decision-disposition:415e0e691e45b1a057d2191979526967"}) SET b.decision_key = "human-choice-review", b.kind = "execution_path", b.disposition = "rejected", b.reason = "Available after the failure; no recovery option has been selected yet.", b.human_approved = false, b.reconsideration_eligible = false
+MATCH (d:WorkflowDecision {id: "workflow-decision:7b8f6fc9a21a0047dbf324b593ad1e85"}), (b:DecisionDisposition {id: "decision-disposition:415e0e691e45b1a057d2191979526967"}) MERGE (d)-[:RECORDED_DISPOSITION]->(b)
+
+MERGE (d:WorkflowDecision {id: "workflow-decision:a7ec99235ee11d26130f4a4d05609ef8"}) SET d.workflow_id = "plutonix_d7f80398-5acb-4660-b3ac-49a8f64fcb12", d.project_id = "voicetranscriptgenx-QcKNlU", d.status = "failed", d.selected_path = "plutonix-global-orchestration", d.recorded_at = "2026-08-29T10:39:31.404Z"
+MERGE (p:Project {id: "voicetranscriptgenx-QcKNlU"}) MERGE (p)-[:HAS_WORKFLOW_DECISION]->(d)
+MERGE (b:DecisionDisposition {id: "decision-disposition:c2c3fa95fad4f276c3eb2119f3553cca"}) SET b.decision_key = "delegated", b.kind = "execution_path", b.disposition = "rejected", b.reason = "Rejected when either delegation was unnecessary or independent review was required.", b.human_approved = false, b.reconsideration_eligible = false
+MATCH (d:WorkflowDecision {id: "workflow-decision:a7ec99235ee11d26130f4a4d05609ef8"}), (b:DecisionDisposition {id: "decision-disposition:c2c3fa95fad4f276c3eb2119f3553cca"}) MERGE (d)-[:RECORDED_DISPOSITION]->(b)
+MERGE (b:DecisionDisposition {id: "decision-disposition:0a18593a0d7df37b65dbd43d9f5b3eb6"}) SET b.decision_key = "delegated_reviewed", b.kind = "execution_path", b.disposition = "rejected", b.reason = "Rejected because risk, complexity, or the model-call budget did not require an independent reviewer.", b.human_approved = false, b.reconsideration_eligible = false
+MATCH (d:WorkflowDecision {id: "workflow-decision:a7ec99235ee11d26130f4a4d05609ef8"}), (b:DecisionDisposition {id: "decision-disposition:0a18593a0d7df37b65dbd43d9f5b3eb6"}) MERGE (d)-[:RECORDED_DISPOSITION]->(b)
+MERGE (b:DecisionDisposition {id: "decision-disposition:43795d8e5eff398e3def208bb3a93ad4"}) SET b.decision_key = "template-only", b.kind = "execution_path", b.disposition = "rejected", b.reason = "Rejected because the active project requires project-local agents, memory, and runtime handoff.", b.human_approved = false, b.reconsideration_eligible = false
+MATCH (d:WorkflowDecision {id: "workflow-decision:a7ec99235ee11d26130f4a4d05609ef8"}), (b:DecisionDisposition {id: "decision-disposition:43795d8e5eff398e3def208bb3a93ad4"}) MERGE (d)-[:RECORDED_DISPOSITION]->(b)
+MERGE (b:DecisionDisposition {id: "decision-disposition:4bc1dbd89abc91f78fecf5eff2ad6ad6"}) SET b.decision_key = "human-choice-review", b.kind = "execution_path", b.disposition = "rejected", b.reason = "Available after the failure; no recovery option has been selected yet.", b.human_approved = false, b.reconsideration_eligible = false
+MATCH (d:WorkflowDecision {id: "workflow-decision:a7ec99235ee11d26130f4a4d05609ef8"}), (b:DecisionDisposition {id: "decision-disposition:4bc1dbd89abc91f78fecf5eff2ad6ad6"}) MERGE (d)-[:RECORDED_DISPOSITION]->(b)
+
+MERGE (d:WorkflowDecision {id: "workflow-decision:60e489c8394e524af42475c65fd6c96f"}) SET d.workflow_id = "plutonix_e9599c6f-1fd9-48e4-8f2f-29d552b50cc6", d.project_id = "voicetranscriptgenx-QcKNlU", d.status = "succeeded", d.selected_path = "plutonix-global-orchestration", d.recorded_at = "2026-08-29T12:14:33.434Z"
+MERGE (p:Project {id: "voicetranscriptgenx-QcKNlU"}) MERGE (p)-[:HAS_WORKFLOW_DECISION]->(d)
+MERGE (b:DecisionDisposition {id: "decision-disposition:88921b1cbfcbe028a2fda54d68ce3b8d"}) SET b.decision_key = "delegated", b.kind = "execution_path", b.disposition = "rejected", b.reason = "Rejected when either delegation was unnecessary or independent review was required.", b.human_approved = false, b.reconsideration_eligible = false
+MATCH (d:WorkflowDecision {id: "workflow-decision:60e489c8394e524af42475c65fd6c96f"}), (b:DecisionDisposition {id: "decision-disposition:88921b1cbfcbe028a2fda54d68ce3b8d"}) MERGE (d)-[:RECORDED_DISPOSITION]->(b)
+MERGE (b:DecisionDisposition {id: "decision-disposition:1feff536b0f1673630e6c6611f6ec057"}) SET b.decision_key = "delegated_reviewed", b.kind = "execution_path", b.disposition = "rejected", b.reason = "Rejected because risk, complexity, or the model-call budget did not require an independent reviewer.", b.human_approved = false, b.reconsideration_eligible = false
+MATCH (d:WorkflowDecision {id: "workflow-decision:60e489c8394e524af42475c65fd6c96f"}), (b:DecisionDisposition {id: "decision-disposition:1feff536b0f1673630e6c6611f6ec057"}) MERGE (d)-[:RECORDED_DISPOSITION]->(b)
+MERGE (b:DecisionDisposition {id: "decision-disposition:f39b9309ae291a6f82dd3042bd54678c"}) SET b.decision_key = "template-only", b.kind = "execution_path", b.disposition = "rejected", b.reason = "Rejected because the active project requires project-local agents, memory, and runtime handoff.", b.human_approved = false, b.reconsideration_eligible = false
+MATCH (d:WorkflowDecision {id: "workflow-decision:60e489c8394e524af42475c65fd6c96f"}), (b:DecisionDisposition {id: "decision-disposition:f39b9309ae291a6f82dd3042bd54678c"}) MERGE (d)-[:RECORDED_DISPOSITION]->(b)
+MERGE (b:DecisionDisposition {id: "decision-disposition:e6f2be50f8bfe196558980d6692002fa"}) SET b.decision_key = "human-choice-review", b.kind = "execution_path", b.disposition = "rejected", b.reason = "Not selected because path confidence was sufficient.", b.human_approved = false, b.reconsideration_eligible = false
+MATCH (d:WorkflowDecision {id: "workflow-decision:60e489c8394e524af42475c65fd6c96f"}), (b:DecisionDisposition {id: "decision-disposition:e6f2be50f8bfe196558980d6692002fa"}) MERGE (d)-[:RECORDED_DISPOSITION]->(b)
 

@@ -1,19 +1,26 @@
 {
   "status": "critical",
-  "generatedAt": "2026-08-27T20:02:09.141Z",
+  "generatedAt": "2026-08-29T09:15:49.626Z",
   "reason": "periodic",
   "scope": "plutonix-orchestrator-health",
   "userActivitySummary": {
     "recentEvents": 0,
     "errors": 0,
     "recentInstructions": 120,
-    "failedInstructions": 34,
+    "failedInstructions": 38,
     "repairedInstructions": 0,
     "sampleIntentSignals": [
       {
         "projectName": "voiceTranscriptGenX",
-        "taskType": "Medium",
+        "taskType": "Simple",
         "status": "succeeded",
+        "instruction": "",
+        "instructionStored": false
+      },
+      {
+        "projectName": "voiceTranscriptGenX",
+        "taskType": "Simple",
+        "status": "failed",
         "instruction": "",
         "instructionStored": false
       },
@@ -32,15 +39,8 @@
         "instructionStored": false
       },
       {
-        "projectName": "DatabricksX",
-        "taskType": "Medium",
-        "status": "succeeded",
-        "instruction": "",
-        "instructionStored": false
-      },
-      {
-        "projectName": "DatabricksX",
-        "taskType": "Medium",
+        "projectName": "voiceTranscriptGenX",
+        "taskType": "Simple",
         "status": "failed",
         "instruction": "",
         "instructionStored": false
@@ -48,14 +48,26 @@
     ]
   },
   "tokenWasteSummary": {
-    "observedAgents": 22,
+    "observedAgents": 23,
     "wasteIssues": 6,
     "worstAgents": [
+      {
+        "agentId": "plutonix-auto-repair-agent",
+        "totalRuns": 15,
+        "averageEfficiencyScore": 57,
+        "tokensPerAccuracyPoint": 29834.52
+      },
       {
         "agentId": "spydash-orchestrator-agent",
         "totalRuns": 28,
         "averageEfficiencyScore": 62,
         "tokensPerAccuracyPoint": 19050.98
+      },
+      {
+        "agentId": "plutonix-completion-checker",
+        "totalRuns": 1,
+        "averageEfficiencyScore": 43,
+        "tokensPerAccuracyPoint": 14948.17
       },
       {
         "agentId": "brushx-orchestrator-agent",
@@ -68,18 +80,6 @@
         "totalRuns": 11,
         "averageEfficiencyScore": 63,
         "tokensPerAccuracyPoint": 11872.24
-      },
-      {
-        "agentId": "webforbusinesses-orchestrator-agent",
-        "totalRuns": 13,
-        "averageEfficiencyScore": 64,
-        "tokensPerAccuracyPoint": 8114.85
-      },
-      {
-        "agentId": "bag-commerce-studio-orchestrator-agent",
-        "totalRuns": 14,
-        "averageEfficiencyScore": 64,
-        "tokensPerAccuracyPoint": 7528.38
       }
     ]
   },
@@ -90,8 +90,15 @@
       "title": "User instructions are not reliably reaching successful outcomes",
       "detail": "The user asked for working functionality, but recent instruction records include failures.",
       "evidence": {
-        "count": 34,
+        "count": 38,
         "examples": [
+          {
+            "projectName": "voiceTranscriptGenX",
+            "taskType": "Simple",
+            "status": "failed",
+            "hasInstruction": true,
+            "hasError": true
+          },
           {
             "projectName": "voiceTranscriptGenX",
             "taskType": "Medium",
@@ -100,15 +107,8 @@
             "hasError": true
           },
           {
-            "projectName": "DatabricksX",
-            "taskType": "Medium",
-            "status": "failed",
-            "hasInstruction": true,
-            "hasError": true
-          },
-          {
-            "projectName": "DatabricksX",
-            "taskType": "Medium",
+            "projectName": "voiceTranscriptGenX",
+            "taskType": "Simple",
             "status": "failed",
             "hasInstruction": true,
             "hasError": true
@@ -203,12 +203,33 @@
   ],
   "agents": [
     {
+      "agentId": "plutonix-completion-checker",
+      "name": "plutonix-completion-checker",
+      "status": "observed",
+      "sourcePath": "",
+      "healthScore": 44,
+      "qualityScore": 47,
+      "efficiencyScore": 43,
+      "concerns": [],
+      "directives": [
+        "Use smaller context windows, cite exact files, and avoid broad rewrites unless required.",
+        "Before completion, verify requested behavior against the latest user instruction and runtime evidence.",
+        "Route through independent review or auto-repair before PlutoniX approval."
+      ],
+      "tokenEconomy": {
+        "totalRuns": 1,
+        "averageTotalTokens": 807201,
+        "tokensPerAccuracyPoint": 14948.17,
+        "estimatedUsd": 4.12583
+      }
+    },
+    {
       "agentId": "voicetranscriptgenx-orchestrator-agent",
       "name": "voicetranscriptgenx-orchestrator-agent",
       "status": "observed",
       "sourcePath": "",
-      "healthScore": 58,
-      "qualityScore": 67,
+      "healthScore": 59,
+      "qualityScore": 68,
       "efficiencyScore": 57,
       "concerns": [],
       "directives": [
@@ -216,10 +237,10 @@
         "Route through independent review or auto-repair before PlutoniX approval."
       ],
       "tokenEconomy": {
-        "totalRuns": 3,
-        "averageTotalTokens": 157107,
-        "tokensPerAccuracyPoint": 5747.82,
-        "estimatedUsd": 13.15378
+        "totalRuns": 5,
+        "averageTotalTokens": 143157,
+        "tokensPerAccuracyPoint": 8729.11,
+        "estimatedUsd": 20.04011
       }
     },
     {
@@ -235,10 +256,10 @@
         "Use smaller context windows, cite exact files, and avoid broad rewrites unless required."
       ],
       "tokenEconomy": {
-        "totalRuns": 11,
-        "averageTotalTokens": 47591,
-        "tokensPerAccuracyPoint": 6158.8,
-        "estimatedUsd": 15.487915
+        "totalRuns": 15,
+        "averageTotalTokens": 169062,
+        "tokensPerAccuracyPoint": 29834.52,
+        "estimatedUsd": 30.053745
       }
     },
     {
@@ -403,6 +424,28 @@
       "name": "Artifact Production Agent",
       "status": "unknown",
       "sourcePath": "runtime/agents/projects/cvmakerx-e4XAzI.agents.json",
+      "healthScore": 64,
+      "qualityScore": 70,
+      "efficiencyScore": 70,
+      "concerns": [],
+      "directives": []
+    },
+    {
+      "agentId": "media-asset-agent",
+      "name": "Media Asset Agent",
+      "status": "unknown",
+      "sourcePath": "runtime/agents/projects/voicetranscriptgenx-QcKNlU.agents.json",
+      "healthScore": 64,
+      "qualityScore": 70,
+      "efficiencyScore": 70,
+      "concerns": [],
+      "directives": []
+    },
+    {
+      "agentId": "ui-functionality-mapper-agent",
+      "name": "UI Functionality Mapper Agent",
+      "status": "unknown",
+      "sourcePath": "runtime/agents/projects/voicetranscriptgenx-QcKNlU.agents.json",
       "healthScore": 64,
       "qualityScore": 70,
       "efficiencyScore": 70,
@@ -662,14 +705,14 @@
       "sourcePath": "runtime/agents/plutonix-fullstack-agent.runtime.json",
       "healthScore": 75,
       "qualityScore": 74,
-      "efficiencyScore": 66,
+      "efficiencyScore": 65,
       "concerns": [],
       "directives": [],
       "tokenEconomy": {
-        "totalRuns": 10,
-        "averageTotalTokens": 32783,
-        "tokensPerAccuracyPoint": 3725.35,
-        "estimatedUsd": 8.464255
+        "totalRuns": 11,
+        "averageTotalTokens": 76531,
+        "tokensPerAccuracyPoint": 9458.84,
+        "estimatedUsd": 11.17016
       }
     },
     {

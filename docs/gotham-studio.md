@@ -40,6 +40,12 @@ Logical job states are:
 
 Provider-native IDs, run IDs, raw states, timestamps, sanitized errors, retry lineage, and cost fields are stored separately from the logical state. Reconciliation is bounded by `GOTHAM_STUDIO_RECONCILIATION_INTERVAL_MS` and `GOTHAM_STUDIO_MAX_RECONCILIATIONS_PER_CYCLE`. Polling with no logical state change does not append another activity event.
 
+## Codex Account & Usage
+
+The Builder account panel starts a short-lived, read-only Codex App Server session and reads `account/read`, `account/rateLimits/read`, and `account/usage/read`. For ChatGPT-authenticated Codex sessions this can populate the account email, plan/authentication type, allowance windows, reset credits, lifetime token summary, and daily token buckets. In production, provider data is returned only when the Codex account email exactly matches the verified PlutoniX profile email; a shared backend login therefore cannot disclose account-wide usage to another profile. Development authentication has no email claim, so its production-forbidden local fallback requires the exact `PLUTONIX_DEV_AUTH_SUBJECT` configured for the backend. No access or refresh token is read, stored, logged, or returned.
+
+Codex does not expose a provider account ID for every authentication mode, so that field remains explicitly unavailable when absent. **Latest Gotham execution in this project** is the newest owner/project-scoped execution ledger entry, not the current browser conversation. Context-window occupancy also remains unavailable because the short-lived account session has no active Gotham thread from which to derive it. These boundaries follow the official [Codex App Server account methods](https://developers.openai.com/codex/app-server/) and keep subscription allowance separate from context occupancy.
+
 ## Provider configuration
 
 All credentials are backend-only. Never expose these values with a `VITE_` prefix, put them in Studio forms, add them to pipeline/job parameters, or commit them.
@@ -110,6 +116,7 @@ Errors use a stable code, sanitized message, retryability flag, and appropriate 
 - Secrets found in parameters or provider configuration are rejected before persistence.
 - Provider errors and returned payloads are sanitized before storage or response.
 - Background reconciliation is concurrency-bounded and skips duplicate lifecycle events.
+- Provider calls emit `studio.provider.request` with operation latency and outcome; failures also emit `studio.provider.failure`, and each active poll emits `studio.job.reconcile` without fabricating a lifecycle transition.
 - The Studio frontend polls only while a project has active jobs; the backend remains authoritative.
 - Models remain empty until a future adapter exposes real model-registry evidence. The UI labels that absence directly.
 

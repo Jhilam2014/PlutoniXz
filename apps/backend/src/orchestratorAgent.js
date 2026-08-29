@@ -249,9 +249,9 @@ export function inferGothamRequestIntent({ instruction = "", workflowMode, taskT
   const inferredBugFix = pastedError || bugVerb;
   return {
     workflowMode: normalizeGothamWorkflowMode(explicitWorkflowMode ? workflowMode : inferredBugFix ? "debugger" : "executor"),
-    taskType: explicitTaskType ? taskType : inferredBugFix ? "Simple" : "Medium",
+    taskType: explicitTaskType ? taskType : "Auto",
     inferredBugFix,
-    reason: pastedError ? "pasted-error" : bugVerb ? "bug-fix-language" : "explicit-or-default"
+    reason: pastedError ? "pasted-error" : bugVerb ? "bug-fix-language" : explicitTaskType ? "explicit" : "auto-default"
   };
 }
 

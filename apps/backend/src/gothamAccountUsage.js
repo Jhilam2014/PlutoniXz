@@ -1,5 +1,6 @@
 import crypto from "node:crypto";
 import { probeCodexCli, probeCopilotCli } from "./codexWorkflow.js";
+import { probeCodexAccountUsage } from "./codexAccountProbe.js";
 import { readAgentTokenRows } from "./tokenEconomy.js";
 
 const CACHE_MS = 30_000;
@@ -97,10 +98,109 @@ function unavailableAccount(reason) {
   };
 }
 
-function providerSnapshot({ id, runtime, usage, active }) {
-  const connected = Boolean(runtime?.available || usage);
+function codexIdentityMatchesOwner(accountProbe, owner = {}, allowDevelopmentIdentity = false) {
+  const providerEmail = boundedText(accountProbe?.account?.account?.email, 254).toLowerCase();
+  const ownerEmail = boundedText(owner.email, 254).toLowerCase();
+  return Boolean(providerEmail && ownerEmail && providerEmail === ownerEmail) || allowDevelopmentIdentity;
+}
+
+function codexAccount(accountProbe, owner, allowDevelopmentIdentity) {
+  const raw = accountProbe?.account?.account;
+  if (!raw) return unavailableAccount(accountProbe?.error || "Codex app-server did not return an authenticated account.");
+  if (!codexIdentityMatchesOwner(accountProbe, owner, allowDevelopmentIdentity)) {
+    return unavailableAccount("The Codex runtime identity is not verified as the current PlutoniX profile.");
+  }
+  const providerAccountId = safeId(raw.chatgptAccountId || raw.accountId || raw.id, 240) || null;
+  return {
+    providerAccountId,
+    providerAccountIdAvailability: providerAccountId ? "available" : "unavailable",
+    providerAccountIdReason: providerAccountId ? null : "Codex account/read does not expose an account ID for this authentication mode.",
+    displayName: boundedText(raw.displayName || raw.name, 160) || null,
+    email: boundedText(raw.email, 254) || null,
+    username: boundedText(raw.username, 160) || null,
+    organization: boundedText(raw.organizationName || raw.organization, 160) || null,
+    workspace: boundedText(raw.workspaceName || raw.workspace, 160) || null,
+    plan: boundedText(raw.planType, 80) || null,
+    authenticationMode: boundedText(raw.type, 80) || null,
+    identitySource: "Codex app-server account/read"
+  };
+}
+
+function quotaWindow(limit, window, position) {
+  if (!window || typeof window !== "object") return null;
+  const resetsAt = nonNegativeNumber(window.resetsAt);
+  return {
+    id: `${safeId(limit.limitId || "codex", 120) || "codex"}:${position}`,
+    label: `${boundedText(limit.limitName || limit.limitId || "Codex", 120)} · ${position}`,
+    percentUsed: nonNegativeNumber(window.usedPercent),
+    windowDurationMinutes: nonNegativeNumber(window.windowDurationMins),
+    resetAt: resetsAt === null ? null : iso(resetsAt * 1_000),
+    plan: boundedText(limit.planType, 80) || null,
+    reachedType: boundedText(limit.rateLimitReachedType, 120) || null
+  };
+}
+
+function codexAllowance(accountProbe, owner, allowDevelopmentIdentity) {
+  if (!codexIdentityMatchesOwner(accountProbe, owner, allowDevelopmentIdentity)) {
+    return {
+      availability: "unavailable", buckets: [], credits: null, resetCreditsAvailable: null, source: null, observedAt: null,
+      availabilityReason: "Codex allowance is hidden because the runtime identity is not verified as the current PlutoniX profile.",
+      note: "Provider account allowance can include activity outside PlutoniX."
+    };
+  }
+  const result = accountProbe?.rateLimits;
+  const limits = result?.rateLimitsByLimitId && typeof result.rateLimitsByLimitId === "object"
+    ? Object.values(result.rateLimitsByLimitId)
+    : result?.rateLimits ? [result.rateLimits] : [];
+  const buckets = limits.flatMap((limit) => [quotaWindow(limit, limit?.primary, "primary"), quotaWindow(limit, limit?.secondary, "secondary")]).filter(Boolean);
+  const resetCreditsAvailable = nonNegativeNumber(result?.rateLimitResetCredits?.availableCount);
+  const credits = result?.credits && typeof result.credits === "object" ? {
+    balance: nonNegativeNumber(result.credits.balance ?? result.credits.remaining),
+    currency: boundedText(result.credits.currency, 12) || null
+  } : null;
+  const available = Boolean(buckets.length || credits || resetCreditsAvailable !== null);
+  return {
+    availability: available ? "available" : "unavailable",
+    buckets,
+    credits,
+    resetCreditsAvailable,
+    source: available ? "Codex app-server account/rateLimits/read" : null,
+    observedAt: available ? accountProbe.observedAt : null,
+    availabilityReason: available ? null : accountProbe?.error || "Codex did not return ChatGPT rate-limit data for this authentication mode.",
+    note: "Provider account allowance can include activity outside PlutoniX."
+  };
+}
+
+function codexAccountActivity(accountProbe, owner, allowDevelopmentIdentity) {
+  if (!codexIdentityMatchesOwner(accountProbe, owner, allowDevelopmentIdentity)) {
+    return { availability: "unavailable", summary: null, dailyUsageBuckets: [], source: null, observedAt: null, availabilityReason: "Codex token activity is hidden because the runtime identity is not verified as the current PlutoniX profile." };
+  }
+  const summary = accountProbe?.usage?.summary;
+  const normalizedSummary = summary && typeof summary === "object" ? {
+    lifetimeTokens: nonNegativeNumber(summary.lifetimeTokens),
+    peakDailyTokens: nonNegativeNumber(summary.peakDailyTokens),
+    longestRunningTurnSeconds: nonNegativeNumber(summary.longestRunningTurnSec),
+    currentStreakDays: nonNegativeNumber(summary.currentStreakDays),
+    longestStreakDays: nonNegativeNumber(summary.longestStreakDays)
+  } : null;
+  const dailyUsageBuckets = Array.isArray(accountProbe?.usage?.dailyUsageBuckets)
+    ? accountProbe.usage.dailyUsageBuckets.slice(-90).map((bucket) => ({ startDate: boundedText(bucket?.startDate, 20), tokens: nonNegativeNumber(bucket?.tokens) })).filter((bucket) => bucket.startDate && bucket.tokens !== null)
+    : [];
+  const available = Boolean(normalizedSummary && Object.values(normalizedSummary).some((value) => value !== null) || dailyUsageBuckets.length);
+  return {
+    availability: available ? "available" : "unavailable",
+    summary: normalizedSummary,
+    dailyUsageBuckets,
+    source: available ? "Codex app-server account/usage/read" : null,
+    observedAt: available ? accountProbe.observedAt : null,
+    availabilityReason: available ? null : accountProbe?.error || "Codex did not return account token activity for this authentication mode."
+  };
+}
+
+function providerSnapshot({ id, runtime, usage, active, accountProbe, owner, allowDevelopmentIdentity = false }) {
+  const connected = Boolean(runtime?.available || usage || accountProbe?.available);
   const unavailableReason = id === "codex"
-    ? "The current Gotham Codex exec runtime does not expose account identity or allowance APIs."
+    ? accountProbe?.error || "Codex app-server account capabilities are unavailable."
     : "The current Gotham CLI runtime does not expose account identity or allowance APIs.";
   return {
     id,
@@ -115,9 +215,10 @@ function providerSnapshot({ id, runtime, usage, active }) {
     runtime: {
       kind: id,
       version: boundedText(runtime?.version, 240) || null,
+      configuredModel: boundedText(runtime?.configuredModel, 160) || null,
       capability: runtime?.available ? "execution_available" : "not_available"
     },
-    account: unavailableAccount(unavailableReason),
+    account: id === "codex" ? codexAccount(accountProbe, owner, allowDevelopmentIdentity) : unavailableAccount(unavailableReason),
     conversation: usage
       ? {
           availability: "available",
@@ -148,9 +249,9 @@ function providerSnapshot({ id, runtime, usage, active }) {
           cost: null,
           source: null,
           observedAt: null,
-          availabilityReason: "No owner-scoped Gotham execution usage has been observed for this conversation."
+          availabilityReason: "No owner-scoped Gotham execution usage has been recorded for this project."
         },
-    allowance: {
+    allowance: id === "codex" ? codexAllowance(accountProbe, owner, allowDevelopmentIdentity) : {
       availability: "unavailable",
       buckets: [],
       credits: null,
@@ -159,13 +260,17 @@ function providerSnapshot({ id, runtime, usage, active }) {
       availabilityReason: unavailableReason,
       note: "Provider account allowance can include activity outside PlutoniX."
     },
+    accountUsage: id === "codex" ? codexAccountActivity(accountProbe, owner, allowDevelopmentIdentity) : {
+      availability: "unavailable", summary: null, dailyUsageBuckets: [], source: null, observedAt: null,
+      availabilityReason: unavailableReason
+    },
     contextWindow: {
       availability: "unavailable",
       occupancyTokens: null,
       capacityTokens: null,
       source: null,
       observedAt: null,
-      availabilityReason: "The current Gotham CLI execution does not report context-window occupancy."
+      availabilityReason: "Codex account APIs do not expose context-window occupancy for an active Gotham thread."
     }
   };
 }
@@ -178,16 +283,25 @@ export function sanitizeGothamAccountUsage(snapshot) {
   return snapshot;
 }
 
-export function createGothamAccountUsageService({ readRows = readAgentTokenRows, probeCodex = probeCodexCli, probeCopilot = probeCopilotCli, now = () => Date.now(), cacheMs = Number(process.env.GOTHAM_ACCOUNT_USAGE_CACHE_MS || CACHE_MS) } = {}) {
+export function createGothamAccountUsageService({ readRows = readAgentTokenRows, probeCodex = probeCodexCli, probeCodexAccount = probeCodexAccountUsage, probeCopilot = probeCopilotCli, now = () => Date.now(), env = process.env, cacheMs = Number(env.GOTHAM_ACCOUNT_USAGE_CACHE_MS || CACHE_MS) } = {}) {
   cacheMs = Math.max(5_000, Math.min(300_000, Number(cacheMs) || CACHE_MS));
   const cache = new Map();
 
+  function developmentIdentityAuthorized(owner = {}) {
+    if (String(env.NODE_ENV || "development").toLowerCase() === "production") return false;
+    if (String(env.PLUTONIX_DEV_AUTH_ENABLED || "").toLowerCase() !== "true") return false;
+    const expectedSubject = boundedText(env.PLUTONIX_DEV_AUTH_SUBJECT || env.VITE_PLUTONIX_DEV_AUTH_SUBJECT || "local:local-plutonix-user", 200);
+    return owner.issuer === "development" && Boolean(expectedSubject) && owner.subject === expectedSubject;
+  }
+
   async function providerRuntime() {
-    const [codex, copilot] = await Promise.all([
-      probeCodex(process.env.CODEX_BIN || "codex", Number(process.env.GOTHAM_ACCOUNT_USAGE_PROBE_TIMEOUT_MS || 3000)).catch((error) => ({ available: false, error: error.message })),
-      probeCopilot(Number(process.env.GOTHAM_ACCOUNT_USAGE_PROBE_TIMEOUT_MS || 3000)).catch((error) => ({ available: false, error: error.message }))
+    const [codex, codexAccountProbe, copilot] = await Promise.all([
+      probeCodex(env.CODEX_BIN || "codex", Number(env.GOTHAM_ACCOUNT_USAGE_PROBE_TIMEOUT_MS || 3000)).catch((error) => ({ available: false, error: error.message })),
+      probeCodexAccount(env.CODEX_BIN || "codex", Number(env.GOTHAM_ACCOUNT_USAGE_APP_SERVER_TIMEOUT_MS || 15000)).catch((error) => ({ available: false, error: error.message })),
+      probeCopilot(Number(env.GOTHAM_ACCOUNT_USAGE_PROBE_TIMEOUT_MS || 3000)).catch((error) => ({ available: false, error: error.message }))
     ]);
-    return { codex, copilot };
+    codex.configuredModel = env.OPENAI_DEFAULT_MODEL || null;
+    return { codex, codexAccountProbe, copilot };
   }
 
   async function read({ owner, projectId = "", refresh = false } = {}) {
@@ -204,7 +318,8 @@ export function createGothamAccountUsageService({ readRows = readAgentTokenRows,
     const ids = new Set([activeProvider]);
     if (runtime.codex?.available || usage?.provider === "codex") ids.add("codex");
     if (runtime.copilot?.available || usage?.provider === "copilot") ids.add("copilot");
-    const providers = [...ids].map((id) => providerSnapshot({ id, runtime: runtime[id], usage: usage?.provider === id ? usage : null, active: id === activeProvider }));
+    const allowDevelopmentIdentity = developmentIdentityAuthorized(owner);
+    const providers = [...ids].map((id) => providerSnapshot({ id, runtime: runtime[id], usage: usage?.provider === id ? usage : null, active: id === activeProvider, accountProbe: id === "codex" ? runtime.codexAccountProbe : null, owner, allowDevelopmentIdentity }));
     const snapshot = sanitizeGothamAccountUsage({
       status: "ok",
       scope: { projectId: safeId(projectId, 160) || null, owner: "verified_profile" },

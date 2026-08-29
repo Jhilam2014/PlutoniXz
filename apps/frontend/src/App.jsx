@@ -100,6 +100,7 @@ const SYSTEM_TARGET_VALUE = "__agentic_plutonix_system__";
 const GOTHAM_CHAT_MIN_WIDTH = 440;
 const GOTHAM_CHAT_MAX_WIDTH = 860;
 const MAX_INSTRUCTION_CHARS = 50000;
+const INSTRUCTION_COMMIT_DELAY_MS = 120;
 const DEVELOPMENT_AUTH_ENABLED = import.meta.env.VITE_PLUTONIX_DEV_AUTH_ENABLED === "true";
 
 function mediaReferenceIds(items = []) {
@@ -154,6 +155,7 @@ function readWorkspaceDeepLink() {
 
 const starterPrompt = "";
 const taskTypeOptions = [
+  { id: "Auto", label: "Auto", tone: "auto" },
   { id: "Simple", label: "Simple", tone: "simple" },
   { id: "Medium", label: "Medium", tone: "medium" },
   { id: "Large", label: "Large", tone: "large" }
@@ -166,6 +168,35 @@ const gothamWorkflowModes = [
 const gothamIntelConfig = {
   minExpansionScore: 72
 };
+
+function selectedProjectStorageKey(user = getStoredUser()) {
+  return `plutonix-selected-project:${user?.id || "anonymous"}`;
+}
+
+function runningInstructionFromExecution(execution) {
+  if (!execution) return null;
+  return {
+    recordedAt: execution.startedAt,
+    startedAt: execution.startedAt,
+    completedAt: "",
+    durationMs: null,
+    source: "plutonix-gotham-chat",
+    projectId: execution.projectId,
+    projectName: execution.projectName,
+    taskType: execution.resolvedTaskType || execution.taskType || "Medium",
+    requestedTaskType: execution.taskType || "Auto",
+    taskClassification: execution.taskClassification || null,
+    workflowMode: execution.workflowMode || "executor",
+    instruction: execution.instruction || "Gotham instruction in progress",
+    status: execution.status || "running",
+    parentWorkflowId: execution.parentWorkflowId || "",
+    buildId: execution.parentWorkflowId || "",
+    childExecutionIds: [],
+    changedFiles: [],
+    flowPath: execution.flowPath || null,
+    reattached: true
+  };
+}
 const activityFilters = [
   { id: "all", label: "All" },
   { id: "instructions", label: "Instructions" },
@@ -2617,6 +2648,7 @@ function SelfImprovementPanel() {
   const [toolPlans, setToolPlans] = useState([]);
   const [monetaryApprovals, setMonetaryApprovals] = useState([]);
   const [modelPool, setModelPool] = useState(null);
+  const [healthAudit, setHealthAudit] = useState(null);
   const [systemDirection, setSystemDirection] = useState("");
   const [loading, setLoading] = useState(true);
   const [actionBusy, setActionBusy] = useState("");
@@ -2626,7 +2658,7 @@ function SelfImprovementPanel() {
     if (!silent) setLoading(true);
     setError("");
     try {
-      const [statusRes, proposalsRes, signalsRes, patternsRes, runLogsRes, investigationsRes, researchLogsRes, toolPlansRes, approvalsRes] = await Promise.all([
+      const [statusRes, proposalsRes, signalsRes, patternsRes, runLogsRes, investigationsRes, researchLogsRes, toolPlansRes, approvalsRes, healthAuditRes] = await Promise.all([
         fetch(`${BACKEND_URL}/api/self-improvement/status`),
         fetch(`${BACKEND_URL}/api/self-improvement/proposals?limit=8`),
         fetch(`${BACKEND_URL}/api/self-improvement/signals?limit=12`),
@@ -2635,9 +2667,10 @@ function SelfImprovementPanel() {
         fetch(`${BACKEND_URL}/api/self-improvement/investigations?limit=10`),
         fetch(`${BACKEND_URL}/api/self-improvement/research-logs?limit=6`),
         fetch(`${BACKEND_URL}/api/self-improvement/tool-plans?limit=8`),
-        fetch(`${BACKEND_URL}/api/self-improvement/monetary-approvals?limit=8`)
+        fetch(`${BACKEND_URL}/api/self-improvement/monetary-approvals?limit=8`),
+        fetch(`${BACKEND_URL}/api/orchestrator-health`)
       ]);
-      const [statusData, proposalsData, signalsData, patternsData, runLogsData, investigationsData, researchLogsData, toolPlansData, approvalsData] = await Promise.all([
+      const [statusData, proposalsData, signalsData, patternsData, runLogsData, investigationsData, researchLogsData, toolPlansData, approvalsData, healthAuditData] = await Promise.all([
         statusRes.json(),
         proposalsRes.json(),
         signalsRes.json(),
@@ -2646,7 +2679,8 @@ function SelfImprovementPanel() {
         investigationsRes.json(),
         researchLogsRes.json(),
         toolPlansRes.json(),
-        approvalsRes.json()
+        approvalsRes.json(),
+        healthAuditRes.json()
       ]);
       if (!statusRes.ok) throw new Error(statusData.error || "Self-improvement status unavailable.");
       if (!proposalsRes.ok) throw new Error(proposalsData.error || "Self-improvement proposals unavailable.");
@@ -2657,6 +2691,7 @@ function SelfImprovementPanel() {
       if (!researchLogsRes.ok) throw new Error(researchLogsData.error || "Self-improvement research logs unavailable.");
       if (!toolPlansRes.ok) throw new Error(toolPlansData.error || "Self-improvement tool plans unavailable.");
       if (!approvalsRes.ok) throw new Error(approvalsData.error || "Self-improvement monetary approvals unavailable.");
+      if (!healthAuditRes.ok) throw new Error(healthAuditData.error || "Orchestrator health-audit status unavailable.");
       setStatus(statusData.selfImprovement || null);
       setModelPool(statusData.huggingFaceModelPool || null);
       setProposals(Array.isArray(proposalsData.proposals) ? proposalsData.proposals : []);
@@ -2667,6 +2702,7 @@ function SelfImprovementPanel() {
       setResearchLogs(Array.isArray(researchLogsData.logs) ? researchLogsData.logs : []);
       setToolPlans(Array.isArray(toolPlansData.toolPlans) ? toolPlansData.toolPlans : []);
       setMonetaryApprovals(Array.isArray(approvalsData.approvals) ? approvalsData.approvals : []);
+      setHealthAudit(healthAuditData.healthAudit || null);
     } catch (loadError) {
       setError(loadError.message);
     } finally {
@@ -2707,6 +2743,23 @@ function SelfImprovementPanel() {
       await loadSelfImprovement();
     } catch (decisionError) {
       setError(decisionError.message);
+    } finally {
+      setActionBusy("");
+    }
+  }
+
+  async function runHealthAudit() {
+    setActionBusy("health_audit");
+    setError("");
+    try {
+      const res = await authFetch(`${BACKEND_URL}/api/orchestrator-health/audit`, {
+        method: "POST"
+      });
+      const data = await res.json();
+      setHealthAudit(data.healthAudit || null);
+      if (!res.ok) throw new Error(data.error || "Orchestrator health audit failed.");
+    } catch (auditError) {
+      setError(auditError.message);
     } finally {
       setActionBusy("");
     }
@@ -2755,6 +2808,14 @@ function SelfImprovementPanel() {
           <h2>Control Plane</h2>
         </div>
         <div className="self-improvement-actions">
+          <button
+            className="ghost-action"
+            onClick={runHealthAudit}
+            disabled={Boolean(actionBusy) || healthAudit?.quota?.remaining === 0 || healthAudit?.running}
+          >
+            {actionBusy === "health_audit" || healthAudit?.running ? <Loader2 className="spin" size={16} /> : <Activity size={16} />}
+            Run health audit ({healthAudit?.quota?.remaining ?? 3} left)
+          </button>
           <button className="ghost-action" onClick={loadSelfImprovement} disabled={loading || Boolean(actionBusy)}>
             {loading ? <Loader2 className="spin" size={16} /> : <RefreshCcw size={16} />}
             Refresh
@@ -2831,6 +2892,15 @@ function SelfImprovementPanel() {
           <span>HF model pool</span>
           <strong>{compactNumber(modelPool?.downloaded || 0)} local</strong>
           <small>{compactNumber(modelPool?.planned || 0)} planned · {compactNumber(modelPool?.services || 0)} services</small>
+        </article>
+        <article>
+          <span>Health audit</span>
+          <strong>{healthAudit?.latestReport?.status || "On request"}</strong>
+          <small>
+            {healthAudit?.quota
+              ? `${healthAudit.quota.used}/${healthAudit.quota.maxDailyAudits} today · ${healthAudit.quota.remaining} remaining`
+              : "Manual only · maximum 3 per day"}
+          </small>
         </article>
       </div>
 
@@ -5558,7 +5628,7 @@ function FunctionalityGraphWorkspace({ graph, selectedNodeId, onSelectNode, onOp
   );
 }
 
-function FunctionalityNodalAnalysis({ projectId = "", flowPath, onOpenStudioResource }) {
+function FunctionalityNodalAnalysis({ projectId = "", flowPath, focusedNodeId = "", onOpenStudioResource }) {
   const graph = useMemo(
     () => normalizeFunctionalityGraph(flowPath || {}, projectId),
     [flowPath, projectId]
@@ -5573,6 +5643,12 @@ function FunctionalityNodalAnalysis({ projectId = "", flowPath, onOpenStudioReso
       setSelectedNodeId(graph.rootId || graph.nodes[0]?.id || "");
     }
   }, [graph, selectedNodeId]);
+
+  useEffect(() => {
+    if (!focusedNodeId) return;
+    const focusedNode = graph.nodes.find((node) => node.id === focusedNodeId || node.sourceId === focusedNodeId);
+    if (focusedNode) setSelectedNodeId(focusedNode.id);
+  }, [focusedNodeId, graph]);
 
   useEffect(() => {
     if (!showDetail) return undefined;
@@ -5669,7 +5745,7 @@ function FunctionalityNodalAnalysis({ projectId = "", flowPath, onOpenStudioReso
   );
 }
 
-function ProjectFlowPanel({ projectId = "", flowPath, decisionHistory = [], expanded, running, onToggle, onHumanChoice, onOpenStudioResource }) {
+function ProjectFlowPanel({ projectId = "", flowPath, focusedFunctionalityId = "", decisionHistory = [], expanded, running, onToggle, onHumanChoice, onOpenStudioResource }) {
   const [detailPage, setDetailPage] = useState(() => typeof window !== "undefined" && window.location.hash === "#execution-snapshot" ? "snapshot" : "");
   const [historyCursor, setHistoryCursor] = useState(0);
   const [isHistoryPlaying, setHistoryPlaying] = useState(false);
@@ -6096,7 +6172,7 @@ function ProjectFlowPanel({ projectId = "", flowPath, decisionHistory = [], expa
               <Activity size={16} /><span><strong>Execution snapshot</strong><small>Movable sequential graph</small></span><ChevronRight size={15} />
             </button>
           </div>
-          <FunctionalityNodalAnalysis projectId={projectId} flowPath={flowPath} onOpenStudioResource={onOpenStudioResource} />
+          <FunctionalityNodalAnalysis projectId={projectId} flowPath={flowPath} focusedNodeId={focusedFunctionalityId} onOpenStudioResource={onOpenStudioResource} />
         </div>
       ) : null}
       {flowDetailModal}
@@ -6115,14 +6191,43 @@ function usageTimestamp(value) {
   return `${date.toLocaleString()} ${Intl.DateTimeFormat().resolvedOptions().timeZone}`;
 }
 
+function usageResetRemaining(value, now = Date.now()) {
+  const resetAt = new Date(value).getTime();
+  if (!value || Number.isNaN(resetAt)) return "Reset unavailable";
+  const remainingMinutes = Math.ceil((resetAt - now) / 60_000);
+  if (remainingMinutes <= 0) return "Reset due";
+  const days = Math.floor(remainingMinutes / 1_440);
+  const hours = Math.floor((remainingMinutes % 1_440) / 60);
+  const minutes = remainingMinutes % 60;
+  if (days) return `${days}d ${hours}h to reset`;
+  if (hours) return `${hours}h ${minutes}m to reset`;
+  return `${remainingMinutes}m to reset`;
+}
+
+function compactAllowanceFor(provider) {
+  const buckets = Array.isArray(provider?.allowance?.buckets) ? provider.allowance.buckets : [];
+  const bucket = buckets.find((candidate) => /(^|\W)primary($|\W)/i.test(candidate.label || candidate.id || "")) || buckets[0];
+  const percentUsed = Number(bucket?.percentUsed);
+  if (!bucket || !Number.isFinite(percentUsed)) return null;
+  return { ...bucket, percentUsed: Math.min(100, Math.max(0, percentUsed)) };
+}
+
 function GothamAccountUsagePanel({ data, loading, error, expanded, onExpandedChange, onRefresh }) {
   const [openProvider, setOpenProvider] = useState("");
+  const [allowanceClock, setAllowanceClock] = useState(() => Date.now());
   const providers = Array.isArray(data?.providers) ? data.providers : [];
   const activeProvider = providers.find((provider) => provider.id === data?.activeProvider) || providers[0] || null;
+  const compactAllowance = compactAllowanceFor(providers.find((provider) => provider.id === "codex")) || compactAllowanceFor(activeProvider);
+  const compactAllowanceHue = compactAllowance ? Math.round(142 - compactAllowance.percentUsed * 1.38) : 142;
 
   useEffect(() => {
     if (activeProvider?.id) setOpenProvider(activeProvider.id);
   }, [activeProvider?.id]);
+
+  useEffect(() => {
+    const intervalId = window.setInterval(() => setAllowanceClock(Date.now()), 30_000);
+    return () => window.clearInterval(intervalId);
+  }, []);
 
   async function copyProviderAccountId(accountId) {
     if (!accountId || !navigator.clipboard?.writeText) return;
@@ -6133,6 +6238,7 @@ function GothamAccountUsagePanel({ data, loading, error, expanded, onExpandedCha
     const account = provider.account || {};
     const conversation = provider.conversation || {};
     const allowance = provider.allowance || {};
+    const accountUsage = provider.accountUsage || {};
     const context = provider.contextWindow || {};
     const isOpen = openProvider === provider.id;
     const providerId = `gotham-account-provider-${provider.id}`;
@@ -6145,7 +6251,7 @@ function GothamAccountUsagePanel({ data, loading, error, expanded, onExpandedCha
           aria-expanded={isOpen}
           aria-controls={providerId}
         >
-          <span><UserRound size={14} /><strong>{provider.label}</strong>{provider.active ? <b>Active conversation</b> : null}</span>
+          <span><UserRound size={14} /><strong>{provider.label}</strong>{provider.active ? <b>Active provider</b> : null}</span>
           <span className={`gotham-usage-status ${provider.connection?.status || "unavailable"}`}>{provider.connection?.status || "unavailable"}<ChevronDown size={14} /></span>
         </button>
         {isOpen ? (
@@ -6156,19 +6262,32 @@ function GothamAccountUsagePanel({ data, loading, error, expanded, onExpandedCha
               <div><dt>Organization / plan</dt><dd>{[account.organization, account.workspace, account.plan].filter(Boolean).join(" · ") || "Not exposed by provider"}</dd></div>
               <div><dt>Authentication</dt><dd>{account.authenticationMode || "Not exposed by provider"}</dd></div>
             </dl>
-            <section className="gotham-usage-group" aria-label={`${provider.label} conversation usage`}>
-              <header><strong>This conversation</strong><small>{conversation.availability === "available" ? `${conversation.classification || "estimated"} · ${conversation.source || "Gotham runtime"}` : conversation.availabilityReason}</small></header>
+            <section className="gotham-usage-group" aria-label={`${provider.label} latest Gotham execution usage`}>
+              <header><strong>Latest Gotham execution in this project</strong><small>{conversation.availability === "available" ? `${conversation.classification || "estimated"} · ${conversation.source || "Gotham runtime"}` : conversation.availabilityReason}</small></header>
               <div className="gotham-usage-metrics">
                 <span><small>Input</small><b>{usageValue(conversation.inputTokens)}</b></span>
                 <span><small>Output</small><b>{usageValue(conversation.outputTokens)}</b></span>
                 <span><small>Cached</small><b>{usageValue(conversation.cachedTokens)}</b></span>
                 <span><small>Total</small><b>{usageValue(conversation.totalTokens)}</b></span>
               </div>
-              <p>{conversation.model ? `${conversation.provider || provider.label} · ${conversation.model}` : "Provider/model details unavailable."}{conversation.cost ? ` · Estimated cost ${conversation.cost.currency} ${conversation.cost.amount}` : ""}</p>
+              <p>{conversation.model ? `${conversation.provider || provider.label} · ${conversation.model}` : provider.runtime?.configuredModel ? `Configured runtime: ${provider.label} · ${provider.runtime.configuredModel}` : "Provider/model details unavailable."}{conversation.cost ? ` · Estimated cost ${conversation.cost.currency} ${conversation.cost.amount}` : ""}</p>
+            </section>
+            <section className="gotham-usage-group" aria-label={`${provider.label} account token activity`}>
+              <header><strong>Account token activity</strong><small>{accountUsage.availability === "available" ? accountUsage.source : accountUsage.availabilityReason}</small></header>
+              {accountUsage.availability === "available" ? <>
+                <div className="gotham-usage-metrics">
+                  <span><small>Lifetime</small><b>{usageValue(accountUsage.summary?.lifetimeTokens)}</b></span>
+                  <span><small>Peak day</small><b>{usageValue(accountUsage.summary?.peakDailyTokens)}</b></span>
+                  <span><small>Current streak</small><b>{usageValue(accountUsage.summary?.currentStreakDays, " days")}</b></span>
+                  <span><small>Longest turn</small><b>{usageValue(accountUsage.summary?.longestRunningTurnSeconds, " sec")}</b></span>
+                </div>
+                <p>{accountUsage.dailyUsageBuckets?.length ? `Latest daily bucket: ${accountUsage.dailyUsageBuckets.at(-1).startDate} · ${Number(accountUsage.dailyUsageBuckets.at(-1).tokens).toLocaleString()} tokens` : "Daily token buckets were not returned."}</p>
+              </> : <p>Not exposed for this authenticated Codex account.</p>}
             </section>
             <section className="gotham-usage-group" aria-label={`${provider.label} account allowance`}>
               <header><strong>Account allowance</strong><small>{allowance.availability === "available" ? allowance.source : allowance.availabilityReason}</small></header>
               {allowance.buckets?.length ? allowance.buckets.map((bucket) => <div className="gotham-usage-quota" key={bucket.id}><span><strong>{bucket.label}</strong><small>{bucket.resetAt ? `Resets ${usageTimestamp(bucket.resetAt)}` : "Reset time unavailable"}</small></span><b>{usageValue(bucket.percentUsed, "%")}</b></div>) : <p>Not exposed by provider. Allowance may include usage outside PlutoniX.</p>}
+              {allowance.resetCreditsAvailable !== null && allowance.resetCreditsAvailable !== undefined ? <p>{usageValue(allowance.resetCreditsAvailable)} earned rate-limit reset{allowance.resetCreditsAvailable === 1 ? "" : "s"} available.</p> : null}
             </section>
             <section className="gotham-usage-group" aria-label={`${provider.label} context window`}>
               <header><strong>Context window</strong><small>Separate from subscription quota</small></header>
@@ -6183,7 +6302,27 @@ function GothamAccountUsagePanel({ data, loading, error, expanded, onExpandedCha
   return (
     <details className="gotham-account-usage" open={expanded} onToggle={(event) => onExpandedChange(event.currentTarget.open)}>
       <summary>
-        <span><Gauge size={15} /><strong>Account &amp; Usage</strong><small>{activeProvider ? `${activeProvider.label} · ${activeProvider.connection?.status || "unavailable"}` : loading ? "Loading" : "Sign in to view"}</small></span>
+        <span className="gotham-account-usage-heading"><Gauge size={15} /><strong>Account &amp; Usage</strong><small>{activeProvider ? `${activeProvider.label} · ${activeProvider.connection?.status || "unavailable"}` : loading ? "Loading" : "Sign in to view"}</small></span>
+        {compactAllowance ? (
+          <span
+            className="gotham-account-usage-compact"
+            style={{ "--allowance-hue": compactAllowanceHue }}
+          >
+            <span className="gotham-account-usage-compact-label"><small>Account allowance</small><b>{compactAllowance.label}</b></span>
+            <span
+              className="gotham-account-usage-bar"
+              role="progressbar"
+              aria-label={`${compactAllowance.label} account allowance usage`}
+              aria-valuemin="0"
+              aria-valuemax="100"
+              aria-valuenow={compactAllowance.percentUsed}
+              aria-valuetext={`${compactAllowance.percentUsed}% used, ${usageResetRemaining(compactAllowance.resetAt, allowanceClock)}`}
+            >
+              <i style={{ width: `${compactAllowance.percentUsed}%` }} />
+            </span>
+            <span className="gotham-account-usage-compact-meta"><b>{usageValue(compactAllowance.percentUsed, "%")}</b><small>{usageResetRemaining(compactAllowance.resetAt, allowanceClock)}</small></span>
+          </span>
+        ) : null}
         <ChevronDown size={15} />
       </summary>
       <div className="gotham-account-usage-body" aria-live="polite">
@@ -6208,7 +6347,7 @@ export default function App() {
   const [currentUser, setCurrentUser] = useState(() => getStoredUser());
   const [themeMode, setThemeMode] = useState(() => localStorage.getItem("plutonix-theme") || "system");
   const [instruction, setInstruction] = useState(starterPrompt);
-  const [taskType, setTaskType] = useState("Medium");
+  const [taskType, setTaskType] = useState("Auto");
   const [gothamWorkflowMode, setGothamWorkflowMode] = useState("executor");
   const [gothamIntelEnabled, setGothamIntelEnabled] = useState(() => localStorage.getItem("plutonix-gotham-intel") === "true");
   const [studioSelectedJobId, setStudioSelectedJobId] = useState(deepLink.studioJob);
@@ -6253,7 +6392,7 @@ export default function App() {
   const [isFlowExpanded, setFlowExpanded] = useState(false);
   const [isCreatingProject, setCreatingProject] = useState(false);
   const [projects, setProjects] = useState([]);
-  const [selectedProjectId, setSelectedProjectId] = useState("");
+  const [selectedProjectId, setSelectedProjectId] = useState(() => localStorage.getItem(selectedProjectStorageKey()) || "");
   const [isSelectingProject, setSelectingProject] = useState(false);
   const [workspaceName, setWorkspaceName] = useState("");
   const [isUpdatingProjectIdentity, setUpdatingProjectIdentity] = useState(false);
@@ -6299,6 +6438,7 @@ export default function App() {
   const instructionEditorRef = useRef(null);
   const instructionCursorRef = useRef(null);
   const instructionEditorValueRef = useRef("");
+  const instructionCommitTimerRef = useRef(null);
   const instructionDraftRef = useRef({ key: "", value: "" });
   const instructionHistoryCaretIntentRef = useRef("");
   const googleIdentityRef = useRef(null);
@@ -6482,8 +6622,9 @@ export default function App() {
 
   useEffect(() => {
     function syncUser(event) {
-      setCurrentUser(event.detail || getStoredUser());
-      setSelectedProjectId("");
+      const nextUser = event.detail || getStoredUser();
+      setCurrentUser(nextUser);
+      setSelectedProjectId(localStorage.getItem(selectedProjectStorageKey(nextUser)) || "");
       setProjects([]);
     }
     window.addEventListener("plutonix-user-updated", syncUser);
@@ -6760,11 +6901,11 @@ export default function App() {
   }, [currentUser?.id]);
 
   useEffect(() => {
-    if (!gothamAccountUsageOpen) return undefined;
+    if (!currentUser?.id) return undefined;
     loadGothamAccountUsage();
     const intervalId = window.setInterval(() => loadGothamAccountUsage(), 90_000);
     return () => window.clearInterval(intervalId);
-  }, [gothamAccountUsageOpen, currentUser?.id, selectedProject?.id]);
+  }, [currentUser?.id, selectedProject?.id]);
 
   useEffect(() => {
     setBrandingPalette(null);
@@ -6871,6 +7012,86 @@ export default function App() {
   useEffect(() => {
     loadProjects().catch(() => setProjects([]));
   }, [currentUser?.id]);
+
+  useEffect(() => {
+    const key = selectedProjectStorageKey();
+    if (selectedProjectId) localStorage.setItem(key, selectedProjectId);
+    else localStorage.removeItem(key);
+  }, [selectedProjectId, currentUser?.id]);
+
+  useEffect(() => {
+    if (!currentUser?.id) return undefined;
+    let cancelled = false;
+    let pollTimer;
+    let previouslyAttachedWorkflowId = "";
+
+    async function synchronizeGothamExecution() {
+      try {
+        const params = new URLSearchParams();
+        if (selectedProjectId) params.set("projectId", isSystemTarget ? "system:plutonix" : selectedProjectId);
+        const res = await authFetch(`${BACKEND_URL}/api/generate/status${params.size ? `?${params.toString()}` : ""}`);
+        const data = await res.json();
+        if (!res.ok || cancelled) return;
+        const execution = data.execution || data.executions?.[0] || null;
+        if (execution) {
+          previouslyAttachedWorkflowId = execution.parentWorkflowId || previouslyAttachedWorkflowId;
+          const executionProjectId = execution.projectId === "system:plutonix" ? SYSTEM_TARGET_VALUE : execution.projectId;
+          if (executionProjectId && executionProjectId !== selectedProjectId) setSelectedProjectId(executionProjectId);
+          const restored = runningInstructionFromExecution(execution);
+          setRunningInstruction(restored);
+          setSessionStartedAt(new Date(execution.startedAt || Date.now()).getTime());
+          setGenerating(true);
+          setGeneratedStatus("working");
+          if (execution.flowPath) {
+            setProjectFlowPath(execution.flowPath);
+            setProjectResult((current) => ({
+              ...(current || {}),
+              status: execution.status || "running",
+              projectName: execution.projectName,
+              flowPath: execution.flowPath
+            }));
+          }
+          return;
+        }
+
+        setRunningInstruction((current) => {
+          if (!current?.reattached && !previouslyAttachedWorkflowId) return current;
+          return null;
+        });
+        if (previouslyAttachedWorkflowId) {
+          previouslyAttachedWorkflowId = "";
+          setGenerating(false);
+          setStoppingGotham(false);
+          setGeneratedStatus("ready");
+          setPreviewKey(Date.now());
+          await Promise.all([
+            loadProjects().catch(() => {}),
+            loadProjectInstructions(selectedProjectId).catch(() => {})
+          ]);
+        }
+        if (data.latestTerminal) {
+          setLastBuild((current) => current?.parentWorkflowId === data.latestTerminal.parentWorkflowId ? current : {
+            status: data.latestTerminal.status,
+            parentWorkflowId: data.latestTerminal.parentWorkflowId,
+            buildId: data.latestTerminal.outcomes?.execution?.buildId || data.latestTerminal.parentWorkflowId,
+            files: data.latestTerminal.changedFiles || [],
+            adaptiveRoute: data.latestTerminal.adaptiveRoute || null,
+            publication: data.latestTerminal.publication || null
+          });
+        }
+      } catch {
+        // Runtime-log polling remains available while the backend reconnects.
+      } finally {
+        if (!cancelled) pollTimer = window.setTimeout(synchronizeGothamExecution, 1500);
+      }
+    }
+
+    synchronizeGothamExecution();
+    return () => {
+      cancelled = true;
+      window.clearTimeout(pollTimer);
+    };
+  }, [currentUser?.id, selectedProjectId, isSystemTarget]);
 
   useEffect(() => {
     loadProjectInstructions(selectedProjectId).catch(() => {});
@@ -6998,6 +7219,26 @@ export default function App() {
     }
   }
 
+  function cancelInstructionCommit() {
+    if (instructionCommitTimerRef.current === null) return;
+    window.clearTimeout(instructionCommitTimerRef.current);
+    instructionCommitTimerRef.current = null;
+  }
+
+  function setInstructionImmediately(nextValue) {
+    cancelInstructionCommit();
+    const currentValue = instructionEditorValue(instructionEditorRef.current);
+    setInstruction(typeof nextValue === "function" ? nextValue(currentValue) : nextValue);
+  }
+
+  function commitInstructionFromEditor() {
+    cancelInstructionCommit();
+    const value = instructionEditorValue(instructionEditorRef.current);
+    instructionEditorValueRef.current = value;
+    persistInstructionDraft(value);
+    setInstruction(value);
+  }
+
   function savedInstructionDraft() {
     const key = instructionDraftStorageKey();
     if (instructionDraftRef.current.key === key) return instructionDraftRef.current.value;
@@ -7026,9 +7267,13 @@ export default function App() {
     instructionEditorValueRef.current = value;
     if (!preserveHistoryPosition) {
       instructionHistoryIndexRef.current = -1;
-      persistInstructionDraft(value);
     }
-    setInstruction(value);
+    cancelInstructionCommit();
+    instructionCommitTimerRef.current = window.setTimeout(() => {
+      instructionCommitTimerRef.current = null;
+      if (!preserveHistoryPosition) persistInstructionDraft(value);
+      setInstruction(value);
+    }, INSTRUCTION_COMMIT_DELAY_MS);
     if (requiredDataFields.length) {
       setRequiredDataFields([]);
       setRequiredDataContext(null);
@@ -7078,7 +7323,7 @@ export default function App() {
   function handleInstructionKeyDown(event) {
     if (event.key === "Enter" && !event.shiftKey && !event.nativeEvent.isComposing) {
       event.preventDefault();
-      if (canSubmit && !event.repeat) generatePage();
+      if (!event.repeat) generatePage();
       return;
     }
     if (!instructionHistory.length || !["ArrowUp", "ArrowDown"].includes(event.key)) return;
@@ -7091,18 +7336,18 @@ export default function App() {
       const nextIndex = Math.min(instructionHistoryIndexRef.current + 1, instructionHistory.length - 1);
       instructionHistoryIndexRef.current = nextIndex;
       instructionHistoryCaretIntentRef.current = "end";
-      setInstruction(instructionHistory[nextIndex]);
+      setInstructionImmediately(instructionHistory[nextIndex]);
       return;
     }
     if (instructionHistoryIndexRef.current === 0) {
       instructionHistoryIndexRef.current = -1;
       instructionHistoryCaretIntentRef.current = "end";
-      setInstruction(savedInstructionDraft());
+      setInstructionImmediately(savedInstructionDraft());
       return;
     }
     instructionHistoryIndexRef.current -= 1;
     instructionHistoryCaretIntentRef.current = "end";
-    setInstruction(instructionHistory[instructionHistoryIndexRef.current]);
+    setInstructionImmediately(instructionHistory[instructionHistoryIndexRef.current]);
   }
 
   function handleInstructionEditorInput() {
@@ -7136,6 +7381,8 @@ export default function App() {
       instructionHistoryCaretIntentRef.current = "";
     }
   }, [instruction]);
+
+  useEffect(() => () => cancelInstructionCommit(), []);
 
   useEffect(() => {
     const editor = instructionEditorRef.current;
@@ -7799,8 +8046,15 @@ export default function App() {
   }, []);
 
   async function generatePage() {
-    if (!canSubmit) return;
-    const baseInstruction = instruction.trim();
+    const baseInstruction = instructionEditorValue(instructionEditorRef.current).trim();
+    if (
+      (!selectedProject && !isSystemTarget) ||
+      baseInstruction.length <= 12 ||
+      baseInstruction.length > MAX_INSTRUCTION_CHARS ||
+      isGenerating ||
+      isCheckingRequiredData ||
+      requiredDataUploadingFieldId
+    ) return;
     const requiredDataInstruction = gothamWorkflowMode === "planner"
       ? ""
       : await ensureRequiredDataForInstruction(baseInstruction, "gotham-chat");
@@ -7830,7 +8084,7 @@ export default function App() {
       intelEnabledForRun ? `Intel: enabled; select a profile, score proposals, and run only accepted work at score >= ${gothamIntelConfig.minExpansionScore}.` : "",
       `Task: ${displayInstruction}`
     ].filter(Boolean).join("\n");
-    setInstruction("");
+    setInstructionImmediately("");
     setSessionStartedAt(startedAt);
     setRunningInstruction({
       recordedAt: new Date(startedAt).toISOString(),
@@ -7958,8 +8212,8 @@ export default function App() {
           flowPath: data.flowPath
         }));
       }
-      if (!res.ok) throw new Error(gothamText(data.error || "Gotham MCP workflow failed"));
       setLastBuild(data);
+      if (!res.ok) throw new Error(gothamText(data.error || "Gotham MCP workflow failed"));
       if (!isSystemTarget) {
         await loadProjects();
         await loadProjectInstructions(selectedProjectId);
@@ -8021,8 +8275,17 @@ export default function App() {
   }
 
   async function createNewProject() {
-    if (!canCreateProject) return;
-    const baseInstruction = instruction.trim();
+    const baseInstruction = instructionEditorValue(instructionEditorRef.current).trim();
+    if (
+      projectName.trim().length <= 1 ||
+      baseInstruction.length > MAX_INSTRUCTION_CHARS ||
+      isCreatingProject ||
+      selectedProject ||
+      isSystemTarget ||
+      isCheckingRequiredData ||
+      isStagingProjectMedia ||
+      requiredDataUploadingFieldId
+    ) return;
     const requiredDataInstruction = await ensureRequiredDataForInstruction(
       baseInstruction || `Create the smallest useful starter for ${projectName.trim()} without assuming a website, dashboard, or marketing page.`,
       "new-project"
@@ -8079,7 +8342,7 @@ export default function App() {
       nextRecommendation: "Wait for Gotham generation to finish, then review the preview and generated files."
     });
     setProjectResult({ status: "running", projectName: projectName.trim(), previewUrl: selectedPreviewUrl });
-    if (submittedInstruction.length > 12) setInstruction("");
+    if (submittedInstruction.length > 12) setInstructionImmediately("");
     try {
       const res = await authFetch(`${BACKEND_URL}/api/projects/new`, {
         method: "POST",
@@ -8354,7 +8617,7 @@ export default function App() {
   function askGothamFromStudio(prompt, studioContext = {}) {
     const nextPrompt = String(prompt || "").trim();
     if (!nextPrompt) return;
-    setInstruction(nextPrompt);
+    setInstructionImmediately(nextPrompt);
     setPendingStudioContext(studioContext);
     if (studioContext.selectedJobId) setStudioSelectedJobId(studioContext.selectedJobId);
     openStudioWorkspace("builder");
@@ -8379,6 +8642,9 @@ export default function App() {
     setActivityTarget(functionalityId);
     setFlowExpanded(true);
     openStudioWorkspace("builder");
+    window.requestAnimationFrame(() => window.requestAnimationFrame(() => {
+      document.querySelector(".functionality-analysis")?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }));
   }
 
   const visibleWorkspaceTab = authorizedStudioWorkspace(activeWorkspaceTab, currentUser);
@@ -8821,6 +9087,7 @@ export default function App() {
           key={selectedProjectId}
           projectId={selectedProjectId}
           flowPath={selectedProjectFlowPath}
+          focusedFunctionalityId={activityTarget}
           decisionHistory={projectInstructions}
           expanded={showExpandedFlow}
           running={isGenerating}
@@ -8939,6 +9206,14 @@ export default function App() {
 	                ? `Task Type: ${taskType}. Gotham: ${gothamWorkflowModes.find((mode) => mode.id === gothamWorkflowMode)?.label || "Execution"}.${gothamIntelEnabled && !isSystemTarget ? ` Intel: profile-driven scoring.` : ""}${activePalette ? ` Palette: ${activePalette.name}.` : ""}${activeAppIcon ? ` Icon: ${activeAppIcon.name}.` : ""} Path: ${useGothamMcp ? "local MCP" : "direct"}.`
                 : `Task Type: ${taskType}. Gotham: ${gothamWorkflowModes.find((mode) => mode.id === gothamWorkflowMode)?.label || "Execution"}.${gothamIntelEnabled && !isSystemTarget ? ` Intel: profile-driven scoring.` : ""} Path: ${useGothamMcp ? "local MCP" : "direct"}.`}
             </p>
+	            {lastBuild?.taskClassification ? (
+	              <p className="orchestrator-note" role="status">
+	                Resolved {lastBuild.taskClassification.requestedTaskType || "Auto"} → {lastBuild.taskClassification.resolvedTaskType}
+	                {lastBuild.taskClassification.reasonCodes?.length ? ` · ${lastBuild.taskClassification.reasonCodes.join(", ")}` : ""}
+	                {` · planned ${lastBuild.taskClassification.plannedExecutionCalls || 0} execution / ${lastBuild.taskClassification.plannedReviewCalls || 0} review`}
+	                {lastBuild.adaptiveRoute ? ` · actual ${lastBuild.adaptiveRoute.actualExecutionCalls || 0} execution / ${lastBuild.adaptiveRoute.actualReviewCalls || 0} review / ${lastBuild.adaptiveRoute.actualRepairCalls || 0} repair` : ""}
+	              </p>
+	            ) : null}
 	            <GothamAccountUsagePanel
 	              data={gothamAccountUsage}
 	              loading={gothamAccountUsageLoading}
@@ -8958,6 +9233,7 @@ export default function App() {
 	                  aria-multiline="true"
 	                  onKeyDown={handleInstructionKeyDown}
 	                  onInput={handleInstructionEditorInput}
+	                  onBlur={commitInstructionFromEditor}
 	                  onFocus={rememberInstructionCaret}
 	                  onKeyUp={rememberInstructionCaret}
 	                  onMouseUp={rememberInstructionCaret}
@@ -9284,7 +9560,7 @@ export default function App() {
                 <button
                   type="button"
                   className="ghost-action"
-                  onClick={() => setInstruction(workflowNextSuggestion.instruction)}
+                  onClick={() => setInstructionImmediately(workflowNextSuggestion.instruction)}
                   disabled={workflowRunning}
                 >
                   <Sparkles size={14} />
@@ -9293,7 +9569,7 @@ export default function App() {
                 <button
                   type="button"
                   className="ghost-action"
-                  onClick={() => setInstruction((current) => [current.trim(), workflowNextSuggestion.instruction].filter(Boolean).join("\n\n"))}
+                  onClick={() => setInstructionImmediately((current) => [current.trim(), workflowNextSuggestion.instruction].filter(Boolean).join("\n\n"))}
                   disabled={workflowRunning}
                 >
                   <Plus size={14} />

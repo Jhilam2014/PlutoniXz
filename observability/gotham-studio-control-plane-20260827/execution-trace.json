@@ -9,12 +9,13 @@
   "external_ml_compute_submitted": false,
   "stages": [
     { "id": "discovery", "status": "completed", "evidence": "project-discovery.scan.json" },
-    { "id": "domain_and_persistence", "status": "completed", "evidence": "apps/backend/src/gothamStudio and database/migrations/012_gotham_studio.sql" },
+    { "id": "domain_and_persistence", "status": "completed", "evidence": "PostgreSQL production authority, scoped transactions/row locks, development file fallback, and migration 012" },
     { "id": "provider_adapters", "status": "completed", "evidence": "Databricks and Azure ML HTTP boundary tests" },
     { "id": "api_and_gotham_routing", "status": "completed", "evidence": "strict scoped routes, guarded intent route, activity references" },
     { "id": "workspace_ui", "status": "completed", "evidence": "apps/frontend/src/gotham-studio and production Vite build" },
     { "id": "graphs_and_memory", "status": "completed", "evidence": "local D3/Neo4j projections plus verified OpenAI Vector Store attachment" },
-    { "id": "validation", "status": "completed", "evidence": "237 backend regressions, 155 frontend regressions, 14 post-change backend contract tests, 8 post-change frontend contract tests" }
+    { "id": "account_usage", "status": "completed", "evidence": "Live read-only Codex App Server probe returned authenticated plan, allowance, and token-activity capabilities under the configured local development identity." },
+    { "id": "validation", "status": "completed", "evidence": "245 backend regressions, 157 frontend regressions, 25 post-change backend contract tests, 10 post-change frontend contract tests, production build, repository validation, and Compose config" }
   ],
   "graph_update": {
     "d3": "incrementally_synchronized",
@@ -23,14 +24,15 @@
   },
   "memory_update": {
     "status": "success",
-    "task_files_uploaded": 2,
+    "initial_task_files_uploaded": 2,
+    "refreshed_files_uploaded": 1,
     "sync_failures": 0,
     "remote_verification": "success",
-    "attached_file_count_at_verification": 666
+    "attached_file_count_at_verification": 667
   },
   "visual_validation": {
     "status": "not_run",
     "reason": "The browser skill's required interactive control surface was unavailable in this session."
   },
-  "completed_at": "2026-08-27T17:59:12Z"
+  "completed_at": "2026-08-27T21:46:24Z"
 }

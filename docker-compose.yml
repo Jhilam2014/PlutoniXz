@@ -28,14 +28,17 @@ services:
       context: .
       dockerfile: apps/backend/Dockerfile
       args:
-        CODEX_VERSION: ${CODEX_VERSION:-0.147.0}
+        CODEX_VERSION: ${CODEX_VERSION:-0.151.0}
     container_name: plutonix-backend
     ports:
       - "${BACKEND_PORT:-8080}:8080"
-    # Docker's built-in seccomp policy blocks Bubblewrap namespace setup.
-    # This checked-in derivative retains the default policy and adds only the
-    # namespace/mount syscalls Bubblewrap needs; it is never unconfined.
+    # Bubblewrap needs an unmasked procfs view before it can mount the private
+    # procfs used by Codex's nested workspace sandbox. Keep capabilities and PID
+    # isolation unchanged, prevent privilege gains, and retain the checked-in
+    # seccomp allowlist instead of making this Docker-socket service privileged.
     security_opt:
+      - no-new-privileges=true
+      - systempaths=unconfined
       - seccomp=./configs/seccomp/gotham-bwrap.json
     environment:
       - PORT=8080
@@ -70,10 +73,15 @@ services:
       - GOTHAM_RUNTIME_PROBE=true
       - GOTHAM_ACCOUNT_USAGE_CACHE_MS=${GOTHAM_ACCOUNT_USAGE_CACHE_MS:-30000}
       - GOTHAM_ACCOUNT_USAGE_PROBE_TIMEOUT_MS=${GOTHAM_ACCOUNT_USAGE_PROBE_TIMEOUT_MS:-3000}
+      - GOTHAM_ACCOUNT_USAGE_APP_SERVER_TIMEOUT_MS=${GOTHAM_ACCOUNT_USAGE_APP_SERVER_TIMEOUT_MS:-15000}
       - GOTHAM_SANDBOX_PREFLIGHT=${GOTHAM_SANDBOX_PREFLIGHT:-true}
       - GOTHAM_SANDBOX_PREFLIGHT_TIMEOUT_MS=${GOTHAM_SANDBOX_PREFLIGHT_TIMEOUT_MS:-8000}
+      - GOTHAM_UNIFIED_EXEC_ENABLED=${GOTHAM_UNIFIED_EXEC_ENABLED:-false}
       - GOTHAM_USE_LEGACY_LANDLOCK_FALLBACK=${GOTHAM_USE_LEGACY_LANDLOCK_FALLBACK:-false}
       - GOTHAM_FALLBACK_MODEL=${GOTHAM_FALLBACK_MODEL:-gpt-5}
+      - PLUTONIX_ORCHESTRATOR_HEALTH_MONITOR=${PLUTONIX_ORCHESTRATOR_HEALTH_MONITOR:-1}
+      - PLUTONIX_ORCHESTRATOR_HEALTH_MAX_DAILY_AUDITS=${PLUTONIX_ORCHESTRATOR_HEALTH_MAX_DAILY_AUDITS:-3}
+      - PLUTONIX_ORCHESTRATOR_HEALTH_TIME_ZONE=${PLUTONIX_ORCHESTRATOR_HEALTH_TIME_ZONE:-Asia/Kolkata}
       - ORCHESTRATOR_ARCHIVE_PATH=${ORCHESTRATOR_ARCHIVE_PATH:-/workspace/project/orchestrator-temp/orchestrator-agent-001-main.zip}
       - ORCHESTRATOR_INSTALL_ENABLED=${ORCHESTRATOR_INSTALL_ENABLED:-true}
       - ORCHESTRATOR_BOOTSTRAP_ENABLED=${ORCHESTRATOR_BOOTSTRAP_ENABLED:-true}
@@ -99,6 +107,7 @@ services:
       - OIDC_JWKS_STALE_GRACE_MS=${OIDC_JWKS_STALE_GRACE_MS:-300000}
       - OIDC_CLOCK_SKEW_SECONDS=${OIDC_CLOCK_SKEW_SECONDS:-60}
       - PLUTONIX_DEV_AUTH_ENABLED=${PLUTONIX_DEV_AUTH_ENABLED:-false}
+      - PLUTONIX_DEV_AUTH_SUBJECT=${PLUTONIX_DEV_AUTH_SUBJECT:-local:local-plutonix-user}
       - PLUTONIX_API_BODY_LIMIT=${PLUTONIX_API_BODY_LIMIT:-256kb}
       - PLUTONIX_SECRETS_PROVIDER=${PLUTONIX_SECRETS_PROVIDER:-}
       - PLUTONIX_ENCRYPTION_KEY_REF=${PLUTONIX_ENCRYPTION_KEY_REF:-}
@@ -213,6 +222,10 @@ services:
       - ./apps/generated-site:/workspace/generated-site
       - ./runtime:/workspace/runtime
       - ${HOME}/.codex:/workspace/codex-home
+      # Keep Codex's lock-protected arg0 helpers on a native Linux volume.
+      # Host bind-mount locking can let concurrent CLI processes delete a live
+      # helper directory and poison shell/apply_patch with ENOENT.
+      - gotham_codex_runtime:/workspace/codex-home/tmp
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - plutonix
@@ -410,3 +423,5 @@ volumes:
     name: plutonix-generated-site-node-modules-v2
   decision_continuity_postgres:
     name: plutonixz-decision-continuity-postgres
+  gotham_codex_runtime:
+    name: plutonix-gotham-codex-runtime-v1

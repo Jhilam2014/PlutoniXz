@@ -2113,11 +2113,11 @@
       "synced_at": "2026-08-27T17:51:22.579Z"
     },
     "memory/agent-knowledge/projects/gotham-studio-control-plane-20260827.summary.md": {
-      "content_sha256": "f40ad38e8223863e684b0be92bf5801f7f54e37d787a9b9024ad4dea25a15009",
-      "file_id": "file-XZNnDmXtUnq67ivL2qi2N4",
+      "content_sha256": "8fa1032becd2adb8b5733171e3bacbd75589d8b7da12d84d1d4ed6cf7ea5e5e6",
+      "file_id": "file-85WcQ8MpK1uKBfuvir6wJm",
       "status": "completed",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
-      "synced_at": "2026-08-27T17:51:24.290Z"
+      "synced_at": "2026-08-27T21:45:50.638Z"
     },
     "memory/agent-knowledge/prompts/gotham-studio-control-plane-20260827.project-execution-agent.task.prompt.md": {
       "content_sha256": "565b7126e9aa8ace72d556af9f92ec759a432d6186f98b4fc8d6bdb96f4edb19",
@@ -2127,6 +2127,6 @@
       "synced_at": "2026-08-27T17:51:26.159Z"
     }
   },
-  "last_sync_at": "2026-08-27T17:51:26.162Z",
-  "last_verification_at": "2026-08-27T17:54:47.530Z"
+  "last_sync_at": "2026-08-27T21:45:50.664Z",
+  "last_verification_at": "2026-08-27T21:46:24.208Z"
 }

@@ -86,6 +86,38 @@ export class GothamStudioService {
     return event;
   }
 
+  async providerCall(provider, operation, scope, context, action) {
+    const startedAt = Date.now();
+    try {
+      const result = await action();
+      this.emit("studio.provider.request", `${provider.label} ${operation} completed.`, {
+        projectId: scope.projectId,
+        workspaceId: scope.workspaceId,
+        provider: provider.id,
+        operation,
+        durationMs: Date.now() - startedAt,
+        status: "succeeded",
+        ...context
+      });
+      return result;
+    } catch (error) {
+      const detail = errorRecord(error);
+      const metadata = {
+        projectId: scope.projectId,
+        workspaceId: scope.workspaceId,
+        provider: provider.id,
+        operation,
+        durationMs: Date.now() - startedAt,
+        status: "failed",
+        error: detail,
+        ...context
+      };
+      this.emit("studio.provider.request", `${provider.label} ${operation} failed.`, metadata);
+      this.emit("studio.provider.failure", `${provider.label} ${operation} failed.`, metadata);
+      throw error;
+    }
+  }
+
   async providers(scope) {
     const checks = await this.repository.listProviderChecks(scope);
     const checkById = new Map(checks.map((item) => [item.providerId, item]));
@@ -95,18 +127,30 @@ export class GothamStudioService {
   async verifyProvider(providerId, scope) {
     const provider = this.providerRegistry.get(providerId);
     let check;
+    let providerCallFailed = false;
     try {
-      check = await provider.validateConnection();
+      check = await this.providerCall(provider, "validate_connection", scope, {}, () => provider.validateConnection());
     } catch (error) {
+      providerCallFailed = true;
       check = { status: "error", connected: false, checkedAt: now(), error: errorRecord(error) };
     }
     const record = await this.repository.recordProviderCheck(provider.id, check, scope);
-    this.emit(check.connected ? "studio.provider.verified" : "studio.provider.failure", `${provider.label} connection ${check.connected ? "verified" : "failed verification"}.`, {
-      projectId: scope.projectId,
-      workspaceId: scope.workspaceId,
-      provider: provider.id,
-      status: check.status
-    });
+    if (check.connected) {
+      this.emit("studio.provider.verified", `${provider.label} connection verified.`, {
+        projectId: scope.projectId,
+        workspaceId: scope.workspaceId,
+        provider: provider.id,
+        status: check.status
+      });
+    } else if (!providerCallFailed) {
+      this.emit("studio.provider.failure", `${provider.label} connection failed verification.`, {
+        projectId: scope.projectId,
+        workspaceId: scope.workspaceId,
+        provider: provider.id,
+        operation: "validate_connection",
+        status: check.status
+      });
+    }
     return record;
   }
 
@@ -155,7 +199,7 @@ export class GothamStudioService {
         });
       }
       if (capabilities.costEstimate && typeof provider.estimateCost === "function") {
-        const estimate = await provider.estimateCost(job);
+        const estimate = await this.providerCall(provider, "estimate_cost", job.__scope, { studioJobId: job.id }, () => provider.estimateCost(job));
         if (estimate?.amount > constraints.maxEstimatedCost || (estimate?.currency && estimate.currency !== constraints.currency)) {
           throw new GothamStudioError("The provider estimate exceeds the authorized compute budget.", { code: "compute_budget_exceeded", status: 409 });
         }
@@ -195,7 +239,7 @@ export class GothamStudioService {
     let estimate = null;
     try {
       estimate = await this.validateSubmissionPolicy(job, provider);
-      const reference = await provider.submitJob(job);
+      const reference = await this.providerCall(provider, "submit_job", scope, { studioJobId: job.id }, () => provider.submitJob(job));
       job = await this.repository.updateJob(job.id, scope, {
         ...reference,
         logicalState: "SUBMITTED",
@@ -217,39 +261,40 @@ export class GothamStudioService {
     let job = await this.repository.getJob(jobId, scope);
     if (!job.providerRunId || !isActiveStudioState(job.logicalState)) return job;
     const provider = this.providerRegistry.get(job.provider);
-    try {
-      const providerState = await provider.getJob(executionRef(job));
-      let logicalState = providerState.logicalState || "UNKNOWN";
-      try { assertStudioStateTransition(job.logicalState, logicalState); } catch { logicalState = job.logicalState; }
-      const patch = {
-        ...providerState,
-        logicalState,
-        startedAt: job.startedAt || providerState.startedAt || (logicalState === "RUNNING" ? now() : ""),
-        completedAt: providerState.completedAt || (isTerminalStudioState(logicalState) ? now() : job.completedAt),
-        providerUrl: providerState.providerUrl || job.providerUrl,
-        error: providerState.error || (logicalState === "FAILED" ? job.error : null)
-      };
-      const previous = job.logicalState;
-      job = await this.repository.updateJob(job.id, scope, patch);
-      if (logicalState !== previous) {
-        const type = logicalState === "RUNNING" ? "job.started"
-          : logicalState === "SUCCEEDED" ? "job.completed"
-            : logicalState === "FAILED" ? "job.failed"
-              : logicalState === "CANCELLED" ? "job.cancelled"
-                : "job.progress";
-        await this.recordEvent(type, job, scope, { logicalState, detail: job.error });
-      }
-      return job;
-    } catch (error) {
-      this.emit("studio.provider.failure", `Provider reconciliation failed for ${job.id}.`, {
-        projectId: scope.projectId,
-        workspaceId: scope.workspaceId,
-        studioJobId: job.id,
-        provider: job.provider,
-        error: errorRecord(error)
-      });
-      throw error;
+    const providerState = await this.providerCall(provider, "get_job", scope, { studioJobId: job.id }, () => provider.getJob(executionRef(job)));
+    let logicalState = providerState.logicalState || "UNKNOWN";
+    try { assertStudioStateTransition(job.logicalState, logicalState); } catch { logicalState = job.logicalState; }
+    const patch = {
+      ...providerState,
+      logicalState,
+      startedAt: job.startedAt || providerState.startedAt || (logicalState === "RUNNING" ? now() : ""),
+      completedAt: providerState.completedAt || (isTerminalStudioState(logicalState) ? now() : job.completedAt),
+      providerUrl: providerState.providerUrl || job.providerUrl,
+      error: providerState.error || (logicalState === "FAILED" ? job.error : null)
+    };
+    const previous = job.logicalState;
+    job = await this.repository.updateJob(job.id, scope, patch);
+    this.emit("studio.job.reconcile", `Gotham Studio reconciled ${job.id} with ${provider.label}.`, {
+      projectId: scope.projectId,
+      workspaceId: scope.workspaceId,
+      studioJobId: job.id,
+      studioPipelineId: job.pipelineId || "",
+      functionalityId: job.functionalityId || "",
+      provider: job.provider,
+      previousLogicalState: previous,
+      logicalState,
+      stateChanged: logicalState !== previous,
+      status: logicalState
+    });
+    if (logicalState !== previous) {
+      const type = logicalState === "RUNNING" ? "job.started"
+        : logicalState === "SUCCEEDED" ? "job.completed"
+          : logicalState === "FAILED" ? "job.failed"
+            : logicalState === "CANCELLED" ? "job.cancelled"
+              : "job.progress";
+      await this.recordEvent(type, job, scope, { logicalState, detail: job.error });
     }
+    return job;
   }
 
   async cancelJob(jobId, scope) {
@@ -267,7 +312,7 @@ export class GothamStudioService {
     job = await this.repository.updateJob(job.id, scope, { logicalState: "CANCELLING" });
     await this.recordEvent("job.cancel.requested", job, scope);
     try {
-      await provider.cancelJob(executionRef(job));
+      await this.providerCall(provider, "cancel_job", scope, { studioJobId: job.id }, () => provider.cancelJob(executionRef(job)));
       return job;
     } catch (error) {
       await this.repository.updateJob(job.id, scope, { logicalState: "UNKNOWN", error: errorRecord(error) });
@@ -306,7 +351,7 @@ export class GothamStudioService {
     if (!capabilities[capability] || typeof provider[method] !== "function") {
       throw new GothamStudioError(`${provider.label} does not expose ${kind} through this adapter.`, { code: "provider_capability_unsupported", status: 409 });
     }
-    const result = await provider[method](executionRef(job));
+    const result = await this.providerCall(provider, `get_${kind}`, scope, { studioJobId: job.id }, () => provider[method](executionRef(job)));
     if (kind === "metrics" && Array.isArray(result)) {
       const metricsByRun = new Map();
       for (const metric of result) {

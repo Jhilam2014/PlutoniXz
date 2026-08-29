@@ -33,7 +33,7 @@ function normalizedTaskType(value = "Medium") {
   return "Medium";
 }
 
-export function selectAdaptiveRoute({ instruction = "", taskType = "Medium", project = null, maxModelCalls, productDecision = null } = {}) {
+export function selectAdaptiveRoute({ instruction = "", taskType = "Medium", project = null, maxModelCalls, productDecision = null, canonicalDecisions = [] } = {}) {
   const normalizedType = normalizedTaskType(taskType);
   const baseScore = taskWeights[normalizedType.toLowerCase()] || 2;
   const highRiskMatches = highRiskPatterns.filter((pattern) => pattern.test(instruction)).map((pattern) => pattern.source);
@@ -44,6 +44,7 @@ export function selectAdaptiveRoute({ instruction = "", taskType = "Medium", pro
   const routeScore = baseScore + riskScore + boundaryScore;
   const callBudget = Math.max(1, Number(maxModelCalls ?? process.env.PLUTONIX_ADAPTIVE_MAX_MODEL_CALLS ?? 2));
   const productReviewRequired = Boolean(productDecision?.review?.semanticRequired);
+  const latestCanonicalDecision = Array.isArray(canonicalDecisions) ? canonicalDecisions.at(-1) || null : null;
 
   let mode = managedProject && baseScore >= 2 ? "delegated" : "single";
   if (routeScore >= 4 && managedProject && callBudget >= 2) mode = "delegated_reviewed";
@@ -62,9 +63,18 @@ export function selectAdaptiveRoute({ instruction = "", taskType = "Medium", pro
     reviewerAgentId: requiresIndependentReview ? "plutonix-independent-reviewer" : null,
     modelCallBudget: callBudget,
     plannedModelCalls: modelCalls,
+    plannedExecutionCalls: 1,
+    plannedReviewCalls: requiresIndependentReview ? 1 : 0,
+    infrastructureReplayLimit: 1,
+    repairCallLimit: 1,
+    actualExecutionCalls: 0,
+    actualReviewCalls: 0,
+    actualRepairCalls: 0,
     highRiskMatches,
     boundaryMatches,
     productReviewRequired,
+    continuityWorkflowId: latestCanonicalDecision?.workflowId || null,
+    continuityStatus: latestCanonicalDecision?.status || null,
     reasons: [
       `Task type ${normalizedType} produced base score ${baseScore}.`,
       managedProject ? "A managed project can receive bounded delegated execution." : "The default workspace remains on the canonical single-call path.",
@@ -73,6 +83,9 @@ export function selectAdaptiveRoute({ instruction = "", taskType = "Medium", pro
       productReviewRequired
         ? "The Product Shape Contract requires semantic review for complexity, governance, or risk."
         : "The Product Shape Contract does not require a semantic-review escalation.",
+      latestCanonicalDecision
+        ? `Canonical decision continuity was read from workflow ${latestCanonicalDecision.workflowId}; its ${latestCanonicalDecision.status} outcome and branch dispositions remain authoritative.`
+        : "No earlier canonical terminal decision was available for this project.",
       requiresIndependentReview ? "Call budget permits one execution and one independent review." : `Selected ${mode} within a ${callBudget}-call budget.`
     ]
   };

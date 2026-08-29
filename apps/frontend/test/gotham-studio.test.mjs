@@ -40,10 +40,42 @@ test("Gotham Studio is internal to Builder, protected, project-scoped, and conte
   assert.ok(appSource.includes('visibleWorkspaceTab === "gotham-studio"'));
   assert.ok(appSource.includes("Open in Gotham Studio"));
   assert.ok(appSource.includes("Open ML pipeline"));
+  assert.ok(appSource.includes("focusedFunctionalityId={activityTarget}"));
+  assert.ok(appSource.includes("node.id === focusedNodeId || node.sourceId === focusedNodeId"));
   assert.ok(appSource.includes("studioContext: studioContextForRun || undefined"));
   assert.ok(workspaceSource.includes("Ask Gotham about this ML workspace"));
   assert.ok(apiSource.includes("workspaceId: projectId, projectId"));
   assert.ok(apiSource.includes('"Idempotency-Key": crypto.randomUUID()'));
+});
+
+test("Account & Usage distinguishes provider-wide activity from the latest project execution", () => {
+  assert.ok(appSource.includes("Latest Gotham execution in this project"));
+  assert.ok(appSource.includes("Account token activity"));
+  assert.ok(appSource.includes("earned rate-limit reset"));
+  assert.ok(appSource.includes("Separate from subscription quota"));
+  assert.ok(appSource.includes("gotham-account-usage-compact"));
+  assert.ok(appSource.includes('role="progressbar"'));
+  assert.ok(appSource.includes("usageResetRemaining"));
+  assert.ok(appSource.includes('style={{ "--allowance-hue": compactAllowanceHue }}'));
+  assert.ok(appSource.includes("Math.round(142 - compactAllowance.percentUsed * 1.38)"));
+  assert.ok(appSource.includes('provider.id === "codex"'));
+  assert.ok(appSource.includes("if (!currentUser?.id) return undefined;\n    loadGothamAccountUsage();"));
+});
+
+test("Gotham Chat reattaches to backend execution after browser refresh", () => {
+  assert.ok(appSource.includes('/api/generate/status'));
+  assert.ok(appSource.includes('runningInstructionFromExecution'));
+  assert.ok(appSource.includes('setGenerating(true)'));
+  assert.ok(appSource.includes('plutonix-selected-project:'));
+  assert.ok(appSource.includes('loadProjectInstructions(selectedProjectId)'));
+});
+
+test("Gotham Chat batches editor state and draft persistence away from each keystroke", () => {
+  assert.ok(appSource.includes("const INSTRUCTION_COMMIT_DELAY_MS = 120"));
+  assert.ok(appSource.includes("instructionCommitTimerRef.current = window.setTimeout"));
+  assert.ok(appSource.includes("onBlur={commitInstructionFromEditor}"));
+  assert.ok(appSource.includes("const baseInstruction = instructionEditorValue(instructionEditorRef.current).trim()"));
+  assert.equal(/function handleInstructionEditorInput\(\) \{[^}]*setInstruction\(/.test(appSource), false);
 });
 
 test("functionality graph nodes preserve Studio resource IDs for contextual navigation", () => {

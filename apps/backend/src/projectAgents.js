@@ -1,4 +1,5 @@
 import fs from "fs-extra";
+import crypto from "node:crypto";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { ANALYSIS_VERSION, analyzeProjectArchitecture } from "./projectBranchDiscovery.js";
@@ -82,6 +83,34 @@ function topologyGraphPath() {
 
 function frontendGraphPath() {
   return process.env.FRONTEND_AGENTIC_SYSTEM_GRAPH_PATH || path.join(projectRoot(), "apps", "frontend", "public", "topology", "d3", "agentic-system-graph.json");
+}
+
+async function atomicWriteFile(filePath, content) {
+  await fs.ensureDir(path.dirname(filePath));
+  const temporaryPath = path.join(path.dirname(filePath), `.${path.basename(filePath)}.${process.pid}.${crypto.randomBytes(6).toString("hex")}.tmp`);
+  await fs.writeFile(temporaryPath, content);
+  await fs.rename(temporaryPath, filePath);
+}
+
+async function atomicWriteJson(filePath, value) {
+  await atomicWriteFile(filePath, `${JSON.stringify(value, null, 2)}\n`);
+}
+
+function stableTopologyDigest(topology = {}) {
+  const stable = {
+    agentModelVersion: topology.agentModelVersion,
+    project: topology.project,
+    agents: topology.agents,
+    agentAssignments: topology.agentAssignments,
+    agentReuseDecisions: topology.agentReuseDecisions,
+    functionalities: topology.functionalities,
+    functionalityAssignments: topology.functionalityAssignments,
+    applicationLinks: topology.applicationLinks,
+    inferredChains: topology.inferredChains,
+    architectureBranches: topology.architectureBranches,
+    relationships: topology.relationships
+  };
+  return crypto.createHash("sha256").update(JSON.stringify(stable)).digest("hex");
 }
 
 function selfImprovementRuntimeRoot() {
@@ -217,8 +246,9 @@ async function writeManagedEntryFile(filePath, title) {
     managedBlockStart,
     `# ${title}`,
     "",
-    "Before editing this project, read `.agentic/orchestrator-agent.md` as project-scoped execution context.",
-    "PlutoniX Fullstack Agent remains the global authority for task scope, delegation, validation, retries, and completion.",
+    "For PlutoniX-managed Gotham runs, the backend supplies the selected policy packs, current canonical decisions, and bounded agent context directly in the execution prompt.",
+    "`.agentic/orchestrator-agent.md` is a compact project identity and manual-workflow handoff; it is not a second global policy manual.",
+    "PlutoniX Fullstack Agent remains the authority for scope, delegation, validation, retries, and completion.",
     managedBlockEnd
   ].join("\n");
   const existing = (await fs.pathExists(filePath)) ? await fs.readFile(filePath, "utf8") : "";
@@ -316,6 +346,16 @@ async function writeProjectLocalOrchestrator(topology) {
     "- Record each build checkpoint with its options, selected/deferred/rejected disposition when authoritative, rationale, constraints, evidence, actor, and time. Source-observed implementation is evidence of what exists, never proof that it was selected historically.",
     "- When a recorded constraint or agreement changes, create a reviewable reconsideration suggestion for affected deferred branches. Do not silently activate a branch, rerun implementation, or rewrite the earlier checkpoint.",
     "",
+    "## Deterministic Control-Plane Publication Ownership",
+    "- Graph, topology, registry, observability, local-memory, and vector-memory publishing remain mandatory for PlutoniX-managed work.",
+    "- During a PlutoniX-managed Gotham execution, implement the requested project change and return changed-file, input-consumption, validation, review, and recovery evidence only.",
+    "- Do not create or update PlutoniX control-plane Neo4j seeds, D3 topology snapshots, global agent registry projections, prompt ledgers, workflow memory, what-next summaries, vector-memory records, or completion observability artifacts from the model workflow.",
+    "- PlutoniX backend code stores the authoritative path, branch disposition, approval, and execution outcome synchronously, then durably queues deterministic graph and memory projections.",
+    "- Model completion means implementation evidence is available; it does not mean queued projections have completed.",
+    "- Publication failure is observable and retryable and must never activate, promote, reconsider, or implement a selected, rejected, or deferred branch.",
+    "- Standalone/manual workflows outside the managed runtime retain their existing publishing requirements unless they explicitly use the backend publisher.",
+    "- Exclude credentials, tokens, private environment values, and unnecessary raw prompts from receipts and projections.",
+    "",
     "## Product Shape Contract",
     "- Before selecting stack, routes, components, agents, or styling, consume the server-owned Product Shape Contract.",
     "- Preserve the selected artifact type, product shape, generation depth, interaction model, information density, navigation model, output paths, and prohibited defaults.",
@@ -384,7 +424,50 @@ async function writeProjectLocalOrchestrator(topology) {
     "Gotham and Claude must follow the PlutoniX parent orchestration envelope. Use this file for project identity, specialist context, and local accuracy/token constraints without redefining the parent task.",
     ""
   ].join("\n");
-  await fs.writeFile(path.join(policyDir, "orchestrator-agent.md"), policy);
+  const compactPolicy = [
+    `# ${orchestrator?.name || "Project Orchestrator Agent"}`,
+    "",
+    `project_id: ${topology.project.id}`,
+    `project_name: ${topology.project.name}`,
+    `workspace: ${topology.project.workspaceDir}`,
+    `preview_port: ${topology.project.port}`,
+    `enterprise_id: ${topology.project.enterpriseId || "unassigned"}`,
+    "authority: plutonix-delegated-project-context",
+    "policy_handoff_version: 2",
+    "",
+    "## Managed Runtime Handoff",
+    "- The PlutoniX backend context compiler supplies the authoritative, task-selected policy packs and a fresh canonical decision snapshot immediately before Gotham execution.",
+    "- Do not scan the root policy manual, unrelated agent definitions, graph artifacts, memory ledgers, or observability history unless the compiled task context explicitly selects them.",
+    "- Implement only the bounded project change and return changed-file, input-consumption, validation, review, and recovery evidence.",
+    "- Preserve existing features, project conventions, user-authored instructions, secrets boundaries, real-data requirements, and the server-owned Product Shape Contract.",
+    "- Use the smallest relevant file set and focused validation. Expand only when verified dependencies require it.",
+    "",
+    "## Decision And Publication Boundary",
+    "- Canonical selected, rejected, and deferred branches, rationale, approvals, reconsideration state, and execution outcomes are synchronously owned by the backend decision store.",
+    "- Never activate or reinterpret a rejected or deferred branch from source code, graph presence, memory, retry, or recommendation evidence.",
+    "- PlutoniX control-plane graph, Neo4j, D3, registry, observability, local-memory, and vector-memory publication remains mandatory but is owned by the deterministic backend publisher.",
+    "- Model completion is implementation completion, not projection completion. Do not publish or claim completion of those projections from Gotham.",
+    "- Application-owned graph or memory behavior explicitly requested by the user remains valid project work.",
+    "",
+    "## Project Context",
+    `Objective: ${topology.instruction.objective || "Maintain and improve this application."}`,
+    `Artifact: ${topology.instruction.productDecision?.artifactType || "existing project"}`,
+    `Product shape: ${topology.instruction.productDecision?.productShape || "preserve existing"}`,
+    `Interaction model: ${topology.instruction.productDecision?.interactionModel || "preserve existing"}`,
+    `Generation depth: ${topology.instruction.productDecision?.generationDepth || "scoped"}`,
+    `Routes: ${(topology.instruction.routePlan || []).map((route) => `${route.title || route.key} ${route.path}`).join(", ") || "project-defined"}`,
+    "",
+    "## Selected Local Agents",
+    `- Execution: ${orchestrator.name} (${orchestrator.role}) — ${orchestrator.responsibility}`,
+    ...specialists.map((agent) => `- Specialist: ${agent.name} (${agent.role}) — ${agent.responsibility}`),
+    ...supportAgents.map((agent) => `- Support: ${agent.name} (${agent.role}) — ${agent.responsibility}`),
+    "",
+    "## Manual Or Standalone Use",
+    "Outside a PlutoniX-managed run, treat this file as the local handoff and follow repository/user instructions. Mandatory publication requirements remain unless that workflow explicitly delegates them to the backend publisher.",
+    "Never expose credentials, tokens, private environment values, unnecessary raw prompts, or cross-tenant information.",
+    ""
+  ].join("\n");
+  await fs.writeFile(path.join(policyDir, "orchestrator-agent.md"), compactPolicy);
 
   if (supportAgents.length) {
     await fs.ensureDir(path.join(policyDir, "qagentic-support"));
@@ -794,6 +877,19 @@ async function readProjectAgentTopologies() {
   return topologies;
 }
 
+async function readCanonicalDecisionContinuityRecords() {
+  const root = path.join(projectRoot(), "runtime", "workflow-decision-continuity");
+  if (!(await fs.pathExists(root))) return [];
+  const records = [];
+  for (const file of (await fs.readdir(root)).filter((name) => name.endsWith(".jsonl")).sort()) {
+    const rows = await readJsonLineRecords(path.join(root, file), 500);
+    records.push(...rows.filter((row) => row?.stage === "terminal" && row?.workflowId));
+  }
+  const unique = new Map();
+  for (const record of records) unique.set(record.recordId || record.idempotencyKey, record);
+  return [...unique.values()];
+}
+
 async function readRegisteredAgentDefinitions() {
   if (!(await fs.pathExists(agentRegistryRoot()))) return [];
   const files = (await fs.readdir(agentRegistryRoot())).filter((file) => file.endsWith(".registry.json"));
@@ -855,14 +951,26 @@ async function recordDeletedAgent(agentId, metadata = {}) {
   await fs.writeJson(deletedAgentsPath(), rows, { spaces: 2 });
 }
 
-async function refreshProjectAgentGraphs() {
-  const topologies = await readProjectAgentTopologies();
-  await writeGeneratedNeo4jSeed(topologies);
-  const graph = await buildAgenticSystemGraph();
-  await fs.ensureDir(path.dirname(topologyGraphPath()));
-  await fs.writeJson(topologyGraphPath(), graph, { spaces: 2 });
-  await fs.ensureDir(path.dirname(frontendGraphPath()));
-  await fs.writeJson(frontendGraphPath(), graph, { spaces: 2 });
+async function refreshProjectAgentGraphs(publicationReceipt = null) {
+  const [topologies, canonicalDecisions] = await Promise.all([
+    readProjectAgentTopologies(),
+    readCanonicalDecisionContinuityRecords()
+  ]);
+  await writeGeneratedNeo4jSeed(topologies, canonicalDecisions);
+  const graph = await buildAgenticSystemGraph({ canonicalDecisions });
+  const publishedGraph = publicationReceipt?.publicationId
+    ? {
+        ...graph,
+        metadata: {
+          ...graph.metadata,
+          publication_id: publicationReceipt.publicationId,
+          publication_idempotency_key: publicationReceipt.idempotencyKey || ""
+        }
+      }
+    : graph;
+  await atomicWriteJson(topologyGraphPath(), publishedGraph);
+  await atomicWriteJson(frontendGraphPath(), publishedGraph);
+  return publishedGraph;
 }
 
 function isLegacyProjectAgent(agent, project) {
@@ -967,7 +1075,7 @@ async function writeAgentMarkdown(topology, existingTopology = null) {
   }
 }
 
-async function writeGeneratedNeo4jSeed(topologies) {
+async function writeGeneratedNeo4jSeed(topologies, canonicalDecisions = []) {
   await fs.ensureDir(path.dirname(generatedGraphPath()));
   const lines = [
     "// Generated by PlutoniX project-agent registry.",
@@ -1090,7 +1198,27 @@ async function writeGeneratedNeo4jSeed(topologies) {
     }
     lines.push("");
   }
-  await fs.writeFile(generatedGraphPath(), `${lines.join("\n")}\n`);
+  for (const decision of canonicalDecisions) {
+    const decisionId = `workflow-decision:${crypto.createHash("sha256").update(`${decision.projectId}:${decision.workflowId}:${decision.recordId}`).digest("hex").slice(0, 32)}`;
+    lines.push(`MERGE (d:WorkflowDecision {id: ${JSON.stringify(decisionId)}}) SET d.workflow_id = ${JSON.stringify(decision.workflowId)}, d.project_id = ${JSON.stringify(decision.projectId || "")}, d.status = ${JSON.stringify(decision.status || "")}, d.selected_path = ${JSON.stringify(decision.selectedPath || "")}, d.recorded_at = ${JSON.stringify(decision.recordedAt || "")}`);
+    if (decision.projectId) {
+      lines.push(`MERGE (p:Project {id: ${JSON.stringify(decision.projectId)}}) MERGE (p)-[:HAS_WORKFLOW_DECISION]->(d)`);
+    }
+    const dispositions = [
+      ...(decision.selectedBranches || []),
+      ...(decision.rejectedBranches || []),
+      ...(decision.deferredBranches || []),
+      ...(decision.rejectedPaths || []),
+      ...(decision.deferredPaths || [])
+    ];
+    for (const disposition of dispositions) {
+      const dispositionId = `decision-disposition:${crypto.createHash("sha256").update(`${decisionId}:${disposition.kind || "branch"}:${disposition.disposition}:${disposition.id}`).digest("hex").slice(0, 32)}`;
+      lines.push(`MERGE (b:DecisionDisposition {id: ${JSON.stringify(dispositionId)}}) SET b.decision_key = ${JSON.stringify(disposition.id || "")}, b.kind = ${JSON.stringify(disposition.kind || "branch")}, b.disposition = ${JSON.stringify(disposition.disposition || "")}, b.reason = ${JSON.stringify(disposition.reason || "")}, b.human_approved = ${Boolean(disposition.humanApproved)}, b.reconsideration_eligible = ${Boolean(disposition.reconsiderationEligible)}`);
+      lines.push(`MATCH (d:WorkflowDecision {id: ${JSON.stringify(decisionId)}}), (b:DecisionDisposition {id: ${JSON.stringify(dispositionId)}}) MERGE (d)-[:RECORDED_DISPOSITION]->(b)`);
+    }
+    lines.push("");
+  }
+  await atomicWriteFile(generatedGraphPath(), `${lines.join("\n")}\n`);
 }
 
 function graphTypeForApplicationEntity(entity = {}) {
@@ -1379,6 +1507,99 @@ function graphRowsForTopology(topology) {
       metadata: { dynamicProjectGraph: true, projectId: topology.project.id, kind: chain.kind, confidence: chain.confidence, evidenceIds: chain.evidenceIds || [] }
     }))
   ];
+  return { nodes, links };
+}
+
+function graphRowsForCanonicalDecisions(records = [], knownProjectIds = new Set()) {
+  const nodes = [];
+  const links = [];
+  for (const decision of records) {
+    const projectId = String(decision.projectId || "");
+    const decisionId = `workflow-decision:${crypto.createHash("sha256").update(`${projectId}:${decision.workflowId}:${decision.recordId}`).digest("hex").slice(0, 32)}`;
+    if (projectId && !knownProjectIds.has(projectId)) {
+      nodes.push({
+        id: `project:${projectId}`,
+        type: "project",
+        label: decision.projectName || projectId,
+        group: "project",
+        risk_level: "medium",
+        status: "managed",
+        agent_id: "",
+        cluster_id: "",
+        metadata: { dynamicProjectGraph: true, projectId, projectName: decision.projectName || "", decisionContinuityOnly: true }
+      });
+    }
+    nodes.push({
+      id: decisionId,
+      type: "workflow_decision",
+      label: `${decision.taskType || "Workflow"} · ${decision.status || "terminal"}`,
+      group: "decision-continuity",
+      risk_level: decision.status === "succeeded" ? "low" : "high",
+      status: decision.status || "terminal",
+      agent_id: "",
+      cluster_id: "decision-continuity",
+      metadata: {
+        dynamicProjectGraph: true,
+        canonicalDecisionProjection: true,
+        projectId,
+        workflowId: decision.workflowId,
+        selectedPath: decision.selectedPath || "",
+        adaptiveRoute: decision.adaptiveRoute || null,
+        publication: decision.publication || null,
+        recordedAt: decision.recordedAt || ""
+      }
+    });
+    if (projectId) {
+      links.push({
+        id: `has-workflow-decision:${decisionId}`,
+        source: `project:${projectId}`,
+        target: decisionId,
+        type: "has_workflow_decision",
+        weight: 2,
+        metadata: { dynamicProjectGraph: true, canonicalDecisionProjection: true, projectId }
+      });
+    }
+    const dispositions = [
+      ...(decision.selectedBranches || []),
+      ...(decision.rejectedBranches || []),
+      ...(decision.deferredBranches || []),
+      ...(decision.rejectedPaths || []),
+      ...(decision.deferredPaths || [])
+    ];
+    for (const disposition of dispositions) {
+      const dispositionId = `decision-disposition:${crypto.createHash("sha256").update(`${decisionId}:${disposition.kind || "branch"}:${disposition.disposition}:${disposition.id}`).digest("hex").slice(0, 32)}`;
+      nodes.push({
+        id: dispositionId,
+        type: "decision_disposition",
+        label: disposition.id,
+        group: `${disposition.kind || "branch"}-${disposition.disposition}`,
+        risk_level: disposition.disposition === "selected" ? "low" : "medium",
+        status: disposition.disposition,
+        agent_id: "",
+        cluster_id: "decision-continuity",
+        metadata: {
+          dynamicProjectGraph: true,
+          canonicalDecisionProjection: true,
+          projectId,
+          workflowId: decision.workflowId,
+          decisionKey: disposition.id,
+          kind: disposition.kind || "branch",
+          disposition: disposition.disposition,
+          reason: disposition.reason || "",
+          humanApproved: disposition.humanApproved === true,
+          reconsiderationEligible: disposition.reconsiderationEligible === true
+        }
+      });
+      links.push({
+        id: `recorded-disposition:${dispositionId}`,
+        source: decisionId,
+        target: dispositionId,
+        type: "recorded_disposition",
+        weight: 1,
+        metadata: { dynamicProjectGraph: true, canonicalDecisionProjection: true, projectId, disposition: disposition.disposition }
+      });
+    }
+  }
   return { nodes, links };
 }
 
@@ -1883,7 +2104,7 @@ async function selfImprovementGraphRows() {
   };
 }
 
-export async function buildAgenticSystemGraph() {
+export async function buildAgenticSystemGraph({ canonicalDecisions = null } = {}) {
   const basePath = topologyGraphPath();
   const baseGraph = (await fs.pathExists(basePath))
     ? await fs.readJson(basePath)
@@ -1892,6 +2113,10 @@ export async function buildAgenticSystemGraph() {
   const baseLinks = (baseGraph.links || []).filter((link) => !link.metadata?.dynamicProjectGraph && !link.metadata?.dynamicSelfImprovementGraph);
   const topologies = await readProjectAgentTopologies();
   const projectRows = topologies.map(graphRowsForTopology);
+  const decisionRows = graphRowsForCanonicalDecisions(
+    canonicalDecisions || await readCanonicalDecisionContinuityRecords(),
+    new Set(topologies.map((topology) => topology.project.id))
+  );
   const improvementRows = await selfImprovementGraphRows();
   return {
     metadata: {
@@ -1908,12 +2133,13 @@ export async function buildAgenticSystemGraph() {
       self_improvement_tool_plan_count: improvementRows.counts.toolPlans,
       self_improvement_monetary_approval_count: improvementRows.counts.monetaryApprovals
     },
-    nodes: mergeNodesById([...baseNodes, ...projectRows.flatMap((row) => row.nodes), ...improvementRows.nodes]),
-    links: [...baseLinks, ...projectRows.flatMap((row) => row.links), ...improvementRows.links]
+    nodes: mergeNodesById([...baseNodes, ...projectRows.flatMap((row) => row.nodes), ...decisionRows.nodes, ...improvementRows.nodes]),
+    links: [...baseLinks, ...projectRows.flatMap((row) => row.links), ...decisionRows.links, ...improvementRows.links]
   };
 }
 
-export async function syncProjectAgentTopology(project, structuredRequest = {}) {
+export async function prepareProjectAgentTopology(project, structuredRequest = {}) {
+  const startedAt = Date.now();
   structuredRequest.projectOrchestrator = {
     authority: "project-local",
     policyPath: "AGENTS.md",
@@ -1944,15 +2170,42 @@ export async function syncProjectAgentTopology(project, structuredRequest = {}) 
   await writeAgentRegistries(topology);
   await writeProjectLocalOrchestrator(topology);
   await fs.ensureDir(agentRuntimeRoot());
-  await fs.writeJson(path.join(agentRuntimeRoot(), `${project.id}.agents.json`), topology, { spaces: 2 });
+  await atomicWriteJson(path.join(agentRuntimeRoot(), `${project.id}.agents.json`), topology);
   await writeAgentMarkdown(topology, existingTopology);
-  const topologies = await readProjectAgentTopologies();
-  await writeGeneratedNeo4jSeed(topologies);
-  const graph = await buildAgenticSystemGraph();
-  await fs.ensureDir(path.dirname(topologyGraphPath()));
-  await fs.writeJson(topologyGraphPath(), graph, { spaces: 2 });
-  await fs.ensureDir(path.dirname(frontendGraphPath()));
-  await fs.writeJson(frontendGraphPath(), graph, { spaces: 2 });
+  return {
+    ...topology,
+    topologyDigest: stableTopologyDigest(topology),
+    preparationDurationMs: Date.now() - startedAt
+  };
+}
+
+/**
+ * Publish shared Neo4j and D3 representations from already-durable project
+ * topology. This deterministic operation never selects, promotes, rejects,
+ * defers, reconsiders, or executes a branch and never invokes a model.
+ */
+export async function publishProjectAgentTopology(publicationReceipt = {}) {
+  const startedAt = Date.now();
+  const graph = await refreshProjectAgentGraphs(publicationReceipt);
+  return {
+    status: "published",
+    publicationId: publicationReceipt.publicationId || "",
+    publicationDurationMs: Date.now() - startedAt,
+    graph
+  };
+}
+
+/**
+ * Compatibility path for explicit graph, identity, import, migration, and
+ * management operations that historically required synchronous projections.
+ * Gotham execution paths must call prepareProjectAgentTopology instead.
+ */
+export async function syncProjectAgentTopology(project, structuredRequest = {}) {
+  const topology = await prepareProjectAgentTopology(project, structuredRequest);
+  await publishProjectAgentTopology({
+    publicationId: `synchronous-project-topology:${project.id}:${topology.topologyDigest}`,
+    idempotencyKey: topology.topologyDigest
+  });
   return topology;
 }
 

@@ -15,7 +15,7 @@ const nodes = [
   { id: "functionality:gotham-studio-provider-boundary", type: "service", label: "ML Execution Provider Boundary", group: "ml-provider", risk_level: "high", status: "implemented", metadata: { providers: ["databricks", "azure-ml"], credentials: "backend_only" } },
   { id: "functionality:gotham-studio-persistence", type: "database", label: "Studio Execution Ledger", group: "data", risk_level: "high", status: "implemented", metadata: { productionRepository: "postgresql", developmentFallback: "atomic_json", scopedBy: ["tenant", "workspace", "project"] } },
   { id: "page:gotham-studio", type: "page", label: "Gotham Studio Workspace", group: "dashboard-ui", risk_level: "medium", status: "implemented", metadata: { internalTo: "Gotham Builder", workspace: "gotham-studio" } },
-  { id: "validation:gotham-studio-contract", type: "validation", label: "Gotham Studio Contract Validation", group: "validation", risk_level: "high", status: "passed", metadata: { backendContractTests: 17, frontendContractTests: 8, frontendBuild: "passed", visualBrowser: "unavailable" } }
+  { id: "validation:gotham-studio-contract", type: "validation", label: "Gotham Studio Contract Validation", group: "validation", risk_level: "high", status: "passed", metadata: { backendContractTests: 25, frontendContractTests: 10, frontendBuild: "passed", visualBrowser: "unavailable" } }
 ];
 const links = [
   { source: "project:orchestrator-agent-001", target: `workflow:${workflowId}`, type: "contains", weight: 1, metadata: {} },

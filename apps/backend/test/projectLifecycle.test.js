@@ -5,7 +5,7 @@ import http from "node:http";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
-import { classifyGothamWorkflowFailure, isGothamWorkspaceSandboxUnavailable, probeCodexWorkspaceSandbox, runCodexReviewWorkflow, runCodexWorkflow, runModelRepairWorkflow, shouldSkipHashFile } from "../src/codexWorkflow.js";
+import { classifyGothamWorkflowFailure, gothamSandboxFeatureArgs, isGothamWorkspaceSandboxUnavailable, isProjectRepairEligible, probeCodexWorkspaceSandbox, runCodexReviewWorkflow, runCodexWorkflow, runModelRepairWorkflow, shouldSkipHashFile } from "../src/codexWorkflow.js";
 import { createPlutoniXOrchestrationEnvelope } from "../src/plutonixAuthority.js";
 import { formatProjectOrchestratorInstruction, inferGothamRequestIntent } from "../src/orchestratorAgent.js";
 import { runProjectOrchestratorBootstrap } from "../src/projectBootstrap.js";
@@ -107,12 +107,11 @@ test("creates a project-local orchestrator and deletes the complete managed proj
   });
   const policyPath = path.join(project.workspaceDir, ".agentic", "orchestrator-agent.md");
   const policy = await fs.readFile(policyPath, "utf8");
-  assert.match(policy, /highest achievable implementation accuracy with the lowest justified token/i);
-  assert.match(policy, /MCP Task Control/);
-  assert.match(policy, /Enterprise And Application Information Boundary/);
-  assert.match(policy, /same explicit enterprise ID and the enforced agreement gate/i);
-  assert.match(policy, /Source-observed implementation is evidence of what exists, never proof that it was selected historically/i);
-  assert.match(policy, /create a reviewable reconsideration suggestion/i);
+  assert.match(policy, /policy_handoff_version: 2/i);
+  assert.match(policy, /backend context compiler supplies the authoritative, task-selected policy packs/i);
+  assert.match(policy, /Canonical selected, rejected, and deferred branches/i);
+  assert.match(policy, /deterministic backend publisher/i);
+  assert.doesNotMatch(policy, /MCP Task Control/);
   const projectAgentsPolicy = await fs.readFile(path.join(project.workspaceDir, "AGENTS.md"), "utf8");
   assert.match(projectAgentsPolicy, /canonical-agent-policy/);
   assert.match(projectAgentsPolicy, /Hugging Face Model Workspace/);
@@ -334,6 +333,8 @@ test("executes text-box prompt through project-local orchestrator command rules"
     fakeCodex,
     [
       "#!/bin/sh",
+      "if [ \"$1\" = \"--version\" ]; then printf 'codex-cli test\n'; exit 0; fi",
+      "for argument in \"$@\"; do if [ \"$argument\" = \"sandbox\" ]; then exit 0; fi; done",
       "printf '%s\\n' \"$@\" > codex-args.txt",
       "printf 'export default function Page() { return <main>Analytics command center</main>; }\\n' > src/generated/generatedPage.jsx",
       "printf '{\"type\":\"item.completed\",\"message\":\"generation complete\"}\\n'",
@@ -359,9 +360,10 @@ test("executes text-box prompt through project-local orchestrator command rules"
   assert.equal(result.files.includes("src/generated/generatedPage.jsx"), true);
   const args = await fs.readFile(path.join(projectRoot, "codex-args.txt"), "utf8");
   assert.doesNotMatch(args, /use_legacy_landlock/);
-  assert.match(args, /Read canonical AGENTS\.md and ROOT_WORKSPACE_GENERATION_POLICY\.md first/);
-  assert.match(args, /Treat the PlutoniX text-box prompt above as the active user task/);
-  assert.match(args, /using AGENTS\.md, ROOT_WORKSPACE_GENERATION_POLICY\.md, and \.agentic\/orchestrator-agent\.md command rules/);
+  assert.match(args, /bounded implementation executor for a PlutoniX-managed Gotham workflow/);
+  assert.match(args, /Compiled mandatory policy/);
+  assert.match(args, /Fresh dynamic execution context/);
+  assert.doesNotMatch(args, /Read canonical AGENTS\.md/);
   assert.match(args, new RegExp(textBoxPrompt.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
 });
 
@@ -603,7 +605,110 @@ test("classifies incompatible Gotham model metadata separately from cache and pr
     classifyGothamWorkflowFailure(new Error("gotham_models_manager::manager: failed to renew cache TTL: missing field `base_instructions`")),
     "models_cache_incompatible"
   );
-  assert.equal(classifyGothamWorkflowFailure(new Error("workflow exited with code 1: syntax error")), "workflow_execution_failed");
+  assert.equal(classifyGothamWorkflowFailure(new Error("workflow exited with code 1: syntax error")), "project_implementation_failure");
+});
+
+test("uses the compatible Codex shell tool in the managed container and classifies unified exec failures as infrastructure", () => {
+  assert.deepEqual(gothamSandboxFeatureArgs({}), ["--disable", "unified_exec"]);
+  assert.deepEqual(gothamSandboxFeatureArgs({ GOTHAM_UNIFIED_EXEC_ENABLED: "true" }), []);
+  const failure = new Error('Failed to create unified exec process: No such file or directory (os error 2)');
+  assert.equal(isGothamWorkspaceSandboxUnavailable(failure), true);
+  assert.equal(classifyGothamWorkflowFailure(failure), "sandbox_runtime_unavailable");
+});
+
+test("classifies a lost Codex command sandbox as infrastructure and skips project repair", () => {
+  const failure = new Error([
+    "codex_core::exec: exec error: No such file or directory (os error 2)",
+    "codex_core::tools::router: error=execution error: Io(Os { code: 2, kind: NotFound, message: 'No such file or directory' })",
+    "Failed to write file /tmp/codex-sandbox-check.txt"
+  ].join("\n"));
+  assert.equal(isGothamWorkspaceSandboxUnavailable(failure), true);
+  assert.equal(classifyGothamWorkflowFailure(failure), "sandbox_runtime_unavailable");
+  assert.equal(isProjectRepairEligible(failure), false);
+  assert.equal(
+    classifyGothamWorkflowFailure(new Error("bwrap: execvp codex-linux-sandbox: No such file or directory")),
+    "sandbox_runtime_unavailable"
+  );
+});
+
+test("reports zero-change command ENOENT as infrastructure instead of a project implementation failure", async (context) => {
+  const temporaryRoot = await fs.mkdtemp(path.join(os.tmpdir(), "plutonix-zero-change-sandbox-loss-"));
+  const previous = {
+    CODEX_BIN: process.env.CODEX_BIN,
+    GOTHAM_RUNTIME_PROBE: process.env.GOTHAM_RUNTIME_PROBE
+  };
+  context.after(async () => {
+    for (const [key, value] of Object.entries(previous)) {
+      if (value === undefined) delete process.env[key];
+      else process.env[key] = value;
+    }
+    await fs.rm(temporaryRoot, { recursive: true, force: true });
+  });
+  const workspaceDir = path.join(temporaryRoot, "project");
+  const fakeCodex = path.join(temporaryRoot, "fake-codex");
+  await fs.mkdir(path.join(workspaceDir, "src", "generated"), { recursive: true });
+  await fs.writeFile(path.join(workspaceDir, "src", "generated", "generatedPage.jsx"), "export default function Page() { return null; }\n");
+  await fs.writeFile(fakeCodex, [
+    "#!/bin/sh",
+    "printf '%s\\n' 'codex_core::exec: exec error: No such file or directory (os error 2)' >&2",
+    "printf '%s\\n' 'Failed to write file /tmp/codex-sandbox-check.txt' >&2",
+    "exit 0",
+    ""
+  ].join("\n"));
+  await fs.chmod(fakeCodex, 0o755);
+  process.env.CODEX_BIN = fakeCodex;
+  process.env.GOTHAM_RUNTIME_PROBE = "false";
+
+  await assert.rejects(
+    runCodexWorkflow({ sourceInstruction: "Change the project.", objective: "Change the project." }, { generatedSiteDir: workspaceDir }),
+    (error) => {
+      assert.equal(error.workflowFailureClass, "sandbox_runtime_unavailable");
+      assert.match(error.message, /command sandbox became unavailable/i);
+      assert.equal(isProjectRepairEligible(error), false);
+      return true;
+    }
+  );
+});
+
+test("proves the selected workspace is readable and writable inside the Codex sandbox", async (context) => {
+  const temporaryRoot = await fs.mkdtemp(path.join(os.tmpdir(), "plutonix-workspace-sandbox-probe-"));
+  context.after(() => fs.rm(temporaryRoot, { recursive: true, force: true }));
+  const workspaceDir = path.join(temporaryRoot, "project");
+  const fakeCodex = path.join(temporaryRoot, "fake-codex");
+  await fs.mkdir(workspaceDir, { recursive: true });
+  await fs.writeFile(fakeCodex, [
+    "#!/bin/sh",
+    "while [ \"$#\" -gt 0 ]; do",
+    "  if [ \"$1\" = \"--disable\" ] || [ \"$1\" = \"--enable\" ]; then shift 2; continue; fi",
+    "  if [ \"$1\" = \"sandbox\" ]; then shift; break; fi",
+    "  shift",
+    "done",
+    "while [ \"$1\" = \"-c\" ]; do shift 2; done",
+    "exec \"$@\"",
+    ""
+  ].join("\n"));
+  await fs.chmod(fakeCodex, 0o755);
+
+  const preflight = await probeCodexWorkspaceSandbox(fakeCodex, 2000, { workspaceDir });
+  assert.equal(preflight.status, "ready");
+  assert.equal(preflight.workspace, await fs.realpath(workspaceDir));
+  assert.deepEqual((await fs.readdir(workspaceDir)).filter((name) => name.startsWith(".plutonix-sandbox-preflight-")), []);
+});
+
+test("reports a missing selected workspace before starting the Codex sandbox", async (context) => {
+  const temporaryRoot = await fs.mkdtemp(path.join(os.tmpdir(), "plutonix-missing-workspace-probe-"));
+  context.after(() => fs.rm(temporaryRoot, { recursive: true, force: true }));
+  const invocationMarker = path.join(temporaryRoot, "codex-invoked");
+  const fakeCodex = path.join(temporaryRoot, "fake-codex");
+  await fs.writeFile(fakeCodex, `#!/bin/sh\ntouch '${invocationMarker}'\n`);
+  await fs.chmod(fakeCodex, 0o755);
+
+  const preflight = await probeCodexWorkspaceSandbox(fakeCodex, 2000, {
+    workspaceDir: path.join(temporaryRoot, "missing-project")
+  });
+  assert.equal(preflight.status, "unavailable");
+  assert.equal(preflight.failureClass, "workspace_cwd_missing");
+  assert.equal(await fs.access(invocationMarker).then(() => true).catch(() => false), false);
 });
 
 test("blocks known Bubblewrap namespace failures as workspace sandbox infrastructure", async (context) => {
@@ -620,13 +725,13 @@ test("blocks known Bubblewrap namespace failures as workspace sandbox infrastruc
 
   const preflight = await probeCodexWorkspaceSandbox(fakeCodex, 2000);
   assert.equal(preflight.status, "unavailable");
-  assert.equal(preflight.failureClass, "workspace_sandbox_unavailable");
+  assert.equal(preflight.failureClass, "sandbox_runtime_unavailable");
   assert.equal(preflight.reason, "user_namespace_denied");
   assert.equal(isGothamWorkspaceSandboxUnavailable(new Error(preflight.diagnostic)), true);
-  assert.equal(classifyGothamWorkflowFailure(new Error(preflight.diagnostic)), "workspace_sandbox_unavailable");
+  assert.equal(classifyGothamWorkflowFailure(new Error(preflight.diagnostic)), "sandbox_runtime_unavailable");
   assert.equal(
     classifyGothamWorkflowFailure(new Error("permission profiles requiring direct runtime enforcement are incompatible with --use-legacy-landlock")),
-    "workspace_sandbox_unavailable"
+    "sandbox_runtime_unavailable"
   );
   assert.equal(isGothamWorkspaceSandboxUnavailable(new Error("Permission denied writing src/app.jsx")), false);
 });
@@ -668,7 +773,7 @@ test("does not start Codex execution when workspace sandbox preflight is unavail
       generatedSiteDir: projectRoot,
       emit: (type, message, extra) => events.push({ type, message, ...extra })
     }),
-    (error) => classifyGothamWorkflowFailure(error) === "workspace_sandbox_unavailable"
+    (error) => classifyGothamWorkflowFailure(error) === "sandbox_runtime_unavailable"
   );
   assert.equal(await fs.access(executionMarker).then(() => true).catch(() => false), false);
   assert.equal(events.some((event) => event.type === "execution.blocked"), true);
@@ -738,7 +843,7 @@ test("infers pasted Gotham errors as simple debugger tasks", () => {
   });
 
   assert.equal(intent.workflowMode, "debugger");
-  assert.equal(intent.taskType, "Simple");
+  assert.equal(intent.taskType, "Auto");
   assert.equal(intent.inferredBugFix, true);
   assert.equal(intent.reason, "pasted-error");
 
@@ -797,8 +902,8 @@ test("codex workflow receives the project orchestrator task envelope", async (co
   );
 
   const args = await fs.readFile(path.join(projectRoot, "codex-args.txt"), "utf8");
-  assert.match(args, /User instruction:\nTask type: Medium\nGotham mode: executor\ntask : Add business search filters and a results map\./);
-  assert.match(args, /If the user instruction begins with "Task type:"/);
+  assert.match(args, /Current instruction:\nTask type: Medium\nGotham mode: executor\ntask : Add business search filters and a results map\./);
+  assert.match(args, /If the current instruction begins with "Task type:"/);
   assert.match(args, /"executionInstructionFormat": "project-orchestrator-agent-task"/);
   assert.match(args, /"rawTextBoxInstruction": "Add business search filters and a results map\."/);
 });

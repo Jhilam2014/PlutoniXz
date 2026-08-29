@@ -1,8 +1,8 @@
 {
-  "id": "si_money_6f539c4e-64bd-41f6-96a6-253ee40d345c",
+  "id": "si_money_e758ffaf-f0b1-4443-81c2-0d0f412a761b",
   "schemaVersion": "1.0.0",
-  "timestamp": "2026-08-17T16:42:41.496Z",
-  "status": "pending",
+  "timestamp": "2026-08-29T03:05:01.524Z",
+  "status": "approved",
   "source": "self-improvement-monetary-approval-gate",
   "actor": "self-improvement-orchestrator",
   "toolPlanId": "si_tool_plan_e6cb55dc-4ea5-4d7d-aecd-ed15b39a7f87",
@@ -25,8 +25,8 @@
     "Add instrumentation and caching before paying for an external service.",
     "Simplify the UI/workflow or split the agent task into smaller bounded steps."
   ],
-  "decision": "pending",
-  "decidedAt": "",
-  "decidedBy": "",
+  "decision": "approve",
+  "decidedAt": "2026-08-29T03:05:01.524Z",
+  "decidedBy": "local:local-plutonix-user",
   "note": ""
 }

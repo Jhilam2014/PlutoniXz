@@ -77,7 +77,7 @@ test("normalizes Databricks and Azure provider states into the Studio lifecycle"
 });
 
 test("creates an idempotent logical job, persists provider references, and reconciles lifecycle state", async (t) => {
-  const { provider, repository, service } = await fixture(t);
+  const { provider, repository, service, events } = await fixture(t);
   const created = await service.createJob(jobInput(), scope, { idempotencyKey: "create-1", actor: { type: "user", id: "human-1" } });
   const duplicate = await service.createJob(jobInput(), scope, { idempotencyKey: "create-1", actor: { type: "user", id: "human-1" } });
   assert.equal(duplicate.id, created.id);
@@ -94,6 +94,8 @@ test("creates an idempotent logical job, persists provider references, and recon
   assert.equal(succeeded.logicalState, "SUCCEEDED");
   assert.ok(succeeded.completedAt);
   assert.equal((await repository.listEvents(scope, { jobId: created.id })).some((event) => event.type === "job.completed"), true);
+  assert.equal(events.some(([type, , detail]) => type === "studio.provider.request" && detail.operation === "submit_job" && Number.isFinite(detail.durationMs)), true);
+  assert.equal(events.some(([type, , detail]) => type === "studio.job.reconcile" && detail.studioJobId === created.id), true);
 });
 
 test("enforces Planner submission, compute safety, cancellation, retry bounds, and scope isolation", async (t) => {

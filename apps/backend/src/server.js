@@ -7,10 +7,11 @@ import multer from "multer";
 import path from "node:path";
 import { XMLParser } from "fast-xml-parser";
 import { z } from "zod";
-import { classifyGothamWorkflowFailure, isGothamCodexModelCompatibilityError, isGothamWorkspaceSandboxUnavailable, isRecoverableGothamModelsCacheError, probeCodexWorkspaceSandbox, runCodexReviewWorkflow, runCodexWorkflow, runModelRepairWorkflow } from "./codexWorkflow.js";
+import { classifyGothamWorkflowFailure, isGothamCodexModelCompatibilityError, isGothamInfrastructureFailure, isProjectRepairEligible, prepareGothamRuntimeCaches, probeCodexWorkspaceSandbox, runCodexReviewWorkflow, runCodexWorkflow, runModelRepairWorkflow, verifyGothamInfrastructureHealth } from "./codexWorkflow.js";
 import { createPlutoniXOrchestrationEnvelope } from "./plutonixAuthority.js";
 import { isTransientWorkflowError, selectAdaptiveRoute } from "./adaptiveOrchestration.js";
 import { formatGothamModeInstruction, formatProjectOrchestratorInstruction, inferGothamRequestIntent, orchestrateBuilderInstruction } from "./orchestratorAgent.js";
+import { classifyGothamTask } from "./gothamTaskClassifier.js";
 import { classifyProductShape } from "./productShape.js";
 import { intelProfileRegistry, intelProfileSummary, selectIntelProfile, validateIntelProfileRegistry } from "./intelProfiles.js";
 import { assertIntelWorkspaceWithinRoot, intelRuntimeGraphRecords, prepareIntelWorkflow, recordIntelFailure, recordIntelImplementation, recordIntelVerification } from "./intelOrchestration.js";
@@ -21,7 +22,7 @@ import { buildFunctionalityGraph } from "./functionalityGraph.js";
 import { createOrchestratorHealthMonitor } from "./orchestratorHealthMonitor.js";
 import { createSelfImprovementControlPlane, readSelfImprovementConfig } from "./selfImprovement/controlPlane.js";
 import { orchestratorRuntimeSelfHealEnabled, selfImprovementRuntimeEventsEnabled, selfImprovementStartupCycleEnabled } from "./selfImprovement/runtimePolicy.js";
-import { buildAgenticSystemGraph, syncProjectAgentTopology } from "./projectAgents.js";
+import { buildAgenticSystemGraph, prepareProjectAgentTopology, syncProjectAgentTopology } from "./projectAgents.js";
 import { ANALYSIS_VERSION, analyzeProjectArchitecture, publicArchitectureAnalysis, publishArchitectureBranches, readLatestProjectArchitectureAnalysis, readProjectArchitectureAnalysis, writeProjectArchitectureAnalysis } from "./projectBranchDiscovery.js";
 import { createLocalGothamMcpServer } from "./gothamMcpServer.js";
 import { createHuggingFaceModelPool, localModelRoutingForTask } from "./huggingFaceModelPool.js";
@@ -50,7 +51,7 @@ import { deleteGlobalAgent, listGlobalAgents } from "./globalAgentKnowledge.js";
 import { scheduleAgentMemorySync, syncKnownAgentKnowledgeRoots } from "./vectorMemorySync.js";
 import { registerHostingRoutes } from "./hosting/hosting-conversation.controller.js";
 import { AuthenticationError, assertProductionIdentityConfiguration, authenticateGooglePayload, externalIdentityFromRequest, restrictedIntent, userFromRequest } from "./auth.js";
-import { readAgentEfficiencySummary, summarizeAgentTokenEconomy } from "./tokenEconomy.js";
+import { readAgentEfficiencySummary, summarizeAgentTokenEconomy, summarizeWorkflowTokenUsage } from "./tokenEconomy.js";
 import { createGothamAccountUsageService } from "./gothamAccountUsage.js";
 import { createDecisionContinuityStore, DecisionContinuityError } from "./decisionContinuity.js";
 import { buildDecisionContinuityGraph, compareDecisionBranches } from "./decisionContinuityProjection.js";
@@ -70,6 +71,19 @@ import { assertProductionOperationalConfiguration, operationalTelemetry } from "
 import { buildEnterprisePortfolioAnalysis } from "./enterprisePortfolio.js";
 import { createGothamStudio, detectMlExecutionIntent, registerGothamStudioRoutes } from "./gothamStudio/index.js";
 import { GothamStudioError } from "./gothamStudio/domain.js";
+import {
+  buildWorkflowPublicationReceipt,
+  configureWorkflowProjectionPublisher,
+  drainWorkflowPublications,
+  enqueueWorkflowPublication,
+  recoverPendingWorkflowPublications
+} from "./workflowProjectionPublisher.js";
+import {
+  createCanonicalWorkflowDecisionRecord,
+  decisionDispositionsFromFlowPath,
+  persistCanonicalWorkflowDecision,
+  readCanonicalWorkflowDecisions
+} from "./workflowDecisionContinuity.js";
 
 export const app = express();
 const port = Number(process.env.PORT || 8080);
@@ -132,6 +146,21 @@ async function isSystemIdleForVectorSync() {
 
 function scheduleIdleVectorSync(reason) {
   return scheduleAgentMemorySync({ reason, emit: event, isSystemIdle: isSystemIdleForVectorSync });
+}
+
+configureWorkflowProjectionPublisher({
+  root: process.env.PLUTONIX_PROJECT_ROOT,
+  emit: event,
+  isSystemIdle: isSystemIdleForVectorSync,
+  scheduleVectorSync: scheduleIdleVectorSync
+});
+
+function scheduleWorkflowPublicationDrain() {
+  setImmediate(() => {
+    drainWorkflowPublications().catch((error) => event("publication.failed", "Workflow publication drain failed; durable jobs remain recoverable.", {
+      error: error.message
+    }));
+  });
 }
 function selfImprovementAdminUserIds() {
   return String(process.env.SELF_IMPROVEMENT_ADMIN_USER_IDS || "")
@@ -388,7 +417,7 @@ const GenerateSchema = z.object({
     z.object({ type: z.literal("project"), projectId: z.string().optional() }),
     z.object({ type: z.literal("system"), systemId: z.literal("plutonix") })
   ]).optional(),
-  taskType: z.enum(["Simple", "Medium", "Large", "Hard", "simple", "medium", "large", "hard", "small", "complex"]).optional(),
+  taskType: z.enum(["Auto", "auto", "Simple", "Medium", "Large", "Hard", "simple", "medium", "large", "hard", "small", "complex"]).optional(),
   workflowMode: z.enum(["planner", "debugger", "executor"]).optional(),
   studioContext: z.object({
     selectedJobId: z.string().max(180).optional(),
@@ -419,7 +448,7 @@ const GenerateSchema = z.object({
 const NewProjectSchema = z.object({
   name: z.string().min(2).max(80),
   instruction: z.string().min(12).max(MAX_INSTRUCTION_CHARS).optional(),
-  taskType: z.enum(["Simple", "Medium", "Large", "Hard", "simple", "medium", "large", "small", "hard", "complex"]).optional(),
+  taskType: z.enum(["Auto", "auto", "Simple", "Medium", "Large", "Hard", "simple", "medium", "large", "small", "hard", "complex"]).optional(),
   mediaIds: z.array(z.string()).optional(),
   stagedMediaIds: z.array(z.string()).optional(),
   stagedDocumentIds: z.array(z.string()).optional(),
@@ -819,11 +848,23 @@ function createOrchestrationBuildSnapshot({
 }
 
 async function runPlutoniXOwnedWorkflow(orchestratedRequest, options, orchestrationEnvelope, adaptiveRoute) {
-  const maxAttempts = Math.max(1, Number(process.env.PLUTONIX_WORKFLOW_MAX_ATTEMPTS || 2));
+  const infrastructureReplayLimit = Math.min(1, Math.max(0, Number(process.env.PLUTONIX_INFRASTRUCTURE_REPLAY_LIMIT || 1)));
+  const maxAttempts = 1 + infrastructureReplayLimit;
   let lastError;
   let result;
   let recoverModelsCache = false;
   let fallbackAttempted = false;
+  let infrastructureReplayCount = 0;
+  const callAccounting = {
+    plannedExecutionCalls: adaptiveRoute.plannedExecutionCalls ?? 1,
+    plannedReviewCalls: adaptiveRoute.plannedReviewCalls ?? (adaptiveRoute.requiresIndependentReview ? 1 : 0),
+    infrastructureReplayLimit,
+    repairCallLimit: adaptiveRoute.repairCallLimit ?? 1,
+    actualExecutionCalls: 0,
+    actualReviewCalls: 0,
+    actualRepairCalls: 0,
+    actualFallbackCalls: 0
+  };
   for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
     try {
       const delegatedAgent = orchestrationEnvelope.delegations[0];
@@ -833,9 +874,11 @@ async function runPlutoniXOwnedWorkflow(orchestratedRequest, options, orchestrat
       const executionAgentName = executionAgentId === "plutonix-fullstack-agent"
         ? "PlutoniX Fullstack Agent"
         : `${options.projectName || "Project"} Orchestrator Agent`;
+      callAccounting.actualExecutionCalls += 1;
       result = await runCodexWorkflow(orchestratedRequest, {
         ...options,
         attempt,
+        attemptType: attempt === 1 ? "execution" : "infrastructure_replay",
         executionAgentId,
         executionAgentName,
         recoverModelsCache,
@@ -844,8 +887,8 @@ async function runPlutoniXOwnedWorkflow(orchestratedRequest, options, orchestrat
       break;
     } catch (error) {
       lastError = error;
-      recoverModelsCache = isRecoverableGothamModelsCacheError(error);
-      const failureClass = classifyGothamWorkflowFailure(error);
+      const failureClass = classifyGothamWorkflowFailure(error, { workspaceDir: options.generatedSiteDir });
+      recoverModelsCache = failureClass === "models_cache_incompatible";
       const fallbackModel = String(process.env.GOTHAM_FALLBACK_MODEL || "").trim();
       if (isGothamCodexModelCompatibilityError(error) && fallbackModel && !fallbackAttempted) {
         fallbackAttempted = true;
@@ -860,12 +903,14 @@ async function runPlutoniXOwnedWorkflow(orchestratedRequest, options, orchestrat
           upgradeAction: "Rebuild the backend image with the configured CODEX_VERSION."
         });
         try {
+          callAccounting.actualFallbackCalls += 1;
           result = await runCodexWorkflow(orchestratedRequest, {
             ...options,
             attempt,
             executionAgentId: options.executionAgentId || "plutonix-fullstack-agent",
             executionAgentName: options.executionAgentName || "PlutoniX Fullstack Agent",
             model: fallbackModel,
+            attemptType: "fallback",
             recoveryStrategy: "fallback_model",
             signal: options.signal
           });
@@ -918,36 +963,63 @@ async function runPlutoniXOwnedWorkflow(orchestratedRequest, options, orchestrat
         });
         break;
       }
-      if (isGothamWorkspaceSandboxUnavailable(error)) {
-        event("execution.blocked", "Gotham preserved the selected route, but secure provider execution was blocked by the workspace sandbox.", {
-          stage: "execution",
+      if (!isGothamInfrastructureFailure(failureClass) || failureClass === "codex_cli_model_incompatible" || infrastructureReplayCount >= infrastructureReplayLimit) break;
+      if (Array.isArray(error.partialChanges) && error.partialChanges.length) {
+        error.workflowRecovery = {
+          failureClass,
+          strategy: "infrastructure_health_replay",
+          replayStatus: "blocked_partial_changes",
+          partialChanges: error.partialChanges,
+          replayParentId: orchestrationEnvelope.parentWorkflowId
+        };
+        event("infrastructure.replay_blocked", "Infrastructure replay was blocked because the failed attempt left partial project changes.", {
           parentWorkflowId: orchestrationEnvelope.parentWorkflowId,
-          childExecutionIds: orchestrationEnvelope.childExecutionIds,
           projectId: options.projectId || "",
           failureClass,
-          sandboxPreflight: error.sandboxPreflight || null
+          partialChanges: error.partialChanges
         });
         break;
       }
-      if (attempt >= maxAttempts || !isTransientWorkflowError(error)) break;
-      event("plutonix-retry", `PlutoniX is retrying failed execution (${attempt + 1}/${maxAttempts})`, {
+      const health = await verifyGothamInfrastructureHealth({ workspaceDir: options.generatedSiteDir });
+      if (health.status !== "ready") {
+        error.workflowRecovery = {
+          failureClass,
+          strategy: "infrastructure_health_replay",
+          replayStatus: "blocked_health_check",
+          health,
+          replayParentId: orchestrationEnvelope.parentWorkflowId
+        };
+        event("infrastructure.replay_blocked", "Infrastructure recovery health checks did not pass; Gotham did not spend another model call.", {
+          parentWorkflowId: orchestrationEnvelope.parentWorkflowId,
+          projectId: options.projectId || "",
+          failureClass,
+          health
+        });
+        break;
+      }
+      infrastructureReplayCount += 1;
+      event("infrastructure.replay_scheduled", "Infrastructure health checks passed; replaying the exact original instruction once.", {
         parentWorkflowId: orchestrationEnvelope.parentWorkflowId,
         childExecutionIds: orchestrationEnvelope.childExecutionIds,
         attempt,
         nextAttempt: attempt + 1,
-        retryReason: recoverModelsCache ? "recoverable_models_cache" : "transient_failure",
-        recovery: recoverModelsCache ? "Retrying once after quarantining the incompatible Gotham models-cache file so the CLI can rebuild it." : undefined,
-        error: error.message
+        failureClass,
+        health,
+        replayLimit: infrastructureReplayLimit
       });
     }
   }
-  if (!result) throw lastError;
+  if (!result) {
+    lastError.workflowUsage = await summarizeWorkflowTokenUsage(orchestrationEnvelope.parentWorkflowId).catch(() => null);
+    throw lastError;
+  }
 
   let review = null;
   if (adaptiveRoute.requiresIndependentReview) {
     const reviewAttempts = Math.max(1, Number(process.env.PLUTONIX_REVIEW_MAX_ATTEMPTS || 2));
     for (let attempt = 1; attempt <= reviewAttempts; attempt += 1) {
       try {
+        callAccounting.actualReviewCalls += 1;
         review = await runCodexReviewWorkflow(orchestratedRequest, result, {
           ...options,
           reviewerAgentId: adaptiveRoute.reviewerAgentId
@@ -965,7 +1037,13 @@ async function runPlutoniXOwnedWorkflow(orchestratedRequest, options, orchestrat
       }
     }
   }
-  return { ...result, adaptiveRoute, review };
+  return {
+    ...result,
+    adaptiveRoute: { ...adaptiveRoute, ...callAccounting },
+    review,
+    callAccounting,
+    workflowUsage: await summarizeWorkflowTokenUsage(orchestrationEnvelope.parentWorkflowId).catch(() => null)
+  };
 }
 
 async function attemptAutomaticRepairAfterFailure({
@@ -977,30 +1055,19 @@ async function attemptAutomaticRepairAfterFailure({
   source = "gotham-chat",
   signal = null
 } = {}) {
-  if (isGothamWorkspaceSandboxUnavailable(error)) {
-    event("repair.skipped", "Sandbox unavailable; repair was not attempted because execution was blocked by the runtime environment.", {
+  if (String(process.env.PLUTONIX_AUTO_REPAIR || "1") === "0") return null;
+  if (signal?.aborted) return null;
+  if (!orchestratedRequest) return null;
+  const failureClass = classifyGothamWorkflowFailure(error, { workspaceDir: project?.workspaceDir });
+  if (!isProjectRepairEligible(failureClass)) {
+    event("repair.skipped", "Project-code repair was skipped because the failure is not an eligible project implementation or validation defect.", {
       stage: "repair",
       source,
       projectId: project?.id || "",
       projectName: project?.name || "PlutoniX default workspace",
-      failureClass: classifyGothamWorkflowFailure(error),
-      reason: error?.sandboxPreflight?.reason || "workspace_sandbox_unavailable",
-      diagnostic: error?.sandboxPreflight?.diagnostic || "",
-      remediation: error?.sandboxPreflight?.remediation || "Verify host user namespaces, AppArmor, and Docker seccomp policy."
-    });
-    return null;
-  }
-  if (String(process.env.PLUTONIX_AUTO_REPAIR || "1") === "0") return null;
-  if (signal?.aborted) return null;
-  if (!orchestratedRequest) return null;
-  if (isRecoverableGothamModelsCacheError(error) || isGothamCodexModelCompatibilityError(error) || error?.workflowRecovery?.failureClass === "codex_cli_model_incompatible") {
-    event("gotham-model-cache-recovery-failed", "Gotham's model-cache recovery retry did not resolve the runtime error; project-code repair was skipped because the failure is outside the project.", {
-      stage: "repair",
-      source,
-      projectId: project?.id || "",
-      failureClass: classifyGothamWorkflowFailure(error),
-      upgradeAction: isGothamCodexModelCompatibilityError(error) ? "Upgrade the Codex CLI or configure GOTHAM_FALLBACK_MODEL." : undefined,
-      error: error.message
+      failureClass,
+      partialChanges: error?.partialChanges || [],
+      remediation: error?.sandboxPreflight?.remediation || error?.workflowRecovery?.health?.reason || "Restore the runtime environment, then retry the original instruction."
     });
     return null;
   }
@@ -1055,7 +1122,15 @@ async function attemptAutomaticRepairAfterFailure({
       childExecutionIds: orchestratedRequest.orchestrationEnvelope?.childExecutionIds || result?.childExecutionIds || [],
       files: repair.files,
       fileOperations: repair.fileOperations,
-      adaptiveRoute: orchestratedRequest.orchestrationEnvelope?.adaptiveRoute || result?.adaptiveRoute || null,
+      adaptiveRoute: {
+        ...(orchestratedRequest.orchestrationEnvelope?.adaptiveRoute || result?.adaptiveRoute || {}),
+        actualExecutionCalls: Number(result?.adaptiveRoute?.actualExecutionCalls || 0),
+        actualReviewCalls: Number(result?.adaptiveRoute?.actualReviewCalls || 0),
+        actualRepairCalls: Number(result?.adaptiveRoute?.actualRepairCalls || 0) + 1
+      },
+      workflowUsage: await summarizeWorkflowTokenUsage(
+        orchestratedRequest.orchestrationEnvelope?.parentWorkflowId || result?.parentWorkflowId || repairId
+      ).catch(() => result?.workflowUsage || null),
       repair
     }
   };
@@ -2001,21 +2076,6 @@ function plutonixProjectRoot() {
   return path.resolve(process.cwd(), "../..");
 }
 
-function persistWhatNextKnowledge(flowPath, extra = {}) {
-  const projectKey = safeFileBase(extra.projectId || flowPath?.projectName || "plutonix-default");
-  const knowledgePath = path.join(plutonixProjectRoot(), "memory", "project-intelligence", "projects", projectKey, "what-next-knowledge.jsonl");
-  fs.mkdirSync(path.dirname(knowledgePath), { recursive: true });
-  fs.appendFileSync(
-    knowledgePath,
-    `${JSON.stringify({
-      recordedAt: new Date().toISOString(),
-      source: "plutonix-project-creation",
-      ...extra,
-      flowPath
-    })}\n`
-  );
-}
-
 function projectHistoryRoot(projectId = "") {
   return path.join(plutonixProjectRoot(), "memory", "project-intelligence", "projects", safeFileBase(projectId || "plutonix-default"));
 }
@@ -2685,9 +2745,122 @@ function persistProjectInstruction(record = {}) {
       workflowRecovery: record.workflowRecovery || null,
       selectedModel: record.selectedModel || record.workflowRecovery?.fallbackModel || "",
       replayParentId: record.replayParentId || record.workflowRecovery?.replayParentId || "",
-      replayStatus: record.replayStatus || record.workflowRecovery?.replayStatus || ""
+      replayStatus: record.replayStatus || record.workflowRecovery?.replayStatus || "",
+      selectedPath: record.selectedPath || record.flowPath?.selectedPath || "",
+      selectedBranches: Array.isArray(record.selectedBranches) ? record.selectedBranches : [],
+      rejectedBranches: Array.isArray(record.rejectedBranches) ? record.rejectedBranches : [],
+      deferredBranches: Array.isArray(record.deferredBranches) ? record.deferredBranches : [],
+      reconsiderationState: record.reconsiderationState || null,
+      publication: record.publication || null,
+      timings: record.timings || null
     })}\n`
   );
+}
+
+async function persistTerminalWorkflowAndQueuePublication(record = {}) {
+  const startedAt = Date.now();
+  const flowPath = record.flowPath || {};
+  const dispositions = decisionDispositionsFromFlowPath(flowPath);
+  const receipt = await buildWorkflowPublicationReceipt({
+    workflowId: record.parentWorkflowId || record.workflowId || record.buildId,
+    parentWorkflowId: record.parentWorkflowId,
+    childExecutionIds: record.childExecutionIds,
+    projectId: record.projectId,
+    projectName: record.projectName,
+    project: record.project,
+    workspaceDir: record.workspaceDir || record.project?.workspaceDir,
+    taskType: record.taskType,
+    workflowMode: record.workflowMode,
+    status: record.status,
+    startedAt: record.startedAt,
+    completedAt: record.completedAt,
+    durationMs: record.durationMs,
+    selectedModel: record.selectedModel,
+    adaptiveRoute: record.adaptiveRoute,
+    selectedPath: flowPath.selectedPath,
+    ...dispositions,
+    reconsiderationState: record.reconsiderationState,
+    agentsUsed: flowPath.activeAgents,
+    changedFiles: record.changedFiles,
+    validation: record.validation,
+    productShapeValidation: record.productShapeValidation,
+    inputConsumption: record.inputConsumption,
+    review: record.review,
+    workflowRecovery: record.workflowRecovery,
+    orchestrationSnapshot: record.orchestrationSnapshot,
+    flowPath,
+    instructionSummary: record.instruction,
+    error: record.error,
+    timings: record.timings
+  });
+  try {
+    const persistenceStartedAt = Date.now();
+    const canonical = createCanonicalWorkflowDecisionRecord({
+      stage: "terminal",
+      workflowId: receipt.workflowId,
+      parentWorkflowId: receipt.parentWorkflowId,
+      childExecutionIds: receipt.childExecutionIds,
+      projectId: receipt.projectId,
+      projectName: receipt.projectName,
+      taskType: receipt.taskType,
+      workflowMode: receipt.workflowMode,
+      status: receipt.status,
+      selectedPath: receipt.selectedPath,
+      adaptiveRoute: receipt.adaptiveRoute,
+      dispositions,
+      governingConstraints: record.governingConstraints || record.constraints || [],
+      evidenceReferences: record.evidenceReferences || flowPath.evidence || [],
+      humanApprovalRequirements: record.humanApprovalRequirements || flowPath.humanApprovalRequirements || [],
+      reconsiderationState: receipt.reconsiderationState,
+      executionOutcome: record.executionOutcome || { status: receipt.status, buildId: record.buildId || "" },
+      validation: receipt.validation || receipt.productShapeValidation,
+      review: receipt.review,
+      repair: record.repair,
+      workflowRecovery: receipt.workflowRecovery,
+      changedFiles: receipt.changedFiles,
+      publicationId: receipt.publicationId,
+      publicationIdempotencyKey: receipt.idempotencyKey,
+      error: receipt.error,
+      idempotencyKey: `terminal:${receipt.idempotencyKey}`
+    });
+    persistCanonicalWorkflowDecision(canonical);
+    receipt.timings.decisionPersistenceDurationMs = Date.now() - persistenceStartedAt;
+    const queued = await enqueueWorkflowPublication(receipt);
+    receipt.timings.publicationQueueDurationMs = queued.queueDurationMs ?? Date.now() - startedAt;
+    event("publication.queued", "Workflow projections were durably queued.", {
+      publicationId: receipt.publicationId,
+      workflowId: receipt.workflowId,
+      status: queued.status,
+      decisionPersistenceDurationMs: receipt.timings.decisionPersistenceDurationMs,
+      publicationQueueDurationMs: receipt.timings.publicationQueueDurationMs
+    });
+    return { id: receipt.publicationId, status: queued.status };
+  } catch (error) {
+    error.workflowPersistenceFailure = true;
+    error.code ||= "workflow_terminal_persistence_failed";
+    throw error;
+  }
+}
+
+function persistPreparedWorkflowDecision(record = {}) {
+  const dispositions = decisionDispositionsFromFlowPath({
+    selectedPath: record.selectedPath,
+    rejectedBranches: record.rejectedBranches,
+    deferredBranches: record.deferredBranches
+  });
+  try {
+    return persistCanonicalWorkflowDecision(createCanonicalWorkflowDecisionRecord({
+      ...record,
+      stage: "prepared",
+      status: "prepared",
+      dispositions,
+      idempotencyKey: `prepared:${record.parentWorkflowId || record.workflowId}`
+    }));
+  } catch (error) {
+    error.workflowPersistenceFailure = true;
+    error.code ||= "workflow_preparation_persistence_failed";
+    throw error;
+  }
 }
 
 export function hydratePersistedWorkflowRoute(record = {}) {
@@ -3068,7 +3241,7 @@ app.get("/api/status", async (_req, res) => {
     localGothamMcpId: localMcp.id,
     localGothamMcpTools: localMcp.tools,
     orchestratorAgent: "ready",
-    orchestratorHealthMonitor: String(process.env.PLUTONIX_ORCHESTRATOR_HEALTH_MONITOR || "1") === "1" ? "enabled" : "disabled",
+    orchestratorHealthMonitor: String(process.env.PLUTONIX_ORCHESTRATOR_HEALTH_MONITOR || "1") === "1" ? "manual" : "disabled",
     selfImprovement: {
       enabled: readSelfImprovementConfig().enabled,
       mode: readSelfImprovementConfig().mode,
@@ -4009,14 +4182,28 @@ app.get("/api/project-instructions", (req, res) => {
   });
 });
 
-app.get("/api/orchestrator-health", async (req, res) => {
+app.get("/api/orchestrator-health", async (_req, res) => {
   try {
-    const report = await orchestratorHealthMonitor.audit({
-      reason: req.query.reason || "manual-api"
-    });
-    res.json({ status: "ok", report });
+    res.json({ status: "ok", healthAudit: await orchestratorHealthMonitor.status() });
   } catch (error) {
     res.status(500).json({ status: "failed", error: error.message });
+  }
+});
+
+app.post("/api/orchestrator-health/audit", async (_req, res) => {
+  try {
+    const report = await orchestratorHealthMonitor.audit({
+      reason: "control-panel-user-request",
+      requestedBy: "control-panel-user"
+    });
+    res.json({ status: "ok", report, healthAudit: await orchestratorHealthMonitor.status() });
+  } catch (error) {
+    res.status(Number(error.statusCode || 500)).json({
+      status: "failed",
+      code: error.code || "orchestrator_health_audit_failed",
+      error: error.message,
+      healthAudit: await orchestratorHealthMonitor.status().catch(() => null)
+    });
   }
 });
 
@@ -4927,6 +5114,7 @@ app.post("/api/agents/vector-sync", async (req, res) => {
 
 app.post("/api/projects/new", async (req, res) => {
   const user = userFromRequest(req);
+  const executionOwnerId = await gothamExecutionOwnerId(req);
   const parsed = NewProjectSchema.safeParse(req.body);
   if (!parsed.success) {
     return res.status(400).json({
@@ -4954,8 +5142,17 @@ app.post("/api/projects/new", async (req, res) => {
   }
   const initialOrchestrated = orchestrateBuilderInstruction(projectInstruction);
   if (rejectRestrictedIntent(res, `${parsed.data.name}\n${projectInstruction}`)) return;
-  const projectTaskType = parsed.data.taskType || "Medium";
+  const projectTaskClassification = classifyGothamTask({
+    instruction: projectInstruction,
+    requestedTaskType: parsed.data.taskType || "Auto",
+    project: null,
+    workflowMode: "executor",
+    productDecision: initialOrchestrated.structuredRequest.productDecision,
+    inputSources: [...(parsed.data.requiredData || []), ...(parsed.data.mediaIds || []), ...(parsed.data.stagedMediaIds || []), ...(parsed.data.stagedDocumentIds || [])]
+  });
+  const projectTaskType = projectTaskClassification.resolvedTaskType;
   initialOrchestrated.structuredRequest.taskType = projectTaskType;
+  initialOrchestrated.structuredRequest.taskClassification = projectTaskClassification;
   const projectOrchestratorPrompt = formatProjectOrchestratorInstruction(projectInstruction, projectTaskType);
   event("project-create-start", `Creating project ${parsed.data.name}`, {
     projectName: parsed.data.name,
@@ -4967,12 +5164,45 @@ app.post("/api/projects/new", async (req, res) => {
   let orchestrated = null;
   let bootstrap = null;
   let result = null;
+  let preparationDurationMs = 0;
+  let projectExecutionKey = "";
+  let projectExecution = null;
   try {
     project = await createProject(parsed.data.name, initialOrchestrated.structuredRequest, {
       emit: event,
       user,
       brandingPalette: parsed.data.brandingPalette || null
     });
+    projectExecutionKey = gothamExecutionKey(executionOwnerId, project.id);
+    projectExecution = {
+      controller: new AbortController(),
+      parentWorkflowId: "",
+      projectId: project.id,
+      projectName: project.name,
+      instruction: projectInstruction,
+      taskType: projectTaskClassification.requestedTaskType,
+      resolvedTaskType: projectTaskType,
+      taskClassification: projectTaskClassification,
+      workflowMode: "executor",
+      executionMode: "project-create",
+      startedAt: new Date().toISOString()
+    };
+    activeGothamExecutions.set(projectExecutionKey, projectExecution);
+    let projectClientDetached = false;
+    const noteProjectClientDetached = () => {
+      if (projectClientDetached || res.writableEnded || !activeGothamExecutions.has(projectExecutionKey)) return;
+      projectClientDetached = true;
+      projectExecution.clientDetachedAt = new Date().toISOString();
+      event("gotham-client-detached", "Project creation client disconnected; backend Gotham execution continues and can be reattached.", {
+        projectId: project.id,
+        projectName: project.name,
+        parentWorkflowId: projectExecution.parentWorkflowId,
+        clientDetachedAt: projectExecution.clientDetachedAt
+      });
+    };
+    req.once("aborted", noteProjectClientDetached);
+    res.once("close", noteProjectClientDetached);
+    if (req.aborted || res.destroyed) noteProjectClientDetached();
     const stagedMedia = await attachStagedMediaToProject(user, project, parsed.data.stagedMediaIds || []);
     if (stagedMedia.length) {
       project = await getProject(project.id, { user }) || project;
@@ -4999,7 +5229,8 @@ app.post("/api/projects/new", async (req, res) => {
       ...media.map((item) => ({ id: item.id, label: item.name, value: item.path, sourceType: "media" })),
       ...projectDocuments.map((item) => ({ id: item.id, label: item.originalName, value: item.projectPath, sourceType: "document" }))
     ];
-    const projectAgents = await syncProjectAgentTopology(project, orchestrated.structuredRequest);
+    const projectAgents = await prepareProjectAgentTopology(project, orchestrated.structuredRequest);
+    preparationDurationMs = projectAgents.preparationDurationMs || 0;
     event("project-agents-bound", `Bound ${projectAgents.agents.length} reusable agent definitions to ${project.name}`, {
       projectName: project.name,
       projectId: project.id,
@@ -5028,18 +5259,41 @@ app.post("/api/projects/new", async (req, res) => {
       project,
       structuredRequest: orchestrated.structuredRequest
     });
+    const canonicalDecisionHistory = readCanonicalWorkflowDecisions({ projectId: project.id, terminalOnly: true, limit: 10 });
+    orchestrated.structuredRequest.canonicalDecisionHistory = canonicalDecisionHistory;
     const adaptiveRoute = selectAdaptiveRoute({
       instruction: projectInstruction,
       taskType: projectTaskType,
       project,
-      productDecision: orchestrated.structuredRequest.productDecision
+      productDecision: orchestrated.structuredRequest.productDecision,
+      canonicalDecisions: canonicalDecisionHistory
     });
     if (adaptiveRoute.mode === "single") {
       orchestrationEnvelope.delegations = [];
       orchestrationEnvelope.childExecutionIds = [];
     }
     orchestrationEnvelope.adaptiveRoute = adaptiveRoute;
+    projectExecution.parentWorkflowId = orchestrationEnvelope.parentWorkflowId;
+    projectExecution.adaptiveRoute = adaptiveRoute;
+    projectExecution.flowPath = projectCreationFlowPath({
+      projectName: project.name,
+      taskType: projectTaskType,
+      orchestrated,
+      status: "running"
+    });
     orchestrated.structuredRequest.orchestrationEnvelope = orchestrationEnvelope;
+    persistPreparedWorkflowDecision({
+      workflowId: orchestrationEnvelope.parentWorkflowId,
+      parentWorkflowId: orchestrationEnvelope.parentWorkflowId,
+      childExecutionIds: orchestrationEnvelope.childExecutionIds,
+      projectId: project.id,
+      projectName: project.name,
+      taskType: projectTaskType,
+      workflowMode: "executor",
+      selectedPath: "plutonix-global-orchestration",
+      adaptiveRoute,
+      governingConstraints: orchestrated.structuredRequest.constraints || []
+    });
     event("plutonix-start", `PlutoniX accepted global authority for ${project.name}`, {
       stage: "2/8",
       parentWorkflowId: orchestrationEnvelope.parentWorkflowId,
@@ -5076,7 +5330,8 @@ app.post("/api/projects/new", async (req, res) => {
       agentName: "PlutoniX Fullstack Agent",
       projectId: project.id,
       projectName: project.name,
-      taskType: projectTaskType
+      taskType: projectTaskType,
+      signal: projectExecution.controller.signal
     }, orchestrationEnvelope, adaptiveRoute);
     for (const delegation of orchestrationEnvelope.delegations) {
       event("delegation-complete", `${delegation.agentId} completed its bounded execution`, {
@@ -5099,7 +5354,9 @@ app.post("/api/projects/new", async (req, res) => {
       projectId: project.id,
       workspaceDir: project.workspaceDir
     });
+    const previewStartedAt = Date.now();
     const readyProject = await ensureProjectPreviewWithRuntimeRecovery(project, { emit: event, source: "project-creation" });
+    const previewDurationMs = Date.now() - previewStartedAt;
     project = readyProject;
     event("project-created", `Project ${parsed.data.name} generated on port ${project.port}`, {
       projectName: parsed.data.name,
@@ -5108,40 +5365,51 @@ app.post("/api/projects/new", async (req, res) => {
       buildId: result.buildId,
     });
     const flowPath = projectCreationFlowPath({ projectName: parsed.data.name, taskType: projectTaskType, orchestrated, result });
-    persistWhatNextKnowledge(flowPath, {
+    const orchestrationSnapshot = createOrchestrationBuildSnapshot({
       projectId: readyProject.id,
       projectName: parsed.data.name,
-      instructionSummary: projectInstruction,
+      instruction: projectInstruction,
+      taskType: projectTaskType,
+      status: "succeeded",
+      buildId: result.buildId,
+      parentWorkflowId: result.parentWorkflowId,
+      childExecutionIds: result.childExecutionIds,
+      flowPath,
       changedFiles: result.files?.map((file) => file.path || file).filter(Boolean) || []
     });
-    persistProjectInstruction({
+    const publication = await persistTerminalWorkflowAndQueuePublication({
       projectId: readyProject.id,
       projectName: parsed.data.name,
+      project: readyProject,
+      workspaceDir: readyProject.workspaceDir,
       taskType: projectTaskType,
+      workflowMode: "executor",
       instruction: projectInstruction,
       status: "succeeded",
       buildId: result.buildId,
       parentWorkflowId: result.parentWorkflowId,
       childExecutionIds: result.childExecutionIds,
       adaptiveRoute: result.adaptiveRoute,
+      taskClassification: projectTaskClassification,
       review: result.review,
       inputConsumption: result.inputConsumption,
       productDecision: orchestrated.structuredRequest.productDecision,
       requiredData: parsed.data.requiredData || [],
       flowPath,
-      orchestrationSnapshot: createOrchestrationBuildSnapshot({
-        projectId: readyProject.id,
-        projectName: parsed.data.name,
-        instruction: projectInstruction,
-        taskType: projectTaskType,
-        status: "succeeded",
-        buildId: result.buildId,
-        parentWorkflowId: result.parentWorkflowId,
-        childExecutionIds: result.childExecutionIds,
-        flowPath,
-        changedFiles: result.files?.map((file) => file.path || file).filter(Boolean) || []
-      }),
-      changedFiles: result.files?.map((file) => file.path || file).filter(Boolean) || []
+      orchestrationSnapshot,
+      changedFiles: result.files?.map((file) => file.path || file).filter(Boolean) || [],
+      validation: { status: "passed", productShapeValidation: result.productShapeValidation, inputConsumption: result.inputConsumption },
+      productShapeValidation: result.productShapeValidation,
+      inputConsumption: result.inputConsumption,
+      timings: {
+        preparationDurationMs,
+        policySelectionDurationMs: result.timings?.policySelectionDurationMs ?? null,
+        staticContextCompileDurationMs: result.timings?.staticContextCompileDurationMs ?? null,
+        dynamicContextCompileDurationMs: result.timings?.dynamicContextCompileDurationMs ?? null,
+        modelExecutionDurationMs: result.timings?.modelExecutionDurationMs ?? result.codex?.durationMs ?? null,
+        validationDurationMs: result.timings?.validationDurationMs ?? null,
+        previewDurationMs
+      }
     });
     event("plutonix-complete", `PlutoniX approved completion for ${project.name}`, {
       stage: "8/8",
@@ -5165,9 +5433,11 @@ app.post("/api/projects/new", async (req, res) => {
       changedFiles: result.files?.map((file) => file.path || file).filter(Boolean) || [],
       bootstrap,
       flowPath,
+      publication,
       restart: { status: "project-server", reason: `Project Vite server assigned to port ${project.port}` }
     });
   } catch (error) {
+    if (!error.workflowPersistenceFailure) {
     try {
       const repairOutcome = await attemptAutomaticRepairAfterFailure({
         orchestratedRequest: orchestrated?.structuredRequest,
@@ -5175,7 +5445,8 @@ app.post("/api/projects/new", async (req, res) => {
         error,
         result,
         taskType: projectTaskType,
-        source: "project-create"
+        source: "project-create",
+        signal: projectExecution?.controller.signal
       });
       if (repairOutcome) {
         const readyProject = repairOutcome.project;
@@ -5186,38 +5457,48 @@ app.post("/api/projects/new", async (req, res) => {
           orchestrated,
           result: repairedResult
         });
-        persistWhatNextKnowledge(flowPath, {
+        const orchestrationSnapshot = createOrchestrationBuildSnapshot({
           projectId: readyProject?.id || project?.id || "",
           projectName: parsed.data.name,
-          instructionSummary: projectInstruction,
+          instruction: projectInstruction,
+          taskType: projectTaskType,
+          status: "succeeded",
+          buildId: repairedResult.buildId,
+          parentWorkflowId: repairedResult.parentWorkflowId,
+          childExecutionIds: repairedResult.childExecutionIds,
+          flowPath,
           changedFiles: repairedResult.files || []
         });
-        persistProjectInstruction({
+        const publication = await persistTerminalWorkflowAndQueuePublication({
           projectId: readyProject?.id || project?.id || "",
           projectName: parsed.data.name,
+          project: readyProject || project,
+          workspaceDir: readyProject?.workspaceDir || project?.workspaceDir,
           taskType: projectTaskType,
+          workflowMode: "executor",
           instruction: projectInstruction,
           status: "succeeded",
           buildId: repairedResult.buildId,
           parentWorkflowId: repairedResult.parentWorkflowId,
           childExecutionIds: repairedResult.childExecutionIds,
           adaptiveRoute: repairedResult.adaptiveRoute,
+          taskClassification: projectTaskClassification,
           repair: repairOutcome.repair,
           requiredData: parsed.data.requiredData || [],
           flowPath,
-          orchestrationSnapshot: createOrchestrationBuildSnapshot({
-            projectId: readyProject?.id || project?.id || "",
-            projectName: parsed.data.name,
-            instruction: projectInstruction,
-            taskType: projectTaskType,
-            status: "succeeded",
-            buildId: repairedResult.buildId,
-            parentWorkflowId: repairedResult.parentWorkflowId,
-            childExecutionIds: repairedResult.childExecutionIds,
-            flowPath,
-            changedFiles: repairedResult.files || []
-          }),
-          changedFiles: repairedResult.files || []
+          orchestrationSnapshot,
+          changedFiles: repairedResult.files || [],
+          validation: { status: "passed_after_repair", repair: repairOutcome.repair },
+          repair: repairOutcome.repair,
+          timings: {
+            preparationDurationMs,
+            policySelectionDurationMs: repairedResult.timings?.policySelectionDurationMs ?? null,
+            staticContextCompileDurationMs: repairedResult.timings?.staticContextCompileDurationMs ?? null,
+            dynamicContextCompileDurationMs: repairedResult.timings?.dynamicContextCompileDurationMs ?? null,
+            modelExecutionDurationMs: repairedResult.timings?.modelExecutionDurationMs ?? repairedResult.codex?.durationMs ?? result?.timings?.modelExecutionDurationMs ?? result?.codex?.durationMs ?? null,
+            validationDurationMs: repairedResult.timings?.validationDurationMs ?? null,
+            previewDurationMs: repairOutcome.restart?.durationMs ?? null
+          }
         });
         event("plutonix-complete", `PlutoniX approved completion for ${project.name} after automatic repair`, {
           stage: "8/8",
@@ -5241,15 +5522,18 @@ app.post("/api/projects/new", async (req, res) => {
           bootstrap,
           flowPath,
           repair: repairOutcome.repair,
+          publication,
           restart: repairOutcome.restart
         });
       }
     } catch (repairError) {
+      if (repairError.workflowPersistenceFailure) error = repairError;
       event("plutonix-repair-failed", repairError.message, {
         projectId: project?.id || "",
         projectName: parsed.data.name,
         originalError: error.message
       });
+    }
     }
     if (orchestrationEnvelope) {
       event("plutonix-validation", "PlutoniX rejected completion because execution or validation failed", {
@@ -5268,36 +5552,63 @@ app.post("/api/projects/new", async (req, res) => {
     }
     event("project-create-failed", error.message, { projectName: parsed.data.name });
     const flowPath = projectCreationFlowPath({ projectName: parsed.data.name, taskType: projectTaskType, status: "failed", error: error.message });
-    persistWhatNextKnowledge(flowPath, {
+    const orchestrationSnapshot = createOrchestrationBuildSnapshot({
       projectId: project?.id || "",
       projectName: parsed.data.name,
-      instructionSummary: projectInstruction,
+      instruction: projectInstruction,
+      taskType: projectTaskType,
+      status: "failed",
+      parentWorkflowId: orchestrationEnvelope?.parentWorkflowId || "",
+      childExecutionIds: orchestrationEnvelope?.childExecutionIds || [],
+      flowPath,
       error: error.message
     });
-    persistProjectInstruction({
+    let publication;
+    try {
+      publication = await persistTerminalWorkflowAndQueuePublication({
       projectId: project?.id || "",
       projectName: parsed.data.name,
+      project,
+      workspaceDir: project?.workspaceDir,
       taskType: projectTaskType,
+      workflowMode: "executor",
       instruction: projectInstruction,
       status: "failed",
       parentWorkflowId: orchestrationEnvelope?.parentWorkflowId || "",
       childExecutionIds: orchestrationEnvelope?.childExecutionIds || [],
       requiredData: parsed.data.requiredData || [],
       flowPath,
-      orchestrationSnapshot: createOrchestrationBuildSnapshot({
+      orchestrationSnapshot,
+      changedFiles: result?.files || [],
+      validation: { status: "failed" },
+      error: error.message,
+      timings: {
+        preparationDurationMs,
+        policySelectionDurationMs: result?.timings?.policySelectionDurationMs ?? null,
+        staticContextCompileDurationMs: result?.timings?.staticContextCompileDurationMs ?? null,
+        dynamicContextCompileDurationMs: result?.timings?.dynamicContextCompileDurationMs ?? null,
+        modelExecutionDurationMs: result?.timings?.modelExecutionDurationMs ?? result?.codex?.durationMs ?? null,
+        validationDurationMs: result?.timings?.validationDurationMs ?? null,
+        previewDurationMs: null
+      }
+      });
+    } catch (persistenceError) {
+      event("publication.failed", "Canonical terminal persistence or durable publication enqueue failed.", {
         projectId: project?.id || "",
+        workflowId: orchestrationEnvelope?.parentWorkflowId || "",
+        error: persistenceError.message
+      });
+      return res.status(503).json({
+        status: "persistence_failed",
         projectName: parsed.data.name,
-        instruction: projectInstruction,
-        taskType: projectTaskType,
-        status: "failed",
-        parentWorkflowId: orchestrationEnvelope?.parentWorkflowId || "",
+        project,
+        error: persistenceError.message,
+        parentWorkflowId: orchestrationEnvelope?.parentWorkflowId || null,
         childExecutionIds: orchestrationEnvelope?.childExecutionIds || [],
-        flowPath,
-        error: error.message
-      }),
-      error: error.message
-    });
-    return res.status(500).json({
+        flowPath
+      });
+    }
+    return res.status(error.workflowPersistenceFailure ? 503 : 500).json({
       status: "failed",
       projectName: parsed.data.name,
       project,
@@ -5305,8 +5616,13 @@ app.post("/api/projects/new", async (req, res) => {
       error: error.message,
       parentWorkflowId: orchestrationEnvelope?.parentWorkflowId || null,
       childExecutionIds: orchestrationEnvelope?.childExecutionIds || [],
-      flowPath
+      flowPath,
+      taskClassification: projectTaskClassification,
+      publication
     });
+  } finally {
+    if (projectExecutionKey) activeGothamExecutions.delete(projectExecutionKey);
+    scheduleWorkflowPublicationDrain();
   }
 });
 
@@ -5587,8 +5903,63 @@ app.get("/api/projects/:projectId/artifacts/preview", async (req, res) => {
 });
 
 function gothamExecutionKey(user, projectId = "") {
-  return `${user?.id || "anonymous"}:${projectId || "plutonix-default"}`;
+  const ownerId = typeof user === "string" ? user : user?.id;
+  return `${ownerId || "anonymous"}:${projectId || "plutonix-default"}`;
 }
+
+async function gothamExecutionOwnerId(req) {
+  try {
+    const identity = await externalIdentityFromRequest(req);
+    return `${identity.issuer}:${identity.subject}`;
+  } catch {
+    return userFromRequest(req)?.id || "anonymous";
+  }
+}
+
+function publicGothamExecution(execution = {}) {
+  return {
+    parentWorkflowId: execution.parentWorkflowId || "",
+    projectId: execution.projectId || "",
+    projectName: execution.projectName || (execution.projectId === "system:plutonix" ? "PlutoniX System" : "PlutoniX default workspace"),
+    instruction: String(execution.instruction || "").slice(0, MAX_INSTRUCTION_CHARS),
+    taskType: execution.taskType || "Auto",
+    resolvedTaskType: execution.resolvedTaskType || execution.taskType || "Medium",
+    taskClassification: execution.taskClassification || null,
+    workflowMode: execution.workflowMode || "executor",
+    executionMode: execution.executionMode || "direct",
+    startedAt: execution.startedAt || "",
+    status: execution.controller?.signal?.aborted ? "stopping" : "running",
+    adaptiveRoute: execution.adaptiveRoute || null,
+    flowPath: execution.flowPath || null,
+    clientDetachedAt: execution.clientDetachedAt || ""
+  };
+}
+
+export function activeGothamExecutionStatus(activeExecutions, { userId = "anonymous", projectId = "" } = {}) {
+  const executions = [...activeExecutions.entries()]
+    .filter(([key, execution]) => key.startsWith(`${userId}:`) && (!projectId || execution.projectId === projectId))
+    .map(([, execution]) => publicGothamExecution(execution));
+  return {
+    status: executions.length ? "running" : "idle",
+    executions,
+    execution: executions[0] || null
+  };
+}
+
+function latestTerminalExecution(projectId = "") {
+  return readCanonicalWorkflowDecisions({ projectId, terminalOnly: true, limit: 1 }).at(-1) || null;
+}
+
+app.get("/api/generate/status", async (req, res) => {
+  const executionOwnerId = await gothamExecutionOwnerId(req);
+  const requestedProjectId = String(req.query?.projectId || "").trim();
+  const status = activeGothamExecutionStatus(activeGothamExecutions, { userId: executionOwnerId, projectId: requestedProjectId });
+  const latestTerminal = requestedProjectId && requestedProjectId !== "system:plutonix" ? latestTerminalExecution(requestedProjectId) : null;
+  return res.json({
+    ...status,
+    latestTerminal
+  });
+});
 
 function normalizeGothamWorkflowMode(value = "executor") {
   const mode = String(value || "executor").trim().toLowerCase();
@@ -5640,11 +6011,11 @@ function createPlannerSuggestion({ instruction = "", taskType = "Medium", projec
 }
 
 app.post("/api/generate/stop", async (req, res) => {
-  const user = userFromRequest(req);
+  const executionOwnerId = await gothamExecutionOwnerId(req);
   const projectId = req.body?.target?.type === "system"
     ? "system:plutonix"
     : String(req.body?.projectId || "");
-  const key = gothamExecutionKey(user, projectId);
+  const key = gothamExecutionKey(executionOwnerId, projectId);
   const activeExecution = activeGothamExecutions.get(key);
   if (!activeExecution) {
     return res.json({ status: "idle", message: "No active Gotham instruction execution found for this project." });
@@ -5710,22 +6081,43 @@ function systemImprovementFlowPath({ instruction = "", taskType = "Medium", work
   };
 }
 
-async function handleSystemImprovementRequest(_req, res, { parsed, executionMode = "direct", user, executionStartedAt } = {}) {
+async function handleSystemImprovementRequest(req, res, { parsed, executionMode = "direct", user, executionOwnerId, executionStartedAt } = {}) {
   const workflowMode = normalizeGothamWorkflowMode(parsed.data.workflowMode || "executor");
-  const activeExecutionKey = gothamExecutionKey(user, "system:plutonix");
+  const activeExecutionKey = gothamExecutionKey(executionOwnerId || user, "system:plutonix");
   if (activeGothamExecutions.has(activeExecutionKey)) {
     return res.status(409).json({
       status: "running",
       error: "A system improvement instruction is already running. Stop it before starting another system instruction."
     });
   }
-  activeGothamExecutions.set(activeExecutionKey, {
+  const systemExecution = {
     controller: new AbortController(),
     parentWorkflowId: activeExecutionKey,
     projectId: "system:plutonix",
+    projectName: "PlutoniX System",
+    instruction: parsed.data.instruction,
+    taskType: parsed.data.taskType || "Auto",
+    resolvedTaskType: parsed.data.taskType || "Medium",
+    workflowMode,
     executionMode,
     startedAt: executionStartedAt.toISOString()
-  });
+  };
+  activeGothamExecutions.set(activeExecutionKey, systemExecution);
+  let systemClientDetached = false;
+  const noteSystemClientDetached = () => {
+    if (systemClientDetached || res.writableEnded || !activeGothamExecutions.has(activeExecutionKey)) return;
+    systemClientDetached = true;
+    systemExecution.clientDetachedAt = new Date().toISOString();
+    event("gotham-client-detached", "System instruction client disconnected; backend execution continues and can be reattached.", {
+      projectId: "system:plutonix",
+      projectName: "PlutoniX System",
+      parentWorkflowId: systemExecution.parentWorkflowId,
+      clientDetachedAt: systemExecution.clientDetachedAt
+    });
+  };
+  req.once("aborted", noteSystemClientDetached);
+  res.once("close", noteSystemClientDetached);
+  if (req.aborted || res.destroyed) noteSystemClientDetached();
   try {
     event("gotham-system-target-selected", "Gotham Chat target is PlutoniX System", {
       stage: "1/5",
@@ -5792,7 +6184,11 @@ async function handleSystemImprovementRequest(_req, res, { parsed, executionMode
 async function handleGenerateRequest(req, res, { executionMode = "direct" } = {}) {
   const user = userFromRequest(req);
   const verifiedUsageOwner = await gothamUsageOwner(req);
+  const executionOwnerId = verifiedUsageOwner
+    ? `${verifiedUsageOwner.issuer}:${verifiedUsageOwner.subject}`
+    : user?.id || "anonymous";
   const executionStartedAt = new Date();
+  let preparationDurationMs = 0;
   const parsed = GenerateSchema.safeParse(req.body);
   if (!parsed.success) {
     return res.status(400).json({
@@ -5807,7 +6203,16 @@ async function handleGenerateRequest(req, res, { executionMode = "direct" } = {}
     taskType: parsed.data.taskType
   });
   const workflowMode = requestIntent.workflowMode;
-  const taskType = requestIntent.taskType;
+  const selectedProject = await getProject(parsed.data.target?.projectId || parsed.data.projectId, { user });
+  const taskClassification = classifyGothamTask({
+    instruction: parsed.data.instruction,
+    requestedTaskType: requestIntent.taskType,
+    project: selectedProject,
+    workflowMode,
+    productDecision: selectedProject?.productDecision || null,
+    inputSources: [...(parsed.data.requiredData || []), ...(parsed.data.mediaIds || [])]
+  });
+  const taskType = taskClassification.resolvedTaskType;
   let modelRouting = localModelRoutingForTask({
     taskType,
     workflowMode,
@@ -5819,9 +6224,8 @@ async function handleGenerateRequest(req, res, { executionMode = "direct" } = {}
     autoDownload: String(process.env.PLUTONIX_HF_AUTO_DOWNLOAD || "0") === "1"
   });
   if (parsed.data.target?.type === "system") {
-    return handleSystemImprovementRequest(req, res, { parsed, executionMode, user, executionStartedAt });
+    return handleSystemImprovementRequest(req, res, { parsed, executionMode, user, executionOwnerId, executionStartedAt });
   }
-  const selectedProject = await getProject(parsed.data.target?.projectId || parsed.data.projectId, { user });
   const mlExecutionIntent = detectMlExecutionIntent(parsed.data.instruction, parsed.data.studioContext);
   if (mlExecutionIntent.detected && selectedProject) {
     try {
@@ -6217,6 +6621,7 @@ async function handleGenerateRequest(req, res, { executionMode = "direct" } = {}
   orchestrated.structuredRequest.workflowMode = workflowMode;
   orchestrated.structuredRequest.intelExpansion = intelExpansion;
   orchestrated.structuredRequest.taskType = taskType;
+  orchestrated.structuredRequest.taskClassification = taskClassification;
   orchestrated.structuredRequest.modelRouting = modelRouting;
   orchestrated.structuredRequest.huggingFaceModelPool = hfModelPreparation;
   orchestrated.structuredRequest.aixRoute = governedAIXRoute.route || null;
@@ -6242,6 +6647,44 @@ async function handleGenerateRequest(req, res, { executionMode = "direct" } = {}
         workspaceDir: selectedProject.workspaceDir
       }
     : null;
+  const activeExecutionKey = gothamExecutionKey(executionOwnerId, selectedProject?.id || "");
+  if (workflowMode !== "planner" && activeGothamExecutions.has(activeExecutionKey)) {
+    return res.status(409).json({
+      status: "running",
+      error: "A Gotham instruction is already running for this project. Stop it before starting another instruction."
+    });
+  }
+  const canonicalDecisionHistory = readCanonicalWorkflowDecisions({
+    projectId: selectedProject?.id || "",
+    terminalOnly: true,
+    limit: 10
+  });
+  orchestrated.structuredRequest.canonicalDecisionHistory = canonicalDecisionHistory.map((decision) => ({
+    workflowId: decision.workflowId,
+    status: decision.status,
+    selectedPath: decision.selectedPath,
+    adaptiveRoute: decision.adaptiveRoute,
+    selectedBranches: decision.selectedBranches,
+    rejectedBranches: decision.rejectedBranches,
+    deferredBranches: decision.deferredBranches,
+    publication: decision.publication,
+    recordedAt: decision.recordedAt
+  }));
+  if (useProjectOrchestrator && workflowMode !== "planner") {
+    const preparedTopology = await prepareProjectAgentTopology(selectedProject, orchestrated.structuredRequest);
+    preparationDurationMs = preparedTopology.preparationDurationMs || 0;
+    orchestrated.structuredRequest.preparedProjectTopology = {
+      topologyDigest: preparedTopology.topologyDigest,
+      agents: preparedTopology.agents.map((agent) => agent.id),
+      assignments: (preparedTopology.agentAssignments || []).map((assignment) => assignment.id)
+    };
+    event("project-agents-bound", `Prepared ${preparedTopology.agents.length} project agent bindings without publishing shared graph projections.`, {
+      projectId: selectedProject.id,
+      projectName: selectedProject.name,
+      topologyDigest: preparedTopology.topologyDigest,
+      preparationDurationMs
+    });
+  }
   const intelProfileSelection = intelExpansion.enabled
     ? selectIntelProfile({
         instruction: parsed.data.instruction,
@@ -6448,6 +6891,7 @@ async function handleGenerateRequest(req, res, { executionMode = "direct" } = {}
       orchestrated: orchestrated.structuredRequest,
       flowPath,
       plan,
+      taskClassification,
       decisionX: decisionX ? { status: decisionX.status, branchId: decisionX.branch?.id || null } : null,
       executionMode,
       workflowMode
@@ -6463,7 +6907,8 @@ async function handleGenerateRequest(req, res, { executionMode = "direct" } = {}
     instruction: instructionWithMedia,
     taskType,
     project: selectedProject,
-    productDecision: orchestrated.structuredRequest.productDecision
+    productDecision: orchestrated.structuredRequest.productDecision,
+    canonicalDecisions: canonicalDecisionHistory
   });
   if (intelProfileSelection?.status === "selected") {
     // Profile-driven Intel always verifies a successful write independently.
@@ -6480,6 +6925,33 @@ async function handleGenerateRequest(req, res, { executionMode = "direct" } = {}
   }
   orchestrationEnvelope.adaptiveRoute = adaptiveRoute;
   orchestrated.structuredRequest.orchestrationEnvelope = orchestrationEnvelope;
+  try {
+    persistPreparedWorkflowDecision({
+      workflowId: orchestrationEnvelope.parentWorkflowId,
+      parentWorkflowId: orchestrationEnvelope.parentWorkflowId,
+      childExecutionIds: orchestrationEnvelope.childExecutionIds,
+      projectId: selectedProject?.id || "",
+      projectName: selectedProject?.name || "PlutoniX default workspace",
+      taskType,
+      workflowMode,
+      selectedPath: "plutonix-global-orchestration",
+      adaptiveRoute,
+      governingConstraints: orchestrated.structuredRequest.constraints || [],
+      evidenceReferences: canonicalDecisionHistory.slice(-3).map((decision) => `canonical-workflow:${decision.workflowId}`)
+    });
+  } catch (error) {
+    event("publication.failed", "Canonical prepared decision persistence failed; Gotham execution was not started.", {
+      projectId: selectedProject?.id || "",
+      workflowId: orchestrationEnvelope.parentWorkflowId,
+      error: error.message
+    });
+    return res.status(503).json({
+      status: "persistence_failed",
+      error: "Gotham could not durably record the selected execution path. No model execution was started.",
+      parentWorkflowId: orchestrationEnvelope.parentWorkflowId,
+      childExecutionIds: orchestrationEnvelope.childExecutionIds
+    });
+  }
   const decisionXCapture = enterpriseBuildScope
     ? await decisionXBuildCapture.capturePlannedSafely({
         tenantId: enterpriseBuildScope.tenantId,
@@ -6502,21 +6974,45 @@ async function handleGenerateRequest(req, res, { executionMode = "direct" } = {}
   orchestrated.structuredRequest.decisionX = decisionXCapture
     ? { status: decisionXCapture.status, branchId: decisionXCapture.branch?.id || null }
     : null;
-  const activeExecutionKey = gothamExecutionKey(user, selectedProject?.id || "");
-  if (activeGothamExecutions.has(activeExecutionKey)) {
-    return res.status(409).json({
-      status: "running",
-      error: "A Gotham instruction is already running for this project. Stop it before starting another instruction."
-    });
-  }
   const activeExecution = {
     controller: new AbortController(),
     parentWorkflowId: orchestrationEnvelope.parentWorkflowId,
     projectId: selectedProject?.id || "",
+    projectName: selectedProject?.name || "PlutoniX default workspace",
+    instruction: parsed.data.instruction,
+    taskType: taskClassification.requestedTaskType,
+    resolvedTaskType: taskType,
+    taskClassification,
+    workflowMode,
     executionMode,
-    startedAt: executionStartedAt.toISOString()
+    startedAt: executionStartedAt.toISOString(),
+    adaptiveRoute,
+    flowPath: gothamInstructionFlowPath({
+      projectName: selectedProject?.name || "PlutoniX default workspace",
+      taskType,
+      workflowMode,
+      orchestrated,
+      status: "running",
+      useProjectOrchestrator
+    })
   };
   activeGothamExecutions.set(activeExecutionKey, activeExecution);
+  let clientDetached = false;
+  const noteClientDetached = () => {
+    if (clientDetached || res.writableEnded || !activeGothamExecutions.has(activeExecutionKey)) return;
+    clientDetached = true;
+    activeExecution.clientDetachedAt = new Date().toISOString();
+    event("gotham-client-detached", "Gotham Chat client disconnected; backend execution continues and can be reattached.", {
+      projectId: activeExecution.projectId,
+      projectName: activeExecution.projectName,
+      parentWorkflowId: activeExecution.parentWorkflowId,
+      startedAt: activeExecution.startedAt,
+      clientDetachedAt: activeExecution.clientDetachedAt
+    });
+  };
+  req.once("aborted", noteClientDetached);
+  res.once("close", noteClientDetached);
+  if (req.aborted || res.destroyed) noteClientDetached();
   const cleanupUsedMedia = async (consumedMediaIds = []) => {
     if (!selectedProject || selectedProject.isDefault || !media.length) return null;
     const consumed = new Set(consumedMediaIds);
@@ -6718,6 +7214,7 @@ async function handleGenerateRequest(req, res, { executionMode = "direct" } = {}
       fileOperations: result.fileOperations
     });
     event("runtime-refresh-requested", "Refreshing generated-site runtime after file operations", { stage: "7/8" });
+    const previewStartedAt = Date.now();
     const restart = selectedProject && !selectedProject.isDefault
       ? (event("project-runtime-handoff", "Gotham file generation complete; PlutoniX is assigning the playground port", {
           stage: "7/8",
@@ -6731,6 +7228,7 @@ async function handleGenerateRequest(req, res, { executionMode = "direct" } = {}
           project: readyProject
         })))
       : await restartGeneratedRuntime();
+    const previewDurationMs = Date.now() - previewStartedAt;
     event(restart.status === "restarted" ? "restarted" : "hot-reload", restart.reason || `Restarted ${restart.container}`, {
       stage: "7/8",
       restart
@@ -6766,16 +7264,23 @@ async function handleGenerateRequest(req, res, { executionMode = "direct" } = {}
           routeResult: governedAIXRoute
         })
       : null;
-    persistWhatNextKnowledge(flowPath, {
-      source: "plutonix-gotham-chat",
+    const orchestrationSnapshot = createOrchestrationBuildSnapshot({
       projectId: selectedProject?.id || "",
       projectName: selectedProject?.name || "PlutoniX default workspace",
-      instructionSummary: parsed.data.instruction,
+      instruction: parsed.data.instruction,
+      taskType,
+      status: "succeeded",
+      buildId: result.buildId,
+      parentWorkflowId: result.parentWorkflowId,
+      childExecutionIds: result.childExecutionIds,
+      flowPath,
       changedFiles: result.files?.map((file) => file.path || file).filter(Boolean) || []
     });
-    persistProjectInstruction({
+    const publication = await persistTerminalWorkflowAndQueuePublication({
       projectId: selectedProject?.id || "",
       projectName: selectedProject?.name || "PlutoniX default workspace",
+      project: selectedProject,
+      workspaceDir: selectedProject?.workspaceDir,
       taskType,
       workflowMode,
       instruction: parsed.data.instruction,
@@ -6794,19 +7299,20 @@ async function handleGenerateRequest(req, res, { executionMode = "direct" } = {}
       completedAt: completedAt.toISOString(),
       durationMs: completedAt.getTime() - executionStartedAt.getTime(),
       flowPath,
-      orchestrationSnapshot: createOrchestrationBuildSnapshot({
-        projectId: selectedProject?.id || "",
-        projectName: selectedProject?.name || "PlutoniX default workspace",
-        instruction: parsed.data.instruction,
-        taskType,
-        status: "succeeded",
-        buildId: result.buildId,
-        parentWorkflowId: result.parentWorkflowId,
-        childExecutionIds: result.childExecutionIds,
-        flowPath,
-        changedFiles: result.files?.map((file) => file.path || file).filter(Boolean) || []
-      }),
-      changedFiles: result.files?.map((file) => file.path || file).filter(Boolean) || []
+      orchestrationSnapshot,
+      changedFiles: result.files?.map((file) => file.path || file).filter(Boolean) || [],
+      validation: { status: "passed", productShapeValidation: result.productShapeValidation, inputConsumption: result.inputConsumption },
+      productShapeValidation: result.productShapeValidation,
+      inputConsumption: result.inputConsumption,
+      timings: {
+        preparationDurationMs,
+        policySelectionDurationMs: result.timings?.policySelectionDurationMs ?? null,
+        staticContextCompileDurationMs: result.timings?.staticContextCompileDurationMs ?? null,
+        dynamicContextCompileDurationMs: result.timings?.dynamicContextCompileDurationMs ?? null,
+        modelExecutionDurationMs: result.timings?.modelExecutionDurationMs ?? result.codex?.durationMs ?? null,
+        validationDurationMs: result.timings?.validationDurationMs ?? null,
+        previewDurationMs
+      }
     });
     event("plutonix-complete", "PlutoniX approved workflow completion", {
       stage: "8/8",
@@ -6826,7 +7332,7 @@ async function handleGenerateRequest(req, res, { executionMode = "direct" } = {}
       });
       return null;
     });
-    return res.json({ ...result, restart, orchestrated: orchestrated.structuredRequest, flowPath, mediaCleanup, executionMode, workflowMode, decisionX: decisionXOutcome ? { status: decisionXOutcome.status, branchId: decisionXOutcome.branch?.id || decisionXCapture?.branch?.id || null } : orchestrated.structuredRequest.decisionX });
+    return res.json({ ...result, restart, orchestrated: orchestrated.structuredRequest, taskClassification, flowPath, mediaCleanup, executionMode, workflowMode, publication, decisionX: decisionXOutcome ? { status: decisionXOutcome.status, branchId: decisionXOutcome.branch?.id || decisionXCapture?.branch?.id || null } : orchestrated.structuredRequest.decisionX });
   } catch (error) {
     if (intelRuntime) {
       const cancelled = activeExecution.controller.signal.aborted || /stopped by the user|cancelled/i.test(error.message);
@@ -6838,7 +7344,7 @@ async function handleGenerateRequest(req, res, { executionMode = "direct" } = {}
         retryable: intelRuntime.failure?.retryable || false
       });
     }
-    if (!intelRuntime) {
+    if (!intelRuntime && !error.workflowPersistenceFailure) {
     try {
       const repairOutcome = await attemptAutomaticRepairAfterFailure({
         orchestratedRequest: orchestrated.structuredRequest,
@@ -6874,16 +7380,23 @@ async function handleGenerateRequest(req, res, { executionMode = "direct" } = {}
               routeResult: governedAIXRoute
             })
           : null;
-        persistWhatNextKnowledge(flowPath, {
-          source: "plutonix-gotham-chat",
+        const orchestrationSnapshot = createOrchestrationBuildSnapshot({
           projectId: selectedProject?.id || "",
           projectName: selectedProject?.name || "PlutoniX default workspace",
-          instructionSummary: parsed.data.instruction,
+          instruction: parsed.data.instruction,
+          taskType,
+          status: "succeeded",
+          buildId: repairedResult.buildId,
+          parentWorkflowId: repairedResult.parentWorkflowId,
+          childExecutionIds: repairedResult.childExecutionIds,
+          flowPath,
           changedFiles: repairedResult.files || []
         });
-        persistProjectInstruction({
+        const publication = await persistTerminalWorkflowAndQueuePublication({
           projectId: selectedProject?.id || "",
           projectName: selectedProject?.name || "PlutoniX default workspace",
+          project: selectedProject,
+          workspaceDir: selectedProject?.workspaceDir,
           taskType,
           workflowMode,
           instruction: parsed.data.instruction,
@@ -6898,19 +7411,19 @@ async function handleGenerateRequest(req, res, { executionMode = "direct" } = {}
           completedAt: completedAt.toISOString(),
           durationMs: completedAt.getTime() - executionStartedAt.getTime(),
           flowPath,
-          orchestrationSnapshot: createOrchestrationBuildSnapshot({
-            projectId: selectedProject?.id || "",
-            projectName: selectedProject?.name || "PlutoniX default workspace",
-            instruction: parsed.data.instruction,
-            taskType,
-            status: "succeeded",
-            buildId: repairedResult.buildId,
-            parentWorkflowId: repairedResult.parentWorkflowId,
-            childExecutionIds: repairedResult.childExecutionIds,
-            flowPath,
-            changedFiles: repairedResult.files || []
-          }),
-          changedFiles: repairedResult.files || []
+          orchestrationSnapshot,
+          changedFiles: repairedResult.files || [],
+          validation: { status: "passed_after_repair", repair: repairOutcome.repair },
+          repair: repairOutcome.repair,
+          timings: {
+            preparationDurationMs,
+            policySelectionDurationMs: repairedResult.timings?.policySelectionDurationMs ?? null,
+            staticContextCompileDurationMs: repairedResult.timings?.staticContextCompileDurationMs ?? null,
+            dynamicContextCompileDurationMs: repairedResult.timings?.dynamicContextCompileDurationMs ?? null,
+            modelExecutionDurationMs: repairedResult.timings?.modelExecutionDurationMs ?? repairedResult.codex?.durationMs ?? result?.timings?.modelExecutionDurationMs ?? result?.codex?.durationMs ?? null,
+            validationDurationMs: repairedResult.timings?.validationDurationMs ?? null,
+            previewDurationMs: repairOutcome.restart?.durationMs ?? null
+          }
         });
         event("plutonix-complete", "PlutoniX approved workflow completion after automatic repair", {
           stage: "8/8",
@@ -6930,15 +7443,18 @@ async function handleGenerateRequest(req, res, { executionMode = "direct" } = {}
           repaired: true,
           restart: repairOutcome.restart,
           orchestrated: orchestrated.structuredRequest,
+          taskClassification,
           flowPath,
           mediaCleanup,
           executionMode,
           workflowMode,
           repair: repairOutcome.repair,
+          publication,
           decisionX: decisionXOutcome ? { status: decisionXOutcome.status, branchId: decisionXOutcome.branch?.id || decisionXCapture?.branch?.id || null } : orchestrated.structuredRequest.decisionX
         });
       }
     } catch (repairError) {
+      if (repairError.workflowPersistenceFailure) error = repairError;
       event("plutonix-repair-failed", repairError.message, {
         projectId: selectedProject?.id || "",
         projectName: selectedProject?.name || "PlutoniX default workspace",
@@ -6947,10 +7463,11 @@ async function handleGenerateRequest(req, res, { executionMode = "direct" } = {}
     }
     }
     const completedAt = new Date();
+    const terminalStatus = activeExecution.controller.signal.aborted ? "stopped" : "failed";
     event("plutonix-validation", "PlutoniX rejected completion because execution or validation failed", {
       parentWorkflowId: orchestrationEnvelope.parentWorkflowId,
       childExecutionIds: orchestrationEnvelope.childExecutionIds,
-      status: "failed",
+      status: terminalStatus,
       error: error.message
     });
     event("error", error.message);
@@ -6959,7 +7476,7 @@ async function handleGenerateRequest(req, res, { executionMode = "direct" } = {}
       taskType,
       workflowMode,
       orchestrated,
-      status: "failed",
+      status: terminalStatus,
       error: error.message,
       useProjectOrchestrator
     });
@@ -6972,25 +7489,33 @@ async function handleGenerateRequest(req, res, { executionMode = "direct" } = {}
           buildKey: orchestrationEnvelope.parentWorkflowId || buildCorrelationId,
           status: activeExecution.controller.signal.aborted ? "stopped" : "failed",
           changedFiles: result?.files || [],
-          validation: { status: "failed", flowPath },
+          validation: { status: terminalStatus, flowPath },
           routeResult: governedAIXRoute,
           error: error.message
         })
       : null;
-    persistWhatNextKnowledge(flowPath, {
-      source: "plutonix-gotham-chat",
+    const orchestrationSnapshot = createOrchestrationBuildSnapshot({
       projectId: selectedProject?.id || "",
       projectName: selectedProject?.name || "PlutoniX default workspace",
-      instructionSummary: parsed.data.instruction,
+      instruction: parsed.data.instruction,
+      taskType,
+      status: terminalStatus,
+      parentWorkflowId: orchestrationEnvelope.parentWorkflowId,
+      childExecutionIds: orchestrationEnvelope.childExecutionIds,
+      flowPath,
       error: error.message
     });
-    persistProjectInstruction({
+    let publication;
+    try {
+      publication = await persistTerminalWorkflowAndQueuePublication({
       projectId: selectedProject?.id || "",
       projectName: selectedProject?.name || "PlutoniX default workspace",
+      project: selectedProject,
+      workspaceDir: selectedProject?.workspaceDir,
       taskType,
       workflowMode,
       instruction: parsed.data.instruction,
-      status: "failed",
+      status: terminalStatus,
       parentWorkflowId: orchestrationEnvelope.parentWorkflowId,
       childExecutionIds: orchestrationEnvelope.childExecutionIds,
       adaptiveRoute: orchestrationEnvelope.adaptiveRoute,
@@ -7003,36 +7528,55 @@ async function handleGenerateRequest(req, res, { executionMode = "direct" } = {}
       completedAt: completedAt.toISOString(),
       durationMs: completedAt.getTime() - executionStartedAt.getTime(),
       flowPath,
-      orchestrationSnapshot: createOrchestrationBuildSnapshot({
+      orchestrationSnapshot,
+      changedFiles: result?.files || [],
+      validation: { status: terminalStatus },
+      error: error.message,
+      timings: {
+        preparationDurationMs,
+        policySelectionDurationMs: result?.timings?.policySelectionDurationMs ?? null,
+        staticContextCompileDurationMs: result?.timings?.staticContextCompileDurationMs ?? null,
+        dynamicContextCompileDurationMs: result?.timings?.dynamicContextCompileDurationMs ?? null,
+        modelExecutionDurationMs: result?.timings?.modelExecutionDurationMs ?? result?.codex?.durationMs ?? null,
+        validationDurationMs: result?.timings?.validationDurationMs ?? null,
+        previewDurationMs: null
+      }
+      });
+    } catch (persistenceError) {
+      event("publication.failed", "Canonical terminal persistence or durable publication enqueue failed.", {
         projectId: selectedProject?.id || "",
-        projectName: selectedProject?.name || "PlutoniX default workspace",
-        instruction: parsed.data.instruction,
-        taskType,
-        status: "failed",
+        workflowId: orchestrationEnvelope.parentWorkflowId,
+        error: persistenceError.message
+      });
+      return res.status(503).json({
+        status: "persistence_failed",
+        error: persistenceError.message,
         parentWorkflowId: orchestrationEnvelope.parentWorkflowId,
         childExecutionIds: orchestrationEnvelope.childExecutionIds,
         flowPath,
-        error: error.message
-      }),
-      error: error.message
-    });
+        mediaCleanup: null
+      });
+    }
     const mediaCleanup = await cleanupUsedMedia().catch((cleanupError) => {
       event("gotham-reference-files-clear-failed", cleanupError.message, {
         projectId: selectedProject?.id || ""
       });
       return null;
     });
-    return res.status(500).json({
+    return res.status(error.workflowPersistenceFailure ? 503 : 500).json({
+      status: error.workflowPersistenceFailure ? "persistence_failed" : terminalStatus,
       error: error.message,
       parentWorkflowId: orchestrationEnvelope.parentWorkflowId,
       childExecutionIds: orchestrationEnvelope.childExecutionIds,
       flowPath,
+      taskClassification,
       mediaCleanup,
+      publication,
       decisionX: decisionXOutcome ? { status: decisionXOutcome.status, branchId: decisionXOutcome.branch?.id || decisionXCapture?.branch?.id || null } : orchestrated.structuredRequest.decisionX
     });
   } finally {
     activeGothamExecutions.delete(activeExecutionKey);
-    scheduleIdleVectorSync("workflow-idle");
+    scheduleWorkflowPublicationDrain();
   }
 }
 
@@ -7074,6 +7618,18 @@ export function startPlutonixServer({ listenPort = port, host = "0.0.0.0" } = {}
   console.log(`PlutoniX backend listening on ${listenPort}`);
   gothamStudioService?.startReconciler();
   try {
+    const cachePreparation = await prepareGothamRuntimeCaches();
+    event("gotham-model-cache-prepared", "Prepared Gotham model metadata caches before accepting workflow execution.", {
+      stage: "startup",
+      cachePreparation
+    });
+  } catch (error) {
+    event("gotham-model-cache-preparation-failed", "Gotham model cache preparation failed; runtime health checks will block unsafe execution.", {
+      stage: "startup",
+      error: error.message
+    });
+  }
+  try {
     await refreshGothamSandboxReadiness({ source: "backend-startup" });
   } catch (error) {
     gothamSandboxReadiness = {
@@ -7110,6 +7666,15 @@ export function startPlutonixServer({ listenPort = port, host = "0.0.0.0" } = {}
     }
   } catch (error) {
     console.error(`Failed to start managed project previews: ${error.message}`);
+  }
+  try {
+    const recovery = await recoverPendingWorkflowPublications();
+    event("publication.recovered", "Recovered durable workflow publication jobs at backend startup.", recovery);
+    scheduleWorkflowPublicationDrain();
+  } catch (error) {
+    event("publication.failed", "Workflow publication recovery failed; outbox files were preserved for diagnosis.", {
+      error: error.message
+    });
   }
   // A bounded memory projection should not compete with active product work.
   // Three evenly-spaced checks per day are sufficient; the sync module also

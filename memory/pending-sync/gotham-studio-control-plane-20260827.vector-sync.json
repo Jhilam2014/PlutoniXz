@@ -14,5 +14,13 @@
   ],
   "sanitized": true,
   "created_at": "2026-08-27T17:40:51Z",
-  "completed_at": "2026-08-27T17:54:47.530Z"
+  "completed_at": "2026-08-27T17:54:47.530Z",
+  "latest_refresh": {
+    "sync_workflow_id": "plutonix-vector-sync-1787867130303",
+    "files_uploaded": 1,
+    "files_failed": 0,
+    "verification_status": "success",
+    "attached_file_count": 667,
+    "completed_at": "2026-08-27T21:46:24.208Z"
+  }
 }

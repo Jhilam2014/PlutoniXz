@@ -57,6 +57,119 @@ export function estimateTokens(text = "") {
   return Math.max(1, Math.ceil(normalized.length / 4));
 }
 
+function finiteTokenCount(value) {
+  const number = Number(value);
+  return Number.isFinite(number) && number >= 0 ? Math.round(number) : null;
+}
+
+function normalizedProviderUsage(value) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return null;
+  const inputTokens = finiteTokenCount(value.input_tokens ?? value.inputTokens ?? value.prompt_tokens ?? value.promptTokens);
+  const outputTokens = finiteTokenCount(value.output_tokens ?? value.outputTokens ?? value.completion_tokens ?? value.completionTokens);
+  const cachedInputTokens = finiteTokenCount(
+    value.cached_input_tokens ?? value.cachedInputTokens ?? value.input_tokens_details?.cached_tokens ?? value.prompt_tokens_details?.cached_tokens
+  ) ?? 0;
+  const reasoningOutputTokens = finiteTokenCount(
+    value.reasoning_output_tokens ?? value.reasoningOutputTokens ?? value.output_tokens_details?.reasoning_tokens ?? value.completion_tokens_details?.reasoning_tokens
+  ) ?? 0;
+  const totalTokens = finiteTokenCount(value.total_tokens ?? value.totalTokens);
+  if (inputTokens === null && outputTokens === null && totalTokens === null) return null;
+  const normalizedInput = inputTokens ?? Math.max(0, Number(totalTokens || 0) - Number(outputTokens || 0));
+  const normalizedOutput = outputTokens ?? Math.max(0, Number(totalTokens || 0) - Number(inputTokens || 0));
+  return {
+    inputTokens: normalizedInput,
+    cachedInputTokens,
+    outputTokens: normalizedOutput,
+    reasoningOutputTokens,
+    totalTokens: totalTokens ?? normalizedInput + normalizedOutput
+  };
+}
+
+function collectUsageCandidates(value, candidates, sequence) {
+  if (!value || typeof value !== "object") return sequence;
+  const normalized = normalizedProviderUsage(value);
+  if (normalized) candidates.push({ ...normalized, sequence });
+  sequence += 1;
+  for (const child of Array.isArray(value) ? value : Object.values(value)) {
+    if (child && typeof child === "object") sequence = collectUsageCandidates(child, candidates, sequence);
+  }
+  return sequence;
+}
+
+export function parseProviderUsageFromEventStream(eventStream = "") {
+  const candidates = [];
+  let sequence = 0;
+  for (const line of String(eventStream || "").split(/\r?\n/).filter(Boolean)) {
+    try {
+      sequence = collectUsageCandidates(JSON.parse(line), candidates, sequence);
+    } catch {
+      // Human-readable transport output has no authoritative provider usage.
+    }
+  }
+  if (!candidates.length) return null;
+  const usage = candidates.sort((left, right) => left.sequence - right.sequence).at(-1);
+  return {
+    inputTokens: usage.inputTokens,
+    cachedInputTokens: usage.cachedInputTokens,
+    outputTokens: usage.outputTokens,
+    reasoningOutputTokens: usage.reasoningOutputTokens,
+    totalTokens: usage.totalTokens,
+    usageSource: "provider",
+    providerUsageSchemaVersion: "normalized-v1"
+  };
+}
+
+function authoredTextFromValue(value, texts) {
+  if (!value || typeof value !== "object") return;
+  const role = String(value.role || value.author?.role || "").toLowerCase();
+  const type = String(value.type || "").toLowerCase();
+  const isAssistant = role === "assistant" || /agent_message|assistant_message|output_text/.test(type);
+  if (isAssistant && typeof value.text === "string") texts.add(value.text);
+  if (isAssistant && typeof value.output_text === "string") texts.add(value.output_text);
+  if (role === "assistant" && typeof value.content === "string") texts.add(value.content);
+  if (Array.isArray(value.content) && (isAssistant || role === "assistant")) {
+    for (const part of value.content) {
+      if (typeof part === "string") texts.add(part);
+      else if (part && typeof part.text === "string" && !/tool|function|error/.test(String(part.type || ""))) texts.add(part.text);
+    }
+  }
+  for (const child of Array.isArray(value) ? value : Object.values(value)) {
+    if (child && typeof child === "object") authoredTextFromValue(child, texts);
+  }
+}
+
+export function extractModelAuthoredText(eventStream = "") {
+  const texts = new Set();
+  let parsedAny = false;
+  for (const line of String(eventStream || "").split(/\r?\n/).filter(Boolean)) {
+    try {
+      parsedAny = true;
+      authoredTextFromValue(JSON.parse(line), texts);
+    } catch {
+      // Ignore non-JSON diagnostics when estimating model-authored output.
+    }
+  }
+  if (texts.size) return [...texts].join("\n");
+  return parsedAny ? "" : String(eventStream || "");
+}
+
+export function resolveWorkflowTokenUsage({ eventStream = "", promptText = "", modelOutputText = "" } = {}) {
+  const providerUsage = parseProviderUsageFromEventStream(eventStream);
+  if (providerUsage) return providerUsage;
+  const authoredText = extractModelAuthoredText(eventStream) || String(modelOutputText || "");
+  const inputTokens = estimateTokens(promptText);
+  const outputTokens = estimateTokens(authoredText);
+  return {
+    inputTokens,
+    cachedInputTokens: 0,
+    outputTokens,
+    reasoningOutputTokens: 0,
+    totalTokens: inputTokens + outputTokens,
+    usageSource: "estimated",
+    estimationMethod: "chars_div_4_model_authored_text"
+  };
+}
+
 function clampScore(value, fallback = 0) {
   const score = Number(value);
   if (!Number.isFinite(score)) return fallback;
@@ -130,11 +243,13 @@ export async function recordAgentTokenUsage(record) {
   const inputTokens = Number(record.inputTokens || 0);
   const outputTokens = Number(record.outputTokens || 0);
   const cost = estimateTokenCost({ inputTokens, outputTokens, model: record.model || DEFAULT_COST_MODEL });
-  const totalTokens = inputTokens + outputTokens;
+  const totalTokens = Number(record.totalTokens ?? (inputTokens + outputTokens));
   const accuracyValue = estimateAccuracyValue(record);
   const efficiency = calculateEfficiencyMetrics({
     inputTokens,
     outputTokens,
+    cachedInputTokens: Number(record.cachedInputTokens || 0),
+    reasoningOutputTokens: Number(record.reasoningOutputTokens || 0),
     totalTokens,
     estimatedUsd: cost.estimatedUsd,
     durationMs: record.durationMs,
@@ -185,7 +300,20 @@ export async function recordAgentTokenUsage(record) {
     tokensPerAccuracyPoint: efficiency.tokensPerAccuracyPoint,
     usdPerAccuracyPoint: efficiency.usdPerAccuracyPoint,
     source: record.source || "plutonix-codex-workflow",
-    estimationMethod: "chars_div_4_local_estimate"
+    usageSource: record.usageSource || "estimated",
+    providerUsageSchemaVersion: record.providerUsageSchemaVersion || "",
+    estimationMethod: record.usageSource === "provider" ? "" : (record.estimationMethod || "chars_div_4_model_authored_text"),
+    attemptId: String(record.attemptId || record.buildId || "").slice(0, 160),
+    attemptNumber: Number(record.attemptNumber || 1),
+    attemptType: String(record.attemptType || "execution").slice(0, 80),
+    attemptStatus: String(record.attemptStatus || record.status || "completed").slice(0, 40),
+    failureClass: String(record.failureClass || "").slice(0, 120),
+    parentWorkflowId: String(record.parentWorkflowId || record.workflowId || "").slice(0, 160),
+    startedAt: record.startedAt || "",
+    completedAt: record.completedAt || new Date().toISOString(),
+    transportBytes: Number(record.transportBytes || 0),
+    stdoutEventBytes: Number(record.stdoutEventBytes || 0),
+    stderrBytes: Number(record.stderrBytes || 0)
   };
   await fs.ensureDir(path.dirname(tablePath()));
   await fs.appendFile(tablePath(), `${JSON.stringify(row)}\n`);
@@ -208,6 +336,40 @@ export async function readAgentTokenRows() {
       }
     })
     .filter(Boolean);
+}
+
+export async function summarizeWorkflowTokenUsage(workflowId) {
+  const id = String(workflowId || "");
+  const attempts = (await readAgentTokenRows()).filter((row) =>
+    id && (row.parentWorkflowId === id || row.workflowId === id)
+  );
+  return {
+    workflowId: id,
+    attemptCount: attempts.length,
+    inputTokens: attempts.reduce((total, row) => total + Number(row.inputTokens || 0), 0),
+    cachedInputTokens: attempts.reduce((total, row) => total + Number(row.cachedInputTokens || 0), 0),
+    outputTokens: attempts.reduce((total, row) => total + Number(row.outputTokens || 0), 0),
+    reasoningOutputTokens: attempts.reduce((total, row) => total + Number(row.reasoningOutputTokens || 0), 0),
+    totalTokens: attempts.reduce((total, row) => total + Number(row.totalTokens || 0), 0),
+    transportBytes: attempts.reduce((total, row) => total + Number(row.transportBytes || 0), 0),
+    usageSources: [...new Set(attempts.map((row) => row.usageSource || "estimated"))],
+    attempts: attempts.map((row) => ({
+      attemptId: row.attemptId || row.buildId,
+      attemptNumber: row.attemptNumber || 1,
+      attemptType: row.attemptType || "execution",
+      status: row.attemptStatus || "completed",
+      failureClass: row.failureClass || "",
+      provider: row.provider || "",
+      model: row.executionModel || "",
+      inputTokens: Number(row.inputTokens || 0),
+      cachedInputTokens: Number(row.cachedInputTokens || 0),
+      outputTokens: Number(row.outputTokens || 0),
+      reasoningOutputTokens: Number(row.reasoningOutputTokens || 0),
+      totalTokens: Number(row.totalTokens || 0),
+      usageSource: row.usageSource || "estimated",
+      durationMs: Number(row.durationMs || 0)
+    }))
+  };
 }
 
 export async function summarizeAgentTokenEconomy() {

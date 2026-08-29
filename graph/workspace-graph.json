@@ -263,8 +263,8 @@
       "risk_level": "high",
       "status": "passed",
       "metadata": {
-        "backendContractTests": 17,
-        "frontendContractTests": 8,
+        "backendContractTests": 25,
+        "frontendContractTests": 10,
         "frontendBuild": "passed",
         "visualBrowser": "unavailable"
       }
