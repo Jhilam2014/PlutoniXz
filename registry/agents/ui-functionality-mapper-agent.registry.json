@@ -25,7 +25,7 @@
       "projectResponsibility": "Convert screenshots, Figma frames, product images, and named-app visual references into a ui_node_to_functionality map with behavior, state, data/API contracts, and validation criteria.",
       "status": "active",
       "contextPath": ".agentic/orchestrator-agent.md",
-      "createdAt": "2026-08-29T12:10:16.510Z"
+      "createdAt": "2026-08-30T00:40:41.849Z"
     }
   ],
   "reuse_decisions": [
@@ -38,7 +38,7 @@
       "reuseConfidenceScore": 100,
       "similarityScore": 1,
       "reason": "Reused the existing global ui-functionality-mapper definition; project context is stored in a separate assignment.",
-      "createdAt": "2026-08-29T12:10:16.510Z"
+      "createdAt": "2026-08-30T00:40:41.849Z"
     }
   ],
   "latest_reuse_decision": {
@@ -50,6 +50,6 @@
     "reuseConfidenceScore": 100,
     "similarityScore": 1,
     "reason": "Reused the existing global ui-functionality-mapper definition; project context is stored in a separate assignment.",
-    "createdAt": "2026-08-29T12:10:16.510Z"
+    "createdAt": "2026-08-30T00:40:41.849Z"
   }
 }

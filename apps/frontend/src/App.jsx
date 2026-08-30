@@ -42,6 +42,7 @@ import {
   Plus,
   Presentation,
   RefreshCcw,
+  Redo2,
   Search,
   Send,
   Server,
@@ -56,6 +57,7 @@ import {
   Tablet,
   Trash2,
   Upload,
+  Undo2,
   UserRound,
   X,
   XCircle
@@ -6385,6 +6387,9 @@ export default function App() {
   const [techStackIndex, setTechStackIndex] = useState(0);
   const [isGenerating, setGenerating] = useState(false);
   const [isStoppingGotham, setStoppingGotham] = useState(false);
+  const [gothamChangeHistory, setGothamChangeHistory] = useState(null);
+  const [gothamHistoryAction, setGothamHistoryAction] = useState("");
+  const [gothamHistoryError, setGothamHistoryError] = useState("");
   const [projectName, setProjectName] = useState("Bag commerce studio");
   const [projectResult, setProjectResult] = useState(null);
   const projectNotificationRef = useRef("");
@@ -6967,6 +6972,61 @@ export default function App() {
     }
   }
 
+  async function loadGothamChangeHistory(projectId = selectedProjectId) {
+    if (!projectId || projectId === SYSTEM_TARGET_VALUE) {
+      setGothamChangeHistory(null);
+      setGothamHistoryError("");
+      return;
+    }
+    try {
+      const res = await authFetch(`${BACKEND_URL}/api/projects/${encodeURIComponent(projectId)}/change-history`);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Gotham change history could not be loaded.");
+      setGothamChangeHistory(data.history || null);
+      setGothamHistoryError("");
+    } catch (error) {
+      setGothamChangeHistory(null);
+      setGothamHistoryError(error.message || "Gotham change history could not be loaded.");
+    }
+  }
+
+  async function applyGothamHistoryAction(action) {
+    if (!selectedProject || selectedProject.isDefault || isGenerating || gothamHistoryAction) return;
+    setGothamHistoryAction(action);
+    setGothamHistoryError("");
+    try {
+      const res = await authFetch(`${BACKEND_URL}/api/projects/${encodeURIComponent(selectedProject.id)}/change-history/${action}`, {
+        method: "POST"
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || `Gotham could not ${action} the project change.`);
+      setGothamChangeHistory(data.history || null);
+      applyReadyProject(data.project);
+      setPreviewKey(Date.now());
+      await Promise.all([
+        loadProjects(),
+        loadProjectInstructions(selectedProject.id),
+        loadProjectArtifacts(selectedProject.id)
+      ]);
+      const label = action === "undo" ? "Undid" : "Redid";
+      setRuntimeLogs((current) => mergeRuntimeRows([{
+        id: `gotham-${action}-${Date.now()}`,
+        type: "project-status",
+        projectId: selectedProject.id,
+        projectName: selectedProject.name,
+        message: `${label} the latest Gotham project change.`,
+        createdAt: new Date().toISOString(),
+        time: formatIstTime()
+      }], current));
+    } catch (error) {
+      const message = error.message || `Gotham could not ${action} the project change.`;
+      await loadGothamChangeHistory(selectedProject.id).catch(() => {});
+      setGothamHistoryError(message);
+    } finally {
+      setGothamHistoryAction("");
+    }
+  }
+
   async function loadProjectInstructions(projectId = selectedProjectId) {
     if (projectId === SYSTEM_TARGET_VALUE) {
       setInstructionsError("");
@@ -7018,6 +7078,15 @@ export default function App() {
     if (selectedProjectId) localStorage.setItem(key, selectedProjectId);
     else localStorage.removeItem(key);
   }, [selectedProjectId, currentUser?.id]);
+
+  useEffect(() => {
+    if (!selectedProject || selectedProject.isDefault) {
+      setGothamChangeHistory(null);
+      setGothamHistoryError("");
+      return;
+    }
+    loadGothamChangeHistory(selectedProject.id);
+  }, [selectedProject?.id, selectedProject?.isDefault, currentUser?.id]);
 
   useEffect(() => {
     if (!currentUser?.id) return undefined;
@@ -7225,10 +7294,30 @@ export default function App() {
     instructionCommitTimerRef.current = null;
   }
 
+  function replaceInstructionEditorValue(value) {
+    const editor = instructionEditorRef.current;
+    if (!editor) return;
+    editor.replaceChildren(document.createTextNode(value));
+    instructionEditorValueRef.current = value;
+    instructionCursorRef.current = null;
+    if (instructionHistoryCaretIntentRef.current) {
+      const range = document.createRange();
+      range.selectNodeContents(editor);
+      range.collapse(instructionHistoryCaretIntentRef.current === "start");
+      const selection = window.getSelection?.();
+      selection?.removeAllRanges();
+      selection?.addRange(range);
+      instructionCursorRef.current = range.cloneRange();
+      instructionHistoryCaretIntentRef.current = "";
+    }
+  }
+
   function setInstructionImmediately(nextValue) {
     cancelInstructionCommit();
     const currentValue = instructionEditorValue(instructionEditorRef.current);
-    setInstruction(typeof nextValue === "function" ? nextValue(currentValue) : nextValue);
+    const value = typeof nextValue === "function" ? nextValue(currentValue) : nextValue;
+    replaceInstructionEditorValue(value);
+    setInstruction(value);
   }
 
   function commitInstructionFromEditor() {
@@ -7367,19 +7456,13 @@ export default function App() {
   useEffect(() => {
     const editor = instructionEditorRef.current;
     if (!editor || instructionEditorValueRef.current === instruction) return;
-    editor.replaceChildren(document.createTextNode(instruction));
-    instructionEditorValueRef.current = instruction;
-    instructionCursorRef.current = null;
-    if (instructionHistoryCaretIntentRef.current) {
-      const range = document.createRange();
-      range.selectNodeContents(editor);
-      range.collapse(instructionHistoryCaretIntentRef.current === "start");
-      const selection = window.getSelection?.();
-      selection?.removeAllRanges();
-      selection?.addRange(range);
-      instructionCursorRef.current = range.cloneRange();
-      instructionHistoryCaretIntentRef.current = "";
-    }
+    // A delayed editor-originated state update can finish after the user has
+    // already typed another character. Never replace the live editable DOM in
+    // that case: rebuilding it discards the browser's selection and moves the
+    // caret to the beginning. Explicit replacements update the editor through
+    // setInstructionImmediately before committing React state.
+    if (document.activeElement === editor) return;
+    replaceInstructionEditorValue(instruction);
   }, [instruction]);
 
   useEffect(() => () => cancelInstructionCommit(), []);
@@ -8265,6 +8348,7 @@ export default function App() {
       await loadProjects().catch(() => {});
       setSelectedReferences([]);
     } finally {
+      if (!isSystemTarget && selectedProjectId) await loadGothamChangeHistory(selectedProjectId);
       setPendingStudioContext(null);
       setGenerating(false);
       setStoppingGotham(false);
@@ -9249,7 +9333,32 @@ export default function App() {
 	                    {instruction.length.toLocaleString()} / {MAX_INSTRUCTION_CHARS.toLocaleString()}
 	                  </span>
 	                ) : null}
+	                {gothamHistoryError ? (
+	                  <span className="gotham-change-history-error" role="alert">{gothamHistoryError}</span>
+	                ) : null}
 	                <div className="instruction-footer-controls" role="toolbar" aria-label="Instruction controls">
+	                  <button
+	                    type="button"
+	                    className="instruction-history-action"
+	                    onClick={() => applyGothamHistoryAction("undo")}
+	                    disabled={!gothamChangeHistory?.canUndo || isGenerating || Boolean(gothamHistoryAction) || !selectedProject || selectedProject.isDefault}
+	                    aria-label="Undo latest Gotham project change"
+	                    title={gothamChangeHistory?.undo?.instruction ? `Undo: ${gothamChangeHistory.undo.instruction}` : "No Gotham project change to undo"}
+	                  >
+	                    {gothamHistoryAction === "undo" ? <Loader2 className="spin" size={14} /> : <Undo2 size={14} />}
+	                    <span>Undo</span>
+	                  </button>
+	                  <button
+	                    type="button"
+	                    className="instruction-history-action"
+	                    onClick={() => applyGothamHistoryAction("redo")}
+	                    disabled={!gothamChangeHistory?.canRedo || isGenerating || Boolean(gothamHistoryAction) || !selectedProject || selectedProject.isDefault}
+	                    aria-label="Redo reverted Gotham project change"
+	                    title={gothamChangeHistory?.redo?.instruction ? `Redo: ${gothamChangeHistory.redo.instruction}` : "Undo a Gotham change to make Redo available"}
+	                  >
+	                    {gothamHistoryAction === "redo" ? <Loader2 className="spin" size={14} /> : <Redo2 size={14} />}
+	                    <span>Redo</span>
+	                  </button>
 	                  <details
 	                    ref={instructionProjectMenuRef}
 	                    className="instruction-project-menu"

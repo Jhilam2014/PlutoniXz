@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { authFetch } from "./authClient.js";
+import { authFetch, getStoredUser } from "./authClient.js";
 import { fetchDecisionBranchPages, fetchDecisionGraphPages } from "./decisionContinuityPagination.js";
 import ApplicationDecisionMappingCanvas from "./components/agentic-system/ApplicationDecisionMappingCanvas.jsx";
 import EnterprisePortfolioBrainCanvas from "./components/agentic-system/EnterprisePortfolioBrainCanvas.jsx";
@@ -935,7 +935,122 @@ function SharingPolicyNotice({ summary }) {
   );
 }
 
-function PortfolioMode({ applications, assignmentApplications = applications, hierarchy, relations, portfolioSummary, onOpenApplication, onProjectsUpdated }) {
+function policyLines(value) {
+  return String(value || "").split(/\n|,/).map((item) => item.trim()).filter(Boolean);
+}
+
+function InformationSharingPolicyEditor({ applications, policies = [], onSaved }) {
+  const operatorId = getStoredUser()?.id || "";
+  const [sourceProjectId, setSourceProjectId] = useState("");
+  const [recipientProjectId, setRecipientProjectId] = useState("");
+  const [status, setStatus] = useState("draft");
+  const [scopeLevel, setScopeLevel] = useState("application");
+  const [scopeId, setScopeId] = useState("");
+  const [scopeLabel, setScopeLabel] = useState("");
+  const [summary, setSummary] = useState("");
+  const [purposes, setPurposes] = useState("application_development, portfolio_analysis");
+  const [dataCategories, setDataCategories] = useState("");
+  const [classification, setClassification] = useState("internal");
+  const [region, setRegion] = useState("");
+  const [retentionDays, setRetentionDays] = useState("");
+  const [governanceRules, setGovernanceRules] = useState("");
+  const [privacyPolicies, setPrivacyPolicies] = useState("");
+  const [enterpriseConstraints, setEnterpriseConstraints] = useState("");
+  const [approvals, setApprovals] = useState({ account: false, source: false, recipient: false });
+  const [principals, setPrincipals] = useState({ account: operatorId, source: operatorId, recipient: operatorId });
+  const [saveState, setSaveState] = useState("idle");
+  const [message, setMessage] = useState("");
+  const source = applications.find((application) => application.id === sourceProjectId) || null;
+  const eligibleRecipients = applications.filter((application) => application.id !== sourceProjectId && source?.enterprise?.id && application.enterprise?.id === source.enterprise.id);
+  const activeApprovalReady = status !== "active" || Object.keys(approvals).every((party) => approvals[party] && principals[party].trim());
+  const canSave = source && recipientProjectId && summary.trim().length >= 3 && policyLines(dataCategories).length && policyLines(purposes).length && activeApprovalReady && (scopeLevel !== "account" || scopeId.trim()) && (scopeLevel !== "client" || scopeId.trim()) && saveState !== "saving";
+
+  useEffect(() => {
+    if (eligibleRecipients.some((application) => application.id === recipientProjectId)) return;
+    setRecipientProjectId("");
+  }, [sourceProjectId]);
+
+  async function savePolicy(event) {
+    event.preventDefault();
+    if (!canSave) return;
+    setSaveState("saving");
+    setMessage("");
+    try {
+      const response = await authFetch(`${BACKEND_URL}/api/enterprise-sharing/agreements`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          status,
+          enterpriseId: source.enterprise.id,
+          sourceProjectId,
+          recipientProjectId,
+          direction: "source_to_recipient",
+          purposes: policyLines(purposes),
+          scope: { level: scopeLevel, accountId: scopeLevel === "account" ? scopeId.trim() : "", clientId: scopeLevel === "client" ? scopeId.trim() : "", label: scopeLabel.trim() },
+          information: {
+            summary: summary.trim(), dataCategories: policyLines(dataCategories), classification, region: region.trim(),
+            retentionDays: retentionDays === "" ? null : Number(retentionDays),
+            governanceRules: policyLines(governanceRules), privacyPolicies: policyLines(privacyPolicies), enterpriseConstraints: policyLines(enterpriseConstraints)
+          },
+          approvals: Object.fromEntries(Object.keys(approvals).map((party) => [party, { approved: approvals[party], principalId: principals[party].trim() }]))
+        })
+      });
+      const data = await readJson(response);
+      if (!response.ok) throw new Error(data.error || "Information-sharing policy could not be recorded.");
+      setSaveState("saved");
+      setMessage(`${status === "active" ? "Active" : "Draft"} information-sharing policy recorded.`);
+      onSaved?.(data.agreement);
+    } catch (error) {
+      setSaveState("error");
+      setMessage(error.message || "Information-sharing policy could not be recorded.");
+    }
+  }
+
+  return (
+    <section className="plutonix-information-sharing" aria-labelledby="plutonix-information-sharing-heading">
+      <header>
+        <div><span className="plutonix-analysis-eyebrow">Governed context exchange</span><h3 id="plutonix-information-sharing-heading">Information-sharing policies</h3></div>
+        <small>{countLabel(policies.length, "recorded policy")}</small>
+      </header>
+      <p>Record exactly which enterprise, account, client, or application context may flow from one App BrainX to another. Gotham and DecisionX receive only active policies approved for <code>application_development</code>.</p>
+      <form onSubmit={savePolicy} className="plutonix-information-sharing-form">
+        <div className="plutonix-information-sharing-table-wrap">
+          <table className="plutonix-information-sharing-table">
+            <thead><tr><th scope="col">Policy dimension</th><th scope="col">Configuration</th><th scope="col">Governance effect</th></tr></thead>
+            <tbody>
+              <tr className="policy-table-section"><th colSpan="3">Relationship and authorization boundary</th></tr>
+              <tr><th scope="row"><strong>Source application</strong><small>Information producer</small></th><td><select aria-label="Source application" value={sourceProjectId} onChange={(event) => setSourceProjectId(event.target.value)} required><option value="">Choose source</option>{applications.map((application) => <option key={application.id} value={application.id}>{application.name} · {application.enterprise?.name || "unassigned"}</option>)}</select></td><td>Owns the information and defines the permitted outbound context.</td></tr>
+              <tr><th scope="row"><strong>Recipient application</strong><small>Authorized consumer</small></th><td><select aria-label="Recipient application" value={recipientProjectId} onChange={(event) => setRecipientProjectId(event.target.value)} required disabled={!sourceProjectId}><option value="">Choose same-enterprise recipient</option>{eligibleRecipients.map((application) => <option key={application.id} value={application.id}>{application.name}</option>)}</select></td><td>Must share the source application’s explicit enterprise assignment.</td></tr>
+              <tr><th scope="row"><strong>Policy state</strong><small>Runtime availability</small></th><td><select aria-label="Policy state" value={status} onChange={(event) => setStatus(event.target.value)}><option value="draft">Draft</option><option value="active">Active</option><option value="suspended">Suspended</option></select></td><td>{status === "active" ? "Available to BrainX, Gotham, and DecisionX after every approval passes." : status === "draft" ? "Reviewable only; unavailable to Gotham execution." : "Retained for audit but excluded from context exchange."}</td></tr>
+              <tr><th scope="row"><strong>Information level</strong><small>Enterprise boundary</small></th><td><div className="policy-table-control-pair"><select aria-label="Information level" value={scopeLevel} onChange={(event) => { setScopeLevel(event.target.value); setScopeId(""); }}><option value="application">Application</option><option value="enterprise">Enterprise</option><option value="account">Account</option><option value="client">Client</option></select>{(scopeLevel === "account" || scopeLevel === "client") ? <input aria-label={scopeLevel === "account" ? "Account ID" : "Client ID"} value={scopeId} onChange={(event) => setScopeId(event.target.value)} placeholder={scopeLevel === "account" ? "Account ID" : "Client ID"} required /> : null}</div></td><td>Limits interpretation to the selected organizational scope.</td></tr>
+              <tr><th scope="row"><strong>Scope label</strong><small>Recognizable business name</small></th><td><input aria-label="Scope label" value={scopeLabel} onChange={(event) => setScopeLabel(event.target.value)} placeholder="Human-readable scope name" /></td><td>A display label only; it never expands authorization.</td></tr>
+
+              <tr className="policy-table-section"><th colSpan="3">Information handling and decision constraints</th></tr>
+              <tr><th scope="row"><strong>Shareable context</strong><small>Approved factual summary</small></th><td><textarea aria-label="Shareable context summary" value={summary} onChange={(event) => setSummary(event.target.value)} placeholder="Factual account/client/application context that the recipient may consider" required /></td><td>Only this bounded summary—not raw account or client records—enters Gotham context.</td></tr>
+              <tr><th scope="row"><strong>Purpose and categories</strong><small>Use limitation</small></th><td><div className="policy-table-control-stack"><input aria-label="Purposes" value={purposes} onChange={(event) => setPurposes(event.target.value)} placeholder="application_development" /><input aria-label="Data categories" value={dataCategories} onChange={(event) => setDataCategories(event.target.value)} placeholder="client preferences, account rules" required /></div></td><td>Direction and purpose must match exactly; categories describe what may be considered.</td></tr>
+              <tr><th scope="row"><strong>Classification</strong><small>Handling sensitivity</small></th><td><select aria-label="Classification" value={classification} onChange={(event) => setClassification(event.target.value)}><option value="public">Public</option><option value="internal">Internal</option><option value="confidential">Confidential</option><option value="restricted">Restricted</option></select></td><td>Sets the minimum protection level for every recipient and derived decision.</td></tr>
+              <tr><th scope="row"><strong>Residency and retention</strong><small>Data lifecycle</small></th><td><div className="policy-table-control-pair"><input aria-label="Region" value={region} onChange={(event) => setRegion(event.target.value)} placeholder="Region: IN, EU, US…" /><input aria-label="Retention days" type="number" min="0" max="36500" value={retentionDays} onChange={(event) => setRetentionDays(event.target.value)} placeholder="Retention days" /></div></td><td>Constrains processing location and how long shared context may remain usable.</td></tr>
+              <tr><th scope="row"><strong>Data governance rules</strong><small>Operational controls</small></th><td><textarea aria-label="Data governance rules" value={governanceRules} onChange={(event) => setGovernanceRules(event.target.value)} placeholder="One rule per line" /></td><td>Binding controls considered during architecture and implementation decisions.</td></tr>
+              <tr><th scope="row"><strong>Privacy policies</strong><small>Privacy obligations</small></th><td><textarea aria-label="Privacy policies" value={privacyPolicies} onChange={(event) => setPrivacyPolicies(event.target.value)} placeholder="One policy or policy reference per line" /></td><td>Applied to generated flows, data exposure, logging, and user-facing output.</td></tr>
+              <tr><th scope="row"><strong>Enterprise constraints</strong><small>DecisionX deferral basis</small></th><td><textarea aria-label="Enterprise constraints" value={enterpriseConstraints} onChange={(event) => setEnterpriseConstraints(event.target.value)} placeholder="Constraints that should defer conflicting approaches" /></td><td>Conflicting approaches remain recorded as deferred with policy evidence.</td></tr>
+
+              <tr className="policy-table-section"><th colSpan="3">Approval evidence</th></tr>
+              {Object.keys(approvals).map((party) => <tr key={party}><th scope="row"><strong>{party === "account" ? "Account authority" : party === "source" ? "Source owner" : "Recipient owner"}</strong><small>Explicit approval</small></th><td><div className="policy-table-approval"><label><input type="checkbox" checked={approvals[party]} onChange={(event) => setApprovals((current) => ({ ...current, [party]: event.target.checked }))} /><span>{approvals[party] ? "Approved" : "Not approved"}</span></label><input aria-label={`${party} principal ID`} value={principals[party]} onChange={(event) => setPrincipals((current) => ({ ...current, [party]: event.target.value }))} placeholder={`${party} principal ID`} disabled={!approvals[party]} /></div></td><td>{party === "account" ? "Confirms account-level authority for the sharing agreement." : party === "source" ? "Confirms the information owner permits the outbound flow." : "Confirms the receiving application accepts the governed context."}</td></tr>)}
+            </tbody>
+          </table>
+        </div>
+        <footer><button type="submit" disabled={!canSave}>{saveState === "saving" ? "Recording policy…" : "Record sharing policy"}</button>{message ? <span className={saveState === "error" ? "error" : ""} role={saveState === "error" ? "alert" : "status"}>{message}</span> : null}</footer>
+      </form>
+      {policies.length ? <ol className="plutonix-information-sharing-list">{policies.map((policy) => {
+        const sourceName = applications.find((application) => application.id === policy.sourceProjectId)?.name || policy.sourceProjectId;
+        const recipientName = applications.find((application) => application.id === policy.recipientProjectId)?.name || policy.recipientProjectId;
+        return <li key={policy.id}><header><strong>{sourceName} → {recipientName}</strong><span className={`is-${policy.status}`}>{policy.status}</span></header><p>{policy.information?.summary || "No context summary recorded."}</p><small>{policy.scope?.level || "application"} · {policy.information?.classification || "internal"} · {(policy.purposes || []).join(", ")}</small>{policy.information?.enterpriseConstraints?.length ? <small>Constraints: {policy.information.enterpriseConstraints.join(" · ")}</small> : null}</li>;
+      })}</ol> : <p className="plutonix-analysis-empty">No information-sharing policy is recorded. Cross-application context remains unavailable.</p>}
+    </section>
+  );
+}
+
+function PortfolioMode({ applications, assignmentApplications = applications, hierarchy, relations, portfolioSummary, informationSharingPolicies, onOpenApplication, onProjectsUpdated, onPolicySaved }) {
   const applicationsWithRecordedReviewNeeds = applications.filter((application) => application.attentionCount !== null);
   const knownReviewNeeds = applicationsWithRecordedReviewNeeds.reduce((total, application) => total + application.attentionCount, 0);
   return (
@@ -955,6 +1070,7 @@ function PortfolioMode({ applications, assignmentApplications = applications, hi
       </section>
       <EnterprisePortfolioAssignmentPanel applications={assignmentApplications} onProjectsUpdated={onProjectsUpdated} />
       <SharingPolicyNotice summary={portfolioSummary} />
+      <InformationSharingPolicyEditor applications={assignmentApplications} policies={informationSharingPolicies} onSaved={onPolicySaved} />
       <EnterprisePortfolioMap
         applications={applications}
         relations={relations}
@@ -1200,11 +1316,13 @@ export default function PlutonixAnalysisWorkspace({
               hierarchy={hierarchy}
               relations={relations}
               portfolioSummary={portfolioSummary}
+              informationSharingPolicies={asArray(portfolio?.informationSharingPolicies)}
               onOpenApplication={selectProject}
               onProjectsUpdated={(updatedProjects) => {
                 updatedProjects.forEach((project) => onProjectUpdated?.(project, { select: false }));
                 setRefreshKey((current) => current + 1);
               }}
+              onPolicySaved={() => setRefreshKey((current) => current + 1)}
             />
           ) : (
             <ApplicationMode

@@ -459,6 +459,24 @@ ${deterministicPublicationOwnershipPrompt()}`;
         "- These summaries are advisory context, not approval to change policy, deploy, access data, or promote a decision."
       ].join("\n")
     : "";
+  const sharingContext = orchestratedRequest.informationSharingContext || null;
+  const authorizedSharingPolicies = Array.isArray(sharingContext?.activePolicies) ? sharingContext.activePolicies.slice(0, 20) : [];
+  const informationSharingRequirement = sharingContext
+    ? [
+        "- Enterprise information sharing is deny-by-default. Do not access, infer, copy, or expose another application's account, client, or application context unless it appears in an active policy below for the application-development purpose.",
+        ...(authorizedSharingPolicies.length
+          ? authorizedSharingPolicies.map((policy) => [
+              `  - Agreement ${String(policy.id || "recorded").slice(0, 160)} · ${policy.direction} · ${String(policy.scope?.level || "application").slice(0, 40)} scope · ${String(policy.information?.classification || "internal").slice(0, 40)}: ${String(policy.information?.summary || "").slice(0, 600)}`,
+              ...(policy.information?.dataCategories || []).slice(0, 20).map((category) => `    Data category: ${String(category).slice(0, 240)}`),
+              ...(policy.information?.governanceRules || []).slice(0, 20).map((rule) => `    Governance: ${String(rule).slice(0, 500)}`),
+              ...(policy.information?.privacyPolicies || []).slice(0, 20).map((rule) => `    Privacy: ${String(rule).slice(0, 500)}`),
+              ...(policy.information?.enterpriseConstraints || []).slice(0, 20).map((constraint) => `    Enterprise constraint: ${String(constraint).slice(0, 500)}`)
+            ].join("\n"))
+          : ["  - No active application-development sharing policy is available for this application; keep all cross-application information unavailable."]),
+        "- Treat these policies as binding design and implementation constraints for BrainX/Gotham decisions. They do not authorize deployment, credential access, policy mutation, or broader reuse.",
+        "- When an approach conflicts with an enterprise constraint, keep the approach deferred and cite the agreement and constraint in generated decision metadata; do not silently discard or activate it."
+      ].join("\n")
+    : "";
   const hasVisualReference = (orchestratedRequest.inputSources || []).some((source) => {
     const sourceType = String(source?.sourceType || "").toLowerCase();
     const mimeType = String(source?.mimeType || source?.mime || "").toLowerCase();
@@ -525,6 +543,7 @@ ${deterministicPublicationOwnershipPrompt()}`;
         intelRequirement,
         "- Keep credentials, secrets, external tracking, and unsafe scripts out of the app.",
         agenticXKnowledgeRequirement,
+        informationSharingRequirement,
         "- Do not ask follow-up questions.",
         "- At the end, briefly summarize the files you changed and confirm unrelated features were preserved."
       ].join("\n")
@@ -552,6 +571,7 @@ ${deterministicPublicationOwnershipPrompt()}`;
         "- Use configured real integrations when requested; keep secrets in environment variables and do not add tracking or invented endpoints.",
         huggingFaceRequirement,
         agenticXKnowledgeRequirement,
+        informationSharingRequirement,
         intelRequirement,
         "- Preserve reusable PlutoniX runtime and preview compatibility, but do not let the existing React/Vite scaffold redefine the primary deliverable.",
         "- Do not ask follow-up questions.",

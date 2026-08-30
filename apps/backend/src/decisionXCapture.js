@@ -29,9 +29,25 @@ function safeArray(value, max = 50) {
 }
 
 function observedAlternatives(flowPath) {
-  return safeArray(flowPath?.rejectedPaths)
+  return [...safeArray(flowPath?.rejectedPaths), ...safeArray(flowPath?.deferredPaths)]
     .map((item) => boundedId(item?.id, ""))
     .filter(Boolean);
+}
+
+function observedConstrainedAlternatives(flowPath, informationSharingContext) {
+  const agreementIds = safeArray(informationSharingContext?.agreementIds, 50).map((id) => boundedId(id, "")).filter(Boolean);
+  const enterpriseConstraints = safeArray(informationSharingContext?.enterpriseConstraints, 40).map((item) => boundedText(item, 500)).filter(Boolean);
+  return [
+    ...safeArray(flowPath?.deferredPaths, 50).map((item) => ({ item, disposition: "deferred" })),
+    ...safeArray(flowPath?.rejectedPaths, 50).map((item) => ({ item, disposition: "rejected" }))
+  ].map(({ item, disposition }) => ({
+    id: boundedId(item?.id, "observed-alternative"),
+    disposition,
+    reason: boundedText(item?.reason, 800),
+    constraint: boundedText(item?.constraint, 320),
+    enterpriseConstraintRefs: agreementIds,
+    enterpriseConstraints
+  }));
 }
 
 function observedExecutionDecisions(flowPath) {
@@ -87,6 +103,7 @@ export function observedDecisionXBranchInput({
   const observed = observedExecutionDecisions(workflow?.flowPath);
   const selectedPath = boundedText(workflow?.selectedPath || workflow?.flowPath?.selectedPath, 240);
   const proposedPath = boundedText(workflow?.proposedPath, 240);
+  const informationSharingContext = workflow?.informationSharingContext || null;
   const evidence = [
     {
       id: boundedId(`build-request-${digest({ buildKey, instruction }).slice(0, 32)}`, "build-request"),
@@ -113,11 +130,15 @@ export function observedDecisionXBranchInput({
     selectedPath: selectedPath || null,
     selectedRoute: route,
     observedDecisions: observed,
-    deferredOrRejectedPaths: safeArray(workflow?.flowPath?.rejectedPaths, 50).map((item) => ({
-      id: boundedId(item?.id, "observed-alternative"),
-      reason: boundedText(item?.reason, 800),
-      constraint: boundedText(item?.constraint, 320)
-    }))
+    deferredOrRejectedPaths: observedConstrainedAlternatives(workflow?.flowPath, informationSharingContext),
+    informationSharingPolicy: informationSharingContext ? {
+      defaultPolicy: "deny",
+      agreementIds: safeArray(informationSharingContext.agreementIds, 50).map((id) => boundedId(id, "")).filter(Boolean),
+      blockedPolicyIds: safeArray(informationSharingContext.blockedPolicies, 50).map((policy) => boundedId(policy?.id, "")).filter(Boolean),
+      enterpriseConstraints: safeArray(informationSharingContext.enterpriseConstraints, 40).map((item) => boundedText(item, 500)).filter(Boolean),
+      governanceRules: safeArray(informationSharingContext.governanceRules, 40).map((item) => boundedText(item, 500)).filter(Boolean),
+      privacyPolicies: safeArray(informationSharingContext.privacyPolicies, 40).map((item) => boundedText(item, 500)).filter(Boolean)
+    } : null
   };
   return {
     workspaceId,
@@ -136,14 +157,21 @@ export function observedDecisionXBranchInput({
     candidate,
     assumptions: [],
     evidence,
-    constraintSnapshot: route
-      ? {
-          routeStatus: route.status || null,
-          policySnapshotId: route.policySnapshotId || null,
-          budgetReservationId: route.budgetReservationId || null,
-          failureCode: route.failureCode || null
-        }
-      : {},
+    constraintSnapshot: {
+      ...(route ? {
+        routeStatus: route.status || null,
+        policySnapshotId: route.policySnapshotId || null,
+        budgetReservationId: route.budgetReservationId || null,
+        failureCode: route.failureCode || null
+      } : {}),
+      ...(informationSharingContext ? {
+        informationSharingDefault: "deny",
+        sharingAgreementIds: safeArray(informationSharingContext.agreementIds, 50).map((id) => boundedId(id, "")).filter(Boolean),
+        enterpriseConstraints: safeArray(informationSharingContext.enterpriseConstraints, 40).map((item) => boundedText(item, 500)).filter(Boolean),
+        governanceRules: safeArray(informationSharingContext.governanceRules, 40).map((item) => boundedText(item, 500)).filter(Boolean),
+        privacyPolicies: safeArray(informationSharingContext.privacyPolicies, 40).map((item) => boundedText(item, 500)).filter(Boolean)
+      } : {})
+    },
     disposition: { alternativesConsidered: observedAlternatives(workflow?.flowPath) },
     producedBy: {
       agentId: boundedId(workflow?.agentId || "plutonix-fullstack-agent", "plutonix-fullstack-agent"),

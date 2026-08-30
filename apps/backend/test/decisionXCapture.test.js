@@ -38,7 +38,15 @@ test("captures only observed build decisions and reuses a stable idempotency key
       selectedPath: "project-orchestrator",
       flowPath: {
         executedDecisions: [{ id: "selected-path", label: "Selected path", value: "project-orchestrator", reason: "Existing application scope." }],
-        rejectedPaths: [{ id: "template-only", reason: "Application-local changes are required." }]
+        rejectedPaths: [{ id: "template-only", reason: "Application-local changes are required." }],
+        deferredPaths: [{ id: "cross-region-store", reason: "Enterprise residency constraint remains active." }]
+      },
+      informationSharingContext: {
+        agreementIds: ["sharing-1"],
+        blockedPolicies: [{ id: "sharing-draft" }],
+        enterpriseConstraints: ["Keep regulated data in India."],
+        governanceRules: ["Use only for application development."],
+        privacyPolicies: ["Do not render client identifiers."]
       }
     },
     routeResult: {
@@ -63,9 +71,12 @@ test("captures only observed build decisions and reuses a stable idempotency key
   assert.equal(second.status, "recorded");
   assert.equal(first.branch.id, second.branch.id);
   assert.equal(first.branch.status, "candidate");
-  assert.deepEqual(first.branch.disposition.alternativesConsidered, ["template-only"]);
+  assert.deepEqual(first.branch.disposition.alternativesConsidered, ["template-only", "cross-region-store"]);
   assert.equal(first.branch.candidate.selectedRoute.selectedRegistrationId, "reg-123");
   assert.equal(first.branch.candidate.observedDecisions.length, 1);
+  assert.equal(first.branch.candidate.deferredOrRejectedPaths.find((path) => path.id === "cross-region-store").disposition, "deferred");
+  assert.deepEqual(first.branch.constraintSnapshot.sharingAgreementIds, ["sharing-1"]);
+  assert.deepEqual(first.branch.constraintSnapshot.enterpriseConstraints, ["Keep regulated data in India."]);
   assert.equal(governanceContexts.length, 2);
   const branches = await store.listBranches({ tenantId, workspaceId });
   assert.equal(branches.length, 1);

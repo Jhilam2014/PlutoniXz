@@ -499,3 +499,23 @@ test("the mounted PlutoniX analysis workspace replaces the retired canvases with
   assert.ok(server.includes('app.patch("/api/projects/:projectId/enterprise"'));
   assert.ok(server.includes('"stale_recorded_source_analysis"'));
 });
+
+test("portfolio analysis exposes a governed place to record account and client sharing context", () => {
+  const workspace = fs.readFileSync(new URL("../src/PlutonixAnalysisWorkspace.jsx", import.meta.url), "utf8");
+  const server = fs.readFileSync(new URL("../../backend/src/server.js", import.meta.url), "utf8");
+  const workflow = fs.readFileSync(new URL("../../backend/src/codexWorkflow.js", import.meta.url), "utf8");
+
+  assert.ok(workspace.includes("InformationSharingPolicyEditor"));
+  assert.ok(workspace.includes('className="plutonix-information-sharing-table"'));
+  assert.ok(workspace.includes("Policy dimension"));
+  assert.ok(workspace.includes("Governance effect"));
+  assert.ok(workspace.includes("Data governance rules"));
+  assert.ok(workspace.includes("Privacy policies"));
+  assert.ok(workspace.includes("Enterprise constraints"));
+  assert.ok(workspace.includes("Account ID"));
+  assert.ok(workspace.includes("Client ID"));
+  assert.ok(server.includes('app.post("/api/enterprise-sharing/agreements"'));
+  assert.ok(server.includes("buildApplicationInformationSharingContext"));
+  assert.ok(workflow.includes("Enterprise information sharing is deny-by-default"));
+  assert.ok(workflow.includes("keep the approach deferred and cite the agreement and constraint"));
+});

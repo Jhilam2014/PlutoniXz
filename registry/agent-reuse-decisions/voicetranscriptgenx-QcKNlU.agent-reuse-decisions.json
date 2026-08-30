@@ -11,7 +11,7 @@
       "reuseConfidenceScore": 100,
       "similarityScore": 1,
       "reason": "Reused the existing global project-orchestrator definition; project context is stored in a separate assignment.",
-      "createdAt": "2026-08-29T14:09:04.190Z"
+      "createdAt": "2026-08-30T04:56:21.870Z"
     },
     {
       "id": "agent-reuse:voicetranscriptgenx-QcKNlU:qagent-controller",
@@ -22,7 +22,7 @@
       "reuseConfidenceScore": 100,
       "similarityScore": 1,
       "reason": "Reused the existing global qagent-controller definition; project context is stored in a separate assignment.",
-      "createdAt": "2026-08-29T14:09:04.190Z"
+      "createdAt": "2026-08-30T04:56:21.871Z"
     },
     {
       "id": "agent-reuse:voicetranscriptgenx-QcKNlU:experience-composition-agent",
@@ -33,7 +33,7 @@
       "reuseConfidenceScore": 100,
       "similarityScore": 1,
       "reason": "Reused the existing global experience-composition definition; project context is stored in a separate assignment.",
-      "createdAt": "2026-08-29T14:09:04.190Z"
+      "createdAt": "2026-08-30T04:56:21.871Z"
     },
     {
       "id": "agent-reuse:voicetranscriptgenx-QcKNlU:data-contract-agent",
@@ -44,7 +44,7 @@
       "reuseConfidenceScore": 100,
       "similarityScore": 1,
       "reason": "Reused the existing global data-contract definition; project context is stored in a separate assignment.",
-      "createdAt": "2026-08-29T14:09:04.190Z"
+      "createdAt": "2026-08-30T04:56:21.871Z"
     },
     {
       "id": "agent-reuse:voicetranscriptgenx-QcKNlU:runtime-packaging-agent",
@@ -55,18 +55,7 @@
       "reuseConfidenceScore": 100,
       "similarityScore": 1,
       "reason": "Reused the existing global runtime-packaging definition; project context is stored in a separate assignment.",
-      "createdAt": "2026-08-29T14:09:04.190Z"
-    },
-    {
-      "id": "agent-reuse:voicetranscriptgenx-QcKNlU:design-workshop-review-agent",
-      "projectExecution": "voicetranscriptgenx-QcKNlU",
-      "selectedAgent": "design-workshop-review-agent",
-      "requestedRole": "design-workshop-review",
-      "decisionType": "exact_reuse",
-      "reuseConfidenceScore": 100,
-      "similarityScore": 1,
-      "reason": "Reused the existing global design-workshop-review definition; project context is stored in a separate assignment.",
-      "createdAt": "2026-08-29T14:09:04.190Z"
+      "createdAt": "2026-08-30T04:56:21.871Z"
     }
   ]
 }

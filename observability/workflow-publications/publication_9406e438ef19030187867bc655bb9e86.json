@@ -1,0 +1,35 @@
+{
+  "publicationId": "publication_9406e438ef19030187867bc655bb9e86",
+  "idempotencyKey": "9406e438ef19030187867bc655bb9e86bd34f7e4706000d5079560de89452589",
+  "recordedAt": "2026-08-29T17:28:36.173Z",
+  "projectId": "voicetranscriptgenx-QcKNlU",
+  "projectName": "voiceTranscriptGenX",
+  "workflowId": "plutonix_243e8b7c-d409-425c-80f4-81c49e665a1f",
+  "status": "succeeded",
+  "publicationDurationMs": 19275,
+  "timings": {
+    "preparationDurationMs": 563,
+    "decisionPersistenceDurationMs": 9,
+    "modelExecutionDurationMs": 257678,
+    "validationDurationMs": 875,
+    "previewDurationMs": 328,
+    "publicationQueueDurationMs": null,
+    "publicationDurationMs": 19275
+  },
+  "topology": {
+    "status": "published",
+    "publicationDurationMs": 18862
+  },
+  "localMemory": {
+    "status": "published",
+    "instructionProjection": "/workspace/project/memory/project-intelligence/projects/voicetranscriptgenx-QcKNlU/project-instructions.jsonl",
+    "whatNext": "/workspace/project/memory/project-intelligence/projects/voicetranscriptgenx-QcKNlU/what-next-knowledge.jsonl",
+    "summary": "/workspace/project/memory/agent-knowledge/projects/publication_9406e438ef19030187867bc655bb9e86.summary.md",
+    "agentSummaries": [
+      "/workspace/project/memory/agent-knowledge/agents/plutonix-fullstack-agent.executions.jsonl"
+    ]
+  },
+  "vectorSync": {
+    "status": "scheduled_after_local_publication"
+  }
+}

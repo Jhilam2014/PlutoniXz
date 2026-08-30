@@ -75,7 +75,19 @@ test("Gotham Chat batches editor state and draft persistence away from each keys
   assert.ok(appSource.includes("instructionCommitTimerRef.current = window.setTimeout"));
   assert.ok(appSource.includes("onBlur={commitInstructionFromEditor}"));
   assert.ok(appSource.includes("const baseInstruction = instructionEditorValue(instructionEditorRef.current).trim()"));
+  assert.ok(appSource.includes("if (document.activeElement === editor) return"));
+  assert.ok(appSource.includes("replaceInstructionEditorValue(value)"));
   assert.equal(/function handleInstructionEditorInput\(\) \{[^}]*setInstruction\(/.test(appSource), false);
+});
+
+test("Gotham Chat exposes guarded project Undo and enables Redo from persisted history", () => {
+  assert.ok(appSource.includes('className="instruction-history-action"'));
+  assert.ok(appSource.includes('applyGothamHistoryAction("undo")'));
+  assert.ok(appSource.includes('applyGothamHistoryAction("redo")'));
+  assert.ok(appSource.includes('/change-history/${action}'));
+  assert.ok(appSource.includes("!gothamChangeHistory?.canUndo"));
+  assert.ok(appSource.includes("!gothamChangeHistory?.canRedo"));
+  assert.ok(appSource.includes("Undo a Gotham change to make Redo available"));
 });
 
 test("functionality graph nodes preserve Studio resource IDs for contextual navigation", () => {

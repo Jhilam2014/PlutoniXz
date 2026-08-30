@@ -2125,8 +2125,64 @@
       "status": "completed",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
       "synced_at": "2026-08-27T17:51:26.159Z"
+    },
+    "memory/agent-knowledge/projects/publication_7adfd4ca873ecf9503c15eab52aa40de.summary.md": {
+      "content_sha256": "5efb329cf0a5cd60ac70bf91c36740c19faa8c396d9d0aa9b592acc87bcbbf33",
+      "file_id": "file-Hb9BDPoFh9mqgyyuzPEMPM",
+      "status": "in_progress",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-29T19:45:53.957Z"
+    },
+    "memory/agent-knowledge/projects/publication_9406e438ef19030187867bc655bb9e86.summary.md": {
+      "content_sha256": "8c06541d2d2c0fc85dbaf90d30b5039db713abad8f3ef0308576ff989d6c4580",
+      "file_id": "file-AZQcze8nrDvYQD7wx5wRF4",
+      "status": "in_progress",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-29T19:45:57.554Z"
+    },
+    "memory/agent-knowledge/projects/publication_b3480d5ede1d4b91c455186be8823408.summary.md": {
+      "content_sha256": "af36a723eba08022242352d35b9eb5e679247f30c793dcf9355a579fecb37dee",
+      "file_id": "file-L6hLCJShew5869SrDDMqRc",
+      "status": "in_progress",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-29T19:45:59.323Z"
+    },
+    "memory/agent-knowledge/projects/publication_c05cf023434ea81e0116b6996d3d552a.summary.md": {
+      "content_sha256": "166e2f518810a74e925b2b88f76a04de99ae6b2541ddd9ceda093e0d10c73468",
+      "file_id": "file-FpGPTow4mpDoNZ4UchBxRG",
+      "status": "in_progress",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-29T19:46:01.145Z"
+    },
+    "memory/agent-knowledge/projects/publication_e812f8a42c4a2e23edd57b087f27cdc9.summary.md": {
+      "content_sha256": "eece9ab8669b70f9a87f50b98dcd033e22a3cd1fcb7a44c10d030b167dbe5367",
+      "file_id": "file-Kic7DicjzhKgtiRkopfDrx",
+      "status": "in_progress",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-29T19:46:02.994Z"
+    },
+    "memory/agent-knowledge/projects/publication_eb13966e54e97dad1a32d9b47d36238e.summary.md": {
+      "content_sha256": "72c0d2ccd39a5fa4ace72d90c9b4972e9cade1d197e832c0034e6c0542693c46",
+      "file_id": "file-8EyjjAtKDiukv78mmY55RB",
+      "status": "in_progress",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-29T19:46:05.552Z"
+    },
+    "memory/agent-knowledge/projects/publication_f47c28fcbefbd30c5d342c6b13176af9.summary.md": {
+      "content_sha256": "71ef8107431dc0d6ae28f2327c731b9a495eb68ef8dfde90d23de12cdb89404f",
+      "file_id": "file-FxMWdsCk5ToWPeAemNpjLx",
+      "status": "in_progress",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-29T19:46:07.256Z"
+    },
+    "memory/agent-knowledge/projects/publication_f9d206d5334c1f1e78273ff3532660a9.summary.md": {
+      "content_sha256": "1054a4bd02428182cf936a85501320d04b0ed8ea45dd5393fc44d7099d635d2d",
+      "file_id": "file-AiaidDvgZZVJFHeiSLfQyY",
+      "status": "in_progress",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-08-29T19:46:09.992Z"
     }
   },
-  "last_sync_at": "2026-08-27T21:45:50.664Z",
+  "last_sync_at": "2026-08-29T19:46:10.122Z",
   "last_verification_at": "2026-08-27T21:46:24.208Z"
 }

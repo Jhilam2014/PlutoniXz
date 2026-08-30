@@ -25,7 +25,7 @@
       "projectResponsibility": "Read the project instruction, enforce app-private and agreement-gated enterprise context, record checkpoint alternatives, decide required specialist bindings, and coordinate Gotham workflow handoff.",
       "status": "active",
       "contextPath": ".agentic/orchestrator-agent.md",
-      "createdAt": "2026-08-29T13:27:45.168Z"
+      "createdAt": "2026-08-30T13:33:47.908Z"
     },
     {
       "id": "project-agent-assignment:geofinderx-2yFsDY:project-orchestrator-agent",
@@ -195,7 +195,7 @@
       "projectResponsibility": "Read the project instruction, enforce app-private and agreement-gated enterprise context, record checkpoint alternatives, decide required specialist bindings, and coordinate Gotham workflow handoff.",
       "status": "active",
       "contextPath": ".agentic/orchestrator-agent.md",
-      "createdAt": "2026-08-29T14:09:04.191Z"
+      "createdAt": "2026-08-30T04:56:21.872Z"
     }
   ],
   "reuse_decisions": [
@@ -208,7 +208,7 @@
       "reuseConfidenceScore": 100,
       "similarityScore": 1,
       "reason": "Reused the existing global project-orchestrator definition; project context is stored in a separate assignment.",
-      "createdAt": "2026-08-29T13:27:45.164Z"
+      "createdAt": "2026-08-30T13:33:47.908Z"
     },
     {
       "id": "agent-reuse:geofinderx-2yFsDY:project-orchestrator-agent",
@@ -395,18 +395,18 @@
       "reuseConfidenceScore": 100,
       "similarityScore": 1,
       "reason": "Reused the existing global project-orchestrator definition; project context is stored in a separate assignment.",
-      "createdAt": "2026-08-29T14:09:04.190Z"
+      "createdAt": "2026-08-30T04:56:21.870Z"
     }
   ],
   "latest_reuse_decision": {
-    "id": "agent-reuse:voicetranscriptgenx-QcKNlU:project-orchestrator-agent",
-    "projectExecution": "voicetranscriptgenx-QcKNlU",
+    "id": "agent-reuse:mapex-M6rGkR:project-orchestrator-agent",
+    "projectExecution": "mapex-M6rGkR",
     "selectedAgent": "project-orchestrator-agent",
     "requestedRole": "project-orchestrator",
     "decisionType": "exact_reuse",
     "reuseConfidenceScore": 100,
     "similarityScore": 1,
     "reason": "Reused the existing global project-orchestrator definition; project context is stored in a separate assignment.",
-    "createdAt": "2026-08-29T14:09:04.190Z"
+    "createdAt": "2026-08-30T13:33:47.908Z"
   }
 }

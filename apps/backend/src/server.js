@@ -46,6 +46,14 @@ import {
   updateProjectIdentity
 } from "./projectManager.js";
 import { restartGeneratedRuntime } from "./runtimeRestart.js";
+import {
+  beginProjectChange,
+  commitProjectChange,
+  ProjectChangeHistoryError,
+  projectChangeHistoryStatus,
+  redoProjectChange,
+  undoProjectChange
+} from "./projectChangeHistory.js";
 import { runProjectOrchestratorBootstrap } from "./projectBootstrap.js";
 import { deleteGlobalAgent, listGlobalAgents } from "./globalAgentKnowledge.js";
 import { scheduleAgentMemorySync, syncKnownAgentKnowledgeRoots } from "./vectorMemorySync.js";
@@ -68,7 +76,12 @@ import { AgenticXKnowledgeGateway } from "./agenticXKnowledge.js";
 import { GovernedAIXRouter } from "./aixRouting.js";
 import { DecisionXBuildCapture } from "./decisionXCapture.js";
 import { assertProductionOperationalConfiguration, operationalTelemetry } from "./operationalSecurity.js";
-import { buildEnterprisePortfolioAnalysis } from "./enterprisePortfolio.js";
+import { buildEnterprisePortfolioAnalysis, normalizeEnterpriseTag } from "./enterprisePortfolio.js";
+import {
+  buildApplicationInformationSharingContext,
+  readEnterpriseSharingAgreementRegistry,
+  saveEnterpriseSharingAgreement
+} from "./enterpriseSharingPolicy.js";
 import { createGothamStudio, detectMlExecutionIntent, registerGothamStudioRoutes } from "./gothamStudio/index.js";
 import { GothamStudioError } from "./gothamStudio/domain.js";
 import {
@@ -363,21 +376,8 @@ const istTimeFormatter = new Intl.DateTimeFormat("en-IN", {
   timeZone: "Asia/Kolkata"
 });
 
-function enterpriseSharingAgreementsPath() {
-  return process.env.ENTERPRISE_SHARING_AGREEMENTS_PATH
-    || path.join(process.env.PLUTONIX_PROJECT_ROOT || process.cwd(), "runtime", "enterprise-sharing", "agreements.json");
-}
-
 async function readEnterpriseSharingAgreements() {
-  const filePath = enterpriseSharingAgreementsPath();
-  try {
-    const rows = JSON.parse(await fs.promises.readFile(filePath, "utf8"));
-    if (!Array.isArray(rows)) return { status: "invalid", configured: true, agreements: [], error: "Agreement registry must be a JSON array." };
-    return { status: "configured", configured: true, agreements: rows, error: "" };
-  } catch (error) {
-    if (error.code === "ENOENT") return { status: "unconfigured", configured: false, agreements: [], error: "" };
-    return { status: "invalid", configured: true, agreements: [], error: "Agreement registry could not be read; sharing remains denied." };
-  }
+  return readEnterpriseSharingAgreementRegistry({ root: process.env.PLUTONIX_PROJECT_ROOT || process.cwd() });
 }
 
 const EnterpriseBuildDecisionContextSchema = z.object({
@@ -4086,6 +4086,62 @@ app.get("/api/projects", async (req, res) => {
   });
 });
 
+app.get("/api/enterprise-sharing/agreements", async (req, res) => {
+  try {
+    const user = userFromRequest(req);
+    const projects = (await listProjects({ user })).filter((project) => !project.isDefault);
+    const visibleProjectIds = new Set(projects.map((project) => project.id));
+    const registry = await readEnterpriseSharingAgreements();
+    const agreements = registry.agreements.filter((agreement) =>
+      visibleProjectIds.has(agreement?.sourceProjectId) && visibleProjectIds.has(agreement?.recipientProjectId)
+    );
+    res.json({ status: "ok", agreements, registry: { status: registry.status, configured: registry.configured, error: registry.error } });
+  } catch (error) {
+    res.status(500).json({ status: "failed", error: error.message || "Information-sharing policies are unavailable." });
+  }
+});
+
+app.post("/api/enterprise-sharing/agreements", async (req, res) => {
+  try {
+    const user = userFromRequest(req);
+    const projects = (await listProjects({ user })).filter((project) => !project.isDefault);
+    const sourceProject = projects.find((project) => project.id === req.body?.sourceProjectId);
+    const recipientProject = projects.find((project) => project.id === req.body?.recipientProjectId);
+    if (!sourceProject || !recipientProject) return res.status(404).json({ status: "failed", error: "Both sharing applications must be available in the current account." });
+    const sourceEnterprise = normalizeEnterpriseTag(sourceProject.enterprise || {
+      enterpriseId: sourceProject.enterpriseId,
+      enterpriseName: sourceProject.enterpriseName
+    });
+    const recipientEnterprise = normalizeEnterpriseTag(recipientProject.enterprise || {
+      enterpriseId: recipientProject.enterpriseId,
+      enterpriseName: recipientProject.enterpriseName
+    });
+    if (!sourceEnterprise.enterpriseId || sourceEnterprise.enterpriseId !== recipientEnterprise.enterpriseId || sourceEnterprise.enterpriseId !== req.body?.enterpriseId) {
+      return res.status(409).json({ status: "failed", error: "Information sharing requires both applications to have the same explicit enterprise assignment." });
+    }
+    const agreement = await saveEnterpriseSharingAgreement(req.body, {
+      actorId: user.id || user.email || "account-operator",
+      root: process.env.PLUTONIX_PROJECT_ROOT || process.cwd()
+    });
+    event("enterprise-sharing-policy-recorded", `Information-sharing policy ${agreement.id} was recorded`, {
+      agreementId: agreement.id,
+      enterpriseId: agreement.enterpriseId,
+      sourceProjectId: agreement.sourceProjectId,
+      recipientProjectId: agreement.recipientProjectId,
+      status: agreement.status,
+      scopeLevel: agreement.scope.level
+    });
+    res.status(201).json({ status: "recorded", agreement });
+  } catch (error) {
+    const invalid = error instanceof z.ZodError;
+    res.status(invalid ? 400 : 500).json({
+      status: "failed",
+      error: invalid ? "The information-sharing policy is incomplete or invalid." : error.message || "Information-sharing policy could not be recorded.",
+      details: invalid ? error.issues : undefined
+    });
+  }
+});
+
 app.get("/api/enterprise-portfolio", async (req, res) => {
   try {
     const user = userFromRequest(req);
@@ -4110,6 +4166,10 @@ app.get("/api/enterprise-portfolio", async (req, res) => {
         configured: agreementRegistry.configured,
         error: agreementRegistry.error
       },
+      informationSharingPolicies: agreementRegistry.agreements.filter((agreement) =>
+        managedProjects.some((project) => project.id === agreement?.sourceProjectId)
+          && managedProjects.some((project) => project.id === agreement?.recipientProjectId)
+      ),
       explanation: "Application dependencies require explicit cross-project causal evidence. Information sharing is separate and remains denied without a same-enterprise, active, direction-and-purpose-bound account agreement."
     });
   } catch (error) {
@@ -5742,6 +5802,63 @@ app.post("/api/projects/:projectId/rebuild", async (req, res) => {
   }
 });
 
+function gothamHistoryRoot() {
+  return process.env.PLUTONIX_PROJECT_ROOT || process.cwd();
+}
+
+function projectHasActiveGothamExecution(projectId) {
+  return [...activeGothamExecutions.values()].some((execution) => execution.projectId === projectId);
+}
+
+app.get("/api/projects/:projectId/change-history", async (req, res) => {
+  const user = userFromRequest(req);
+  try {
+    const project = await getProject(req.params.projectId, { user });
+    if (!project || project.isDefault) throw new ProjectChangeHistoryError("Change history is available for managed projects only.", "unsupported_project");
+    const history = await projectChangeHistoryStatus({ root: gothamHistoryRoot(), projectId: project.id });
+    return res.json({ status: "succeeded", history });
+  } catch (error) {
+    const status = error.message === "Project not found." ? 404 : error instanceof ProjectChangeHistoryError ? 400 : 500;
+    return res.status(status).json({ status: "failed", error: error.message });
+  }
+});
+
+async function applyGothamHistoryAction(req, res, action) {
+  const user = userFromRequest(req);
+  try {
+    const project = await getProject(req.params.projectId, { user });
+    if (!project || project.isDefault) throw new ProjectChangeHistoryError("Change history is available for managed projects only.", "unsupported_project");
+    if (projectHasActiveGothamExecution(project.id)) {
+      throw new ProjectChangeHistoryError(`Cannot ${action} while Gotham is changing this project.`, "execution_active");
+    }
+    const apply = action === "undo" ? undoProjectChange : redoProjectChange;
+    const restored = await apply({ root: gothamHistoryRoot(), projectId: project.id, workspaceDir: project.workspaceDir });
+    const readyProject = await ensureProjectPreviewWithRuntimeRecovery(project, {
+      emit: event,
+      source: `gotham-${action}`
+    });
+    event(`gotham-change-${action}`, `Gotham ${action} restored ${restored.record.changedFiles.length} project file${restored.record.changedFiles.length === 1 ? "" : "s"}.`, {
+      projectId: project.id,
+      checkpointId: restored.record.id,
+      changedFiles: restored.record.changedFiles
+    });
+    return res.json({ status: action === "undo" ? "undone" : "redone", history: restored.history, project: readyProject });
+  } catch (error) {
+    const status = error.message === "Project not found."
+      ? 404
+      : error instanceof ProjectChangeHistoryError && ["workspace_changed", "execution_active"].includes(error.code)
+        ? 409
+        : error instanceof ProjectChangeHistoryError
+          ? 400
+          : 500;
+    event(`gotham-change-${action}-failed`, error.message, { projectId: req.params.projectId });
+    return res.status(status).json({ status: "failed", error: error.message, code: error.code || "history_failed" });
+  }
+}
+
+app.post("/api/projects/:projectId/change-history/undo", (req, res) => applyGothamHistoryAction(req, res, "undo"));
+app.post("/api/projects/:projectId/change-history/redo", (req, res) => applyGothamHistoryAction(req, res, "redo"));
+
 app.patch("/api/projects/:projectId", async (req, res) => {
   const user = userFromRequest(req);
   const parsed = ProjectIdentitySchema.safeParse(req.body || {});
@@ -6382,6 +6499,17 @@ async function handleGenerateRequest(req, res, { executionMode = "direct" } = {}
       return res.status(status).json({ status: "failed", code: error.code || "studio_proposal_failed", error: error.message || "Gotham Studio proposal failed." });
     }
   }
+  const sharingRegistryForBuild = selectedProject && !selectedProject.isDefault
+    ? await readEnterpriseSharingAgreements()
+    : { agreements: [] };
+  const informationSharingContext = selectedProject && !selectedProject.isDefault
+    ? buildApplicationInformationSharingContext({
+        project: selectedProject,
+        projects: (await listProjects({ user })).filter((project) => !project.isDefault),
+        agreements: sharingRegistryForBuild.agreements,
+        purpose: "application_development"
+      })
+    : null;
   const enterpriseBuildScope = selectedProject && !selectedProject.isDefault
     ? await optionalEnterpriseBrainBuildScope(req, selectedProject.id)
     : null;
@@ -6415,9 +6543,10 @@ async function handleGenerateRequest(req, res, { executionMode = "direct" } = {}
       const deniedRoute = governedAIXRoute.route || {};
       const deniedEnterpriseDecisionContext = {
         applicationId: selectedProject.id,
+        affectedApplicationIds: informationSharingContext?.activePolicies.map((policy) => policy.counterpartProjectId) || [],
         ...(deniedRoute.policySnapshotId ? { policySnapshotId: deniedRoute.policySnapshotId } : {}),
         ...(deniedRoute.budgetId ? { budgetScopeId: deniedRoute.budgetId } : {}),
-        evidenceRefs: [deniedRoute.receiptId || deniedRoute.id, ...(suppliedEnterpriseDecisionContext?.evidence || []).map((item) => item.id)].filter(Boolean),
+        evidenceRefs: [deniedRoute.receiptId || deniedRoute.id, ...(informationSharingContext?.agreementIds || []), ...(suppliedEnterpriseDecisionContext?.evidence || []).map((item) => item.id)].filter(Boolean),
         classification: suppliedEnterpriseDecisionContext?.data?.classification || "internal",
         ...(suppliedEnterpriseDecisionContext?.data?.region ? { region: suppliedEnterpriseDecisionContext.data.region } : {}),
         purpose: "application_development"
@@ -6442,6 +6571,7 @@ async function handleGenerateRequest(req, res, { executionMode = "direct" } = {}
               constraint: "enterprise_model_policy"
             }))
           },
+          informationSharingContext,
           agentId: "brainx-aix-router"
         },
         routeResult: governedAIXRoute,
@@ -6482,10 +6612,10 @@ async function handleGenerateRequest(req, res, { executionMode = "direct" } = {}
       enterpriseDecisionContext = {
         applicationId: selectedProject.id,
         ...(route.enterpriseId ? { enterpriseId: route.enterpriseId } : {}),
-        affectedApplicationIds: Array.isArray(route.affectedApplicationIds) ? route.affectedApplicationIds : [],
+        affectedApplicationIds: [...new Set([...(Array.isArray(route.affectedApplicationIds) ? route.affectedApplicationIds : []), ...(informationSharingContext?.activePolicies.map((policy) => policy.counterpartProjectId) || [])])],
         ...(route.policySnapshotId ? { policySnapshotId: route.policySnapshotId } : {}),
         ...(route.budgetId ? { budgetScopeId: route.budgetId } : {}),
-        evidenceRefs: [route.receiptId || route.id, ...(suppliedEnterpriseDecisionContext?.evidence || []).map((item) => item.id)].filter(Boolean),
+        evidenceRefs: [route.receiptId || route.id, ...(informationSharingContext?.agreementIds || []), ...(suppliedEnterpriseDecisionContext?.evidence || []).map((item) => item.id)].filter(Boolean),
         classification: route.data?.classification || "internal",
         ...(route.data?.region ? { region: route.data.region } : {}),
         purpose: "application_development"
@@ -6631,6 +6761,15 @@ async function handleGenerateRequest(req, res, { executionMode = "direct" } = {}
     receiptId: agenticXKnowledge.receipt?.id || null,
     denialReasons: Array.isArray(agenticXKnowledge.denialReasons) ? agenticXKnowledge.denialReasons : []
   };
+  orchestrated.structuredRequest.informationSharingContext = informationSharingContext;
+  if (informationSharingContext) {
+    orchestrated.structuredRequest.constraints.push(
+      "Cross-application account, client, and application information is deny-by-default and may be used only through the supplied active direction-and-purpose-bound sharing policies.",
+      ...informationSharingContext.enterpriseConstraints.map((constraint) => `Enterprise constraint: ${constraint}`),
+      ...informationSharingContext.governanceRules.map((rule) => `Data governance rule: ${rule}`),
+      ...informationSharingContext.privacyPolicies.map((policy) => `Privacy policy: ${policy}`)
+    );
+  }
   orchestrated.structuredRequest.intentInference = requestIntent.inferredBugFix
     ? { kind: "bug_fix", reason: requestIntent.reason }
     : { kind: "standard", reason: requestIntent.reason };
@@ -6866,7 +7005,7 @@ async function handleGenerateRequest(req, res, { executionMode = "direct" } = {}
         project: selectedProject,
         instruction: parsed.data.instruction,
         buildKey: buildCorrelationId,
-        workflow: { correlationId: buildCorrelationId, selectedPath: flowPath.selectedPath, flowPath, agentId: "plutonix-fullstack-agent" },
+        workflow: { correlationId: buildCorrelationId, selectedPath: flowPath.selectedPath, flowPath, informationSharingContext, agentId: "plutonix-fullstack-agent" },
         routeResult: governedAIXRoute,
         enterpriseDecisionContext
       });
@@ -6965,7 +7104,8 @@ async function handleGenerateRequest(req, res, { executionMode = "direct" } = {}
           requestId: String(req.get("x-request-id") || "").slice(0, 160),
           selectedPath: "plutonix-global-orchestration",
           proposedPath: adaptiveRoute.mode,
-          agentId: adaptiveRoute.executionAgent || "plutonix-fullstack-agent"
+          agentId: adaptiveRoute.executionAgent || "plutonix-fullstack-agent",
+          informationSharingContext
         },
         routeResult: governedAIXRoute,
         enterpriseDecisionContext
@@ -7105,6 +7245,27 @@ async function handleGenerateRequest(req, res, { executionMode = "direct" } = {}
   });
   let result = null;
   let intelRuntime = null;
+  let projectChangeCheckpoint = null;
+  if (selectedProject && !selectedProject.isDefault) {
+    try {
+      projectChangeCheckpoint = await beginProjectChange({
+        root: gothamHistoryRoot(),
+        projectId: selectedProject.id,
+        workspaceDir: selectedProject.workspaceDir,
+        instruction: parsed.data.instruction,
+        workflowId: orchestrationEnvelope.parentWorkflowId
+      });
+      event("gotham-change-checkpoint-created", "Captured the project state before Gotham started changing files.", {
+        projectId: selectedProject.id,
+        checkpointId: projectChangeCheckpoint.id
+      });
+    } catch (checkpointError) {
+      event("gotham-change-checkpoint-failed", `Gotham will continue without Undo for this run: ${checkpointError.message}`, {
+        projectId: selectedProject.id,
+        code: checkpointError.code || "checkpoint_failed"
+      });
+    }
+  }
   try {
     if (intelProfileSelection?.status === "selected") {
       const configuredIntelWorkspace = selectedProject?.workspaceDir || process.env.GENERATED_SITE_DIR || path.resolve(process.cwd(), "../generated-site");
@@ -7575,6 +7736,28 @@ async function handleGenerateRequest(req, res, { executionMode = "direct" } = {}
       decisionX: decisionXOutcome ? { status: decisionXOutcome.status, branchId: decisionXOutcome.branch?.id || decisionXCapture?.branch?.id || null } : orchestrated.structuredRequest.decisionX
     });
   } finally {
+    if (projectChangeCheckpoint) {
+      try {
+        const history = await commitProjectChange(projectChangeCheckpoint, {
+          buildId: result?.buildId || "",
+          status: result ? "completed" : activeExecution.controller.signal.aborted ? "stopped" : "failed"
+        });
+        if (history?.canUndo) {
+          event("gotham-change-checkpoint-committed", "Gotham project changes are now available to Undo.", {
+            projectId: selectedProject.id,
+            checkpointId: projectChangeCheckpoint.id,
+            historyPosition: history.position,
+            historyTotal: history.total
+          });
+        }
+      } catch (checkpointError) {
+        event("gotham-change-checkpoint-failed", `Could not finalize Undo history: ${checkpointError.message}`, {
+          projectId: selectedProject.id,
+          checkpointId: projectChangeCheckpoint.id,
+          code: checkpointError.code || "checkpoint_failed"
+        });
+      }
+    }
     activeGothamExecutions.delete(activeExecutionKey);
     scheduleWorkflowPublicationDrain();
   }
