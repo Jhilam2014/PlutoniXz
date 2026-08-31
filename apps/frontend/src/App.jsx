@@ -1,4 +1,4 @@
-import { useEffect, useId, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { createRoot } from "react-dom/client";
 import * as d3 from "d3";
@@ -26,6 +26,7 @@ import {
   GitBranch,
   GripVertical,
   Hammer,
+  KeyRound,
   LockKeyhole,
   Loader2,
   Maximize2,
@@ -67,6 +68,7 @@ import StudioPage from "./pages/StudioPage.jsx";
 import GovernedPromotionPanel from "./GovernedPromotionPanel.jsx";
 import PlutonixAnalysisWorkspace from "./PlutonixAnalysisWorkspace.jsx";
 import GothamStudio from "./gotham-studio/GothamStudio.jsx";
+import AiAccountsPanel from "./AiAccountsPanel.jsx";
 import { authFetch, clearUser, getStoredUser, storeDevelopmentUser, storeUser } from "./authClient.js";
 import {
   agentGlyphMarkup,
@@ -504,7 +506,7 @@ function formatElapsedTime(ms) {
 }
 
 function StatusPill({ status }) {
-  const tone = status === "online" ? "online" : status === "working" ? "working" : "offline";
+  const tone = ["online", "ready"].includes(status) ? "online" : ["working", "running"].includes(status) ? "working" : "offline";
   return <span className={`status-pill ${tone}`}>{status}</span>;
 }
 
@@ -802,7 +804,11 @@ function agentVisualFromEvent(event, selectedProject = null) {
     "project-runtime-ready", "project-create-preserved", "project-create-failed", "error"
   ];
   const reviewerStages = ["review-start", "review-complete", "review-retry"];
-  const executorStages = ["delegation-start", "delegation-complete", "generating", "codex-start", "codex-progress", "codex-complete", "files-applied"];
+  const executorStages = [
+    "delegation-start", "delegation-complete", "generating", "codex-start", "codex-thread-started",
+    "codex-running", "codex-command", "codex-file-change", "codex-message", "codex-progress",
+    "codex-turn-completed", "codex-failed", "codex-malformed-event", "codex-complete", "files-applied"
+  ];
   const inferredId =
     event?.reviewerAgentId ||
     event?.agentId ||
@@ -1205,7 +1211,7 @@ function collapseCodexProgressRows(rows) {
 
 function activityThreadType(event) {
   if (event.role === "user") return "";
-  if (event.type === "codex-progress") return "gotham-progress";
+  if (String(event.type || "").startsWith("codex-")) return "gotham-progress";
   if (event.type === "file-plan-item") return "file-plan-item";
   if (["request-received", "orchestrated", "generating", "codex-start", "codex-complete", "files-applied", "generated"].includes(event.type)) {
     return "workflow-status";
@@ -6361,10 +6367,25 @@ export default function App() {
   const [backendStatus, setBackendStatus] = useState("offline");
   const [mcpStatus, setMcpStatus] = useState("offline");
   const [mcpId, setMcpId] = useState("");
+  const [codexRuntime, setCodexRuntime] = useState({
+    available: false,
+    authenticated: false,
+    authenticationStatus: "unavailable",
+    version: ""
+  });
   const [gothamAccountUsage, setGothamAccountUsage] = useState(null);
   const [gothamAccountUsageOpen, setGothamAccountUsageOpen] = useState(false);
   const [gothamAccountUsageLoading, setGothamAccountUsageLoading] = useState(false);
   const [gothamAccountUsageError, setGothamAccountUsageError] = useState("");
+  const [aiAccountsOpen, setAiAccountsOpen] = useState(false);
+  const [gothamProviderId, setGothamProviderId] = useState(() => localStorage.getItem("plutonix-gotham-provider") || "codex");
+  const [gothamProviderSummary, setGothamProviderSummary] = useState({ providerId: "codex", providerName: "OpenAI Codex", profileId: "", profileName: "No active profile", valid: false });
+  const [aiProviderWarning, setAiProviderWarning] = useState("");
+  const selectGothamProvider = useCallback((providerId) => {
+    setGothamProviderId(providerId);
+    localStorage.setItem("plutonix-gotham-provider", providerId);
+    setAiProviderWarning("");
+  }, []);
   const [useGothamMcp, setUseGothamMcp] = useState(() => localStorage.getItem("plutonix-use-gotham-mcp") === "true");
   const [generatedStatus, setGeneratedStatus] = useState("ready");
   const [, setEvents] = useState([]);
@@ -6793,11 +6814,16 @@ export default function App() {
     () => [
       { label: "Runtime", value: projectRuntimeLabel },
       { label: "Backend", value: backendStatus === "online" ? "Online" : "Offline" },
-      { label: "Gotham MCP", value: mcpStatus === "online" ? "External" : "Offline", detail: mcpId ? `ID ${mcpId}` : null },
+      {
+        label: "Codex CLI",
+        value: codexRuntime.authenticated ? "Ready" : codexRuntime.available ? "Authentication required" : "Unavailable",
+        detail: codexRuntime.version || codexRuntime.error || "Backend-managed direct CLI"
+      },
+      { label: "Gotham bridge", value: mcpStatus === "online" ? "Ready" : "Offline", detail: mcpId ? `ID ${mcpId}` : null },
       { label: "Orchestrator", value: lastBuild?.orchestrated?.pageType ? "Structured" : "Ready" },
       { label: "Last build", value: lastBuild?.buildId ? lastBuild.buildId.slice(-6) : "None" }
     ],
-    [backendStatus, lastBuild, mcpId, mcpStatus, projectRuntimeLabel]
+    [backendStatus, codexRuntime, lastBuild, mcpId, mcpStatus, projectRuntimeLabel]
   );
   const activityEvents = useMemo(() => {
     const rows = collapseCodexProgressRows(
@@ -6841,12 +6867,14 @@ export default function App() {
         const data = await res.json();
         if (!cancelled) {
           setBackendStatus(data.status === "ok" ? "online" : "offline");
-          setMcpStatus(data.localGothamMcp === "ready" || data.codexMcp === "external" ? "online" : "offline");
+          setCodexRuntime(data.codex || { available: false, authenticated: false, authenticationStatus: "unavailable", version: "" });
+          setMcpStatus(data.localGothamMcp === "ready" ? "online" : "offline");
           setMcpId(useGothamMcp ? data.localGothamMcpId || "" : data.codexMcpId || "");
         }
       } catch {
         if (!cancelled) {
           setBackendStatus("offline");
+          setCodexRuntime({ available: false, authenticated: false, authenticationStatus: "unavailable", version: "" });
           setMcpStatus("offline");
           setMcpId("");
         }
@@ -8098,6 +8126,10 @@ export default function App() {
             "file-plan",
             "generating",
             "codex-start",
+            "codex-running",
+            "codex-command",
+            "codex-file-change",
+            "codex-message",
             "codex-progress",
             "build-start",
             "files-written",
@@ -8138,6 +8170,12 @@ export default function App() {
       isCheckingRequiredData ||
       requiredDataUploadingFieldId
     ) return;
+    if (!gothamProviderSummary.valid || !gothamProviderSummary.profileId) {
+      setAiProviderWarning(`Connect or activate a valid ${gothamProviderSummary.providerName || "AI provider"} profile before starting a Gotham job.`);
+      setAiAccountsOpen(true);
+      return;
+    }
+    setAiProviderWarning("");
     const requiredDataInstruction = gothamWorkflowMode === "planner"
       ? ""
       : await ensureRequiredDataForInstruction(baseInstruction, "gotham-chat");
@@ -8249,8 +8287,12 @@ export default function App() {
               }
             : { enabled: false },
           projectId: isSystemTarget ? "" : selectedProjectId,
-          workspaceId: isSystemTarget ? "" : selectedProjectId,
+          workspaceId: isSystemTarget ? undefined : selectedProjectId,
           studioContext: studioContextForRun || undefined,
+          providerSelection: {
+            providerId: gothamProviderSummary.providerId,
+            profileId: gothamProviderSummary.profileId
+          },
           target: isSystemTarget
             ? { type: "system", systemId: "plutonix" }
             : { type: "project", projectId: selectedProjectId },
@@ -9204,6 +9246,18 @@ export default function App() {
 		              <h2>Gotham Builder chat</h2>
 	              <small>{isSystemTarget ? "System workshop" : selectedProject ? selectedProject.name : "New app workshop"}</small>
 	            </div>
+	            <button
+	              type="button"
+	              className={`gotham-ai-accounts-toggle ${gothamProviderSummary.valid ? "connected" : "attention"}`}
+	              onClick={() => setAiAccountsOpen(true)}
+	              aria-haspopup="dialog"
+	              aria-expanded={aiAccountsOpen}
+	              title="Connect and select AI CLI provider profiles"
+	            >
+	              <KeyRound size={14} />
+	              <span>AI Accounts</span>
+	              <small>{gothamProviderSummary.providerName} · {gothamProviderSummary.profileName}</small>
+	            </button>
 	            <label className="mcp-execution-switch" title="Use the local MCP server as the alternative Gotham execution path">
 	              <input
 	                type="checkbox"
@@ -9246,7 +9300,8 @@ export default function App() {
 			              <small>ML control</small>
 			            </button>
 			          </div>
-		          <section className="instruction-workshop" aria-label="Instruction workshop">
+	          {aiProviderWarning ? <div className="gotham-provider-warning" role="alert"><ShieldCheck size={15} /><span>{aiProviderWarning}</span></div> : null}
+	          <section className="instruction-workshop" aria-label="Instruction workshop">
 			            <section id="activity-log" className="activity-card workshop-activity-log">
 			              <div className="section-heading">
 			                <Activity size={18} />
@@ -9709,7 +9764,14 @@ export default function App() {
             <StatusPill status={backendStatus} />
           </div>
           <div className="runtime-row">
-            <span>Gotham MCP</span>
+            <span>Codex CLI{codexRuntime.version ? ` · ${codexRuntime.version}` : ""}</span>
+            <StatusPill status={codexRuntime.authenticated ? "ready" : codexRuntime.available ? "authentication required" : "unavailable"} />
+          </div>
+          {!codexRuntime.authenticated && codexRuntime.available ? (
+            <p className="runtime-auth-message">Run <code>codex login --device-auth</code> once on the host. Authentication is never requested in Gotham Chat.</p>
+          ) : null}
+          <div className="runtime-row">
+            <span>Gotham bridge</span>
             <StatusPill status={mcpStatus} />
           </div>
           <div className="runtime-row">
@@ -9979,6 +10041,16 @@ export default function App() {
       ) : (
         <main className="app-shell" />
       )}
+      <AiAccountsPanel
+        backendUrl={BACKEND_URL}
+        workspaceId={isSystemTarget ? "system:plutonix" : selectedProjectId || "default"}
+        currentUserId={currentUser?.id || ""}
+        open={aiAccountsOpen}
+        onClose={() => setAiAccountsOpen(false)}
+        selectedProviderId={gothamProviderId}
+        onSelectedProviderChange={selectGothamProvider}
+        onSummaryChange={setGothamProviderSummary}
+      />
     </div>
   );
 }

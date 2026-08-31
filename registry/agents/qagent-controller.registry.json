@@ -25,7 +25,7 @@
       "projectResponsibility": "Evaluate end-of-response objective gaps and produce stop decisions or strict next-instruction packets without directly implementing code.",
       "status": "active",
       "contextPath": ".agentic/orchestrator-agent.md",
-      "createdAt": "2026-08-30T13:33:47.908Z"
+      "createdAt": "2026-08-31T06:26:20.355Z"
     },
     {
       "id": "project-agent-assignment:geofinderx-2yFsDY:qagent-controller",
@@ -195,7 +195,7 @@
       "projectResponsibility": "Evaluate end-of-response objective gaps and produce stop decisions or strict next-instruction packets without directly implementing code.",
       "status": "active",
       "contextPath": ".agentic/orchestrator-agent.md",
-      "createdAt": "2026-08-30T04:56:21.872Z"
+      "createdAt": "2026-08-30T18:50:44.868Z"
     }
   ],
   "reuse_decisions": [
@@ -208,7 +208,7 @@
       "reuseConfidenceScore": 100,
       "similarityScore": 1,
       "reason": "Reused the existing global qagent-controller definition; project context is stored in a separate assignment.",
-      "createdAt": "2026-08-30T13:33:47.908Z"
+      "createdAt": "2026-08-31T06:26:20.354Z"
     },
     {
       "id": "agent-reuse:geofinderx-2yFsDY:qagent-controller",
@@ -395,7 +395,7 @@
       "reuseConfidenceScore": 100,
       "similarityScore": 1,
       "reason": "Reused the existing global qagent-controller definition; project context is stored in a separate assignment.",
-      "createdAt": "2026-08-30T04:56:21.871Z"
+      "createdAt": "2026-08-30T18:50:44.868Z"
     }
   ],
   "latest_reuse_decision": {
@@ -407,6 +407,6 @@
     "reuseConfidenceScore": 100,
     "similarityScore": 1,
     "reason": "Reused the existing global qagent-controller definition; project context is stored in a separate assignment.",
-    "createdAt": "2026-08-30T13:33:47.908Z"
+    "createdAt": "2026-08-31T06:26:20.354Z"
   }
 }

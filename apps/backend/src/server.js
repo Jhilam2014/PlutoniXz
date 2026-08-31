@@ -8,6 +8,7 @@ import path from "node:path";
 import { XMLParser } from "fast-xml-parser";
 import { z } from "zod";
 import { classifyGothamWorkflowFailure, isGothamCodexModelCompatibilityError, isGothamInfrastructureFailure, isProjectRepairEligible, prepareGothamRuntimeCaches, probeCodexWorkspaceSandbox, runCodexReviewWorkflow, runCodexWorkflow, runModelRepairWorkflow, verifyGothamInfrastructureHealth } from "./codexWorkflow.js";
+import { probeCodexRuntime, shutdownCodexRuntime } from "./codexRuntime.js";
 import { createPlutoniXOrchestrationEnvelope } from "./plutonixAuthority.js";
 import { isTransientWorkflowError, selectAdaptiveRoute } from "./adaptiveOrchestration.js";
 import { formatGothamModeInstruction, formatProjectOrchestratorInstruction, inferGothamRequestIntent, orchestrateBuilderInstruction } from "./orchestratorAgent.js";
@@ -75,7 +76,7 @@ import { ResearchXService, resolveResearchXConfig } from "./researchX.js";
 import { AgenticXKnowledgeGateway } from "./agenticXKnowledge.js";
 import { GovernedAIXRouter } from "./aixRouting.js";
 import { DecisionXBuildCapture } from "./decisionXCapture.js";
-import { assertProductionOperationalConfiguration, operationalTelemetry } from "./operationalSecurity.js";
+import { assertProductionOperationalConfiguration, operationalTelemetry, redactOperational } from "./operationalSecurity.js";
 import { buildEnterprisePortfolioAnalysis, normalizeEnterpriseTag } from "./enterprisePortfolio.js";
 import {
   buildApplicationInformationSharingContext,
@@ -84,6 +85,7 @@ import {
 } from "./enterpriseSharingPolicy.js";
 import { createGothamStudio, detectMlExecutionIntent, registerGothamStudioRoutes } from "./gothamStudio/index.js";
 import { GothamStudioError } from "./gothamStudio/domain.js";
+import { AiProviderProfileService, createProviderAdapters, createProviderProfileRepository, registerAiProviderRoutes } from "./aiProviders/index.js";
 import {
   buildWorkflowPublicationReceipt,
   configureWorkflowProjectionPublisher,
@@ -120,6 +122,7 @@ let aixRouter = null;
 let decisionXBuildCapture = null;
 let gothamAccountUsageService = null;
 let gothamStudioService = null;
+let aiProviderProfileService = null;
 let gothamSandboxReadiness = {
   status: "not_checked",
   component: "workspace_sandbox",
@@ -426,6 +429,11 @@ const GenerateSchema = z.object({
     selectedModelId: z.string().max(180).optional(),
     selectedFunctionalityId: z.string().max(180).optional()
   }).strict().optional(),
+  providerSelection: z.object({
+    providerId: z.enum(["codex", "claude", "copilot", "cursor", "emergent"]),
+    profileId: z.string().regex(/^[a-zA-Z0-9._-]{3,180}$/).optional(),
+    modelId: z.string().max(180).optional()
+  }).strict().optional(),
   intel: z.object({
     enabled: z.boolean().optional(),
     profileId: z.string().regex(/^[a-z][a-z0-9-]{2,80}$/).optional(),
@@ -567,13 +575,15 @@ function persistRuntimeLogEvent(payload) {
 }
 
 function event(type, message, extra = {}) {
+  const safeExtra = redactOperational(extra);
+  if (extra?.tokenUsage && typeof extra.tokenUsage === "object") safeExtra.tokenUsage = extra.tokenUsage;
   const payload = {
     id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
     type,
-    message,
+    message: redactOperational(String(message || "")),
     createdAt: new Date().toISOString(),
     time: `${istTimeFormatter.format(new Date())} IST`,
-    ...extra
+    ...safeExtra
   };
   runtimeLog.unshift(payload);
   runtimeLog.splice(MAX_RUNTIME_LOG_ROWS);
@@ -3068,6 +3078,24 @@ decisionXBuildCapture = new DecisionXBuildCapture({
 });
 gothamAccountUsageService = createGothamAccountUsageService();
 gothamStudioService = createGothamStudio({ root: plutonixProjectRoot(), env: process.env, emit: event });
+aiProviderProfileService = new AiProviderProfileService({
+  repository: createProviderProfileRepository({ env: process.env }),
+  adapters: createProviderAdapters({ env: process.env }),
+  auditSink: (providerEvent) => identityAccessStore.recordAudit({
+    principalId: providerEvent.principalId,
+    tenantId: providerEvent.tenantId,
+    workspaceId: providerEvent.workspaceId,
+    action: providerEvent.eventType,
+    outcome: providerEvent.result === "succeeded" ? "allowed" : "denied",
+    code: providerEvent.failureCategory || providerEvent.result,
+    metadata: {
+      providerId: providerEvent.providerId,
+      profileId: providerEvent.profileId || "",
+      result: providerEvent.result,
+      accountFingerprint: providerEvent.accountFingerprint || ""
+    }
+  })
+});
 suggestionIntelGovernance = new SuggestionIntelGovernance({ store: decisionContinuityStore });
 governedPromotionController = new GovernedPromotionController({
   store: new PostgresGovernedPromotionStore({ databaseUrl: process.env.DECISION_CONTINUITY_DATABASE_URL || process.env.DATABASE_URL }),
@@ -3102,6 +3130,24 @@ registerGothamStudioRoutes(app, {
       : await getProjectDecisionContinuity(scope.projectId, { user, tenantId: authorization.tenantId });
     if (!project) throw new GothamStudioError("The selected Studio project is unavailable.", { code: "studio_project_not_found", status: 404 });
     return project;
+  }
+});
+
+registerAiProviderRoutes(app, {
+  service: aiProviderProfileService,
+  readPermission: DECISION_PERMISSIONS.READ,
+  // Provider profiles are principal-owned metadata. Mutation safety comes from
+  // strict tenant/principal scoping, origin checks, rate limits, and fixed CLI
+  // commands; any authenticated workspace member with read access may manage
+  // their own profile without receiving tenant-wide operator authority.
+  operatePermission: DECISION_PERMISSIONS.READ,
+  authorize: async (req, permission, action) => {
+    const scope = await identityAccessStore.authorizeRequest(req, {
+      permission,
+      principalTypes: ["human"],
+      action
+    });
+    return scope;
   }
 });
 
@@ -3232,14 +3278,19 @@ const orchestratorHealthMonitor = createOrchestratorHealthMonitor({
 app.get("/api/status", async (_req, res) => {
   const localMcp = localGothamMcpServer.status();
   const decisionContinuityHealth = await decisionContinuityStore.health();
+  const codex = await probeCodexRuntime({
+    command: process.env.CODEX_BIN || "codex",
+    timeoutMs: Number(process.env.GOTHAM_RUNTIME_PROBE_TIMEOUT_MS || 8000)
+  });
   res.json({
     status: "ok",
     service: "plutonix-backend",
-    codexMcp: "external",
+    codexMcp: "not-required",
     codexMcpId: process.env.CODEX_MCP_ID || process.env.MCP_SERVER_ID || process.env.HOSTNAME || null,
     localGothamMcp: localMcp.status,
     localGothamMcpId: localMcp.id,
     localGothamMcpTools: localMcp.tools,
+    codex,
     orchestratorAgent: "ready",
     orchestratorHealthMonitor: String(process.env.PLUTONIX_ORCHESTRATOR_HEALTH_MONITOR || "1") === "1" ? "manual" : "disabled",
     selfImprovement: {
@@ -6044,6 +6095,7 @@ function publicGothamExecution(execution = {}) {
     taskClassification: execution.taskClassification || null,
     workflowMode: execution.workflowMode || "executor",
     executionMode: execution.executionMode || "direct",
+    providerRuntimeSelection: execution.providerRuntimeSelection || null,
     startedAt: execution.startedAt || "",
     status: execution.controller?.signal?.aborted ? "stopping" : "running",
     adaptiveRoute: execution.adaptiveRoute || null,
@@ -6198,7 +6250,7 @@ function systemImprovementFlowPath({ instruction = "", taskType = "Medium", work
   };
 }
 
-async function handleSystemImprovementRequest(req, res, { parsed, executionMode = "direct", user, executionOwnerId, executionStartedAt } = {}) {
+async function handleSystemImprovementRequest(req, res, { parsed, executionMode = "direct", user, executionOwnerId, executionStartedAt, providerRuntimeContext = null } = {}) {
   const workflowMode = normalizeGothamWorkflowMode(parsed.data.workflowMode || "executor");
   const activeExecutionKey = gothamExecutionKey(executionOwnerId || user, "system:plutonix");
   if (activeGothamExecutions.has(activeExecutionKey)) {
@@ -6217,6 +6269,7 @@ async function handleSystemImprovementRequest(req, res, { parsed, executionMode 
     resolvedTaskType: parsed.data.taskType || "Medium",
     workflowMode,
     executionMode,
+    providerRuntimeSelection: providerRuntimeContext?.selection || null,
     startedAt: executionStartedAt.toISOString()
   };
   activeGothamExecutions.set(activeExecutionKey, systemExecution);
@@ -6240,7 +6293,8 @@ async function handleSystemImprovementRequest(req, res, { parsed, executionMode 
       stage: "1/5",
       executionMode,
       workflowMode,
-      target: { type: "system", systemId: "plutonix" }
+      target: { type: "system", systemId: "plutonix" },
+      providerRuntimeSelection: providerRuntimeContext?.selection || null
     });
     event("self-improvement-proposal-required", "System target requires an ImprovementProposal before code changes", {
       stage: "2/5",
@@ -6321,6 +6375,35 @@ async function handleGenerateRequest(req, res, { executionMode = "direct" } = {}
   });
   const workflowMode = requestIntent.workflowMode;
   const selectedProject = await getProject(parsed.data.target?.projectId || parsed.data.projectId, { user });
+  let providerAuthorization;
+  let providerRuntimeContext;
+  try {
+    providerAuthorization = await identityAccessStore.authorizeRequest(req, {
+      permission: DECISION_PERMISSIONS.READ,
+      principalTypes: ["human"],
+      action: "gotham.provider_runtime.resolve"
+    });
+    providerRuntimeContext = await aiProviderProfileService.resolveRuntimeSelection({
+      tenantId: providerAuthorization.tenantId,
+      principalId: providerAuthorization.principal.id,
+      workspaceId: selectedProject?.id || (parsed.data.target?.type === "system" ? "system:plutonix" : providerAuthorization.workspaceId)
+    }, {
+      providerId: parsed.data.providerSelection?.providerId || "codex",
+      requestedProfileId: parsed.data.providerSelection?.profileId,
+      modelId: parsed.data.providerSelection?.modelId
+    });
+  } catch (error) {
+    const status = error instanceof AuthenticationError || error instanceof AuthorizationError ? error.status : error.status || 409;
+    return res.status(status).json({
+      status: "provider_profile_required",
+      code: error.code || "active_profile_required",
+      error: error instanceof AuthenticationError || error instanceof AuthorizationError
+        ? "An authenticated and authorized PlutoniX profile is required to select an AI account."
+        : error.message || "Connect and activate an AI provider profile before starting Gotham.",
+      failureCategory: error.category || "authentication_required",
+      recovery: error.recovery || ["Open AI Accounts", "Connect or verify a profile"]
+    });
+  }
   const taskClassification = classifyGothamTask({
     instruction: parsed.data.instruction,
     requestedTaskType: requestIntent.taskType,
@@ -6341,7 +6424,7 @@ async function handleGenerateRequest(req, res, { executionMode = "direct" } = {}
     autoDownload: String(process.env.PLUTONIX_HF_AUTO_DOWNLOAD || "0") === "1"
   });
   if (parsed.data.target?.type === "system") {
-    return handleSystemImprovementRequest(req, res, { parsed, executionMode, user, executionOwnerId, executionStartedAt });
+    return handleSystemImprovementRequest(req, res, { parsed, executionMode, user, executionOwnerId, executionStartedAt, providerRuntimeContext });
   }
   const mlExecutionIntent = detectMlExecutionIntent(parsed.data.instruction, parsed.data.studioContext);
   if (mlExecutionIntent.detected && selectedProject) {
@@ -6787,7 +6870,8 @@ async function handleGenerateRequest(req, res, { executionMode = "direct" } = {}
       }
     : null;
   const activeExecutionKey = gothamExecutionKey(executionOwnerId, selectedProject?.id || "");
-  if (workflowMode !== "planner" && activeGothamExecutions.has(activeExecutionKey)) {
+  const activeForProject = [...activeGothamExecutions.values()].some((execution) => execution.projectId === (selectedProject?.id || ""));
+  if (workflowMode !== "planner" && activeForProject) {
     return res.status(409).json({
       status: "running",
       error: "A Gotham instruction is already running for this project. Stop it before starting another instruction."
@@ -7125,6 +7209,7 @@ async function handleGenerateRequest(req, res, { executionMode = "direct" } = {}
     taskClassification,
     workflowMode,
     executionMode,
+    providerRuntimeSelection: providerRuntimeContext.selection,
     startedAt: executionStartedAt.toISOString(),
     adaptiveRoute,
     flowPath: gothamInstructionFlowPath({
@@ -7170,7 +7255,8 @@ async function handleGenerateRequest(req, res, { executionMode = "direct" } = {}
     executionMode,
     workflowMode,
     parentWorkflowId: orchestrationEnvelope.parentWorkflowId,
-    projectId: selectedProject?.id || null
+    projectId: selectedProject?.id || null,
+    providerRuntimeSelection: providerRuntimeContext.selection
   });
   event(executionMode === "mcp" ? "gotham-mcp-route-selected" : "gotham-direct-route-selected", executionMode === "mcp" ? "Gotham Chat will execute through the local MCP server" : "Gotham Chat will execute through the direct current workflow", {
     stage: "2/8",
@@ -7302,6 +7388,8 @@ async function handleGenerateRequest(req, res, { executionMode = "direct" } = {}
       workflowMode,
       gothamUsageOwnerKey: gothamUsageOwnerKey(verifiedUsageOwner),
       model: governedAIXRoute.status === "routed" ? (governedAIXRoute.route?.executionModel || governedAIXRoute.route?.selectedModelId || governedAIXRoute.route?.modelId || undefined) : undefined,
+      providerRuntimeSelection: providerRuntimeContext.selection,
+      providerRuntime: providerRuntimeContext.runtime,
       signal: activeExecution.controller.signal
     };
     result = executionMode === "mcp"
@@ -7780,6 +7868,9 @@ app.use((err, _req, res, _next) => {
 });
 
 export async function closePlutonixServerResources() {
+  for (const execution of activeGothamExecutions.values()) execution.controller?.abort();
+  await shutdownCodexRuntime();
+  await aiProviderProfileService?.close?.();
   gothamStudioService?.stopReconciler();
   await gothamStudioService?.repository?.close?.();
   if (decisionContinuityWorkflow?.pool) {
@@ -7796,8 +7887,11 @@ export async function closePlutonixServerResources() {
   }
 }
 
+let plutonixHttpServer = null;
+let shutdownPromise = null;
+
 export function startPlutonixServer({ listenPort = port, host = "0.0.0.0" } = {}) {
-  return app.listen(listenPort, host, async () => {
+  plutonixHttpServer = app.listen(listenPort, host, async () => {
   console.log(`PlutoniX backend listening on ${listenPort}`);
   gothamStudioService?.startReconciler();
   try {
@@ -7866,6 +7960,34 @@ export function startPlutonixServer({ listenPort = port, host = "0.0.0.0" } = {}
   setTimeout(() => scheduleIdleVectorSync("backend-startup"), 8000);
   setInterval(() => scheduleIdleVectorSync("periodic"), Math.max(60000, syncIntervalMs));
   });
+  return plutonixHttpServer;
 }
 
-if (process.env.PLUTONIX_SERVER_AUTOSTART !== "false") startPlutonixServer();
+async function shutdownPlutonixServer(signal) {
+  if (shutdownPromise) return shutdownPromise;
+  shutdownPromise = (async () => {
+    event("backend-shutdown", `PlutoniX backend received ${signal}; stopping active Gotham executions.`, { signal });
+    for (const execution of activeGothamExecutions.values()) execution.controller?.abort();
+    await shutdownCodexRuntime();
+    if (plutonixHttpServer) {
+      await new Promise((resolve) => plutonixHttpServer.close(resolve));
+      plutonixHttpServer = null;
+    }
+    await closePlutonixServerResources();
+  })();
+  return shutdownPromise;
+}
+
+if (process.env.PLUTONIX_SERVER_AUTOSTART !== "false") {
+  startPlutonixServer();
+  for (const signal of ["SIGTERM", "SIGINT"]) {
+    process.once(signal, () => {
+      shutdownPlutonixServer(signal)
+        .then(() => process.exit(0))
+        .catch((error) => {
+          console.error(`PlutoniX shutdown failed: ${redactOperational(error.message)}`);
+          process.exit(1);
+        });
+    });
+  }
+}

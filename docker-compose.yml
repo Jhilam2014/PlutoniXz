@@ -30,6 +30,8 @@ services:
       args:
         CODEX_VERSION: ${CODEX_VERSION:-0.151.0}
     container_name: plutonix-backend
+    init: true
+    stop_grace_period: 15s
     ports:
       - "${BACKEND_PORT:-8080}:8080"
     # Bubblewrap needs an unmasked procfs view before it can mount the private
@@ -69,8 +71,19 @@ services:
       - PLUTONIX_BACKEND_CONTAINER=plutonix-backend
       - CODEX_HOME=/workspace/codex-home
       - CODEX_BIN=${CODEX_BIN:-/usr/local/bin/codex}
+      - CLAUDE_BIN=${CLAUDE_BIN:-claude}
+      - COPILOT_BIN=${COPILOT_BIN:-copilot}
+      - CURSOR_AGENT_BIN=${CURSOR_AGENT_BIN:-cursor-agent}
+      - EMERGENT_BIN=${EMERGENT_BIN:-emergent}
+      - AI_PROVIDER_RUNTIME_ROOT=${AI_PROVIDER_RUNTIME_ROOT:-/workspace/runtime/ai-provider-profiles}
+      - AI_PROVIDER_PROFILE_STORE=${AI_PROVIDER_PROFILE_STORE:-/workspace/runtime/ai-provider-profiles/metadata.json}
+      - AI_PROVIDER_DATABASE_URL=${AI_PROVIDER_DATABASE_URL:-}
+      # `codex login` listens on loopback inside this container, so the host
+      # browser cannot reach its localhost:1455 callback. Device auth is the
+      # safe default unless an operator explicitly provides callback routing.
+      - AI_PROVIDER_CODEX_BROWSER_CALLBACK_AVAILABLE=${AI_PROVIDER_CODEX_BROWSER_CALLBACK_AVAILABLE:-false}
       - CODEX_WORKFLOW_TIMEOUT_MS=${CODEX_WORKFLOW_TIMEOUT_MS:-600000}
-      - GOTHAM_RUNTIME_PROBE=true
+      - GOTHAM_RUNTIME_PROBE=${GOTHAM_RUNTIME_PROBE:-true}
       - GOTHAM_ACCOUNT_USAGE_CACHE_MS=${GOTHAM_ACCOUNT_USAGE_CACHE_MS:-30000}
       - GOTHAM_ACCOUNT_USAGE_PROBE_TIMEOUT_MS=${GOTHAM_ACCOUNT_USAGE_PROBE_TIMEOUT_MS:-3000}
       - GOTHAM_ACCOUNT_USAGE_APP_SERVER_TIMEOUT_MS=${GOTHAM_ACCOUNT_USAGE_APP_SERVER_TIMEOUT_MS:-15000}
@@ -78,7 +91,7 @@ services:
       - GOTHAM_SANDBOX_PREFLIGHT_TIMEOUT_MS=${GOTHAM_SANDBOX_PREFLIGHT_TIMEOUT_MS:-8000}
       - GOTHAM_UNIFIED_EXEC_ENABLED=${GOTHAM_UNIFIED_EXEC_ENABLED:-false}
       - GOTHAM_USE_LEGACY_LANDLOCK_FALLBACK=${GOTHAM_USE_LEGACY_LANDLOCK_FALLBACK:-false}
-      - GOTHAM_FALLBACK_MODEL=${GOTHAM_FALLBACK_MODEL:-gpt-5}
+      - GOTHAM_FALLBACK_MODEL=${GOTHAM_FALLBACK_MODEL:-}
       - PLUTONIX_ORCHESTRATOR_HEALTH_MONITOR=${PLUTONIX_ORCHESTRATOR_HEALTH_MONITOR:-1}
       - PLUTONIX_ORCHESTRATOR_HEALTH_MAX_DAILY_AUDITS=${PLUTONIX_ORCHESTRATOR_HEALTH_MAX_DAILY_AUDITS:-3}
       - PLUTONIX_ORCHESTRATOR_HEALTH_TIME_ZONE=${PLUTONIX_ORCHESTRATOR_HEALTH_TIME_ZONE:-Asia/Kolkata}
@@ -221,7 +234,7 @@ services:
       - ../.gitignore:/workspace/.gitignore
       - ./apps/generated-site:/workspace/generated-site
       - ./runtime:/workspace/runtime
-      - ${HOME}/.codex:/workspace/codex-home
+      - ${HOST_CODEX_HOME:-${HOME}/.codex}:/workspace/codex-home
       # Keep Codex's lock-protected arg0 helpers on a native Linux volume.
       # Host bind-mount locking can let concurrent CLI processes delete a live
       # helper directory and poison shell/apply_patch with ENOENT.
@@ -229,6 +242,14 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - plutonix
+    healthcheck:
+      # Backend liveness remains healthy even when Codex authentication still
+      # needs one-time operator setup; /api/status reports that readiness apart.
+      test: ["CMD-SHELL", "node -e \"fetch('http://127.0.0.1:8080/api/status').then(async (r) => { const s = await r.json(); process.exit(r.ok && s.status === 'ok' ? 0 : 1) }).catch(() => process.exit(1))\""]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 20s
 
   generated-site:
     image: plutonix-generated-site:latest
@@ -389,6 +410,7 @@ services:
     restart: "no"
     environment:
       - NODE_ENV=production
+      - PLUTONIX_PROJECT_ROOT=/workspace/project
       - DECISION_CONTINUITY_ADAPTER=postgres
       # The migration script independently refuses an empty database URL.
       - DECISION_CONTINUITY_DATABASE_URL=${DECISION_CONTINUITY_DATABASE_URL:-}

@@ -69,16 +69,52 @@ Gotham Builder includes a protected, project-scoped **Studio** workspace for gov
 
 Configure the backend variables in `.env`, apply migration `012_gotham_studio.sql` before production rollout, restart the backend, select a project in Builder, and open **Studio** beside the Gotham Intel control. Production uses PostgreSQL; the atomic file repository is limited to development and tests. See [Gotham Studio operations and architecture](docs/gotham-studio.md) for provider setup, APIs, security controls, persistence, and current adapter limitations.
 
-## Codex and Gotham MCP
+## Run Gotham with Codex without VS Code
 
-PlutoniX does not expose a public generic `/mcp` JSON-RPC server. Codex MCP integration remains external to the PlutoniX API, for example:
+Gotham Builder now manages documented CLI sign-in and isolated account profiles from the **AI Accounts** control in the chat header. It detects Codex, Claude Code, GitHub Copilot, Cursor, and Emergent, exposes only capability-backed actions, supports global/workspace activation, and freezes the selected Codex profile into every execution record. Apply migration \`013_ai_provider_profiles.sql\` for production. See [AI provider profiles](docs/ai-provider-profiles.md) for the generated capability matrix, isolation/security contract, installation, and troubleshooting.
+
+Install Codex, then start Gotham and use **AI Accounts** for normal sign-in. The terminal command below remains an operator recovery/bootstrap option:
 
 ```bash
-codex mcp-server
+npm install -g @openai/codex
+codex login --device-auth
+docker compose up --build
 ```
 
-PlutoniX uses `POST /api/generate` for its direct Run workflow action and reports `codexMcp: external` from `GET /api/status`. The optional `POST /api/generate/mcp` path invokes the backend's in-process Gotham bridge (`gotham.generate`) for the UI-selected alternative route; it is not an externally exposed MCP server and cannot be used as a general JSON-RPC surface.
-Inside Docker, the backend image installs the current Codex CLI package and mounts `${HOME}/.codex` at `/workspace/codex-home`, so `Run workflow` uses your authenticated Codex configuration. If Codex completes without changing generated-site files, the request fails instead of falling back to local code generation.
+VS Code may remain completely closed, and the VS Code Codex extension is not required. The PlutoniX backend owns each `codex exec --json` process, selects the registered project workspace as its working directory, parses its JSONL events, and streams safe activity and the final agent response to Gotham Chat. The host or server running the backend must remain running while a task executes. Codex authentication is a one-time operator setup and must never be exposed to Gotham users.
+
+The backend image installs the pinned `@openai/codex` version selected by `CODEX_VERSION`. Docker mounts only the host Codex configuration directory at `/workspace/codex-home`, read/write, so file-backed login state survives backend rebuilds and restarts. Compose defaults `HOST_CODEX_HOME` to `${HOME}/.codex`; set `HOST_CODEX_HOME` explicitly to an absolute host path if the Docker/Compose environment does not provide `HOME`. Do not point it at the whole host home directory. A host OS keyring is not available inside the Linux container, so container deployments must use a Codex login stored under `CODEX_HOME` (for example, `cli_auth_credentials_store = "file"`) or a separately governed server authentication method.
+
+Runtime variables:
+
+```env
+CODEX_BIN=/usr/local/bin/codex
+CODEX_HOME=/workspace/codex-home
+CODEX_WORKFLOW_TIMEOUT_MS=600000
+GOTHAM_RUNTIME_PROBE=true
+GOTHAM_FALLBACK_MODEL=
+```
+
+`GOTHAM_FALLBACK_MODEL` is intentionally empty. Codex uses its authenticated default model unless a server-governed route explicitly selects a model. Browser callers cannot supply raw Codex flags, sandbox modes, or approval settings. Execution uses the `workspace-write` sandbox and one active writer per registered project.
+
+Verify the installation, mounted authentication, backend status, and direct transport:
+
+```bash
+docker compose config
+docker compose build backend
+docker compose up -d
+docker compose exec backend codex --version
+docker compose exec backend codex login status
+curl http://localhost:8080/api/status
+```
+
+`GET /api/status` separates backend liveness from Codex readiness. Its `codex` object reports the CLI version, availability, authentication state, backend ownership, and `requiresVsCode: false`. If it reports `authentication_required`, run `codex login --device-auth` on the host and confirm that `HOST_CODEX_HOME` maps that same configuration directory. If the CLI is unavailable, rebuild with a valid pinned `CODEX_VERSION` and verify `CODEX_BIN`. If workspace execution is blocked, inspect the safe sandbox diagnostic in the runtime log and verify the narrow project mounts and container security policy.
+
+Use the square Stop control shown beside the active Gotham instruction to call `POST /api/generate/stop`. The backend sends `SIGTERM`, escalates to `SIGKILL` after a short grace period if necessary, and also cleans up active Codex children during timeout or backend shutdown.
+
+PlutoniX does not run deprecated `codex mcp-server` and does not expose a generic remote-code-execution or public MCP endpoint. `POST /api/generate` is the direct backend-managed CLI route. The optional `POST /api/generate/mcp` UI mode is only an in-process Gotham orchestration bridge; it terminates in the same controlled Codex runtime adapter and project security boundary.
+
+If Codex completes without changing meaningful project files, the request fails instead of falling back to local code generation.
 
 Every generation response includes `orchestrated`, which shows the orchestrator agent's normalized objective, page type, topic, audience, tone, sections, constraints, and handoff metadata.
 

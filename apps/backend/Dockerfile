@@ -5,7 +5,9 @@ COPY package.json package-lock.json ./
 COPY apps/backend/package.json ./apps/backend/package.json
 RUN npm ci --omit=dev --workspace @plutonix/backend
 ARG CODEX_VERSION=0.151.0
-RUN npm install -g @openai/codex@${CODEX_VERSION}
+RUN test -n "${CODEX_VERSION}" \
+  && npm install -g @openai/codex@${CODEX_VERSION} \
+  && /usr/local/bin/codex --version
 # Intel validates document and spreadsheet artifacts by rendering their actual
 # output. Keep those native tools in the parent backend image; they are never
 # exposed as agent tools. Gotham also needs a glibc-based shell environment and

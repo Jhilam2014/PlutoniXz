@@ -27,7 +27,7 @@ for (const root of migrationRoots) {
 }
 if (!migrationDir) throw new Error("Decision-continuity migration files are unavailable from the configured project root.");
 let files = (await fs.readdir(migrationDir))
-  .filter((name) => /^(?:00[2-9]|01[0-2])_(?:decision_continuity|governed_promotion|brainx_model_registry|suggestion_intel_governance|enterprise_brainx_governance|gotham_studio).*\.sql$/.test(name))
+  .filter((name) => /^(?:00[2-9]|01[0-3])_(?:decision_continuity|governed_promotion|brainx_model_registry|suggestion_intel_governance|enterprise_brainx_governance|gotham_studio|ai_provider_profiles).*\.sql$/.test(name))
   .sort();
 const upTo = valueFor("--to");
 if (upTo) {

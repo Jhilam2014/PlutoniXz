@@ -515,6 +515,7 @@ test("renews the Codex timeout while the workflow is producing output", async (c
     [
       "#!/bin/sh",
       "if [ \"$1\" = \"--version\" ]; then printf 'codex-cli test\\n'; exit 0; fi",
+      "if [ \"$1\" = \"login\" ] && [ \"$2\" = \"status\" ]; then printf 'Logged in using ChatGPT\\n'; exit 0; fi",
       "for argument in \"$@\"; do if [ \"$argument\" = \"sandbox\" ]; then exit 0; fi; done",
       "for count in 1 2 3 4 5 6 7 8 9; do",
       "  printf '{\"type\":\"item.completed\",\"message\":\"progress %s\"}\\n' \"$count\"",
@@ -558,6 +559,7 @@ test("suppresses recoverable Codex model cache schema warnings from Gotham progr
     [
       "#!/bin/sh",
       "if [ \"$1\" = \"--version\" ]; then printf 'codex-cli test\\n'; exit 0; fi",
+      "if [ \"$1\" = \"login\" ] && [ \"$2\" = \"status\" ]; then printf 'Logged in using ChatGPT\\n'; exit 0; fi",
       "for argument in \"$@\"; do if [ \"$argument\" = \"sandbox\" ]; then exit 0; fi; done",
       "printf '2026-08-03T17:59:07.049142Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `supports_reasoning_summaries` at line 86 column 5\\n' >&2",
       "printf '{\"type\":\"item.completed\",\"message\":\"generation complete\"}\\n'",
@@ -757,6 +759,7 @@ test("does not start Codex execution when workspace sandbox preflight is unavail
   await fs.writeFile(fakeCodex, [
     "#!/bin/sh",
     "if [ \"$1\" = \"--version\" ]; then printf 'codex-cli 0.147.0\\n'; exit 0; fi",
+    "if [ \"$1\" = \"login\" ] && [ \"$2\" = \"status\" ]; then printf 'Logged in using ChatGPT\\n'; exit 0; fi",
     "if [ \"$1\" = \"sandbox\" ] || [ \"$3\" = \"sandbox\" ]; then printf '%s\\n' 'bwrap: Creating new namespace failed: Operation not permitted' >&2; exit 1; fi",
     `touch '${executionMarker}'`,
     "exit 0",
@@ -797,6 +800,7 @@ test("runs the configured Gotham fallback with an explicit model and records run
   await fs.writeFile(fakeCodex, [
     "#!/bin/sh",
     "if [ \"$1\" = \"--version\" ]; then printf 'codex-cli 0.147.0\\n'; exit 0; fi",
+    "if [ \"$1\" = \"login\" ] && [ \"$2\" = \"status\" ]; then printf 'Logged in using ChatGPT\\n'; exit 0; fi",
     "for argument in \"$@\"; do if [ \"$argument\" = \"sandbox\" ]; then exit 0; fi; done",
     "printf '%s\\n' \"$@\" > codex-args.txt",
     "printf '{\\\"type\\\":\\\"item.completed\\\",\\\"message\\\":\\\"generation complete\\\"}\\n'",

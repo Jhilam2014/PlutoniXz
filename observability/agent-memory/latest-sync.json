@@ -1,8 +1,8 @@
 {
-  "workflow_id": "plutonix-vector-sync-1788052796983",
-  "reason": "workflow-publication:publication_8fcc176377665fd7fc213b406cac6c25",
-  "started_at": "2026-08-30T01:19:56.983Z",
-  "completed_at": "2026-08-30T01:19:57.243Z",
+  "workflow_id": "plutonix-vector-sync-1788116198764",
+  "reason": "backend-startup",
+  "started_at": "2026-08-30T18:56:38.764Z",
+  "completed_at": "2026-08-30T18:56:38.885Z",
   "status": "deferred",
   "deferred_reason": "below_pending_threshold",
   "min_pending_files": 5,
@@ -10,5 +10,5 @@
   "files_uploaded": 0,
   "files_skipped": 0,
   "files_failed": 0,
-  "pending_sync_count": 1
+  "pending_sync_count": 2
 }
