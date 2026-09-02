@@ -3,7 +3,7 @@ services:
     ports: !override
       - "127.0.0.1:5173:5173"
     environment:
-      __VITE_ADDITIONAL_SERVER_ALLOWED_HOSTS: "plutomix.in,www.plutomix.in"
+      __VITE_ADDITIONAL_SERVER_ALLOWED_HOSTS: ".plutomix.in"
     restart: unless-stopped
 
   backend:
