@@ -20,3 +20,4 @@ runtime/
 # Local rolling observability logs
 observability/orchestrator-health/*.timeline.jsonl
 observability/agent-efficiency/latest-agent-efficiency.json
+observability/self-improvement/latest-cycle.json
