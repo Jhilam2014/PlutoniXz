@@ -4,6 +4,7 @@ import { createRoot } from "react-dom/client";
 import * as d3 from "d3";
 import {
   Activity,
+  Building2,
   Bot,
   Bell,
   BrainCircuit,
@@ -66,10 +67,12 @@ import {
 import CloudHostingPage from "./pages/CloudHostingPage.jsx";
 import StudioPage from "./pages/StudioPage.jsx";
 import GovernedPromotionPanel from "./GovernedPromotionPanel.jsx";
-import PlutonixAnalysisWorkspace from "./PlutonixAnalysisWorkspace.jsx";
+import PlutoMixAnalysisWorkspace from "./PlutoMixAnalysisWorkspace.jsx";
 import GothamStudio from "./gotham-studio/GothamStudio.jsx";
 import AiAccountsPanel from "./AiAccountsPanel.jsx";
+import TenantGovernancePanel from "./TenantGovernancePanel.jsx";
 import { authFetch, clearUser, getStoredUser, storeDevelopmentUser, storeUser } from "./authClient.js";
+import { freezeProviderSelection, providerExecutionFromResult, safeProviderErrorMessage } from "./aiProviderModel.js";
 import {
   agentGlyphMarkup,
   agentIconKind as sharedAgentIconKind,
@@ -92,20 +95,20 @@ import {
   decisionBranchWorkshopSummary,
   isDisabledDecisionBranch
 } from "./decisionBranchTreeModel.js";
-import { applicationDecisionSummary } from "./plutonixAnalysisModel.js";
-import { runtimeEventTranscript } from "./runtimeEventTranscript.js";
+import { applicationDecisionSummary } from "./plutomixAnalysisModel.js";
+import { isProviderRuntimeEvent, runtimeEventPresentation, runtimeEventTranscript } from "./runtimeEventTranscript.js";
 import { authorizedStudioWorkspace, normalizedStudioWorkspace } from "./studioAccessModel.js";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:8080";
 const GENERATED_SITE_URL = import.meta.env.VITE_GENERATED_SITE_URL || "http://localhost:5174";
 const MAX_RUNTIME_LOG_ROWS = 400;
 const NOTIFICATION_RETENTION_MS = 24 * 60 * 60 * 1000;
-const SYSTEM_TARGET_VALUE = "__agentic_plutonix_system__";
+const SYSTEM_TARGET_VALUE = "__agentic_plutomix_system__";
 const GOTHAM_CHAT_MIN_WIDTH = 440;
 const GOTHAM_CHAT_MAX_WIDTH = 860;
 const MAX_INSTRUCTION_CHARS = 50000;
 const INSTRUCTION_COMMIT_DELAY_MS = 120;
-const DEVELOPMENT_AUTH_ENABLED = import.meta.env.VITE_PLUTONIX_DEV_AUTH_ENABLED === "true";
+const DEVELOPMENT_AUTH_ENABLED = import.meta.env.VITE_PLUTOMIX_DEV_AUTH_ENABLED === "true";
 
 function mediaReferenceIds(items = []) {
   if (!Array.isArray(items)) return [];
@@ -174,7 +177,7 @@ const gothamIntelConfig = {
 };
 
 function selectedProjectStorageKey(user = getStoredUser()) {
-  return `plutonix-selected-project:${user?.id || "anonymous"}`;
+  return `plutomix-selected-project:${user?.id || "anonymous"}`;
 }
 
 function runningInstructionFromExecution(execution) {
@@ -184,7 +187,7 @@ function runningInstructionFromExecution(execution) {
     startedAt: execution.startedAt,
     completedAt: "",
     durationMs: null,
-    source: "plutonix-gotham-chat",
+    source: "plutomix-gotham-chat",
     projectId: execution.projectId,
     projectName: execution.projectName,
     taskType: execution.resolvedTaskType || execution.taskType || "Medium",
@@ -262,8 +265,8 @@ function recommendBrandPalette(context = "") {
   };
 }
 const agentVisuals = {
-  "plutonix-fullstack-agent": { color: "#334155", accent: "#38bdf8", label: "Fullstack", initials: "PX" },
-  "plutonix-independent-reviewer": { color: "#581c87", accent: "#e879f9", label: "Reviewer", initials: "PR" },
+  "plutomix-fullstack-agent": { color: "#334155", accent: "#38bdf8", label: "Fullstack", initials: "PX" },
+  "plutomix-independent-reviewer": { color: "#581c87", accent: "#e879f9", label: "Reviewer", initials: "PR" },
   "project-execution-agent": { color: "#0f766e", accent: "#22c55e", label: "Execution", initials: "PX" },
   "human-controller": { color: "#7f1d1d", accent: "#fb7185", label: "Human", initials: "HC" },
   "agent-memory-sync": { color: "#4c1d95", accent: "#a78bfa", label: "Memory", initials: "AM" },
@@ -324,7 +327,7 @@ function serviceFlowSteps(snapshot) {
         id === "frontend"
           ? "User-facing screens, generated pages, responsive CSS, and playground preview surface."
           : id === "backend"
-            ? "PlutoniX API, project orchestration, Gotham workflow handoff, and runtime project controls."
+            ? "PlutoMix API, project orchestration, Gotham workflow handoff, and runtime project controls."
             : id === "database"
               ? "Project metadata, generated app data, vector memory records, and graph artifacts used for reasoning."
               : id === "services"
@@ -376,7 +379,7 @@ function buildTechStackSnapshot({ project, lastBuild, flowPath, generatedStatus 
       {
         id: "backend",
         label: "Backend",
-        items: ["Node.js", "Express API", isProject ? "Project orchestrator" : "PlutoniX generator"],
+        items: ["Node.js", "Express API", isProject ? "Project orchestrator" : "PlutoMix generator"],
         state: project ? "active" : "planned"
       },
       {
@@ -409,10 +412,10 @@ function gothamChatFlowPath({ projectName, taskType, useProjectOrchestrator, wor
     selectedPath,
     confidence: 68,
     deterministic: true,
-    projectName: projectName || "PlutoniX default workspace",
+    projectName: projectName || "PlutoMix default workspace",
     taskType,
     workflowMode,
-    summary: `PlutoniX is executing deterministic path selection for this Gotham ${modeLabel} instruction.`,
+    summary: `PlutoMix is executing deterministic path selection for this Gotham ${modeLabel} instruction.`,
     humanInLoop: { required: false, reason: "", choices: [] },
     subObjectives: defaultSubObjectiveFlow.map((node) => ({
       ...node,
@@ -451,14 +454,14 @@ function gothamSystemFlowPath({ taskType, workflowMode = "executor" }) {
   const modeLabel = gothamWorkflowModes.find((mode) => mode.id === workflowMode)?.label || "Execution";
   return {
     status: "running",
-    selectedPath: "plutonix-system-improvement",
+    selectedPath: "plutomix-system-improvement",
     confidence: 90,
     deterministic: true,
-    projectName: "PlutoniX System",
+    projectName: "PlutoMix System",
     taskType,
     workflowMode,
-    summary: `Gotham ${modeLabel} is targeting the PlutoniX platform itself. A proposal must be created before implementation.`,
-    target: { type: "system", systemId: "plutonix" },
+    summary: `Gotham ${modeLabel} is targeting the PlutoMix platform itself. A proposal must be created before implementation.`,
+    target: { type: "system", systemId: "plutomix" },
     subObjectives: [
       { id: "observe", label: "Observe", state: "completed", detail: "Capture bounded system-improvement signal." },
       { id: "proposal", label: "Proposal", state: "selected", detail: "Create ImprovementProposal before code changes." },
@@ -467,12 +470,12 @@ function gothamSystemFlowPath({ taskType, workflowMode = "executor" }) {
       { id: "promotion", label: "Promotion", state: "pending", detail: "Sandbox mode stages changes." }
     ],
     nodes: [
-      { id: "system-target", label: "PlutoniX System", state: "selected", detail: "Platform repository and orchestration system." },
+      { id: "system-target", label: "PlutoMix System", state: "selected", detail: "Platform repository and orchestration system." },
       { id: "proposal-required", label: "ImprovementProposal", state: "selected", detail: "Required before modification." },
       { id: "project-target", label: "Generated project", state: "rejected", detail: "Not selected for this instruction." }
     ],
     rejectedPaths: [
-      { id: "managed-project-target", reason: "This instruction targets the PlutoniX platform, not a generated app." },
+      { id: "managed-project-target", reason: "This instruction targets the PlutoMix platform, not a generated app." },
       { id: "live-source-rewrite", reason: "Self-improvement must pass proposal, isolation, validation, review, and rollback gates." }
     ],
     nextRecommendation: "Wait for proposal/candidate status, then review Self-Improvement history."
@@ -694,7 +697,7 @@ function buildWorkflowNextInstructionSuggestion({ flowPath, projectId = "", sele
   const originalObjective = historyContext.genesisObjective || `the original ${graph.projectName || "project"} objective`;
   const brandingLine = branding?.colors?.length
     ? `${branding.name || "Current"} branding (${branding.colors.join(", ")})`
-    : "current PlutoniX branding (#753FD9, #171321, #FFFFFF)";
+    : "current PlutoMix branding (#753FD9, #171321, #FFFFFF)";
   const instruction = evidence.length
     ? [
         `Continue the existing ${graph.projectName || flowPath.projectName || "project"} implementation. Inspect the current code and project documentation before editing. Preserve completed work and address only unresolved or incomplete functionality.`,
@@ -797,9 +800,9 @@ function agentVisualFromEvent(event, selectedProject = null) {
     : promptTarget;
   const projectAgentId = selectedProject && !selectedProject.isDefault ? agentIdFromProjectName(selectedProject.name) : "";
   const builderStages = [
-    "request-received", "plutonix-start", "adaptive-route-selected", "orchestrator-prompt", "orchestrated",
-    "file-plan", "file-plan-item", "plutonix-delegation", "plutonix-validation", "plutonix-complete",
-    "plutonix-retry", "runtime-refresh-requested", "project-runtime-handoff", "generated", "hot-reload", "restarted",
+    "request-received", "plutomix-start", "adaptive-route-selected", "orchestrator-prompt", "orchestrated",
+    "file-plan", "file-plan-item", "plutomix-delegation", "plutomix-validation", "plutomix-complete",
+    "plutomix-retry", "runtime-refresh-requested", "project-runtime-handoff", "generated", "hot-reload", "restarted",
     "project-create-start", "project-instruction-start", "project-agents-created", "project-created",
     "project-runtime-ready", "project-create-preserved", "project-create-failed", "error"
   ];
@@ -813,9 +816,9 @@ function agentVisualFromEvent(event, selectedProject = null) {
     event?.reviewerAgentId ||
     event?.agentId ||
     explicitId ||
-    (reviewerStages.includes(event?.type) ? "plutonix-independent-reviewer" : "") ||
-    (builderStages.includes(event?.type) ? "plutonix-fullstack-agent" : "") ||
-    (executorStages.includes(event?.type) ? projectAgentId || "project-execution-agent" : "") ||
+    (reviewerStages.includes(event?.type) ? "plutomix-independent-reviewer" : "") ||
+    (builderStages.includes(event?.type) ? "plutomix-fullstack-agent" : "") ||
+    (executorStages.includes(event?.type) || isProviderRuntimeEvent(event) ? projectAgentId || "project-execution-agent" : "") ||
     (event?.type === "project-orchestrator-direct" || event?.type === "child-project-handoff" ? projectAgentId : "") ||
     "project-execution-agent";
   return agentVisualFromId(inferredId, {
@@ -1005,6 +1008,7 @@ function EventRow({ event, sessionStartedAt, selectedProject, onOpenStudio }) {
   const isCurrentSession = sessionStartedAt && new Date(event.createdAt || 0).getTime() >= sessionStartedAt;
   const isPromptEvent = ["instruction", "orchestrator-prompt"].includes(event.type);
   const visual = agentVisualFromEvent(event, selectedProject);
+  const providerPresentation = runtimeEventPresentation(event);
   const runtimeDetail = [
     event.failureClass,
     event.requestedModel ? `Requested: ${event.requestedModel}` : null,
@@ -1018,6 +1022,8 @@ function EventRow({ event, sessionStartedAt, selectedProject, onOpenStudio }) {
   const { inputLog, responseLog, statusLog } = runtimeEventTranscript(event);
   const eventMetadata = Object.fromEntries(Object.entries({
     agentId: event.agentId,
+    providerId: event.providerId,
+    providerProfileId: event.providerProfileId,
     projectId: event.projectId,
     projectName: event.projectName,
     buildId: event.buildId,
@@ -1048,7 +1054,7 @@ function EventRow({ event, sessionStartedAt, selectedProject, onOpenStudio }) {
     >
       <AgentAvatar visual={visual} size="tiny" />
       <div>
-        <strong>{displayEventType(event.type)} · {visual.name}</strong>
+        <strong>{displayEventType(event.type)}{providerPresentation.providerLabel ? ` · ${providerPresentation.providerLabel}` : ""} · {visual.name}</strong>
         {isPromptEvent ? <pre>{gothamText(event.message)}</pre> : <p>{gothamText(event.message)}</p>}
         {event.progressGroup ? (
           <>
@@ -1184,22 +1190,27 @@ function markCurrentSession(rows, sessionStartedAt) {
   }));
 }
 
-function collapseCodexProgressRows(rows) {
+function collapseProviderProgressRows(rows) {
   const collapsed = [];
   for (let index = 0; index < rows.length; index += 1) {
     const row = rows[index];
-    if (row.type !== "codex-progress" || rows[index + 1]?.type !== "codex-progress") {
+    const progress = runtimeEventPresentation(row).kind === "progress";
+    const nextProgress = runtimeEventPresentation(rows[index + 1] || {}).kind === "progress";
+    if (!progress || !nextProgress || runtimeEventPresentation(row).providerId !== runtimeEventPresentation(rows[index + 1]).providerId) {
       collapsed.push(row);
       continue;
     }
 
     let repeatCount = 1;
-    while (rows[index + repeatCount]?.type === "codex-progress") {
+    while (
+      runtimeEventPresentation(rows[index + repeatCount] || {}).kind === "progress" &&
+      runtimeEventPresentation(rows[index + repeatCount] || {}).providerId === runtimeEventPresentation(row).providerId
+    ) {
       repeatCount += 1;
     }
     collapsed.push({
       ...row,
-      id: `codex-progress-group-${row.id || row.createdAt}`,
+      id: `provider-progress-group-${row.id || row.createdAt}`,
       message: "Gotham is working...",
       progressGroup: true,
       repeatCount
@@ -1211,7 +1222,7 @@ function collapseCodexProgressRows(rows) {
 
 function activityThreadType(event) {
   if (event.role === "user") return "";
-  if (String(event.type || "").startsWith("codex-")) return "gotham-progress";
+  if (isProviderRuntimeEvent(event)) return runtimeEventPresentation(event).kind === "completion" ? "workflow-status" : "gotham-progress";
   if (event.type === "file-plan-item") return "file-plan-item";
   if (["request-received", "orchestrated", "generating", "codex-start", "codex-complete", "files-applied", "generated"].includes(event.type)) {
     return "workflow-status";
@@ -1253,7 +1264,7 @@ function activityCategory(event) {
   if (["instruction", "orchestrator-prompt", "project-instruction-start", "project-orchestrator-direct", "child-project-handoff"].includes(event.type)) {
     return "instructions";
   }
-  if (String(event.type || "").startsWith("codex") || ["request-received", "orchestrated", "file-plan", "file-plan-item", "generating", "files-applied"].includes(event.type)) {
+  if (isProviderRuntimeEvent(event) || ["request-received", "orchestrated", "file-plan", "file-plan-item", "generating", "files-applied"].includes(event.type)) {
     return "codex";
   }
   if (["generated", "hot-reload", "restarted", "runtime-refresh-requested", "project-runtime-ready", "project-selected", "project-runtime-handoff"].includes(event.type)) {
@@ -1640,7 +1651,7 @@ function productDocumentWorkflowDefinitions() {
     },
     {
       title: "Autonomous Quality Loop",
-      caption: "PlutoniX learns from evidence while keeping risky changes gated and reversible.",
+      caption: "PlutoMix learns from evidence while keeping risky changes gated and reversible.",
       evidence: ["Runtime logs", "Graph memory", "Design review", "Policy gate", "Next-run learning"],
       steps: [
         { label: "Runtime evidence", detail: "Collect workflow events, file changes, tests, user corrections, and failure patterns." },
@@ -1665,12 +1676,12 @@ function downloadProductDocumentPdf(markdown = "") {
     pdfRectCommand(0, 0, pageWidth, pageHeight, "#0B1424"),
     pdfRectCommand(0, 0, 14, pageHeight, "#B4233B"),
     pdfRectCommand(14, 0, 5, pageHeight, "#0F766E"),
-    pdfTextCommand("PLUTONIX", 54, 704, { size: 14, font: "F2", color: "#65D6CB" }),
+    pdfTextCommand("PLUTOMIX", 54, 704, { size: 14, font: "F2", color: "#65D6CB" }),
     pdfTextCommand("Product Document", 54, 632, { size: 38, font: "F2", color: "#FFFFFF" }),
     pdfTextCommand("Autonomous multi-artifact creation system", 56, 600, { size: 16, color: "#CBD5E1" }),
     pdfLineCommand(56, 570, 318, 570, "#B4233B", 3),
     pdfTextCommand("FROM INTENT TO THE RIGHT DIGITAL OUTPUT", 56, 538, { size: 9, font: "F2", color: "#65D6CB" }),
-    ...wrapPdfText("PlutoniX classifies the requested product shape, coordinates specialist agents, generates the real artifact, and validates it in an output-aware Playground.", 62)
+    ...wrapPdfText("PlutoMix classifies the requested product shape, coordinates specialist agents, generates the real artifact, and validates it in an output-aware Playground.", 62)
       .slice(0, 4)
       .map((line, index) => pdfTextCommand(line, 56, 510 - index * 17, { size: 11, color: "#E2E8F0" })),
     pdfTextCommand(`Edition 1.0  |  ${exportedAt}`, 56, 62, { size: 9, color: "#94A3B8" })
@@ -1699,7 +1710,7 @@ function downloadProductDocumentPdf(markdown = "") {
   const capabilityPage = [
     pdfRectCommand(0, 0, pageWidth, pageHeight, "#F4F7FA"),
     pdfRectCommand(0, 738, pageWidth, 54, "#0B1424"),
-    pdfTextCommand("PLUTONIX / CREATION SPECTRUM", 42, 758, { size: 10, font: "F2", color: "#65D6CB" }),
+    pdfTextCommand("PLUTOMIX / CREATION SPECTRUM", 42, 758, { size: 10, font: "F2", color: "#65D6CB" }),
     pdfTextCommand("One brain. Multiple native outputs.", 42, 690, { size: 25, font: "F2", color: "#101828" }),
     pdfTextCommand("The requested artifact remains the product. A webpage is never used as a substitute.", 42, 666, { size: 10, color: "#526174" })
   ];
@@ -1771,7 +1782,7 @@ function downloadProductDocumentPdf(markdown = "") {
       commands = [
         pdfRectCommand(0, 0, pageWidth, pageHeight, "#FFFFFF"),
         pdfRectCommand(0, 738, pageWidth, 54, "#0B1424"),
-        pdfTextCommand("PLUTONIX / PRODUCT SOURCE OF TRUTH", 42, 758, { size: 9, font: "F2", color: "#65D6CB" }),
+        pdfTextCommand("PLUTOMIX / PRODUCT SOURCE OF TRUTH", 42, 758, { size: 9, font: "F2", color: "#65D6CB" }),
         pdfTextCommand(String(sectionIndex + 1).padStart(2, "0"), 42, 694, { size: 11, font: "F2", color: "#B4233B" }),
         pdfTextCommand(`${section.title}${continued ? " / continued" : ""}`, 78, 688, { size: continued ? 18 : 22, font: "F2", color: "#101828" }),
         pdfLineCommand(42, 668, 570, 668, "#D7DEE7", 1)
@@ -1815,7 +1826,7 @@ function downloadProductDocumentPdf(markdown = "") {
   pages.forEach((page, index) => {
     if (index === 0) return;
     page.commands.push(pdfLineCommand(42, 42, 570, 42, "#D7DEE7", 0.8));
-    page.commands.push(pdfTextCommand("PlutoniX Product Document", 42, 24, { size: 7.5, font: "F2", color: "#64748B" }));
+    page.commands.push(pdfTextCommand("PlutoMix Product Document", 42, 24, { size: 7.5, font: "F2", color: "#64748B" }));
     page.commands.push(pdfTextCommand(`${String(index + 1).padStart(2, "0")} / ${String(pages.length).padStart(2, "0")}`, 520, 24, { size: 7.5, font: "F2", color: "#64748B" }));
   });
 
@@ -1855,7 +1866,7 @@ function downloadProductDocumentPdf(markdown = "") {
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
-  link.download = "PlutoniX-Product-Document.pdf";
+  link.download = "PlutoMix-Product-Document.pdf";
   document.body.appendChild(link);
   link.click();
   link.remove();
@@ -2017,7 +2028,7 @@ function DocumentArtifactCanvas({ artifact, preview }) {
       <div className="document-artifact-stage">
         <article className="document-artifact-page">
           <header>
-            <span>PlutoniX document</span>
+            <span>PlutoMix document</span>
             <strong>{preview.title || artifact.name}</strong>
           </header>
           {preview.paragraphs.map((paragraph, index) => <p key={`${paragraph.slice(0, 28)}-${index}`}>{paragraph}</p>)}
@@ -2066,7 +2077,7 @@ function PresentationArtifactCanvas({ preview }) {
           <span>SLIDE {String(slide.index).padStart(2, "0")}</span>
           <h3>{slide.title}</h3>
           <p>{slide.text}</p>
-          <footer>PlutoniX presentation preview</footer>
+          <footer>PlutoMix presentation preview</footer>
         </article>
       </div>
     </div>
@@ -2152,7 +2163,7 @@ function MarkdownSourceModal({ source, onClose }) {
 
         {!hasContent ? (
           <div className="markdown-empty-state">
-            This `.md` reference came from OpenAI vector metadata, but the local markdown body is not available in PlutoniX.
+            This `.md` reference came from OpenAI vector metadata, but the local markdown body is not available in PlutoMix.
           </div>
         ) : (
           <div className="markdown-section-list">
@@ -2498,7 +2509,7 @@ function AgentsWorkspace({ initialAgentId = "", initialAgent = null }) {
           <span className="eyebrow">Global agent memory</span>
           <h1>Agents</h1>
           <p>
-            Agent profiles collected from global knowledge records and vector-store sync metadata across PlutoniX, GeoFinderX,
+            Agent profiles collected from global knowledge records and vector-store sync metadata across PlutoMix, GeoFinderX,
             and project-local orchestrators.
           </p>
         </div>
@@ -2861,7 +2872,7 @@ function SelfImprovementPanel() {
         <textarea
           value={systemDirection}
           onChange={(event) => setSystemDirection(event.target.value)}
-          placeholder="Set the next direction for the whole PlutoniX system..."
+          placeholder="Set the next direction for the whole PlutoMix system..."
           rows={4}
         />
         <button className="tool-action" type="submit" disabled={systemDirection.trim().length < 12 || Boolean(actionBusy)}>
@@ -3433,7 +3444,7 @@ function DecisionBranchTreeCanvas({
         <div>
           <span className="eyebrow">Decision workshop · project-only</span>
           <h3>Decision timeline &amp; flow</h3>
-          <p>Each lane follows a major functionality through its recorded decision paths. Known ledger events set the sequence; where no sequence is recorded, PlutoniX shows an explicitly anticipated order without treating it as historical fact.</p>
+          <p>Each lane follows a major functionality through its recorded decision paths. Known ledger events set the sequence; where no sequence is recorded, PlutoMix shows an explicitly anticipated order without treating it as historical fact.</p>
         </div>
         <div className="decision-branch-tree-counts">
           <span>{landscape.functionalityCount} major functions</span>
@@ -4009,17 +4020,17 @@ function MarketVisionPanel() {
     {
       label: "Architect",
       detail: "Carry requirements, architecture, decisions, risks, environments and tests into the Project Intelligence Passport.",
-      owner: "plutonix-literature-research-agent"
+      owner: "plutomix-literature-research-agent"
     },
     {
       label: "Validate",
       detail: "Require delivery evidence, cost notes, approval context and rollback readiness before progress is claimed.",
-      owner: "plutonix-self-improvement-investigator-agent"
+      owner: "plutomix-self-improvement-investigator-agent"
     },
     {
       label: "Learn",
       detail: "Feed investor and buyer objections back into the controlled-evolution roadmap.",
-      owner: "plutonix-marketplace-research-agent"
+      owner: "plutomix-marketplace-research-agent"
     }
   ];
   const source = marketVision?.source || {};
@@ -4039,7 +4050,7 @@ function MarketVisionPanel() {
             Refresh
           </button>
           {pdfUrl ? (
-            <a className="ghost-action" href={pdfUrl} download={pdf?.filename || "PlutoniX_Market_Differentiation_Investor_Quotation.pdf"}>
+            <a className="ghost-action" href={pdfUrl} download={pdf?.filename || "PlutoMix_Market_Differentiation_Investor_Quotation.pdf"}>
               <Download size={16} />
               Download PDF
             </a>
@@ -4510,7 +4521,7 @@ function ProductDocumentPanel() {
     async function loadProductDocument() {
       setStatus("loading");
       try {
-        const response = await fetch("/docs/product-doc-plutonix.md", { cache: "no-store" });
+        const response = await fetch("/docs/product-doc-plutomix.md", { cache: "no-store" });
         if (!response.ok) throw new Error(`Product document failed to load with ${response.status}`);
         const text = await response.text();
         if (!cancelled) {
@@ -4531,15 +4542,15 @@ function ProductDocumentPanel() {
   }, []);
 
   return (
-    <section className="product-document-panel" aria-label="PlutoniX product document">
+    <section className="product-document-panel" aria-label="PlutoMix product document">
       <header className="product-document-header">
         <div>
           <p>Product source of truth</p>
-          <h2>PlutoniX Product Document</h2>
+          <h2>PlutoMix Product Document</h2>
           <span>Multi-artifact capabilities, autonomous central brain, workflows, requirements, architecture, safety model, roadmap, and open product questions.</span>
         </div>
         <div className="product-document-actions">
-          <a className="ghost-action" href="/media/product-video/plutonix-product-video.mp4" target="_blank" rel="noreferrer">
+          <a className="ghost-action" href="/media/product-video/plutomix-product-video.mp4" target="_blank" rel="noreferrer">
             <Film size={15} />
             Watch demo
           </a>
@@ -4547,7 +4558,7 @@ function ProductDocumentPanel() {
             <Download size={15} />
             Download PDF
           </button>
-          <a className="ghost-action" href="/docs/product-doc-plutonix.md" target="_blank" rel="noreferrer">
+          <a className="ghost-action" href="/docs/product-doc-plutomix.md" target="_blank" rel="noreferrer">
             <ExternalLink size={15} />
             Open source
           </a>
@@ -4566,7 +4577,7 @@ function ProductDocumentPanel() {
           <section className="product-document-hero">
             <div>
               <span className="eyebrow">Universal builder contract</span>
-              <h3>PlutoniX is a multi-artifact autonomous delivery cockpit, not only a web-app generator.</h3>
+              <h3>PlutoMix is a multi-artifact autonomous delivery cockpit, not only a web-app generator.</h3>
               <p>
                 The central brain classifies the request, preserves the intended output shape, routes work to bounded agents, and validates the final product against artifact fidelity, real-data, UI functionality, and evidence rules.
               </p>
@@ -4581,7 +4592,7 @@ function ProductDocumentPanel() {
             </div>
           </section>
 
-          <section className="product-document-capability-grid" aria-label="PlutoniX capabilities">
+          <section className="product-document-capability-grid" aria-label="PlutoMix capabilities">
             {capabilityCards.map(({ label, detail, Icon }) => (
               <article key={label}>
                 <span><Icon size={16} /></span>
@@ -4952,7 +4963,7 @@ function ProjectInstructionTimeline({ instructions, error, runningInstruction, n
                   {running ? <Loader2 className="spin" size={14} /> : isInitiation ? <FolderUp size={14} /> : failed ? <XCircle size={14} /> : <GitBranch size={14} />}
                 </span>
                 <div>
-                  <strong>{item.projectName || "PlutoniX default workspace"}</strong>
+                  <strong>{item.projectName || "PlutoMix default workspace"}</strong>
                   <small>
                     {shortDate(item.recordedAt)} · {item.taskType || "Medium"} · {item.status || "received"}
                     {item.buildId ? ` · ${String(item.buildId).slice(-8)}` : ""}
@@ -5051,7 +5062,7 @@ function OrchestrationD3Canvas({ snapshot }) {
     const snapshotAgent = (snapshot?.agents || []).find((agent) => agent.id === agentId);
     const record = agentRecords.find((agent) => agent.id === agentId) || agentRecords.find((agent) => snapshotAgent?.name && agent.name === snapshotAgent.name);
     if (record) return agentVisualFromRecord(record);
-    return agentVisualFromId(agentId || "plutonix-fullstack-agent", snapshotAgent || {});
+    return agentVisualFromId(agentId || "plutomix-fullstack-agent", snapshotAgent || {});
   };
 
   useEffect(() => {
@@ -5068,8 +5079,8 @@ function OrchestrationD3Canvas({ snapshot }) {
     const svg = d3.select(svgRef.current);
     const viewport = viewportRef.current;
     const fallbackChoices = [
-      ...(snapshot.selectedDecisions || []).map((item) => ({ ...item, state: "selected", responsibleAgentId: item.responsibleAgentId || "plutonix-fullstack-agent" })),
-      ...(snapshot.rejectedDecisions || []).map((item) => ({ ...item, label: item.label || item.id, detail: item.reason, state: "rejected", responsibleAgentId: item.responsibleAgentId || "plutonix-fullstack-agent" }))
+      ...(snapshot.selectedDecisions || []).map((item) => ({ ...item, state: "selected", responsibleAgentId: item.responsibleAgentId || "plutomix-fullstack-agent" })),
+      ...(snapshot.rejectedDecisions || []).map((item) => ({ ...item, label: item.label || item.id, detail: item.reason, state: "rejected", responsibleAgentId: item.responsibleAgentId || "plutomix-fullstack-agent" }))
     ];
     const legacySelections = fallbackChoices.filter((item) => item.state === "selected");
     const legacyRejections = fallbackChoices.filter((item) => item.state === "rejected");
@@ -5094,7 +5105,7 @@ function OrchestrationD3Canvas({ snapshot }) {
       };
     };
     const graph = snapshot.decisionGraph || {
-      id: `${snapshot.id}-start`, label: "Build instruction accepted", type: "start", state: "selected", responsibleAgentId: "plutonix-fullstack-agent",
+      id: `${snapshot.id}-start`, label: "Build instruction accepted", type: "start", state: "selected", responsibleAgentId: "plutomix-fullstack-agent",
       children: [buildLegacyStage()].filter(Boolean)
     };
     const hierarchy = d3.hierarchy(graph);
@@ -5109,7 +5120,7 @@ function OrchestrationD3Canvas({ snapshot }) {
       x: item.y + 72,
       y: item.x - minTreeX + 55,
       kind: item.data.type === "choice" ? item.data.state : item.data.type,
-      agentId: item.data.responsibleAgentId || "plutonix-fullstack-agent"
+      agentId: item.data.responsibleAgentId || "plutomix-fullstack-agent"
     }));
     const nodeById = new Map(allNodes.map((item) => [item.graphId, item]));
     const links = hierarchy.links().map((link) => ({
@@ -5154,7 +5165,7 @@ function OrchestrationD3Canvas({ snapshot }) {
           setSelectedDatum({
             kind: "agent-insight",
             state: item.state,
-            agentId: item.agentId || "plutonix-fullstack-agent",
+            agentId: item.agentId || "plutomix-fullstack-agent",
             label: workRecord?.name || visualForAgent(item.agentId).name,
             detail: workRecord?.role || "Responsible agent",
             work: workRecord?.work || [item.detail || item.reason || item.label].filter(Boolean)
@@ -5242,7 +5253,7 @@ function OrchestrationD3Canvas({ snapshot }) {
   );
 }
 
-function PlutonixBrainXCanvas() {
+function PlutoMixBrainXCanvas() {
   const svgRef = useRef(null);
   const viewportRef = useRef(null);
 
@@ -5264,7 +5275,7 @@ function PlutonixBrainXCanvas() {
       ];
       const thinker = {
         id: "main-thinker",
-        label: "PlutoniX Main Thinker",
+        label: "PlutoMix Main Thinker",
         detail: "Main Orchestrator Agent",
         x: center.x,
         y: center.y
@@ -5326,16 +5337,16 @@ function PlutonixBrainXCanvas() {
   }, []);
 
   return (
-    <section className="plutonix-brainx-canvas">
-      <header className="plutonix-brainx-header">
+    <section className="plutomix-brainx-canvas">
+      <header className="plutomix-brainx-header">
         <div>
-          <span>PlutoniX-BrainX</span>
+          <span>PlutoMix-BrainX</span>
           <h2>Core reasoning system</h2>
         </div>
         <small>System core only · no generated-project agents or nodes</small>
       </header>
-      <div className="plutonix-brainx-viewport" ref={viewportRef}>
-        <svg ref={svgRef} aria-label="PlutoniX BrainX core system canvas" />
+      <div className="plutomix-brainx-viewport" ref={viewportRef}>
+        <svg ref={svgRef} aria-label="PlutoMix BrainX core system canvas" />
       </div>
     </section>
   );
@@ -5758,11 +5769,11 @@ function ProjectFlowPanel({ projectId = "", flowPath, focusedFunctionalityId = "
   const [historyCursor, setHistoryCursor] = useState(0);
   const [isHistoryPlaying, setHistoryPlaying] = useState(false);
   const [selectedSnapshotIndex, setSelectedSnapshotIndex] = useState(0);
-  const historyStorageKey = `plutonix-flow-path-history:${projectId || String(flowPath?.projectName || "plutonix-default").toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
+  const historyStorageKey = `plutomix-flow-path-history:${projectId || String(flowPath?.projectName || "plutomix-default").toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
   const [pathHistory, setPathHistory] = useState(() => {
     try {
       const scopedValue = localStorage.getItem(historyStorageKey);
-      const legacy = JSON.parse(localStorage.getItem("plutonix-flow-path-history") || "[]");
+      const legacy = JSON.parse(localStorage.getItem("plutomix-flow-path-history") || "[]");
       const stored = scopedValue
         ? JSON.parse(scopedValue)
         : (Array.isArray(legacy) ? legacy.filter((entry) => entry.projectName === flowPath?.projectName) : []);
@@ -5811,11 +5822,11 @@ function ProjectFlowPanel({ projectId = "", flowPath, focusedFunctionalityId = "
     timeline: [{
       id: `${entry.parentWorkflowId || entry.buildId || entry.recordedAt}-terminal`,
       sequence: 1,
-      type: entry.status === "succeeded" ? "plutonix-complete" : "plutonix-failed",
+      type: entry.status === "succeeded" ? "plutomix-complete" : "plutomix-failed",
       message: entry.error || `Legacy ${entry.status} build snapshot`,
       createdAt: entry.recordedAt,
       elapsedMs: 0,
-      agentId: "plutonix-fullstack-agent",
+      agentId: "plutomix-fullstack-agent",
       status: entry.status
     }]
   }).reverse(), [persistedDecisionHistory, projectId]);
@@ -5823,7 +5834,7 @@ function ProjectFlowPanel({ projectId = "", flowPath, focusedFunctionalityId = "
   const selectedNode = nodes.find((node) => node.state === "selected") || nodes.find((node) => node.id === flowPath?.selectedPath);
   const summary =
     flowPath?.summary ||
-    (running ? "PlutoniX is selecting the project creation path." : "Project creation path is ready for review.");
+    (running ? "PlutoMix is selecting the project creation path." : "Project creation path is ready for review.");
   const confidence = Number(flowPath?.confidence || (running ? 68 : 0));
   const agentCount = flowAgentCount(nodes, executedDecisions);
   const functionalityCount = flowFunctionalityCount(nodes, subObjectives, executedDecisions);
@@ -5933,7 +5944,7 @@ function ProjectFlowPanel({ projectId = "", flowPath, focusedFunctionalityId = "
                   <h2>{flowPath?.projectName || "Project creation"}</h2>
                   <p>{selectedNode ? `Selected path: ${selectedNode.label}` : "No selected path yet"} · Score {traversalScore}/100</p>
                 </div>
-                <button className="icon-button" type="button" onClick={closeDetailPage} aria-label={detailPage === "snapshot" ? "Back to PlutoniX" : "Close flow path detail"}>
+                <button className="icon-button" type="button" onClick={closeDetailPage} aria-label={detailPage === "snapshot" ? "Back to PlutoMix" : "Close flow path detail"}>
                   {detailPage === "snapshot" ? <ChevronRight className="flow-back-icon" size={18} /> : <X size={18} />}
                 </button>
               </header>
@@ -6147,10 +6158,10 @@ function ProjectFlowPanel({ projectId = "", flowPath, focusedFunctionalityId = "
             <div><dt>Rejected</dt><dd>{rejectedPaths.length}</dd></div>
           </dl>
           {intelRuntime ? (
-            <section className="intel-runtime-card" aria-label="PlutoniX Intel runtime">
+            <section className="intel-runtime-card" aria-label="PlutoMix Intel runtime">
               <header>
                 <div>
-                  <span>PlutoniX Intel</span>
+                  <span>PlutoMix Intel</span>
                   <strong>{intelRuntime.profile?.displayName || intelRuntime.profile?.id || "Profile pending"}</strong>
                 </div>
                 <b className={intelRuntime.profile?.status || intelRuntime.status || "pending"}>{intelRuntime.profile?.status || intelRuntime.status || "pending"}</b>
@@ -6225,7 +6236,7 @@ function GothamAccountUsagePanel({ data, loading, error, expanded, onExpandedCha
   const [allowanceClock, setAllowanceClock] = useState(() => Date.now());
   const providers = Array.isArray(data?.providers) ? data.providers : [];
   const activeProvider = providers.find((provider) => provider.id === data?.activeProvider) || providers[0] || null;
-  const compactAllowance = compactAllowanceFor(providers.find((provider) => provider.id === "codex")) || compactAllowanceFor(activeProvider);
+  const compactAllowance = compactAllowanceFor(activeProvider);
   const compactAllowanceHue = compactAllowance ? Math.round(142 - compactAllowance.percentUsed * 1.38) : 142;
 
   useEffect(() => {
@@ -6290,11 +6301,11 @@ function GothamAccountUsagePanel({ data, loading, error, expanded, onExpandedCha
                   <span><small>Longest turn</small><b>{usageValue(accountUsage.summary?.longestRunningTurnSeconds, " sec")}</b></span>
                 </div>
                 <p>{accountUsage.dailyUsageBuckets?.length ? `Latest daily bucket: ${accountUsage.dailyUsageBuckets.at(-1).startDate} · ${Number(accountUsage.dailyUsageBuckets.at(-1).tokens).toLocaleString()} tokens` : "Daily token buckets were not returned."}</p>
-              </> : <p>Not exposed for this authenticated Codex account.</p>}
+              </> : <p>Not exposed for this authenticated {provider.label} account.</p>}
             </section>
             <section className="gotham-usage-group" aria-label={`${provider.label} account allowance`}>
               <header><strong>Account allowance</strong><small>{allowance.availability === "available" ? allowance.source : allowance.availabilityReason}</small></header>
-              {allowance.buckets?.length ? allowance.buckets.map((bucket) => <div className="gotham-usage-quota" key={bucket.id}><span><strong>{bucket.label}</strong><small>{bucket.resetAt ? `Resets ${usageTimestamp(bucket.resetAt)}` : "Reset time unavailable"}</small></span><b>{usageValue(bucket.percentUsed, "%")}</b></div>) : <p>Not exposed by provider. Allowance may include usage outside PlutoniX.</p>}
+              {allowance.buckets?.length ? allowance.buckets.map((bucket) => <div className="gotham-usage-quota" key={bucket.id}><span><strong>{bucket.label}</strong><small>{bucket.resetAt ? `Resets ${usageTimestamp(bucket.resetAt)}` : "Reset time unavailable"}</small></span><b>{usageValue(bucket.percentUsed, "%")}</b></div>) : <p>Not exposed by provider. Allowance may include usage outside PlutoMix.</p>}
               {allowance.resetCreditsAvailable !== null && allowance.resetCreditsAvailable !== undefined ? <p>{usageValue(allowance.resetCreditsAvailable)} earned rate-limit reset{allowance.resetCreditsAvailable === 1 ? "" : "s"} available.</p> : null}
             </section>
             <section className="gotham-usage-group" aria-label={`${provider.label} context window`}>
@@ -6335,7 +6346,7 @@ function GothamAccountUsagePanel({ data, loading, error, expanded, onExpandedCha
       </summary>
       <div className="gotham-account-usage-body" aria-live="polite">
         <div className="gotham-usage-toolbar">
-          <span>PlutoniX profile ID: <b title={data?.profile?.id || "Not available"}>{data?.profile?.id || "Not available"}</b></span>
+          <span>PlutoMix profile ID: <b title={data?.profile?.id || "Not available"}>{data?.profile?.id || "Not available"}</b></span>
           <button type="button" onClick={onRefresh} disabled={loading} aria-label="Refresh account and usage"><RefreshCcw size={13} />Refresh</button>
         </div>
         {loading && !data ? <p className="gotham-usage-notice"><Loader2 className="spin" size={14} /> Loading connected provider data…</p> : null}
@@ -6353,11 +6364,11 @@ export default function App() {
   const [activeWorkspaceTab, setActiveWorkspaceTab] = useState(() => authorizedStudioWorkspace(deepLink.workspace, getStoredUser()));
   const [activeAgenticSystemTab, setActiveAgenticSystemTab] = useState("graph");
   const [currentUser, setCurrentUser] = useState(() => getStoredUser());
-  const [themeMode, setThemeMode] = useState(() => localStorage.getItem("plutonix-theme") || "system");
+  const [themeMode, setThemeMode] = useState(() => localStorage.getItem("plutomix-theme") || "system");
   const [instruction, setInstruction] = useState(starterPrompt);
   const [taskType, setTaskType] = useState("Auto");
   const [gothamWorkflowMode, setGothamWorkflowMode] = useState("executor");
-  const [gothamIntelEnabled, setGothamIntelEnabled] = useState(() => localStorage.getItem("plutonix-gotham-intel") === "true");
+  const [gothamIntelEnabled, setGothamIntelEnabled] = useState(() => localStorage.getItem("plutomix-gotham-intel") === "true");
   const [studioSelectedJobId, setStudioSelectedJobId] = useState(deepLink.studioJob);
   const [studioInitialTab, setStudioInitialTab] = useState(deepLink.studioJob ? "jobs" : "");
   const [pendingStudioContext, setPendingStudioContext] = useState(null);
@@ -6378,15 +6389,21 @@ export default function App() {
   const [gothamAccountUsageLoading, setGothamAccountUsageLoading] = useState(false);
   const [gothamAccountUsageError, setGothamAccountUsageError] = useState("");
   const [aiAccountsOpen, setAiAccountsOpen] = useState(false);
-  const [gothamProviderId, setGothamProviderId] = useState(() => localStorage.getItem("plutonix-gotham-provider") || "codex");
-  const [gothamProviderSummary, setGothamProviderSummary] = useState({ providerId: "codex", providerName: "OpenAI Codex", profileId: "", profileName: "No active profile", valid: false });
+  const [tenantAdminOpen, setTenantAdminOpen] = useState(false);
+  const [tenantGovernance, setTenantGovernance] = useState(null);
+  const [tenantGovernanceError, setTenantGovernanceError] = useState("");
+  const [enterpriseSelection, setEnterpriseSelection] = useState("new");
+  const [enterpriseLabel, setEnterpriseLabel] = useState("");
+  const [agentSource, setAgentSource] = useState("global_community");
+  const [gothamProviderId, setGothamProviderId] = useState(() => localStorage.getItem("plutomix-gotham-provider") || "codex");
+  const [gothamProviderSummary, setGothamProviderSummary] = useState({ providerId: "codex", providerName: "OpenAI Codex", profileId: "", profileName: "No active profile", status: "disconnected", statusLabel: "Disconnected", verified: false, verificationLabel: "Disconnected", selectedModel: "", valid: false });
   const [aiProviderWarning, setAiProviderWarning] = useState("");
   const selectGothamProvider = useCallback((providerId) => {
     setGothamProviderId(providerId);
-    localStorage.setItem("plutonix-gotham-provider", providerId);
+    localStorage.setItem("plutomix-gotham-provider", providerId);
     setAiProviderWarning("");
   }, []);
-  const [useGothamMcp, setUseGothamMcp] = useState(() => localStorage.getItem("plutonix-use-gotham-mcp") === "true");
+  const [useGothamMcp, setUseGothamMcp] = useState(() => localStorage.getItem("plutomix-use-gotham-mcp") === "true");
   const [generatedStatus, setGeneratedStatus] = useState("ready");
   const [, setEvents] = useState([]);
   const [runtimeLogs, setRuntimeLogs] = useState([]);
@@ -6399,7 +6416,7 @@ export default function App() {
   const [instructionsError, setInstructionsError] = useState("");
   const [techStackSnapshots, setTechStackSnapshots] = useState(() => {
     try {
-      const stored = JSON.parse(localStorage.getItem("plutonix-tech-stack-snapshots") || "[]");
+      const stored = JSON.parse(localStorage.getItem("plutomix-tech-stack-snapshots") || "[]");
       return Array.isArray(stored) ? stored.slice(-12) : [];
     } catch {
       return [];
@@ -6451,7 +6468,7 @@ export default function App() {
   const [isPickingReference, setPickingReference] = useState(false);
   const [selectedReferences, setSelectedReferences] = useState([]);
   const [gothamChatWidth, setGothamChatWidth] = useState(() => {
-    const stored = Number(localStorage.getItem("plutonix-gotham-chat-width"));
+    const stored = Number(localStorage.getItem("plutomix-gotham-chat-width"));
     return Number.isFinite(stored) ? Math.max(GOTHAM_CHAT_MIN_WIDTH, Math.min(GOTHAM_CHAT_MAX_WIDTH, stored)) : GOTHAM_CHAT_MIN_WIDTH;
   });
   const [sessionStartedAt, setSessionStartedAt] = useState(null);
@@ -6505,7 +6522,7 @@ export default function App() {
   const activeMediaItems = selectedProject?.media?.length ? selectedProject.media : !selectedProject ? stagedProjectMedia : [];
   const instructionTooLong = instruction.length > MAX_INSTRUCTION_CHARS;
   const canSubmit = (Boolean(selectedProject) || isSystemTarget) && instruction.trim().length > 12 && !instructionTooLong && !isGenerating && !isCheckingRequiredData && !requiredDataUploadingFieldId;
-  const canCreateProject = projectName.trim().length > 1 && !instructionTooLong && !isCreatingProject && !selectedProject && !isSystemTarget && !isCheckingRequiredData && !isStagingProjectMedia && !requiredDataUploadingFieldId;
+  const canCreateProject = projectName.trim().length > 1 && enterpriseLabel.trim().length > 1 && Boolean(tenantGovernance) && !tenantGovernanceError && !instructionTooLong && !isCreatingProject && !selectedProject && !isSystemTarget && !isCheckingRequiredData && !isStagingProjectMedia && !requiredDataUploadingFieldId;
   const projectIdentityChanged = Boolean(
     selectedProject &&
       !selectedProject.isDefault &&
@@ -6533,7 +6550,7 @@ export default function App() {
     selectedProjectInstructions
       .slice()
       .reverse()
-      .find((entry) => entry.source === "plutonix-project-creation") ||
+      .find((entry) => entry.source === "plutomix-project-creation") ||
     selectedProjectInstructions.at(-1) ||
     null;
   const latestPersistedFlowPath = latestProjectInstruction?.flowPath || null;
@@ -6595,11 +6612,11 @@ export default function App() {
 	    () =>
 	      buildWorkflowNextInstructionSuggestion({
 	        flowPath: selectedProjectFlowPath,
-	        projectId: isSystemTarget ? "system:plutonix" : selectedProject?.id || selectedProjectId,
+	        projectId: isSystemTarget ? "system:plutomix" : selectedProject?.id || selectedProjectId,
 	        selectedReferences,
 	        intelEnabled: gothamIntelEnabled && !isSystemTarget,
 	        instructionHistory: selectedProjectInstructions,
-	        branding: activePalette || { name: "PlutoniX", colors: ["#753FD9", "#171321", "#FFFFFF"] }
+	        branding: activePalette || { name: "PlutoMix", colors: ["#753FD9", "#171321", "#FFFFFF"] }
 	      }),
 	    [activePalette, gothamIntelEnabled, isSystemTarget, selectedProject?.id, selectedProjectFlowPath, selectedProjectId, selectedProjectInstructions, selectedReferences]
 	  );
@@ -6643,7 +6660,7 @@ export default function App() {
   }, [selectedProject?.id, visibleTechStackSnapshots.length]);
 
   useEffect(() => {
-    localStorage.setItem("plutonix-tech-stack-snapshots", JSON.stringify(techStackSnapshots.slice(-24)));
+    localStorage.setItem("plutomix-tech-stack-snapshots", JSON.stringify(techStackSnapshots.slice(-24)));
   }, [techStackSnapshots]);
 
   useEffect(() => {
@@ -6653,8 +6670,8 @@ export default function App() {
       setSelectedProjectId(localStorage.getItem(selectedProjectStorageKey(nextUser)) || "");
       setProjects([]);
     }
-    window.addEventListener("plutonix-user-updated", syncUser);
-    return () => window.removeEventListener("plutonix-user-updated", syncUser);
+    window.addEventListener("plutomix-user-updated", syncUser);
+    return () => window.removeEventListener("plutomix-user-updated", syncUser);
   }, []);
 
   useEffect(() => {
@@ -6767,7 +6784,7 @@ export default function App() {
   }
 
   async function useLocalProfile() {
-    const name = window.prompt("Name for this local PlutoniX profile", "Local PlutoniX User");
+    const name = window.prompt("Name for this local PlutoMix profile", "Local PlutoMix User");
     if (!name) return;
     const user = {
       id: `local:${name.toLowerCase().replace(/[^a-z0-9]+/g, "-") || "user"}`,
@@ -6775,7 +6792,7 @@ export default function App() {
       email: "",
       authProvider: "local-dev"
     };
-    storeDevelopmentUser(user, { subject: import.meta.env.VITE_PLUTONIX_DEV_AUTH_SUBJECT || "local:local-plutonix-user" });
+    storeDevelopmentUser(user, { subject: import.meta.env.VITE_PLUTOMIX_DEV_AUTH_SUBJECT || "local:local-plutomix-user" });
   }
 
   useEffect(() => {
@@ -6785,7 +6802,7 @@ export default function App() {
       document.documentElement.dataset.theme = resolvedTheme;
       document.documentElement.dataset.themeMode = themeMode;
       setResolvedTheme(resolvedTheme);
-      localStorage.setItem("plutonix-theme", themeMode);
+      localStorage.setItem("plutomix-theme", themeMode);
     };
     applyTheme();
     media.addEventListener("change", applyTheme);
@@ -6826,7 +6843,7 @@ export default function App() {
     [backendStatus, codexRuntime, lastBuild, mcpId, mcpStatus, projectRuntimeLabel]
   );
   const activityEvents = useMemo(() => {
-    const rows = collapseCodexProgressRows(
+    const rows = collapseProviderProgressRows(
       markCurrentSession(normalizeRuntimeRows([...runtimeLogs, ...chatPrompts]).slice(0, MAX_RUNTIME_LOG_ROWS), sessionStartedAt)
     );
     const categoryRows = activityFilter === "all" ? rows : rows.filter((event) => activityCategory(event) === activityFilter);
@@ -6845,7 +6862,7 @@ export default function App() {
       .slice(0, 60);
   }, [runtimeLogs, selectedProject]);
   const notificationAttentionCount = useMemo(
-    () => playgroundNotifications.filter((event) => /failed|error|upgrade-required|fallback-failed/i.test(event.type || "")).length,
+    () => playgroundNotifications.filter((event) => /failed|failure|error|upgrade-required|fallback-failed/i.test(event.type || "")).length,
     [playgroundNotifications]
   );
   const chatMessages = useMemo(
@@ -6856,7 +6873,7 @@ export default function App() {
     const activeEvent =
       chatMessages.find((event) => event.currentSession && event.role !== "user" && event.type !== "connected") ||
       chatMessages.find((event) => event.role !== "user" && event.type !== "connected");
-    return activeEvent ? agentVisualFromEvent(activeEvent, selectedProject) : agentVisualFromId("plutonix-fullstack-agent", { name: "PlutoniX Fullstack Agent" });
+    return activeEvent ? agentVisualFromEvent(activeEvent, selectedProject) : agentVisualFromId("plutomix-fullstack-agent", { name: "PlutoMix Fullstack Agent" });
   }, [chatMessages, selectedProject]);
 
   useEffect(() => {
@@ -6889,15 +6906,15 @@ export default function App() {
   }, [useGothamMcp]);
 
   useEffect(() => {
-    localStorage.setItem("plutonix-use-gotham-mcp", String(useGothamMcp));
+    localStorage.setItem("plutomix-use-gotham-mcp", String(useGothamMcp));
   }, [useGothamMcp]);
 
   useEffect(() => {
-    localStorage.setItem("plutonix-gotham-intel", String(gothamIntelEnabled));
+    localStorage.setItem("plutomix-gotham-intel", String(gothamIntelEnabled));
   }, [gothamIntelEnabled]);
 
   useEffect(() => {
-    localStorage.setItem("plutonix-gotham-chat-width", String(Math.round(gothamChatWidth)));
+    localStorage.setItem("plutomix-gotham-chat-width", String(Math.round(gothamChatWidth)));
   }, [gothamChatWidth]);
 
   async function loadGothamAccountUsage({ refresh = false } = {}) {
@@ -6912,6 +6929,9 @@ export default function App() {
     try {
       const params = new URLSearchParams();
       if (selectedProject?.id) params.set("projectId", selectedProject.id);
+      params.set("providerId", gothamProviderId);
+      if (gothamProviderSummary.providerId === gothamProviderId && gothamProviderSummary.profileId) params.set("profileId", gothamProviderSummary.profileId);
+      if (gothamProviderSummary.providerId === gothamProviderId && gothamProviderSummary.selectedModel) params.set("modelId", gothamProviderSummary.selectedModel);
       if (refresh) params.set("refresh", "true");
       const res = await authFetch(`${BACKEND_URL}/api/gotham/account-usage?${params.toString()}`);
       const data = await res.json();
@@ -6931,14 +6951,14 @@ export default function App() {
     gothamAccountUsageRequestRef.current += 1;
     setGothamAccountUsage(null);
     setGothamAccountUsageError("");
-  }, [currentUser?.id]);
+  }, [currentUser?.id, selectedProject?.id, gothamProviderId, gothamProviderSummary.profileId]);
 
   useEffect(() => {
     if (!currentUser?.id) return undefined;
     loadGothamAccountUsage();
     const intervalId = window.setInterval(() => loadGothamAccountUsage(), 90_000);
     return () => window.clearInterval(intervalId);
-  }, [currentUser?.id, selectedProject?.id]);
+  }, [currentUser?.id, selectedProject?.id, gothamProviderId, gothamProviderSummary.profileId, gothamProviderSummary.selectedModel]);
 
   useEffect(() => {
     setBrandingPalette(null);
@@ -6956,7 +6976,7 @@ export default function App() {
       id: `playground-status-${Date.now()}`,
       type: projectResult.status === "failed" ? "project-status-failed" : "project-status",
       projectId: projectResult.projectId || selectedProject?.id || "",
-      projectName: projectResult.projectName || selectedProject?.name || "PlutoniX",
+      projectName: projectResult.projectName || selectedProject?.name || "PlutoMix",
       message: detail,
       createdAt: new Date().toISOString(),
       time: formatIstTime()
@@ -6997,6 +7017,36 @@ export default function App() {
       if (selectedProjectId && selectedProjectId !== SYSTEM_TARGET_VALUE && !data.projects.some((project) => project.id === selectedProjectId)) {
         setSelectedProjectId("");
       }
+    }
+  }
+
+  async function loadTenantGovernance() {
+    if (!currentUser?.id) {
+      setTenantGovernance(null);
+      setTenantGovernanceError("");
+      return;
+    }
+    try {
+      const res = await authFetch(`${BACKEND_URL}/api/tenant-governance/overview`);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Tenant governance could not be loaded.");
+      setTenantGovernance(data);
+      setTenantGovernanceError("");
+      setEnterpriseSelection((current) => {
+        const existing = data.enterprises.find((enterprise) => enterprise.id === current);
+        if (existing) {
+          setEnterpriseLabel(existing.label);
+          return current;
+        }
+        if (!data.limits.canCreateEnterprise && data.enterprises[0]) {
+          setEnterpriseLabel(data.enterprises[0].label);
+          return data.enterprises[0].id;
+        }
+        return "new";
+      });
+    } catch (error) {
+      setTenantGovernance(null);
+      setTenantGovernanceError(error.message);
     }
   }
 
@@ -7099,6 +7149,7 @@ export default function App() {
 
   useEffect(() => {
     loadProjects().catch(() => setProjects([]));
+    loadTenantGovernance();
   }, [currentUser?.id]);
 
   useEffect(() => {
@@ -7125,14 +7176,14 @@ export default function App() {
     async function synchronizeGothamExecution() {
       try {
         const params = new URLSearchParams();
-        if (selectedProjectId) params.set("projectId", isSystemTarget ? "system:plutonix" : selectedProjectId);
+        if (selectedProjectId) params.set("projectId", isSystemTarget ? "system:plutomix" : selectedProjectId);
         const res = await authFetch(`${BACKEND_URL}/api/generate/status${params.size ? `?${params.toString()}` : ""}`);
         const data = await res.json();
         if (!res.ok || cancelled) return;
         const execution = data.execution || data.executions?.[0] || null;
         if (execution) {
           previouslyAttachedWorkflowId = execution.parentWorkflowId || previouslyAttachedWorkflowId;
-          const executionProjectId = execution.projectId === "system:plutonix" ? SYSTEM_TARGET_VALUE : execution.projectId;
+          const executionProjectId = execution.projectId === "system:plutomix" ? SYSTEM_TARGET_VALUE : execution.projectId;
           if (executionProjectId && executionProjectId !== selectedProjectId) setSelectedProjectId(executionProjectId);
           const restored = runningInstructionFromExecution(execution);
           setRunningInstruction(restored);
@@ -7243,8 +7294,8 @@ export default function App() {
 
   useEffect(() => {
     if (isSystemTarget) {
-      setProjectName("PlutoniX System");
-      setWorkspaceName("plutonix");
+      setProjectName("PlutoMix System");
+      setWorkspaceName("plutomix");
     } else if (selectedProject) {
       setProjectName(selectedProject.name);
       setWorkspaceName(selectedProject.isDefault ? "" : selectedProject.folderName || "");
@@ -7282,12 +7333,12 @@ export default function App() {
 
   function sendReferenceMode(enabled) {
     setPickingReference(enabled);
-    previewFrameRef.current?.contentWindow?.postMessage({ type: "plutonix-reference-mode", enabled }, "*");
+    previewFrameRef.current?.contentWindow?.postMessage({ type: "plutomix-reference-mode", enabled }, "*");
   }
 
   function highlightUiReference(reference, active) {
     previewFrameRef.current?.contentWindow?.postMessage({
-      type: "plutonix-reference-highlight",
+      type: "plutomix-reference-highlight",
       reference,
       active: Boolean(active)
     }, "*");
@@ -7302,7 +7353,7 @@ export default function App() {
   }
 
   function instructionDraftStorageKey() {
-    return `plutonix-instruction-draft:${selectedProject?.id || (isSystemTarget ? "system" : "new")}`;
+    return `plutomix-instruction-draft:${selectedProject?.id || (isSystemTarget ? "system" : "new")}`;
   }
 
   function persistInstructionDraft(value) {
@@ -7686,7 +7737,7 @@ export default function App() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           instruction: baseInstruction,
-          projectName: isSystemTarget ? "PlutoniX System" : selectedProject?.name || projectName.trim(),
+          projectName: isSystemTarget ? "PlutoMix System" : selectedProject?.name || projectName.trim(),
           mediaIds: mediaReferenceIds(selectedProject?.media),
           stagedMediaIds: mediaReferenceIds(stagedProjectMedia),
           referenceCount: selectedReferences.length,
@@ -7738,7 +7789,7 @@ export default function App() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           projectId: isSystemTarget ? "" : selectedProjectId,
-          target: isSystemTarget ? { type: "system", systemId: "plutonix" } : { type: "project", projectId: selectedProjectId }
+          target: isSystemTarget ? { type: "system", systemId: "plutomix" } : { type: "project", projectId: selectedProjectId }
         })
       });
       const data = await res.json().catch(() => ({}));
@@ -7762,11 +7813,11 @@ export default function App() {
 
   useEffect(() => {
     function receiveReference(event) {
-      if (event.data?.type === "plutonix-ui-reference-selected") {
+      if (event.data?.type === "plutomix-ui-reference-selected") {
         const reference = event.data.reference;
         appendUiReference(reference);
       }
-      if (event.data?.type === "plutonix-ui-reference-cancelled") {
+      if (event.data?.type === "plutomix-ui-reference-cancelled") {
         setPickingReference(false);
       }
     }
@@ -7786,7 +7837,7 @@ export default function App() {
     }
     if (projectId === SYSTEM_TARGET_VALUE) {
       setSelectedProjectId(SYSTEM_TARGET_VALUE);
-      setProjectName("PlutoniX System");
+      setProjectName("PlutoMix System");
       setProjectResult(null);
       setProjectFlowPath(gothamSystemFlowPath({ taskType }));
       sendReferenceMode(false);
@@ -8081,9 +8132,9 @@ export default function App() {
             const projectLabel = event.projectName || current?.projectName || "Selected project";
             const projectAgentId = agentIdFromProjectName(projectLabel);
             const workingAgents = [
-              { id: "plutonix-fullstack-agent", name: "PlutoniX Fullstack Agent", role: "Canonical authority", status: "working", action: "Selecting and supervising the adaptive execution path." },
+              { id: "plutomix-fullstack-agent", name: "PlutoMix Fullstack Agent", role: "Canonical authority", status: "working", action: "Selecting and supervising the adaptive execution path." },
               ...(event.adaptiveRoute.mode === "single" ? [] : [{ id: projectAgentId, name: `${projectLabel} Orchestrator Agent`, role: "Bounded project executor", status: "working", action: "Executing the selected project task." }]),
-              ...(event.adaptiveRoute.requiresIndependentReview ? [{ id: "plutonix-independent-reviewer", name: "PlutoniX Independent Reviewer", role: "Read-only validator", status: "pending", action: "Will independently inspect execution evidence." }] : [])
+              ...(event.adaptiveRoute.requiresIndependentReview ? [{ id: "plutomix-independent-reviewer", name: "PlutoMix Independent Reviewer", role: "Read-only validator", status: "pending", action: "Will independently inspect execution evidence." }] : [])
             ];
             const routeChoices = ["single", "delegated", "delegated_reviewed"].map((mode) => ({
               id: mode,
@@ -8096,7 +8147,7 @@ export default function App() {
               ...(current || {}),
               projectName: projectLabel,
               status: "running",
-              selectedPath: "plutonix-global-orchestration",
+              selectedPath: "plutomix-global-orchestration",
               adaptiveRoute: event.adaptiveRoute,
               activeAgents: workingAgents,
               decisionTree: {
@@ -8131,6 +8182,15 @@ export default function App() {
             "codex-file-change",
             "codex-message",
             "codex-progress",
+            "provider-start",
+            "provider-runtime-verified",
+            "provider-progress",
+            "provider-command",
+            "provider-file-change",
+            "claude-started",
+            "claude-progress",
+            "claude-tool",
+            "claude-tool-result",
             "build-start",
             "files-written",
             "files-applied",
@@ -8175,6 +8235,7 @@ export default function App() {
       setAiAccountsOpen(true);
       return;
     }
+    const frozenProviderSelection = freezeProviderSelection(gothamProviderSummary);
     setAiProviderWarning("");
     const requiredDataInstruction = gothamWorkflowMode === "planner"
       ? ""
@@ -8212,9 +8273,9 @@ export default function App() {
       startedAt: new Date(startedAt).toISOString(),
       completedAt: "",
       durationMs: null,
-      source: "plutonix-gotham-chat",
-      projectId: isSystemTarget ? "system:plutonix" : selectedProject?.id || "",
-      projectName: isSystemTarget ? "PlutoniX System" : selectedProject?.name || "PlutoniX default workspace",
+      source: "plutomix-gotham-chat",
+      projectId: isSystemTarget ? "system:plutomix" : selectedProject?.id || "",
+      projectName: isSystemTarget ? "PlutoMix System" : selectedProject?.name || "PlutoMix default workspace",
       taskType,
       workflowMode,
       instruction: displayInstruction,
@@ -8227,7 +8288,7 @@ export default function App() {
       flowPath: isSystemTarget
         ? gothamSystemFlowPath({ taskType, workflowMode })
         : gothamChatFlowPath({
-            projectName: selectedProject && !selectedProject.isDefault ? selectedProject.name : "PlutoniX default workspace",
+            projectName: selectedProject && !selectedProject.isDefault ? selectedProject.name : "PlutoMix default workspace",
             taskType,
             workflowMode,
             useProjectOrchestrator: Boolean(selectedProject && !selectedProject.isDefault)
@@ -8247,7 +8308,7 @@ export default function App() {
       message: submittedPrompt,
       taskType,
       workflowMode,
-      promptTarget: isSystemTarget ? "plutonix.system-improvement" : selectedProject ? `${selectedProject.name}.orchestrator-agent` : "plutonix-fullstack-agent",
+      promptTarget: isSystemTarget ? "plutomix.system-improvement" : selectedProject ? `${selectedProject.name}.orchestrator-agent` : "plutomix-fullstack-agent",
       createdAt: new Date(startedAt).toISOString(),
       time: formatIstTime()
     };
@@ -8257,7 +8318,7 @@ export default function App() {
     const runningFlowPath = isSystemTarget
       ? gothamSystemFlowPath({ taskType, workflowMode })
       : gothamChatFlowPath({
-          projectName: selectedProject && !selectedProject.isDefault ? selectedProject.name : "PlutoniX default workspace",
+          projectName: selectedProject && !selectedProject.isDefault ? selectedProject.name : "PlutoMix default workspace",
           taskType,
           workflowMode,
           useProjectOrchestrator: Boolean(selectedProject && !selectedProject.isDefault)
@@ -8290,11 +8351,10 @@ export default function App() {
           workspaceId: isSystemTarget ? undefined : selectedProjectId,
           studioContext: studioContextForRun || undefined,
           providerSelection: {
-            providerId: gothamProviderSummary.providerId,
-            profileId: gothamProviderSummary.profileId
+            ...frozenProviderSelection
           },
           target: isSystemTarget
-            ? { type: "system", systemId: "plutonix" }
+            ? { type: "system", systemId: "plutomix" }
             : { type: "project", projectId: selectedProjectId },
           mediaIds: mediaReferenceIds(selectedProject?.media),
           requiredData: requiredDataPayload()
@@ -8321,7 +8381,7 @@ export default function App() {
             message: planMessage,
             taskType,
             workflowMode,
-            promptTarget: "plutonix-fullstack-agent",
+            promptTarget: "plutomix-fullstack-agent",
             createdAt: new Date().toISOString(),
             time: formatIstTime()
           },
@@ -8337,8 +8397,8 @@ export default function App() {
           flowPath: data.flowPath
         }));
       }
-      setLastBuild(data);
-      if (!res.ok) throw new Error(gothamText(data.error || "Gotham MCP workflow failed"));
+      setLastBuild({ ...data, providerExecution: providerExecutionFromResult(data) });
+      if (!res.ok) throw new Error(gothamText(safeProviderErrorMessage(data.error || "Gotham provider workflow failed")));
       if (!isSystemTarget) {
         await loadProjects();
         await loadProjectInstructions(selectedProjectId);
@@ -8361,7 +8421,7 @@ export default function App() {
         const activeFlow = current || runningFlowPath;
         const selectedExecutionPath = activeFlow.selectedPath && activeFlow.selectedPath !== "human-choice-review"
           ? activeFlow.selectedPath
-          : (activeFlow.adaptiveRoute ? "plutonix-global-orchestration" : runningFlowPath.selectedPath);
+          : (activeFlow.adaptiveRoute ? "plutomix-global-orchestration" : runningFlowPath.selectedPath);
         return {
         ...activeFlow,
         status: "failed",
@@ -8404,6 +8464,9 @@ export default function App() {
     const baseInstruction = instructionEditorValue(instructionEditorRef.current).trim();
     if (
       projectName.trim().length <= 1 ||
+      enterpriseLabel.trim().length <= 1 ||
+      !tenantGovernance ||
+      Boolean(tenantGovernanceError) ||
       baseInstruction.length > MAX_INSTRUCTION_CHARS ||
       isCreatingProject ||
       selectedProject ||
@@ -8452,7 +8515,7 @@ export default function App() {
       confidence: 68,
       projectName: projectName.trim(),
       taskType,
-      summary: "PlutoniX is selecting the project-local creation path and preparing Gotham handoff.",
+      summary: "PlutoMix is selecting the project-local creation path and preparing Gotham handoff.",
       humanInLoop: { required: false, reason: "" },
       nodes: defaultProjectFlowNodes.map((node) => ({
         ...node,
@@ -8475,6 +8538,9 @@ export default function App() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: projectName.trim(),
+          enterpriseId: enterpriseSelection === "new" ? undefined : enterpriseSelection,
+          enterpriseLabel: enterpriseLabel.trim(),
+          agentSource,
           instruction: submittedInstruction.length > 12 ? submittedInstruction : undefined,
           taskType,
           brandingPalette: creationPalette
@@ -8489,7 +8555,7 @@ export default function App() {
       setProjectResult(data);
       if (data.flowPath) setProjectFlowPath(data.flowPath);
       if (!res.ok) throw new Error(data.error || "Project creation failed");
-      await loadProjects();
+      await Promise.all([loadProjects(), loadTenantGovernance()]);
       await loadProjectInstructions(data.project?.id || selectedProjectId);
       applyReadyProject(data.project);
       setStagedProjectMedia([]);
@@ -8651,11 +8717,18 @@ export default function App() {
     const file = event.target.files?.[0];
     event.target.value = "";
     if (!file) return;
+    if (!tenantGovernance || enterpriseLabel.trim().length < 2) {
+      setProjectResult({ status: "failed", projectName: file.name, error: tenantGovernanceError || "Choose an enterprise label before importing a project." });
+      return;
+    }
     setImportingProject(true);
     setGeneratedStatus("working");
     try {
       const body = new FormData();
       body.append("name", file.name.replace(/\.zip$/i, ""));
+      if (enterpriseSelection !== "new") body.append("enterpriseId", enterpriseSelection);
+      body.append("enterpriseLabel", enterpriseLabel.trim());
+      body.append("agentSource", agentSource);
       body.append("project", file);
       const res = await authFetch(`${BACKEND_URL}/api/projects/import`, {
         method: "POST",
@@ -8663,7 +8736,7 @@ export default function App() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Project import failed");
-      await loadProjects();
+      await Promise.all([loadProjects(), loadTenantGovernance()]);
       applyReadyProject(data.project);
       setProjectResult({ status: "succeeded", projectName: data.project.name, container: `port ${data.project.port}` });
     } catch (error) {
@@ -8682,7 +8755,7 @@ export default function App() {
       const res = await authFetch(`${BACKEND_URL}/api/decision-continuity/projects/${encodeURIComponent(selectedProject.id)}/architecture-branches`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ requestedFrom: "plutonix-page" })
+        body: JSON.stringify({ requestedFrom: "plutomix-page" })
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Architecture branch analysis failed.");
@@ -8714,7 +8787,7 @@ export default function App() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Project deletion failed");
       setSelectedProjectId("");
-      await loadProjects();
+      await Promise.all([loadProjects(), loadTenantGovernance()]);
       setProjectResult({
         status: "succeeded",
         projectName: data.project.name,
@@ -8729,14 +8802,14 @@ export default function App() {
     }
   }
 
-  function openStudioWorkspace(workspace, { plutonixTab = "" } = {}) {
+  function openStudioWorkspace(workspace, { plutomixTab = "" } = {}) {
     const authorizedWorkspace = authorizedStudioWorkspace(workspace, currentUser);
     if (authorizedWorkspace === "studio" && workspace !== "studio") {
       setActiveWorkspaceTab("studio");
       window.requestAnimationFrame(() => document.getElementById("studio-access")?.scrollIntoView({ behavior: "smooth", block: "center" }));
       return;
     }
-    if (plutonixTab) setActiveAgenticSystemTab(plutonixTab);
+    if (plutomixTab) setActiveAgenticSystemTab(plutomixTab);
     setActiveWorkspaceTab(authorizedWorkspace);
   }
 
@@ -8777,15 +8850,15 @@ export default function App() {
 
   return (
     <div className="workspace-shell">
-      <nav className="workspace-tabs" aria-label="PlutoniX workspace tabs">
+      <nav className="workspace-tabs" aria-label="PlutoMix workspace tabs">
         <div className="workspace-brand">
           <img
             className="brand-mark"
-            src={`/branding/${resolvedTheme === "dark" ? "plutonix-dark-icon.png" : "plutonix-icon.png"}`}
-            alt="PlutoniX logo"
+            src={`/branding/${resolvedTheme === "dark" ? "plutomix-dark-icon.png" : "plutomix-icon.png"}`}
+            alt="PlutoMix logo"
           />
           <div>
-            <h1>PlutoniX</h1>
+            <h1>PlutoMix</h1>
             <p>Autonomous multi-artifact creation system</p>
           </div>
         </div>
@@ -8815,7 +8888,7 @@ export default function App() {
           aria-selected={visibleWorkspaceTab === "agentic-system"}
         >
           <BrainCircuit size={15} />
-          PlutoniX
+          PlutoMix
         </button>
         <button
           type="button"
@@ -8886,10 +8959,10 @@ export default function App() {
         <StudioPage
           currentUser={currentUser}
           onOpenBuilder={() => openStudioWorkspace("builder")}
-          onOpenPlutonix={() => openStudioWorkspace("agentic-system", { plutonixTab: "analysis" })}
+          onOpenPlutoMix={() => openStudioWorkspace("agentic-system", { plutomixTab: "analysis" })}
           onOpenAgents={() => openStudioWorkspace("agents")}
           onOpenHosting={() => openStudioWorkspace("hosting")}
-          onOpenProductDocument={() => openStudioWorkspace("agentic-system", { plutonixTab: "product-document" })}
+          onOpenProductDocument={() => openStudioWorkspace("agentic-system", { plutomixTab: "product-document" })}
           developmentAuthEnabled={DEVELOPMENT_AUTH_ENABLED}
           onUseDevelopmentProfile={useLocalProfile}
         />
@@ -8925,7 +8998,7 @@ export default function App() {
               disabled={isSelectingProject}
             >
               <option value="">Select project</option>
-              <option value={SYSTEM_TARGET_VALUE}>PlutoniX System</option>
+              <option value={SYSTEM_TARGET_VALUE}>PlutoMix System</option>
               {projects.map((project) => (
                 <option key={project.id} value={project.id}>
                   {project.name} : {project.port}
@@ -8940,7 +9013,7 @@ export default function App() {
                 className={`icon-button notification-button ${notificationsOpen ? "active" : ""}`}
                 onClick={() => setNotificationsOpen((open) => !open)}
                 title={`Project notifications: ${playgroundNotifications.length} in the last 24 hours`}
-                aria-label={`Open notifications for ${selectedProject?.name || "PlutoniX"}`}
+                aria-label={`Open notifications for ${selectedProject?.name || "PlutoMix"}`}
                 aria-expanded={notificationsOpen}
               >
                 <Bell size={17} />
@@ -8950,7 +9023,7 @@ export default function App() {
                 <section className="playground-notification-popover" aria-label="Project notifications">
                   <header>
                     <div>
-                      <strong>{selectedProject?.name || "PlutoniX"}</strong>
+                      <strong>{selectedProject?.name || "PlutoMix"}</strong>
                       <small>Last 24 hours</small>
                     </div>
                     <button type="button" onClick={() => setNotificationsOpen(false)} aria-label="Close notifications"><X size={14} /></button>
@@ -9082,7 +9155,7 @@ export default function App() {
             {isSystemTarget ? (
               <div className="empty-playground system-playground">
                 <ShieldCheck size={28} />
-                <span>PlutoniX System selected. Gotham will create a proposal before platform changes.</span>
+                <span>PlutoMix System selected. Gotham will create a proposal before platform changes.</span>
               </div>
             ) : selectedProject && apiContractPreview ? (
               <div className="empty-playground api-contract-playground">
@@ -9256,7 +9329,24 @@ export default function App() {
 	            >
 	              <KeyRound size={14} />
 	              <span>AI Accounts</span>
-	              <small>{gothamProviderSummary.providerName} · {gothamProviderSummary.profileName}</small>
+	              <small>{[
+                    gothamProviderSummary.providerName,
+                    gothamProviderSummary.profileName,
+                    gothamProviderSummary.verificationLabel,
+                    gothamProviderSummary.selectedModel || null
+                  ].filter(Boolean).join(" · ")}</small>
+	            </button>
+	            <button
+	              type="button"
+	              className="gotham-ai-accounts-toggle connected"
+	              onClick={() => setTenantAdminOpen(true)}
+	              aria-haspopup="dialog"
+	              aria-expanded={tenantAdminOpen}
+	              title="Manage tenant enterprises, team accounts, and application assignments"
+	            >
+	              <Building2 size={14} />
+	              <span>Tenant admin</span>
+	              <small>{tenantGovernance ? `${tenantGovernance.limits.enterpriseCount}/2 enterprises` : "Governance"}</small>
 	            </button>
 	            <label className="mcp-execution-switch" title="Use the local MCP server as the alternative Gotham execution path">
 	              <input
@@ -9278,7 +9368,7 @@ export default function App() {
 			              disabled={isSystemTarget}
 			              title={
 			                isSystemTarget
-			                  ? "Intel expands selected application functionality, not the PlutoniX system target."
+			                  ? "Intel expands selected application functionality, not the PlutoMix system target."
 			                  : "Use profile-driven specialists, backend proposal scoring, one writer, validation, and independent verification for this selected project."
 			              }
 			            >
@@ -9433,6 +9523,38 @@ export default function App() {
 	                        <small>Identity, media, import, export, and project management</small>
 	                      </header>
 	                      <div className={`project-onboarding ${selectedProject && !selectedProject.isDefault ? "editing-project" : "creating-project"}`}>
+	                        {!selectedProject && !isSystemTarget ? <>
+	                          <select
+	                            value={enterpriseSelection}
+	                            onChange={(event) => {
+	                              const value = event.target.value;
+	                              setEnterpriseSelection(value);
+	                              setEnterpriseLabel(value === "new" ? "" : tenantGovernance?.enterprises.find((enterprise) => enterprise.id === value)?.label || "");
+	                            }}
+	                            disabled={!tenantGovernance || isCreatingProject}
+	                            aria-label="Enterprise for new project"
+	                          >
+	                            {tenantGovernance?.limits?.canCreateEnterprise ? <option value="new">Create new enterprise</option> : null}
+	                            {(tenantGovernance?.enterprises || []).map((enterprise) => <option key={enterprise.id} value={enterprise.id}>{enterprise.label}</option>)}
+	                          </select>
+	                          <input
+	                            value={enterpriseLabel}
+	                            onChange={(event) => setEnterpriseLabel(event.target.value)}
+	                            placeholder="Enterprise label (required)"
+	                            minLength={2}
+	                            maxLength={80}
+	                            required
+	                            readOnly={enterpriseSelection !== "new"}
+	                            disabled={isCreatingProject}
+	                            aria-label="Enterprise label"
+	                          />
+	                          <select value={agentSource} onChange={(event) => setAgentSource(event.target.value)} disabled={isCreatingProject} aria-label="Agent catalog for new project">
+	                            <option value="global_community">Global community agents</option>
+	                            <option value="enterprise">Enterprise-specific agents</option>
+	                          </select>
+	                          {tenantGovernanceError ? <small className="project-governance-error" role="alert">{tenantGovernanceError}</small> : null}
+	                          {tenantGovernance && !tenantGovernance.limits.canCreateEnterprise && enterpriseSelection !== "new" ? <small>Enterprise limit reached (2 of 2). Delete an empty enterprise to create another.</small> : null}
+	                        </> : null}
 	                        <input
 	                          value={projectName}
 	                          onChange={(event) => setProjectName(event.target.value)}
@@ -9953,8 +10075,8 @@ export default function App() {
       </main>
       ) : visibleWorkspaceTab === "agentic-system" ? (
 	        <main className={`agentic-workspace-tab ${activeAgenticSystemTab === "control-plane" || activeAgenticSystemTab === "governed-promotion" ? "control-plane-view" : activeAgenticSystemTab === "market-vision" ? "market-vision-view" : activeAgenticSystemTab === "product-document" ? "product-document-view" : "analysis-view"}`}>
-	          <header className="plutonix-page-header" aria-label="PlutoniX project navigation and analysis controls">
-          <nav className="agentic-system-subtabs" aria-label="PlutoniX views">
+	          <header className="plutomix-page-header" aria-label="PlutoMix project navigation and analysis controls">
+          <nav className="agentic-system-subtabs" aria-label="PlutoMix views">
             <button
               type="button"
               className={activeAgenticSystemTab === "graph" ? "active" : ""}
@@ -10011,7 +10133,7 @@ export default function App() {
 	          ) : activeAgenticSystemTab === "product-document" ? (
 	            <ProductDocumentPanel />
 	          ) : (
-            <PlutonixAnalysisWorkspace
+            <PlutoMixAnalysisWorkspace
               projects={projects.filter((project) => !project.isDefault)}
               selectedProject={selectedProject && !selectedProject.isDefault ? selectedProject : null}
               architectureAnalysisReport={architectureBranchReport}
@@ -10043,13 +10165,19 @@ export default function App() {
       )}
       <AiAccountsPanel
         backendUrl={BACKEND_URL}
-        workspaceId={isSystemTarget ? "system:plutonix" : selectedProjectId || "default"}
+        workspaceId={isSystemTarget ? "system:plutomix" : selectedProjectId || "default"}
         currentUserId={currentUser?.id || ""}
         open={aiAccountsOpen}
         onClose={() => setAiAccountsOpen(false)}
         selectedProviderId={gothamProviderId}
         onSelectedProviderChange={selectGothamProvider}
         onSummaryChange={setGothamProviderSummary}
+      />
+      <TenantGovernancePanel
+        backendUrl={BACKEND_URL}
+        open={tenantAdminOpen}
+        onClose={() => setTenantAdminOpen(false)}
+        onChanged={() => loadTenantGovernance()}
       />
     </div>
   );

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://plutonix.local/schemas/gotham-studio.schema.json",
+  "$id": "https://plutomix.local/schemas/gotham-studio.schema.json",
   "title": "Gotham Studio provider-neutral domain records",
   "oneOf": [
     { "$ref": "#/$defs/pipeline" },

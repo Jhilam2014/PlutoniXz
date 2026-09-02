@@ -19,7 +19,7 @@ import {
 } from "../src/codexRuntime.js";
 
 async function fixture(context) {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), "plutonix-codex-runtime-"));
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "plutomix-codex-runtime-"));
   const managedRoot = path.join(root, "projects");
   const workspace = path.join(managedRoot, "project-a");
   const bin = path.join(root, "fake-codex.mjs");
@@ -120,7 +120,7 @@ test("returns the safe backend-managed status contract with no VS Code dependenc
     available: true,
     authenticated: true,
     version: "codex-cli 9.9.9",
-    runtimeManagedBy: "plutonix-backend",
+    runtimeManagedBy: "plutomix-backend",
     requiresVsCode: false
   });
 });

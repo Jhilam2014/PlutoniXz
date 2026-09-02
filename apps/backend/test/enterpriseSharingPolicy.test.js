@@ -43,7 +43,7 @@ function input(overrides = {}) {
 }
 
 test("persists an approved scoped policy atomically and compiles only its authorized direction", async (context) => {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), "plutonix-sharing-policy-"));
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "plutomix-sharing-policy-"));
   context.after(() => fs.rm(root, { recursive: true, force: true }));
   const agreement = await saveEnterpriseSharingAgreement(input(), { root, actorId: "operator-1" });
   const registry = await readEnterpriseSharingAgreementRegistry({ root });
@@ -83,7 +83,7 @@ test("requires the identifying account or client scope and all approvals before 
 });
 
 test("serializes concurrent policy writes without losing an agreement", async (context) => {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), "plutonix-sharing-concurrent-"));
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "plutomix-sharing-concurrent-"));
   context.after(() => fs.rm(root, { recursive: true, force: true }));
   await Promise.all([
     saveEnterpriseSharingAgreement(input({ id: "sharing-a" }), { root, actorId: "operator" }),

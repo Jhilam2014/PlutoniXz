@@ -36,7 +36,7 @@ AIX is the policy-aware selection seam for registered candidates. Before it cons
 
 When BrainX is disabled, existing executor behavior remains unchanged. When a governed tenant has no eligible model, the route ends with `no_eligible_model`; it never silently falls back around policy. AIX itself does not call a provider. A selected OpenAI/Codex registration may describe the existing executor’s approved model configuration, while Hugging Face candidates are intentionally recorded as unavailable for live inference in this rollout.
 
-Automatic Hugging Face downloads remain disabled (`PLUTONIX_HF_AUTO_DOWNLOAD=false`). Any future local inference adapter needs a separate immutable revision, checksum, provenance, licence, hardware, and human-approval gate. No provider spend is asserted until the separate execution adapter supplies actual usage evidence. See [Enterprise BrainX governance](enterprise-brainx-governance.md) for the full cross-domain contract.
+Automatic Hugging Face downloads remain disabled (`PLUTOMIX_HF_AUTO_DOWNLOAD=false`). Any future local inference adapter needs a separate immutable revision, checksum, provenance, licence, hardware, and human-approval gate. No provider spend is asserted until the separate execution adapter supplies actual usage evidence. See [Enterprise BrainX governance](enterprise-brainx-governance.md) for the full cross-domain contract.
 
 ## API and access
 
@@ -65,7 +65,7 @@ BRAINX_MAX_COST_USD=0.25
 BRAINX_CIRCUIT_FAILURE_THRESHOLD=2
 BRAINX_LIVE_PROVIDER_ENABLED=false
 BRAINX_LIVE_PROVIDER_MAX_COST_USD=0
-PLUTONIX_HF_AUTO_DOWNLOAD=false
+PLUTOMIX_HF_AUTO_DOWNLOAD=false
 AIX_GOVERNED_ROUTING_ENABLED=false
 AIX_MAX_ROUTE_COST_USD=1
 AIX_MAX_LATENCY_MS=60000

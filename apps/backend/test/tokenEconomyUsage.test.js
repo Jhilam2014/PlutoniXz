@@ -10,6 +10,8 @@ test("provider terminal usage is preferred and preserves cached and reasoning to
   assert.deepEqual(parseProviderUsageFromEventStream(stream), {
     inputTokens: 120,
     cachedInputTokens: 80,
+    cacheCreationInputTokens: 0,
+    cacheReadInputTokens: 0,
     outputTokens: 30,
     reasoningOutputTokens: 12,
     totalTokens: 150,
@@ -35,4 +37,27 @@ test("usage parser defensively handles camel-case provider snapshots", () => {
   const usage = parseProviderUsageFromEventStream(JSON.stringify({ response: { token_usage: { inputTokens: 9, cachedInputTokens: 4, outputTokens: 3, reasoningOutputTokens: 2, totalTokens: 12 } } }));
   assert.equal(usage.inputTokens, 9);
   assert.equal(usage.totalTokens, 12);
+});
+
+test("Claude provider usage preserves cache creation and cache read tokens", () => {
+  const usage = parseProviderUsageFromEventStream(JSON.stringify({
+    type: "result",
+    usage: {
+      input_tokens: 11,
+      cache_creation_input_tokens: 3,
+      cache_read_input_tokens: 5,
+      output_tokens: 7
+    }
+  }));
+  assert.deepEqual(usage, {
+    inputTokens: 11,
+    cachedInputTokens: 8,
+    cacheCreationInputTokens: 3,
+    cacheReadInputTokens: 5,
+    outputTokens: 7,
+    reasoningOutputTokens: 0,
+    totalTokens: 26,
+    usageSource: "provider",
+    providerUsageSchemaVersion: "normalized-v1"
+  });
 });

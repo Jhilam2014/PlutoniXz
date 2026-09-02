@@ -86,7 +86,7 @@ const RuntimePolicySchema = z.object({
 }).strict();
 
 const CandidateSchema = z.object({
-  schemaVersion: z.literal("plutonix-self-improvement-runtime-policy/v1"),
+  schemaVersion: z.literal("plutomix-self-improvement-runtime-policy/v1"),
   targetKey: z.literal(GOVERNED_PROMOTION_TARGET),
   policy: RuntimePolicySchema
 }).strict();
@@ -168,7 +168,7 @@ export function validateSelfImprovementCandidate(candidate) {
 
 function defaultRuntimeCandidate(config = {}) {
   return {
-    schemaVersion: "plutonix-self-improvement-runtime-policy/v1",
+    schemaVersion: "plutomix-self-improvement-runtime-policy/v1",
     targetKey: GOVERNED_PROMOTION_TARGET,
     policy: {
       enabled: Boolean(config.enabled),

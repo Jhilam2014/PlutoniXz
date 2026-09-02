@@ -1,9 +1,9 @@
 {
-  "workflow_id": "plutonix-runtime-log-400-001",
+  "workflow_id": "plutomix-runtime-log-400-001",
   "name": "MCP runtime log 400-row display",
   "workflow_class": ["software_engineering", "dashboard_ui", "observability"],
   "task_size": "medium",
-  "objective": "Publish MCP backend runtime logs in the PlutoniX display log with latest-first ordering and a 400-row cap.",
+  "objective": "Publish MCP backend runtime logs in the PlutoMix display log with latest-first ordering and a 400-row cap.",
   "status": "completed",
   "created_at": "2026-06-25T07:03:20Z",
   "updated_at": "2026-06-25T07:03:20Z",

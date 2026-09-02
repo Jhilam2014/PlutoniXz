@@ -41,7 +41,7 @@ await assert.rejects(() => validateExternalEvidence(unsafeApifyLinkage), /Apify 
 const actionMismatch = structuredClone(baseline); actionMismatch.actionManifest.actions[0].status = 'IMPLICITLY_APPROVED';
 await assert.rejects(() => validateExternalEvidence(actionMismatch), /External action/);
 
-const temporary = await mkdtemp(path.join(os.tmpdir(), 'plutonix-08a1c-r3-stability-'));
+const temporary = await mkdtemp(path.join(os.tmpdir(), 'plutomix-08a1c-r3-stability-'));
 try {
   for (const outputName of ['first', 'second']) {
     const outputDirectory = path.join(temporary, outputName);

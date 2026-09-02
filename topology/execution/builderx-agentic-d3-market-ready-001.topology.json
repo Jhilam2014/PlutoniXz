@@ -1,8 +1,8 @@
 {
-  "workflow_id": "plutonix-agentic-d3-market-ready-001",
+  "workflow_id": "plutomix-agentic-d3-market-ready-001",
   "mode": "single_implementation_agent_with_independent_read_only_review",
   "agents": [
-    "plutonix-fullstack-agent"
+    "plutomix-fullstack-agent"
   ],
   "review_roles": [
     "enterprise_product_design",

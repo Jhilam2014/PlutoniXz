@@ -1,4 +1,4 @@
-MERGE (p:Project {id: 'project:orchestrator-agent-001', name: 'plutonix'})
+MERGE (p:Project {id: 'project:orchestrator-agent-001', name: 'plutomix'})
 MERGE (w:Workflow {id: 'bootstrap-orchestrator-001', name: 'Bootstrap Orchestrator', status: 'complete'})
 MERGE (a:Agent {id: 'project-execution-agent', name: 'Project Execution Agent', status: 'active', version: '1.0.0'})
 MERGE (m:ApplicationFunctionality {id: 'agent-memory', name: 'Agent Memory', status: 'bootstrapped'})

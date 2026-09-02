@@ -7,8 +7,8 @@ const MAX_INSTRUCTION_ROWS = 120;
 const DEFAULT_MAX_DAILY_AUDITS = 3;
 const DEFAULT_AUDIT_TIME_ZONE = "Asia/Kolkata";
 
-function plutonixRoot() {
-  if (process.env.PLUTONIX_PROJECT_ROOT) return process.env.PLUTONIX_PROJECT_ROOT;
+function plutomixRoot() {
+  if (process.env.PLUTOMIX_PROJECT_ROOT) return process.env.PLUTOMIX_PROJECT_ROOT;
   if (fs.existsSync(path.join(process.cwd(), "apps", "backend"))) return process.cwd();
   return path.resolve(process.cwd(), "../..");
 }
@@ -36,7 +36,7 @@ function safeInstruction(value = "") {
 }
 
 function includeInstructionSamples() {
-  return String(process.env.PLUTONIX_ORCHESTRATOR_STORE_INSTRUCTION_SAMPLES || "0") === "1";
+  return String(process.env.PLUTOMIX_ORCHESTRATOR_STORE_INSTRUCTION_SAMPLES || "0") === "1";
 }
 
 function issue(severity, category, title, detail, evidence = {}) {
@@ -90,7 +90,7 @@ function analyzeRuntimeEvents(events = []) {
       previewFailures.length >= 3 ? "critical" : "high",
       "functionality",
       "Preview/runtime failures are recurring",
-      "Generated apps are failing at install/start/preview time. PlutoniX should prefer pinned runtime dependencies and send runtime errors to repair before failing the workflow.",
+      "Generated apps are failing at install/start/preview time. PlutoMix should prefer pinned runtime dependencies and send runtime errors to repair before failing the workflow.",
       { count: previewFailures.length, lastMessage: previewFailures[0]?.message || "" }
     ));
   }
@@ -108,7 +108,7 @@ function analyzeRuntimeEvents(events = []) {
       "high",
       "quality",
       "High error density in recent activity",
-      "Recent PlutoniX activity has too many failed or rejected events compared with successful completion signals.",
+      "Recent PlutoMix activity has too many failed or rejected events compared with successful completion signals.",
       { recentEvents: recent.length, errors: errors.length }
     ));
   }
@@ -236,14 +236,14 @@ function buildAgentHealth(runtimeAgents = [], tokenEconomy = {}, issues = []) {
     byAgent.set(agentId, row);
   }
   for (const item of issues) {
-    const targetAgent = /repair/i.test(item.category) ? "plutonix-auto-repair-agent" : /token/.test(item.category) ? item.evidence?.agentId : "";
+    const targetAgent = /repair/i.test(item.category) ? "plutomix-auto-repair-agent" : /token/.test(item.category) ? item.evidence?.agentId : "";
     if (!targetAgent || !byAgent.has(targetAgent)) continue;
     byAgent.get(targetAgent).concerns.push(item.title);
   }
   for (const row of byAgent.values()) {
     if (row.efficiencyScore < 60) row.directives.push("Use smaller context windows, cite exact files, and avoid broad rewrites unless required.");
     if (row.qualityScore < 65) row.directives.push("Before completion, verify requested behavior against the latest user instruction and runtime evidence.");
-    if (row.healthScore < 60) row.directives.push("Route through independent review or auto-repair before PlutoniX approval.");
+    if (row.healthScore < 60) row.directives.push("Route through independent review or auto-repair before PlutoMix approval.");
   }
   return [...byAgent.values()].sort((left, right) => left.healthScore - right.healthScore);
 }
@@ -257,7 +257,7 @@ function recommendationsFor(issues = []) {
     recs.push("Reduce prompt fan-out for low-yield agents and prefer targeted file reads plus explicit changed-file validation.");
   }
   if (issues.some((row) => row.category === "user-outcome")) {
-    recs.push("Compare each user instruction with the final changed files and preview state before marking PlutoniX complete.");
+    recs.push("Compare each user instruction with the final changed files and preview state before marking PlutoMix complete.");
   }
   if (issues.some((row) => row.category === "quality")) {
     recs.push("Tighten first-pass agent handoff prompts and require runtime/package checks for project creation tasks.");
@@ -293,10 +293,10 @@ export function createOrchestratorHealthMonitor({
   getInstructionTimeline = () => [],
   getTokenEconomy = summarizeAgentTokenEconomy,
   onSelfHeal = null,
-  root: configuredRoot = plutonixRoot(),
+  root: configuredRoot = plutomixRoot(),
   now = () => new Date(),
-  maxDailyAudits = Number(process.env.PLUTONIX_ORCHESTRATOR_HEALTH_MAX_DAILY_AUDITS || DEFAULT_MAX_DAILY_AUDITS),
-  timeZone = process.env.PLUTONIX_ORCHESTRATOR_HEALTH_TIME_ZONE || DEFAULT_AUDIT_TIME_ZONE
+  maxDailyAudits = Number(process.env.PLUTOMIX_ORCHESTRATOR_HEALTH_MAX_DAILY_AUDITS || DEFAULT_MAX_DAILY_AUDITS),
+  timeZone = process.env.PLUTOMIX_ORCHESTRATOR_HEALTH_TIME_ZONE || DEFAULT_AUDIT_TIME_ZONE
 } = {}) {
   const root = configuredRoot;
   const auditRoot = path.join(root, "observability", "orchestrator-health");
@@ -314,7 +314,7 @@ export function createOrchestratorHealthMonitor({
       return { ...stored, maxDailyAudits: dailyLimit, timeZone };
     }
     return {
-      schemaVersion: "plutonix-orchestrator-health-budget/v1",
+      schemaVersion: "plutomix-orchestrator-health-budget/v1",
       day,
       timeZone,
       maxDailyAudits: dailyLimit,
@@ -385,7 +385,7 @@ export function createOrchestratorHealthMonitor({
         status: issues.some((row) => row.severity === "critical") ? "critical" : issues.some((row) => row.severity === "high") ? "degraded" : "healthy",
         generatedAt: now().toISOString(),
         reason,
-        scope: "plutonix-orchestrator-health",
+        scope: "plutomix-orchestrator-health",
         userActivitySummary: {
           recentEvents: runtimeAnalysis.recent.length,
           errors: runtimeAnalysis.errors.length,
@@ -435,21 +435,21 @@ export function createOrchestratorHealthMonitor({
       }, { spaces: 2 });
 
       emit("orchestrator-health-audit", `Orchestrator health audit ${report.status}: ${issues.length} issue${issues.length === 1 ? "" : "s"} found`, {
-        source: "plutonix-orchestrator-health",
+        source: "plutomix-orchestrator-health",
         status: report.status,
         issueCount: issues.length,
         criticalCount: issues.filter((row) => row.severity === "critical").length,
         highCount: issues.filter((row) => row.severity === "high").length
       });
 
-      const selfHealEnabled = String(process.env.PLUTONIX_ORCHESTRATOR_SELF_HEAL || "1") === "1";
+      const selfHealEnabled = String(process.env.PLUTOMIX_ORCHESTRATOR_SELF_HEAL || "1") === "1";
       const needsSelfHeal = selfHealEnabled && issues.some((row) => ["critical", "high"].includes(row.severity));
       const signature = issues.slice(0, 3).map((row) => `${row.severity}:${row.category}:${row.title}`).join("|");
       if (needsSelfHeal && signature && signature !== lastSelfHealSignature && typeof onSelfHeal === "function") {
         lastSelfHealSignature = signature;
         await onSelfHeal(report).catch((error) => {
           emit("orchestrator-health-self-heal-failed", error.message, {
-            source: "plutonix-orchestrator-health",
+            source: "plutomix-orchestrator-health",
             status: "failed"
           });
         });

@@ -1,6 +1,6 @@
 # AI provider logo sources
 
-These unmodified provider marks are displayed only beside their named integration in Gotham AI Accounts. They remain less prominent than PlutoniX branding and sit on a plain high-contrast surface.
+These unmodified provider marks are displayed only beside their named integration in Gotham AI Accounts. They remain less prominent than PlutoMix branding and sit on a plain high-contrast surface.
 
 - `openai.svg`: OpenAI brand page, <https://openai.com/brand/>
 - `anthropic.svg`: Anthropic website mark, <https://www.anthropic.com/images/icons/safari-pinned-tab.svg>

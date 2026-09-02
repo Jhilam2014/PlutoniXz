@@ -25,7 +25,7 @@
       "projectResponsibility": "Define real data sources, persistence boundaries, supplied-input provenance, and explicit empty/loading/error states.",
       "status": "active",
       "contextPath": ".agentic/orchestrator-agent.md",
-      "createdAt": "2026-08-31T06:26:20.355Z"
+      "createdAt": "2026-09-02T20:37:08.511Z"
     },
     {
       "id": "project-agent-assignment:geofinderx-2yFsDY:data-contract-agent",
@@ -186,6 +186,26 @@
       "status": "active",
       "contextPath": ".agentic/orchestrator-agent.md",
       "createdAt": "2026-08-30T18:50:44.868Z"
+    },
+    {
+      "id": "project-agent-assignment:jobhunt-0SHrjF:data-contract-agent",
+      "projectId": "jobhunt-0SHrjF",
+      "agentId": "data-contract-agent",
+      "role": "data-contract",
+      "projectResponsibility": "Define real data sources, persistence boundaries, supplied-input provenance, and explicit empty/loading/error states.",
+      "status": "active",
+      "contextPath": ".agentic/orchestrator-agent.md",
+      "createdAt": "2026-09-01T10:55:36.429Z"
+    },
+    {
+      "id": "project-agent-assignment:jobhunt2-PXJCTy:data-contract-agent",
+      "projectId": "jobhunt2-PXJCTy",
+      "agentId": "data-contract-agent",
+      "role": "data-contract",
+      "projectResponsibility": "Define real data sources, persistence boundaries, supplied-input provenance, and explicit empty/loading/error states.",
+      "status": "active",
+      "contextPath": ".agentic/orchestrator-agent.md",
+      "createdAt": "2026-09-02T19:53:42.519Z"
     }
   ],
   "reuse_decisions": [
@@ -198,7 +218,7 @@
       "reuseConfidenceScore": 100,
       "similarityScore": 1,
       "reason": "Reused the existing global data-contract definition; project context is stored in a separate assignment.",
-      "createdAt": "2026-08-31T06:26:20.355Z"
+      "createdAt": "2026-09-02T20:37:08.511Z"
     },
     {
       "id": "agent-reuse:geofinderx-2yFsDY:data-contract-agent",
@@ -375,6 +395,28 @@
       "similarityScore": 1,
       "reason": "Reused the existing global data-contract definition; project context is stored in a separate assignment.",
       "createdAt": "2026-08-30T18:50:44.868Z"
+    },
+    {
+      "id": "agent-reuse:jobhunt-0SHrjF:data-contract-agent",
+      "projectExecution": "jobhunt-0SHrjF",
+      "selectedAgent": "data-contract-agent",
+      "requestedRole": "data-contract",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global data-contract definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-09-01T10:55:36.429Z"
+    },
+    {
+      "id": "agent-reuse:jobhunt2-PXJCTy:data-contract-agent",
+      "projectExecution": "jobhunt2-PXJCTy",
+      "selectedAgent": "data-contract-agent",
+      "requestedRole": "data-contract",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global data-contract definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-09-02T19:53:42.519Z"
     }
   ],
   "latest_reuse_decision": {
@@ -386,6 +428,9 @@
     "reuseConfidenceScore": 100,
     "similarityScore": 1,
     "reason": "Reused the existing global data-contract definition; project context is stored in a separate assignment.",
-    "createdAt": "2026-08-31T06:26:20.355Z"
-  }
+    "createdAt": "2026-09-02T20:37:08.511Z"
+  },
+  "catalog_scope": "global_community",
+  "tenant_id": "",
+  "enterprise_id": ""
 }

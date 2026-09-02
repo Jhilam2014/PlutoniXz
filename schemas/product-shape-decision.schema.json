@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "PlutoniX Product Shape Decision",
+  "title": "PlutoMix Product Shape Decision",
   "type": "object",
   "additionalProperties": false,
   "required": [

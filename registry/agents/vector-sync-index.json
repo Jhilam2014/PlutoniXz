@@ -12,12 +12,12 @@
   "provider": "openai",
   "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
   "files": {
-    "memory/agent-knowledge/agents/plutonix-fullstack-agent.v1.0.0.md": {
-      "content_sha256": "66f3afab5cd50299f999673c7a96a8ed605ff1285db5c1b8c4b4f86c9dbf2f1f",
-      "file_id": "file-C5bFepNgU7tjaeRwKQgkZD",
-      "status": "completed",
+    "memory/agent-knowledge/agents/plutomix-fullstack-agent.v1.0.0.md": {
+      "content_sha256": "575c351794ed282f7a5e2bc99fd33c3a5909d2e016430a2917466478c862500e",
+      "file_id": "file-LhAGkMWkRN2cjhcEmJzM3Z",
+      "status": "in_progress",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
-      "synced_at": "2026-08-08T04:19:51.952Z"
+      "synced_at": "2026-09-02T20:33:11.351Z"
     },
     "memory/agent-knowledge/agents/project-execution-agent.v1.0.0.md": {
       "content_sha256": "bc1f3081f6abafbeaf8c852ffa97b6cbb5c0a111997d75038f4e345aee7ee13c",
@@ -33,70 +33,70 @@
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
       "synced_at": "2026-06-29T22:54:21.188Z"
     },
-    "memory/agent-knowledge/projects/plutonix-container-restart-001.summary.md": {
+    "memory/agent-knowledge/projects/plutomix-container-restart-001.summary.md": {
       "content_sha256": "e9a1eeddf2559f14c9f5fcab208ec1afebaa2e4338d6ce0c098b5abaec264c4c",
       "file_id": "file-3kUJ5YYdawMYfVqKxMwFWf",
       "status": "completed",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
       "synced_at": "2026-06-29T22:54:21.194Z"
     },
-    "memory/agent-knowledge/projects/plutonix-generated-file-ops-001.summary.md": {
+    "memory/agent-knowledge/projects/plutomix-generated-file-ops-001.summary.md": {
       "content_sha256": "991883edd9e3a36c54848e6d2f1668fae733fb19b75971020e8599bd520cb7dc",
       "file_id": "file-TBV6vaksqt39ZqFaSJ2uzN",
       "status": "completed",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
       "synced_at": "2026-06-29T22:54:21.195Z"
     },
-    "memory/agent-knowledge/projects/plutonix-hot-reload-stability-001.summary.md": {
+    "memory/agent-knowledge/projects/plutomix-hot-reload-stability-001.summary.md": {
       "content_sha256": "7f4ea1fee6a11920d65a7ebb42947559bcd548a4934c1283bbce4ad10de22524",
       "file_id": "file-VZ5T1mEWEBJZiUAXqhkegc",
       "status": "completed",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
       "synced_at": "2026-06-29T22:54:21.196Z"
     },
-    "memory/agent-knowledge/projects/plutonix-large-001.summary.md": {
+    "memory/agent-knowledge/projects/plutomix-large-001.summary.md": {
       "content_sha256": "7eaa709f495314dabe8390291a74f2fa6d000952ec8cf0b037a17ce21a1457be",
       "file_id": "file-2cDmkXmzx7dJycCkpr52ud",
       "status": "completed",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
       "synced_at": "2026-06-29T22:54:21.197Z"
     },
-    "memory/agent-knowledge/projects/plutonix-layout-agentic-d3-001.summary.md": {
+    "memory/agent-knowledge/projects/plutomix-layout-agentic-d3-001.summary.md": {
       "content_sha256": "ceea1ba97362701dc7657ffb9a861e59d548663a1f4cc069935c115bbd789200",
       "file_id": "file-LSVSdaspktdSTJ8Xr4jiUB",
       "status": "completed",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
       "synced_at": "2026-06-29T22:54:21.198Z"
     },
-    "memory/agent-knowledge/projects/plutonix-mcp-chat-001.summary.md": {
+    "memory/agent-knowledge/projects/plutomix-mcp-chat-001.summary.md": {
       "content_sha256": "d890fb56c289b78522a21e5b2cd4502a8466a7a6b7faaddcabf0609c678458c7",
       "file_id": "file-VCixrZe3RgU23UKQS2CvTN",
       "status": "completed",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
       "synced_at": "2026-06-29T22:54:21.199Z"
     },
-    "memory/agent-knowledge/projects/plutonix-mcp-console-trace-001.summary.md": {
+    "memory/agent-knowledge/projects/plutomix-mcp-console-trace-001.summary.md": {
       "content_sha256": "1f04c37fec1e3dbdcbc1970d35fecd728049ad8c8af3f5538f5222c9580c3fe8",
       "file_id": "file-VbXWvndEB23jNvZ53Anbth",
       "status": "completed",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
       "synced_at": "2026-06-29T22:54:21.200Z"
     },
-    "memory/agent-knowledge/projects/plutonix-mcp-runtime-log-001.summary.md": {
+    "memory/agent-knowledge/projects/plutomix-mcp-runtime-log-001.summary.md": {
       "content_sha256": "d0f78351780dc5a219fb5d9b94f7b45622bfdd158bd72f19f7535b03c18ac5cc",
       "file_id": "file-GYzKZvNHyC4AJUvBMsNJ2X",
       "status": "completed",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
       "synced_at": "2026-06-29T22:54:21.201Z"
     },
-    "memory/agent-knowledge/projects/plutonix-orchestrator-mcp-001.summary.md": {
+    "memory/agent-knowledge/projects/plutomix-orchestrator-mcp-001.summary.md": {
       "content_sha256": "d2f230fbdb2971c64412c9739beb120a4b64cdc45352076be0df27070fdd043c",
       "file_id": "file-2aqvQeNnVYWmyu6m7KBCen",
       "status": "completed",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
       "synced_at": "2026-06-29T22:54:21.211Z"
     },
-    "memory/agent-knowledge/projects/plutonix-runtime-log-400-001.summary.md": {
+    "memory/agent-knowledge/projects/plutomix-runtime-log-400-001.summary.md": {
       "content_sha256": "642cf4f181b9cf6fe6d9c60d0121555027dd5256a62a3d94a91d94995eb82cee",
       "file_id": "file-YXXtCdeSH7YC9zRD6FM9zm",
       "status": "completed",
@@ -138,19 +138,19 @@
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
       "synced_at": "2026-06-29T22:54:21.218Z"
     },
-    "memory/agent-knowledge/prompts/plutonix-large-001.plutonix-fullstack-agent.plutonix-large-task.prompt.md": {
+    "memory/agent-knowledge/prompts/plutomix-large-001.plutomix-fullstack-agent.plutomix-large-task.prompt.md": {
       "content_sha256": "c29ef0976fad72f3bb2b0ac50ffc6d6db25b0e589d82eb12372b89b73e996b8b",
       "file_id": "file-TqfTGojmqJnGZvmXGxqSbv",
       "status": "completed",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
       "synced_at": "2026-06-29T22:54:21.219Z"
     },
-    "agents/generated/plutonix-fullstack-agent.agent.md": {
-      "content_sha256": "3f4ca077faffda9762595dd398fb4b82053a0548250076b635f327c57a2b92e9",
-      "file_id": "file-4fdmxjcs774p2uDjVQuWXp",
-      "status": "completed",
+    "agents/generated/plutomix-fullstack-agent.agent.md": {
+      "content_sha256": "c4ca0f01154c03a89185f846608b5253130014d83cda1a0d1f21b6168907255f",
+      "file_id": "file-9ve1hvz1xgxPXmywrjK8wY",
+      "status": "in_progress",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
-      "synced_at": "2026-08-08T04:19:49.734Z"
+      "synced_at": "2026-09-02T20:33:07.164Z"
     },
     "agents/generated/geofinderx-content-data-agent.agent.md": {
       "content_sha256": "b61d4db51d54d562448a8f79be9a6c085ec55a9c7a56c7025831726bba8088a0",
@@ -216,11 +216,11 @@
       "synced_at": "2026-06-29T23:26:41.653Z"
     },
     "agents/generated/project-execution-agent.agent.md": {
-      "content_sha256": "b6cc51efcccc1be4d7ababbc75477db7aa37d4f830c417ee9627fa59a62988a1",
-      "file_id": "file-TFBKznrC1zyexxxt1RJwnS",
-      "status": "completed",
+      "content_sha256": "0e30a5d6b36eda9e014a48053201084cc1aed6eb352523948370fac42ae6f561",
+      "file_id": "file-2qu39WZxcb3hN3WHmVQkx8",
+      "status": "in_progress",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
-      "synced_at": "2026-08-08T05:25:43.128Z"
+      "synced_at": "2026-09-02T20:33:09.568Z"
     },
     "agents/human/human-controller.agent.md": {
       "content_sha256": "5b983cf10f33f80341e880a7218a1fbec95ea7d34268ec89e1216e08ac4663fe",
@@ -481,35 +481,35 @@
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
       "synced_at": "2026-07-22T11:13:32.642Z"
     },
-    "memory/agent-knowledge/prompts/plutonix-agentic-d3-market-ready-001.plutonix-fullstack-agent.task.prompt.md": {
+    "memory/agent-knowledge/prompts/plutomix-agentic-d3-market-ready-001.plutomix-fullstack-agent.task.prompt.md": {
       "content_sha256": "a290d3001378559cd4285ce1f0e2e83ab29d17824b70626adee8c58871f6f543",
       "file_id": "file-9DjDu7bsPtWSJ6xeNptpqR",
       "status": "completed",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
       "synced_at": "2026-07-24T15:43:07.308Z"
     },
-    "memory/agent-knowledge/prompts/plutonix-agentic-d3-market-ready-001.plutonix-fullstack-agent.validation.prompt.md": {
+    "memory/agent-knowledge/prompts/plutomix-agentic-d3-market-ready-001.plutomix-fullstack-agent.validation.prompt.md": {
       "content_sha256": "857284556af01520d016cf5fa3fb0a7bd361bdbf026391b17b3ed53025caf36c",
       "file_id": "file-B9222cSrCMjQXyRMGai2iU",
       "status": "completed",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
       "synced_at": "2026-07-24T15:43:12.430Z"
     },
-    "memory/agent-knowledge/prompts/plutonix-agentic-d3-market-ready-001.design-team.workshop.prompt.md": {
+    "memory/agent-knowledge/prompts/plutomix-agentic-d3-market-ready-001.design-team.workshop.prompt.md": {
       "content_sha256": "62680c35f92b6df4d8ef51fc489b865eb8ae3f3a59802c82fefc1bfffc4d8d06",
       "file_id": "file-C63dZ6QnXLA6h2krJHcKZu",
       "status": "completed",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
       "synced_at": "2026-07-24T15:43:15.878Z"
     },
-    "memory/agent-knowledge/projects/plutonix-agentic-d3-market-ready-001.summary.md": {
+    "memory/agent-knowledge/projects/plutomix-agentic-d3-market-ready-001.summary.md": {
       "content_sha256": "17ece849d8e6964b2672ae0d275a208d6491f9704647ddb7bf0af91b619be85e",
       "file_id": "file-QAGqCWpKi9ZK4NnqTaiXaa",
       "status": "completed",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
       "synced_at": "2026-07-24T17:20:00.728Z"
     },
-    "memory/agent-knowledge/projects/plutonix-agentic-d3-market-ready-002.summary.md": {
+    "memory/agent-knowledge/projects/plutomix-agentic-d3-market-ready-002.summary.md": {
       "content_sha256": "b94bc13d46bb30625a791001e628c4e2247f5ced2e2487877e11013ec6a9339b",
       "file_id": "file-ANZsRubj4RR9Wqaph7MVJE",
       "status": "completed",
@@ -944,116 +944,116 @@
       "synced_at": "2026-08-13T11:49:08.295Z"
     },
     "memory/agent-knowledge/projects/builderx-agentic-d3-market-ready-001.summary.md": {
-      "content_sha256": "3742fc0535f8ee765abaf227ce8fa9b0a45af5a8fb2115564da0a15260f3635e",
-      "file_id": "file-G5JmoqvHzeCif3g6agyTGV",
-      "status": "completed",
+      "content_sha256": "43ba4a104297b9dde9ee89bc14843e62d898df58b0ade0ab2cb8190f4d43c95c",
+      "file_id": "file-FKJK3s8dNxmBHfk4r2zjsd",
+      "status": "in_progress",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
-      "synced_at": "2026-08-08T04:19:53.797Z"
+      "synced_at": "2026-09-02T20:33:14.959Z"
     },
     "memory/agent-knowledge/projects/builderx-agentic-d3-market-ready-002.summary.md": {
-      "content_sha256": "29088356c4f28587e8fab8d69becdd98402c654d73e18fc9031e0caa2d9f4b94",
-      "file_id": "file-SuPGwKUiCveQ2i6v3odFQ3",
-      "status": "completed",
+      "content_sha256": "e1ec62e46552e20e808eebcdad1f6987900f210dc2a1aa3ede734bb3c44e8831",
+      "file_id": "file-Kj5iyDcqb9CTJwakZ6rEum",
+      "status": "in_progress",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
-      "synced_at": "2026-08-08T04:19:57.103Z"
+      "synced_at": "2026-09-02T20:33:16.986Z"
     },
     "memory/agent-knowledge/projects/builderx-container-restart-001.summary.md": {
-      "content_sha256": "a1800f563188afa651b112d0ca7e8490c1c86ec945b107b740ecd6f82674581c",
-      "file_id": "file-MNJs15pwkmrPqz3XBjihUB",
-      "status": "completed",
+      "content_sha256": "012d7ffe3e1b08ac76c978d94f989099a05e5f68e8b87900a61c8cbe7ee720cc",
+      "file_id": "file-LiX1QdrBubXnU2WJPxGQ8i",
+      "status": "in_progress",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
-      "synced_at": "2026-08-08T04:19:58.801Z"
+      "synced_at": "2026-09-02T20:33:19.399Z"
     },
     "memory/agent-knowledge/projects/builderx-generated-file-ops-001.summary.md": {
-      "content_sha256": "d1d7e192935c917c73a4f72216066fd84c9a6e509c142213465b2a42ae6353e2",
-      "file_id": "file-JaUXc5AP6EcGucXEhjeBWc",
-      "status": "completed",
+      "content_sha256": "5634fa9055427cf945829eb7c9d1edf394fe6950c6178bff30ea699aa5a877d0",
+      "file_id": "file-SEoWVsYv9exEpBjj7iFdsn",
+      "status": "in_progress",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
-      "synced_at": "2026-08-08T04:20:00.418Z"
+      "synced_at": "2026-09-02T20:33:21.899Z"
     },
     "memory/agent-knowledge/projects/builderx-hot-reload-stability-001.summary.md": {
-      "content_sha256": "a4fbd473308a58f6cbca17aaf8a99277345b5f7d095550dce0c18f4690c9ce0c",
-      "file_id": "file-23sgHaMJzbjA4jVGAogzc4",
-      "status": "completed",
+      "content_sha256": "b14d1cc92bd2768ce1783676b8c0d0c032671cc7bce3d9fe6c1802d53db3fc33",
+      "file_id": "file-8rK4bs3xYoHZ34vfxTxCLv",
+      "status": "in_progress",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
-      "synced_at": "2026-08-08T04:20:02.820Z"
+      "synced_at": "2026-09-02T20:33:23.719Z"
     },
     "memory/agent-knowledge/projects/builderx-large-001.summary.md": {
-      "content_sha256": "289ba54b4a334d9aef3e8735684200b80aa73497612fb6bc2a099efc8e3bdde6",
-      "file_id": "file-E3LDEqiJbdLbRRTPLV4rzc",
-      "status": "completed",
+      "content_sha256": "b31d51bc37a75414891600916cc9fe6af90be401f2ff8f267abeae9880d83850",
+      "file_id": "file-NvZahXvywwHwifnyX7oi8X",
+      "status": "in_progress",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
-      "synced_at": "2026-08-08T04:20:04.926Z"
+      "synced_at": "2026-09-02T20:33:25.382Z"
     },
     "memory/agent-knowledge/projects/builderx-layout-agentic-d3-001.summary.md": {
-      "content_sha256": "8c1938e6a00f9999aa49ba87e324680d678f316b0b43506366a1ae7f11df589b",
-      "file_id": "file-AKpBKiJpvE9ei9s1dG7z4u",
-      "status": "completed",
+      "content_sha256": "80b22dad724e0c4328bf0c73f0899e19cb86db8185638ff05810515a368214d7",
+      "file_id": "file-J9zKtHZVpLQ8aEqGa2xNeF",
+      "status": "in_progress",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
-      "synced_at": "2026-08-08T04:20:08.806Z"
+      "synced_at": "2026-09-02T20:33:26.912Z"
     },
     "memory/agent-knowledge/projects/builderx-mcp-chat-001.summary.md": {
-      "content_sha256": "42334b1f1d93e0be5e594e0c306b5dbc1ca3b91b4e86a2a82195a75801ff5938",
-      "file_id": "file-U5PUr115edUL6DZRx3gCoh",
-      "status": "completed",
+      "content_sha256": "703d6719b6bdf0717f021f60f1c6271574c4a77ae3ef2f7f25e211ec56c8d5c6",
+      "file_id": "file-AMvSkayB6YiXPZJ2C67Npm",
+      "status": "in_progress",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
-      "synced_at": "2026-08-08T04:20:11.672Z"
+      "synced_at": "2026-09-02T20:33:28.659Z"
     },
     "memory/agent-knowledge/projects/builderx-mcp-console-trace-001.summary.md": {
-      "content_sha256": "05fff423bb07d3991d866aac49fa088235beb3a9eab5e78c0a65503efd821c25",
-      "file_id": "file-CtJHpZpUdZQzSeJnCqk3Ea",
-      "status": "completed",
+      "content_sha256": "17cf3e243ce5fdbc214c08c888839534b1c3c88060e8f282036d27b1254c9a88",
+      "file_id": "file-4Sn7ez8m9uzL8PAstS6JrG",
+      "status": "in_progress",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
-      "synced_at": "2026-08-08T04:20:13.311Z"
+      "synced_at": "2026-09-02T20:33:30.408Z"
     },
     "memory/agent-knowledge/projects/builderx-mcp-runtime-log-001.summary.md": {
-      "content_sha256": "062d095029f9a8508ec8e527af638cb29984566598163e2c5bfe676cc13a6a00",
-      "file_id": "file-FHpvZNRvpyphVj1Jhtx7ZF",
-      "status": "completed",
+      "content_sha256": "fb3ba0a1b80fcc4a3a91cdef4dbbfd7664ded591a38b79028f2f129a36d84f5d",
+      "file_id": "file-NVCzAhsXeJ7JVvw4CNKGT1",
+      "status": "in_progress",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
-      "synced_at": "2026-08-08T04:20:14.931Z"
+      "synced_at": "2026-09-02T20:33:32.139Z"
     },
     "memory/agent-knowledge/projects/builderx-orchestrator-mcp-001.summary.md": {
-      "content_sha256": "cb4b88a2fc897dfb830000ccce3e2cb3cd81ef20b2c6745e4dd9daa0b914f94d",
-      "file_id": "file-Kao7BF6pVsEQaQ2dAPnCu3",
-      "status": "completed",
+      "content_sha256": "8753a4b89f51c3cbefe46dd3a92bd2516aaa468eb30d6fbd367e8866f6af83e9",
+      "file_id": "file-Vzug484FqjAVTApo4GM6Ct",
+      "status": "in_progress",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
-      "synced_at": "2026-08-08T04:20:16.634Z"
+      "synced_at": "2026-09-02T20:33:33.980Z"
     },
     "memory/agent-knowledge/projects/builderx-runtime-log-400-001.summary.md": {
-      "content_sha256": "c73b364a578db5551067a405e8f5fedf0ebf8350ec52ab1cfa640918214b3038",
-      "file_id": "file-F8TQjkTq6rb8dD5dy2WFYj",
-      "status": "completed",
+      "content_sha256": "349e8ebd42aaab84f1e0cf8a555132158acbb5e6a8f6d31b0cddba816c776160",
+      "file_id": "file-4aqxkdgH3NctMaDkhVyVPx",
+      "status": "in_progress",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
-      "synced_at": "2026-08-08T04:20:18.219Z"
+      "synced_at": "2026-09-02T20:33:35.516Z"
     },
     "memory/agent-knowledge/prompts/builderx-agentic-d3-market-ready-001.builderx-fullstack-agent.task.prompt.md": {
-      "content_sha256": "90d8a1c564a91fe7c5b123d05d9b0edb5d298ba9f08484bd5122c39e8020dae4",
-      "file_id": "file-Sq7MgDedHs5tTbBFQVTyve",
-      "status": "completed",
+      "content_sha256": "1ba552bea43f2b131381d6fa5ba752851de927bb362e2b43a1f456f561bda704",
+      "file_id": "file-TThBU7ZmSpjVccuocnosaB",
+      "status": "in_progress",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
-      "synced_at": "2026-08-08T04:20:19.974Z"
+      "synced_at": "2026-09-02T20:34:00.194Z"
     },
     "memory/agent-knowledge/prompts/builderx-agentic-d3-market-ready-001.builderx-fullstack-agent.validation.prompt.md": {
-      "content_sha256": "1e41675b56770b37196c9abd53782d2c3388fc3b65a380b8f934d1f4c8c45c5e",
-      "file_id": "file-9w9cwC8zuKa3SftcQ2Cr56",
-      "status": "completed",
+      "content_sha256": "7c594f078c467bedd3b99eff38926fb11cd6f4387ca209dd4d6c2ac239365374",
+      "file_id": "file-WcUvXpy9a9NTfGXEwkpRXL",
+      "status": "in_progress",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
-      "synced_at": "2026-08-08T04:20:21.698Z"
+      "synced_at": "2026-09-02T20:34:02.041Z"
     },
     "memory/agent-knowledge/prompts/builderx-agentic-d3-market-ready-001.design-team.workshop.prompt.md": {
-      "content_sha256": "f75aed1cda810bfa0391ab273651d9e7aba82b6de68150e94aa3dbaa8ddb2ffb",
-      "file_id": "file-674b3eDnXnRJ7zmmud5nHd",
-      "status": "completed",
+      "content_sha256": "5e95d6ccc2c34c88e5f605e8895fe2537edaee373fcaebeda14d4859f23f243c",
+      "file_id": "file-MZZk6miG39GWhrk1ZeZD86",
+      "status": "in_progress",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
-      "synced_at": "2026-08-08T04:20:23.795Z"
+      "synced_at": "2026-09-02T20:34:03.668Z"
     },
     "memory/agent-knowledge/prompts/builderx-large-001.builderx-fullstack-agent.builderx-large-task.prompt.md": {
-      "content_sha256": "46bcccd816ab920a3a1e56c58ab3752537897d592570ecdde54c7a586c123fe4",
-      "file_id": "file-D1FEh58BYPbH5rCMDPNQ3K",
-      "status": "completed",
+      "content_sha256": "8e280f71f389a6dcf462dbee006d402babe8d70d1d9b8d2150c0e4790b0c863c",
+      "file_id": "file-VHxhtMQnCLg8fH4nXcePGD",
+      "status": "in_progress",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
-      "synced_at": "2026-08-08T04:20:26.156Z"
+      "synced_at": "2026-09-02T20:34:05.416Z"
     },
     "agents/generated/cvmakerx-artifact-production-agent.agent.md": {
       "content_sha256": "b10f2ca114c9316d65b11cb5d5944453ac745415a62d00f28631122d752ce414",
@@ -1720,7 +1720,7 @@
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
       "synced_at": "2026-08-14T14:20:12.632Z"
     },
-    "memory/agent-knowledge/prompts/agentic-system-dependencies-explore-20260814.plutonix-fullstack-agent.agentic-system-dependencies-explore-task.prompt.md": {
+    "memory/agent-knowledge/prompts/agentic-system-dependencies-explore-20260814.plutomix-fullstack-agent.agentic-system-dependencies-explore-task.prompt.md": {
       "content_sha256": "dbdb6c438113c7a63d6b31dfbb838cc8e619a8f4e2b4db903ba5aa6fd289f8b2",
       "file_id": "file-XKXm7uybsGCiR86sVUxeju",
       "status": "completed",
@@ -1755,7 +1755,7 @@
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
       "synced_at": "2026-08-14T21:37:44.141Z"
     },
-    "memory/agent-knowledge/prompts/agentic-system-architecture-rails-20260814.plutonix-fullstack-agent.task.prompt.md": {
+    "memory/agent-knowledge/prompts/agentic-system-architecture-rails-20260814.plutomix-fullstack-agent.task.prompt.md": {
       "content_sha256": "a9df8b66ced2daa0043bd1c5656d177cc8fd9f7e4e109882e122bda7dcba6828",
       "file_id": "file-YSmBvt9xw3H3eUuu1A72VB",
       "status": "completed",
@@ -1994,25 +1994,25 @@
       "synced_at": "2026-08-15T17:20:50.296Z"
     },
     "agents/generated/data-contract-agent.agent.md": {
-      "content_sha256": "1be3e296ab3e6238f55251f18c7b48211a78d0b03bb601cac2d7e64c5955d87f",
-      "file_id": "file-6r64trftbULUGag8G1csUe",
+      "content_sha256": "e08213d7a3a5f8440cff98043638e5bb4b63c84a7898215afaa0a700c6651460",
+      "file_id": "file-YZcTv4QyQdgrxKTNfPfMnM",
       "status": "completed",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
-      "synced_at": "2026-08-15T16:25:10.974Z"
+      "synced_at": "2026-08-31T23:03:16.776Z"
     },
     "agents/generated/design-workshop-review-agent.agent.md": {
-      "content_sha256": "a3a10055dfeb439a3564389ffe7edac0545f58bcdd509ca98295669097252bac",
-      "file_id": "file-7Mj3KgstK37U5RiDSLWnGR",
+      "content_sha256": "6e3769dad5e2b95e311f63239172d29b0ee16cadc71e7b9b99e257ae721fc634",
+      "file_id": "file-PZCirbNTALGHztzB2x6TFB",
       "status": "completed",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
-      "synced_at": "2026-08-15T16:25:14.498Z"
+      "synced_at": "2026-08-31T23:03:18.458Z"
     },
     "agents/generated/experience-composition-agent.agent.md": {
-      "content_sha256": "f5ab57101aa08b9142d5371e2d0bf4ec440839d2889a75005f5bd530ac6bcf20",
-      "file_id": "file-DMTmFspA8fbS9Sfzys7GHd",
+      "content_sha256": "2313f7aa7fa07497911eb6872d99da929f34629039c0787ac41378bb2761cf6a",
+      "file_id": "file-2kdsCHJEtifGzkJK2FuVwX",
       "status": "completed",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
-      "synced_at": "2026-08-15T16:25:16.429Z"
+      "synced_at": "2026-08-31T23:03:20.113Z"
     },
     "agents/generated/governance-security-agent.agent.md": {
       "content_sha256": "1c4603605efa202aab95dc7cb860e228b6159983ca786dd06cbfd1c4af31570d",
@@ -2022,25 +2022,25 @@
       "synced_at": "2026-08-15T17:20:51.833Z"
     },
     "agents/generated/project-orchestrator-agent.agent.md": {
-      "content_sha256": "e14e31b1050a251dfb6e43a410b266eb542004652233d5046dda29529e5833e4",
-      "file_id": "file-1huUTbMqZuKssCaNToaAob",
+      "content_sha256": "06409d15d461fcc3c303a8de4a5713aa55bb9d9a9253a51556bb0e10c308460f",
+      "file_id": "file-P9rQzJx3ggdYWDa6Rj1gqV",
       "status": "completed",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
-      "synced_at": "2026-08-27T17:51:20.993Z"
+      "synced_at": "2026-08-31T23:03:24.109Z"
     },
     "agents/generated/qagent-controller.agent.md": {
-      "content_sha256": "18540d7862d2d898c35d13a3868430d04a5983a74d84adfaf6140d397b7a3695",
-      "file_id": "file-BGeDzvAdTVFy8L8sjwEDfp",
+      "content_sha256": "def9836f6523462a4f9a3b812e0b54184a34f6fac2017fb02dd968a3c2b7224d",
+      "file_id": "file-QWwtRVtvd5uDFAST42XNAi",
       "status": "completed",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
-      "synced_at": "2026-08-15T16:25:26.439Z"
+      "synced_at": "2026-08-31T23:03:25.856Z"
     },
     "agents/generated/runtime-packaging-agent.agent.md": {
-      "content_sha256": "9c9a7482de8091b0329702e46b83f62774ab526a7d5d9115faf6c2687ebf0267",
-      "file_id": "file-43SkPLR641i9wXzSTnYLJ2",
+      "content_sha256": "f7a673b0f48d1744a4376bcf94e216c914a7c43b19e0c3e1828ec190ddc348e1",
+      "file_id": "file-2EhsD7g6rtqwLgJhiFhUXM",
       "status": "completed",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
-      "synced_at": "2026-08-15T16:25:29.528Z"
+      "synced_at": "2026-08-31T23:03:28.124Z"
     },
     "memory/agent-knowledge/projects/agent-definition-reuse-fix-2026-08-15.summary.md": {
       "content_sha256": "6d328bb463462196b3d9672f1ff91989631c24e89841db9e8844ba227c92d485",
@@ -2078,11 +2078,11 @@
       "synced_at": "2026-08-15T19:40:40.999Z"
     },
     "memory/agent-knowledge/projects/architecture-ui-feature-gravity-20260816.summary.md": {
-      "content_sha256": "e2adea7291c997963bb6eec3103e3406e3df40e26c4e63afc82e0a4f597f42ef",
-      "file_id": "file-LXDDt7UeE9LCPHRsHyDX5c",
-      "status": "completed",
+      "content_sha256": "068584fb050be6537d61b762b0eb649997b571588495d15f1cffa292bc46142d",
+      "file_id": "file-QLewNejbLKF6CL4wHVff3G",
+      "status": "in_progress",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
-      "synced_at": "2026-08-15T19:40:44.806Z"
+      "synced_at": "2026-09-02T20:33:13.298Z"
     },
     "memory/agent-knowledge/prompts/architecture-feature-force-hierarchy-20260815.project-execution-agent.direct-relationships-correction.prompt.md": {
       "content_sha256": "fefe0cfacc2b71e03b0c4bed7b99690612a6032348a9aa7ef930fbb0bf83c8bb",
@@ -2099,90 +2099,118 @@
       "synced_at": "2026-08-15T19:40:54.730Z"
     },
     "agents/generated/media-asset-agent.agent.md": {
-      "content_sha256": "9a9916cb6efc41cba0c24ad90cc0b3d13c3b3a77b08e1cbdb0d970e2322deff5",
-      "file_id": "file-A8AcVWGYv1CA9mKUetq1TR",
+      "content_sha256": "057e333497879c486463b556d8630eed5fd6c921f5b82616660c73d4815a0421",
+      "file_id": "file-7FEbqZR5U8kQcgweaAGsL2",
       "status": "completed",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
-      "synced_at": "2026-08-27T17:51:19.273Z"
+      "synced_at": "2026-08-31T23:03:22.380Z"
     },
     "agents/generated/ui-functionality-mapper-agent.agent.md": {
-      "content_sha256": "261f3edfa95a576dbef64b574619fbe977ba5c31f26ec82e79827d6a0d1b7eab",
-      "file_id": "file-KkzQgSSx1mbhzGP6DXq6Hm",
+      "content_sha256": "59bf9eb4e5d999faaff208edc631e288d4aef1ac899a37dee79fb920492e0c52",
+      "file_id": "file-BJVwzfSid8yPrCdFeD3CDZ",
       "status": "completed",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
-      "synced_at": "2026-08-27T17:51:22.579Z"
+      "synced_at": "2026-08-31T23:03:29.950Z"
     },
     "memory/agent-knowledge/projects/gotham-studio-control-plane-20260827.summary.md": {
-      "content_sha256": "8fa1032becd2adb8b5733171e3bacbd75589d8b7da12d84d1d4ed6cf7ea5e5e6",
-      "file_id": "file-85WcQ8MpK1uKBfuvir6wJm",
-      "status": "completed",
+      "content_sha256": "f36a20dc14137cc26d67f0ff84bee803518ba69990d05f7bb8d11c0c4cf9b0ee",
+      "file_id": "file-UutFFL3tVDMQiA9sh8FrbZ",
+      "status": "in_progress",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
-      "synced_at": "2026-08-27T21:45:50.638Z"
+      "synced_at": "2026-09-02T20:33:37.263Z"
     },
     "memory/agent-knowledge/prompts/gotham-studio-control-plane-20260827.project-execution-agent.task.prompt.md": {
-      "content_sha256": "565b7126e9aa8ace72d556af9f92ec759a432d6186f98b4fc8d6bdb96f4edb19",
-      "file_id": "file-U5iNch1hzhXiMon2vnCZnC",
-      "status": "completed",
+      "content_sha256": "0b4d1ba3724ea211bac5f01ae38fa7ea279a520dbb8a74b09b9505955737cd65",
+      "file_id": "file-8WVyD1ZJakZFhrZezBKSxC",
+      "status": "in_progress",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
-      "synced_at": "2026-08-27T17:51:26.159Z"
+      "synced_at": "2026-09-02T20:34:07.365Z"
     },
     "memory/agent-knowledge/projects/publication_7adfd4ca873ecf9503c15eab52aa40de.summary.md": {
-      "content_sha256": "5efb329cf0a5cd60ac70bf91c36740c19faa8c396d9d0aa9b592acc87bcbbf33",
-      "file_id": "file-Hb9BDPoFh9mqgyyuzPEMPM",
+      "content_sha256": "3c2d597765bca50827dbd715b1a1e698a9f3a86d094df8d9fc637e9708c44e5f",
+      "file_id": "file-9SwrzRcn143YAyPbJ7YEUJ",
       "status": "in_progress",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
-      "synced_at": "2026-08-29T19:45:53.957Z"
+      "synced_at": "2026-09-02T20:33:40.836Z"
     },
     "memory/agent-knowledge/projects/publication_9406e438ef19030187867bc655bb9e86.summary.md": {
-      "content_sha256": "8c06541d2d2c0fc85dbaf90d30b5039db713abad8f3ef0308576ff989d6c4580",
-      "file_id": "file-AZQcze8nrDvYQD7wx5wRF4",
+      "content_sha256": "23d18ea7f38f8815ee79d4fb6bdd4f1e092d747b27a74db0d8873030c78ee497",
+      "file_id": "file-WWcRLD6TeSdZGjA87E1Y4E",
       "status": "in_progress",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
-      "synced_at": "2026-08-29T19:45:57.554Z"
+      "synced_at": "2026-09-02T20:33:47.702Z"
     },
     "memory/agent-knowledge/projects/publication_b3480d5ede1d4b91c455186be8823408.summary.md": {
-      "content_sha256": "af36a723eba08022242352d35b9eb5e679247f30c793dcf9355a579fecb37dee",
-      "file_id": "file-L6hLCJShew5869SrDDMqRc",
+      "content_sha256": "21d0f393b9d1bb7db081555dec76261821590f39a8abef131016e2bb7eaf3e4b",
+      "file_id": "file-47WtLH7NyFXzFUoXo8EXqM",
       "status": "in_progress",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
-      "synced_at": "2026-08-29T19:45:59.323Z"
+      "synced_at": "2026-09-02T20:33:49.548Z"
     },
     "memory/agent-knowledge/projects/publication_c05cf023434ea81e0116b6996d3d552a.summary.md": {
-      "content_sha256": "166e2f518810a74e925b2b88f76a04de99ae6b2541ddd9ceda093e0d10c73468",
-      "file_id": "file-FpGPTow4mpDoNZ4UchBxRG",
+      "content_sha256": "db41b19d995a037c75c8606b90e3efec708901d4112670ca70e823e019210fb8",
+      "file_id": "file-WqXPpn3wuf21LK5zWCLySy",
       "status": "in_progress",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
-      "synced_at": "2026-08-29T19:46:01.145Z"
+      "synced_at": "2026-09-02T20:33:51.595Z"
     },
     "memory/agent-knowledge/projects/publication_e812f8a42c4a2e23edd57b087f27cdc9.summary.md": {
-      "content_sha256": "eece9ab8669b70f9a87f50b98dcd033e22a3cd1fcb7a44c10d030b167dbe5367",
-      "file_id": "file-Kic7DicjzhKgtiRkopfDrx",
+      "content_sha256": "a53538d0dd45c6c52b1c00c54e3f3a13a0b77e251ca043e4c2702135e2a14e6e",
+      "file_id": "file-2fBzRSqHgzNP1C427NXet3",
       "status": "in_progress",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
-      "synced_at": "2026-08-29T19:46:02.994Z"
+      "synced_at": "2026-09-02T20:33:53.235Z"
     },
     "memory/agent-knowledge/projects/publication_eb13966e54e97dad1a32d9b47d36238e.summary.md": {
-      "content_sha256": "72c0d2ccd39a5fa4ace72d90c9b4972e9cade1d197e832c0034e6c0542693c46",
-      "file_id": "file-8EyjjAtKDiukv78mmY55RB",
+      "content_sha256": "15316a5648bbab68844ca1af2376ce5bc2427176e728fc9451dca2ab01a28cda",
+      "file_id": "file-X36MEq3xBPCbwWAiJydVMc",
       "status": "in_progress",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
-      "synced_at": "2026-08-29T19:46:05.552Z"
+      "synced_at": "2026-09-02T20:33:54.864Z"
     },
     "memory/agent-knowledge/projects/publication_f47c28fcbefbd30c5d342c6b13176af9.summary.md": {
-      "content_sha256": "71ef8107431dc0d6ae28f2327c731b9a495eb68ef8dfde90d23de12cdb89404f",
-      "file_id": "file-FxMWdsCk5ToWPeAemNpjLx",
+      "content_sha256": "3ea67f0f77c5f21c2214633ea3be722470379ba90679ed2b0c4aac6affa0446b",
+      "file_id": "file-6rQAeX4HHWneFQ9DVSkTZW",
       "status": "in_progress",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
-      "synced_at": "2026-08-29T19:46:07.256Z"
+      "synced_at": "2026-09-02T20:33:56.509Z"
     },
     "memory/agent-knowledge/projects/publication_f9d206d5334c1f1e78273ff3532660a9.summary.md": {
-      "content_sha256": "1054a4bd02428182cf936a85501320d04b0ed8ea45dd5393fc44d7099d635d2d",
-      "file_id": "file-AiaidDvgZZVJFHeiSLfQyY",
+      "content_sha256": "9105d47fa7c48ece5059f6ab3caf404316be18f6db79e9673aafa80414547551",
+      "file_id": "file-74p1LJjnGmxNvmptcaoy9j",
       "status": "in_progress",
       "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
-      "synced_at": "2026-08-29T19:46:09.992Z"
+      "synced_at": "2026-09-02T20:33:58.354Z"
+    },
+    "memory/agent-knowledge/projects/publication_3bac7f32a6c3f04b4a973e58e20494bc.summary.md": {
+      "content_sha256": "a1d7473876f62279f2fd0eb036a7484b1005ea9d529f6bbe7c0163731e123ef3",
+      "file_id": "file-CrckN8FzabbpZvgQkVy6oD",
+      "status": "in_progress",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-09-02T20:33:39.012Z"
+    },
+    "memory/agent-knowledge/projects/publication_8ef9c541f0acecbdf895be5e31578cdd.summary.md": {
+      "content_sha256": "47e1ac910c063c10fb3b68a13074d9bd34b0412050cebd11bfaa63feb7e6f665",
+      "file_id": "file-V2YCx3NfaCgKrFrkQob1Bi",
+      "status": "in_progress",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-09-02T20:33:44.313Z"
+    },
+    "memory/agent-knowledge/projects/publication_8fcc176377665fd7fc213b406cac6c25.summary.md": {
+      "content_sha256": "86953837e59f363a3301ca6a2f98ee7e297cb6d4416acd543659f2c18e66c30d",
+      "file_id": "file-ExyrCvmMYCT9bDjW94irWU",
+      "status": "in_progress",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-09-02T20:33:45.863Z"
+    },
+    "memory/agent-knowledge/projects/publication_82a268207a71c5ca59676e8031fda955.summary.md": {
+      "content_sha256": "ae7988a14670af7c70c37c21ea82e344d9f89cf40fda5f915ab19d82d8de4c94",
+      "file_id": "file-6Va2C2Eo7YMJWZ9DmVve5U",
+      "status": "in_progress",
+      "vector_store_id": "vs_6a38ceb608dc81919bab1a27fdcf2300",
+      "synced_at": "2026-09-02T20:33:42.689Z"
     }
   },
-  "last_sync_at": "2026-08-29T19:46:10.122Z",
+  "last_sync_at": "2026-09-02T20:34:07.367Z",
   "last_verification_at": "2026-08-27T21:46:24.208Z"
 }

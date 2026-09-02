@@ -1,6 +1,6 @@
 # Self-Improvement Control Plane
 
-PlutoniX includes a safe self-improvement control plane for platform-level improvement work. It is additive to Gotham project generation and does not replace the generated-project registry, project-local orchestrators, QAgentic support, vector memory, Neo4j/D3 visualization, hosting, auth, runtime logs, or existing provider-neutral Codex/Claude execution paths.
+PlutoMix includes a safe self-improvement control plane for platform-level improvement work. It is additive to Gotham project generation and does not replace the generated-project registry, project-local orchestrators, QAgentic support, vector memory, Neo4j/D3 visualization, hosting, auth, runtime logs, or existing provider-neutral Codex/Claude execution paths.
 
 ## Safety Model
 
@@ -35,7 +35,7 @@ Every autonomous improvement must preserve the baseline feature inventory at `ru
 
 ## Gotham System Target
 
-Gotham Chat has an explicit target named `PlutoniX System`.
+Gotham Chat has an explicit target named `PlutoMix System`.
 
 When selected, the frontend sends:
 
@@ -43,7 +43,7 @@ When selected, the frontend sends:
 {
   "target": {
     "type": "system",
-    "systemId": "plutonix"
+    "systemId": "plutomix"
   }
 }
 ```
@@ -52,7 +52,7 @@ The backend routes the instruction into the self-improvement control plane, crea
 
 ## Administrative UI
 
-The `PlutoniX Graphical Model` tab includes a Self-Improvement Control Plane panel with:
+The `PlutoMix Graphical Model` tab includes a Self-Improvement Control Plane panel with:
 
 - Current status, autonomy mode, event-driven state, and latest cycle
 - Global top-bar indicator for ad hoc ready, starting, running, blocked, and completed cycle states
@@ -109,8 +109,8 @@ SELF_IMPROVEMENT_MODE=sandbox
 # One baseline cycle is attempted at backend startup by default. Set false for
 # an event/manual-only local process.
 SELF_IMPROVEMENT_STARTUP_CYCLE_ENABLED=true
-PLUTONIX_SELF_IMPROVEMENT_RUNTIME_EVENTS=false
-PLUTONIX_ORCHESTRATOR_SELF_HEAL=false
+PLUTOMIX_SELF_IMPROVEMENT_RUNTIME_EVENTS=false
+PLUTOMIX_ORCHESTRATOR_SELF_HEAL=false
 SELF_IMPROVEMENT_SCHEDULE_MS=0
 SELF_IMPROVEMENT_MODEL_PROFILE=
 SELF_IMPROVEMENT_MAX_CALLS_PER_CYCLE=2
@@ -144,7 +144,7 @@ SELF_IMPROVEMENT_MONETARY_APPROVAL_REQUIRED=true
 SELF_IMPROVEMENT_MONETARY_APPROVAL_THRESHOLD_USD=0
 ```
 
-With the checked-in defaults, the backend attempts one bounded baseline cycle at startup (`SELF_IMPROVEMENT_STARTUP_CYCLE_ENABLED=true`). It does not run a periodic timer (`SELF_IMPROVEMENT_SCHEDULE_MS=0`), and runtime-event cycles plus orchestrator self-healing are disabled by default. Set `SELF_IMPROVEMENT_STARTUP_CYCLE_ENABLED=false` when an event/manual-only local process is required. Every logged event can still be checked by the investigator; a later full cycle requires an evidence-backed problem statement, a Gotham `PlutoniX System` target, an enabled runtime-event path, or a forwarded orchestrator-health finding. The manual cycle endpoint remains for local/admin debugging and regression testing.
+With the checked-in defaults, the backend attempts one bounded baseline cycle at startup (`SELF_IMPROVEMENT_STARTUP_CYCLE_ENABLED=true`). It does not run a periodic timer (`SELF_IMPROVEMENT_SCHEDULE_MS=0`), and runtime-event cycles plus orchestrator self-healing are disabled by default. Set `SELF_IMPROVEMENT_STARTUP_CYCLE_ENABLED=false` when an event/manual-only local process is required. Every logged event can still be checked by the investigator; a later full cycle requires an evidence-backed problem statement, a Gotham `PlutoMix System` target, an enabled runtime-event path, or a forwarded orchestrator-health finding. The manual cycle endpoint remains for local/admin debugging and regression testing.
 
 When a logged event indicates a tool gap, sluggish sub-application, resource waste, or workflow complexity, the Tool Capability Agent records a `ToolIncorporationPlan`. Zero-cost internal tools are built as generated-tool artifacts under `runtime/self-improvement/tools/generated` and then used only against bounded evidence. Tool output can trigger an `ImprovementProposal`, but platform code changes still require candidate isolation, validation, review, promotion policy, and rollback.
 
@@ -152,7 +152,7 @@ When the plan requires money, the system records a monetary approval request and
 
 Set `SELF_IMPROVEMENT_ENABLED=false` for a global kill switch. The admin `emergency_stop` action pauses cycles persistently through `runtime/self-improvement/state/control-state.json`.
 
-Set `SELF_IMPROVEMENT_ADMIN_USER_IDS` to a comma-separated list of PlutoniX user IDs or emails to restrict manual cycle and control actions. When the allowlist is empty, local development remains permissive outside `NODE_ENV=production`.
+Set `SELF_IMPROVEMENT_ADMIN_USER_IDS` to a comma-separated list of PlutoMix user IDs or emails to restrict manual cycle and control actions. When the allowlist is empty, local development remains permissive outside `NODE_ENV=production`.
 
 ## Data Handling
 

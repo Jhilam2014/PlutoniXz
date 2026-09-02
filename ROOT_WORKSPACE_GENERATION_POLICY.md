@@ -122,7 +122,7 @@ For `service_or_automation`, write runnable entrypoints, contracts, configuratio
 
 ## Project-local standalone Docker files
 
-When PlutoniX creates a downstream project, keep the standalone Docker packaging files in that generated project root, not in the PlutoniX root artifact folders:
+When PlutoMix creates a downstream project, keep the standalone Docker packaging files in that generated project root, not in the PlutoMix root artifact folders:
 
 ```text
 Dockerfile
@@ -132,7 +132,7 @@ docker-compose.yml
 README.md
 ```
 
-These files must allow the project to run outside the PlutoniX playground with `docker compose up --build` and must not depend on PlutoniX-only services or shared preview volumes unless the project explicitly requires them.
+These files must allow the project to run outside the PlutoMix playground with `docker compose up --build` and must not depend on PlutoMix-only services or shared preview volumes unless the project explicitly requires them.
 
 ## Bootstrap behavior
 

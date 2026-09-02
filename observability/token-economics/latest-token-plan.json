@@ -5,7 +5,7 @@
   "files_read": [
     "apps/frontend/src/components/agentic-system/ApplicationDecisionMappingCanvas.jsx",
     "apps/frontend/src/components/agentic-system/applicationDecisionMappingCanvas.css",
-    "apps/frontend/src/PlutonixAnalysisWorkspace.jsx",
+    "apps/frontend/src/PlutoMixAnalysisWorkspace.jsx",
     "apps/frontend/src/App.jsx",
     "apps/frontend/test/application-decision-map-model.test.mjs",
     "AGENTS.md",

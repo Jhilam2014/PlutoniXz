@@ -67,6 +67,8 @@ function sessionPublic(session) {
     destinationDomain: terminal ? undefined : session.destinationDomain || undefined,
     authorizationUrl: terminal ? undefined : session.authorizationUrl || undefined,
     deviceCode: terminal ? undefined : session.deviceCode || undefined,
+    authorizationInputRequired: terminal ? undefined : Boolean(session.authorizationInputRequired && session.authorizationUrl && !session.authorizationSubmitted) || undefined,
+    authorizationSubmitted: terminal ? undefined : session.authorizationSubmitted || undefined,
     createdAt: session.createdAt,
     updatedAt: session.updatedAt,
     expiresAt: session.expiresAt,
@@ -133,6 +135,7 @@ export class AiProviderProfileService {
       session.authorizationUrl = "";
       session.destinationDomain = "";
       session.deviceCode = "";
+      session.authorizationWriter = null;
     }
   }
 
@@ -249,6 +252,9 @@ export class AiProviderProfileService {
       authorizationUrl: "",
       destinationDomain: "",
       deviceCode: "",
+      authorizationInputRequired: providerId === "claude" && ["browser_oauth", "enterprise_login"].includes(authMethod),
+      authorizationSubmitted: false,
+      authorizationWriter: null,
       createdAt: now.toISOString(),
       updatedAt: now.toISOString(),
       expiresAt: new Date(now.getTime() + this.loginTtlMs).toISOString(),
@@ -288,6 +294,9 @@ export class AiProviderProfileService {
         profile: { id: profileId, runtimeKind: adapter.definition.supportsIsolatedProfiles ? "isolated" : "existing_session" },
         secret,
         signal: session.controller.signal,
+        onAuthorizationInputReady: (writer) => {
+          if (!TERMINAL_LOGIN_STATES.has(session.state)) session.authorizationWriter = writer;
+        },
         onProgress: (challenge) => {
           if (TERMINAL_LOGIN_STATES.has(session.state)) return;
           session.authorizationUrl = challenge.authorizationUrl || session.authorizationUrl;
@@ -348,6 +357,42 @@ export class AiProviderProfileService {
 
   getLoginStatus(scopeInput, providerId, sessionId) {
     return sessionPublic(this.session(scopeInput, providerId, sessionId));
+  }
+
+  async submitLoginAuthorization(scopeInput, providerId, sessionId, rawAuthorizationCode) {
+    const session = this.session(scopeInput, providerId, sessionId);
+    if (providerId !== "claude" || !session.authorizationInputRequired) {
+      throw new ProviderProfileError("This provider login does not accept an authorization code here.", { code: "authorization_input_unsupported", status: 409, category: "unsupported" });
+    }
+    if (!["authorization_required", "waiting_for_provider"].includes(session.state) || !session.authorizationUrl) {
+      throw new ProviderProfileError("The provider is not ready for an authorization code.", { code: "authorization_input_not_ready", status: 409, category: "state_conflict", recovery: ["Open the verification page", "Retry"] });
+    }
+    if (session.authorizationSubmitted) {
+      throw new ProviderProfileError("An authorization code was already submitted for this login.", { code: "authorization_input_already_submitted", status: 409, category: "state_conflict", recovery: ["Wait for verification", "Retry"] });
+    }
+    let authorizationCode = String(rawAuthorizationCode || "").trim();
+    try {
+      if (!/^[^\s\u0000-\u001f\u007f]{4,4096}$/.test(authorizationCode)) {
+        throw new ProviderProfileError("The authorization code format is invalid.", { code: "authorization_input_invalid", status: 400, category: "authentication_failed", recovery: ["Copy the complete code from the verification page"] });
+      }
+      if (typeof session.authorizationWriter !== "function") {
+        throw new ProviderProfileError("The provider login process is no longer accepting authorization.", { code: "authorization_input_unavailable", status: 409, category: "cli_process_terminated", recovery: ["Retry"] });
+      }
+      session.authorizationSubmitted = true;
+      session.updatedAt = this.now().toISOString();
+      const accepted = session.authorizationWriter(authorizationCode);
+      session.authorizationWriter = null;
+      if (!accepted) {
+        session.authorizationSubmitted = false;
+        throw new ProviderProfileError("The provider login process could not accept authorization.", { code: "authorization_input_unavailable", status: 409, category: "cli_process_terminated", recovery: ["Retry"] });
+      }
+      if (session.state === "authorization_required") this.transition(session, "waiting_for_provider");
+      await this.audit(session.scope, providerId, "provider.login.authorization_submitted", { profileId: session.profileId, metadata: { authMethod: session.authMethod } });
+      return sessionPublic(session);
+    } finally {
+      authorizationCode = "";
+      rawAuthorizationCode = undefined;
+    }
   }
 
   async cancelLogin(scopeInput, providerId, sessionId) {
@@ -443,13 +488,17 @@ export class AiProviderProfileService {
     if (requestedProfileId && activation.profileId !== requestedProfileId) throw new ProviderProfileError("The requested profile is not the active profile for this workspace.", { code: "inactive_profile_requested", status: 409, category: "state_conflict" });
     const profile = await this.repository.getProfile(scope, providerId, activation.profileId);
     if (!profile || profile.status !== "connected") throw new ProviderProfileError("The active provider profile is not connected.", { code: "active_profile_invalid", status: 409, category: "credential_expired", recovery: ["Verify", "Reconnect"] });
-    const runtime = await adapter.runtime(scope, profile);
     if (!adapter.definition.gothamExecutionSupported) throw new ProviderProfileError(`${adapter.definition.name} account management is available, but its public CLI execution contract is not enabled for Gotham jobs.`, { code: "provider_execution_unsupported", status: 409, category: "unsupported", recovery: ["Use the connected OpenAI Codex provider"] });
+    const runtime = await adapter.runtime(scope, profile);
+    const frozenRuntime = Object.freeze({
+      ...runtime,
+      env: Object.freeze({ ...(runtime.env || {}) })
+    });
     const selectedAt = this.now().toISOString();
     return {
-      selection: { providerId, profileId: profile.id, modelId: modelId || undefined, workspaceId: scope.workspaceId === "*" ? undefined : scope.workspaceId, selectedAt },
+      selection: Object.freeze({ providerId, profileId: profile.id, modelId: modelId || undefined, workspaceId: scope.workspaceId === "*" ? undefined : scope.workspaceId, selectedAt }),
       profile: publicProfile(profile, activation),
-      runtime
+      runtime: frozenRuntime
     };
   }
 

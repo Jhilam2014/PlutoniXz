@@ -1,7 +1,7 @@
 import crypto from "node:crypto";
 import fs from "fs-extra";
 import path from "node:path";
-import { plutonixRoot, openAiConfigFor, workspaceRoot } from "./globalAgentKnowledge.js";
+import { plutomixRoot, openAiConfigFor, workspaceRoot } from "./globalAgentKnowledge.js";
 
 const SYNC_FILE_EXTENSIONS = new Set([".md", ".txt", ".json"]);
 const DEFAULT_MIN_PENDING_FILES = 5;
@@ -26,7 +26,7 @@ function redact(content = "") {
 
 function displayProjectName(projectRoot) {
   const name = path.basename(projectRoot);
-  if (name === "plutonix") return "PlutoniX";
+  if (name === "plutomix") return "PlutoMix";
   if (name.toLowerCase() === "geofinderx") return "GeoFinderX";
   if (name === "orchestrator-agent-001") return "Orchestrator Agent";
   return name;
@@ -34,7 +34,7 @@ function displayProjectName(projectRoot) {
 
 function syncCandidateRoots() {
   const workspace = workspaceRoot();
-  const builder = plutonixRoot();
+  const builder = plutomixRoot();
   const explicit = String(process.env.AGENT_MEMORY_SYNC_ROOTS || process.env.GLOBAL_AGENT_KNOWLEDGE_ROOTS || "")
     .split(path.delimiter)
     .map((entry) => entry.trim())
@@ -152,7 +152,7 @@ export function vectorSyncDailyDecision({
 }
 
 function vectorSyncScheduleStatePath() {
-  return path.join(plutonixRoot(), "observability", "agent-memory", "vector-sync-schedule.json");
+  return path.join(plutomixRoot(), "observability", "agent-memory", "vector-sync-schedule.json");
 }
 
 async function claimDailyVectorSyncSlot({ now = new Date(), maxRunsPerDay, timeZone, statePath = vectorSyncScheduleStatePath() } = {}) {
@@ -163,7 +163,7 @@ async function claimDailyVectorSyncSlot({ now = new Date(), maxRunsPerDay, timeZ
   if (!decision.shouldRun) return { ...decision, day, statePath };
 
   const state = {
-    schema_version: "plutonix-vector-sync-schedule/v1",
+    schema_version: "plutomix-vector-sync-schedule/v1",
     day,
     time_zone: String(timeZone || process.env.AGENT_MEMORY_SYNC_TIME_ZONE || DEFAULT_SYNC_TIME_ZONE),
     scheduled_runs: scheduledRuns + 1,
@@ -247,12 +247,12 @@ async function attachKnowledgeFile({ config, filePath, relativePath, projectRoot
         status: attr(meta.status),
         content_type: attr(meta.content_type, categoryFor(`/${relativePath}`)),
         collection: categoryFor(`/${relativePath}`),
-        source: "plutonix-periodic-sync",
+        source: "plutomix-periodic-sync",
         source_path: relativePath.slice(0, 512),
         source_file: path.relative(workspaceRoot(), filePath).split(path.sep).join("/").slice(0, 512),
         content_sha256: contentHash,
         sync_reason: "local_memory_candidate",
-        synced_by: "plutonix"
+        synced_by: "plutomix"
       }
     })
   });
@@ -350,7 +350,7 @@ async function syncRoot({ config, projectRoot, remoteByHash, shouldContinue = ()
 }
 
 async function writeSyncLogs(summary) {
-  const builder = plutonixRoot();
+  const builder = plutomixRoot();
   await writeJson(path.join(builder, "observability", "agent-memory", "latest-sync.json"), summary);
   await writeJson(path.join(builder, "observability", "vector-memory", "latest-vector-write.json"), summary);
   if (summary.status === "failed" || summary.files_failed > 0) {
@@ -383,7 +383,7 @@ export async function syncKnownAgentKnowledgeRoots({
 } = {}) {
   if (String(process.env.AGENT_MEMORY_SYNC_ENABLED || "true").toLowerCase() === "false") {
     const skipped = {
-      workflow_id: `plutonix-vector-sync-${Date.now()}`,
+      workflow_id: `plutomix-vector-sync-${Date.now()}`,
       status: "skipped",
       reason: "AGENT_MEMORY_SYNC_ENABLED=false",
       completed_at: new Date().toISOString()
@@ -393,7 +393,7 @@ export async function syncKnownAgentKnowledgeRoots({
   }
 
   const startedAt = new Date().toISOString();
-  const workflowId = `plutonix-vector-sync-${Date.now()}`;
+  const workflowId = `plutomix-vector-sync-${Date.now()}`;
   if (!(await isSystemIdle())) {
     const summary = deferredSummary({
       workflowId,
@@ -551,7 +551,7 @@ export function scheduleAgentMemorySync({
     if (scheduledAtMs - lastScheduledAt < minSpacingMs) return null;
     return claimDailyVectorSyncSlot({ now: scheduledAt, maxRunsPerDay, timeZone, statePath: scheduleStatePath }).then((dailyDecision) => {
       if (!dailyDecision.shouldRun) return {
-        workflow_id: `plutonix-vector-sync-${scheduledAtMs}`,
+        workflow_id: `plutomix-vector-sync-${scheduledAtMs}`,
         status: "skipped",
         reason,
         skipped_reason: dailyDecision.reason,
@@ -564,7 +564,7 @@ export function scheduleAgentMemorySync({
       activeSyncPromise = syncKnownAgentKnowledgeRoots({ reason, emit, isSystemIdle, minPendingFiles })
       .catch(async (error) => {
         const summary = {
-          workflow_id: `plutonix-vector-sync-${Date.now()}`,
+          workflow_id: `plutomix-vector-sync-${Date.now()}`,
           reason,
           status: "failed",
           started_at: new Date().toISOString(),

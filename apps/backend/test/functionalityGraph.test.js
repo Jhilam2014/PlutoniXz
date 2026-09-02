@@ -4,8 +4,8 @@ import { buildFunctionalityGraph } from "../src/functionalityGraph.js";
 
 const activeAgents = [
   {
-    id: "plutonix-fullstack-agent",
-    name: "PlutoniX Fullstack Agent",
+    id: "plutomix-fullstack-agent",
+    name: "PlutoMix Fullstack Agent",
     role: "Canonical authority",
     status: "completed"
   },
@@ -16,8 +16,8 @@ const activeAgents = [
     status: "completed"
   },
   {
-    id: "plutonix-independent-reviewer",
-    name: "PlutoniX Independent Reviewer",
+    id: "plutomix-independent-reviewer",
+    name: "PlutoMix Independent Reviewer",
     role: "Read-only validator",
     status: "completed"
   }
@@ -63,7 +63,7 @@ test("assigns validation evidence to a recorded reviewer and never invents an ag
     activeAgents
   });
   const validationNode = graph.nodes.find((node) => node.type === "subfunctionality");
-  assert.deepEqual(validationNode.responsibleAgentIds, ["plutonix-independent-reviewer"]);
+  assert.deepEqual(validationNode.responsibleAgentIds, ["plutomix-independent-reviewer"]);
 
   const unassigned = buildFunctionalityGraph({
     projectName: "No agents",

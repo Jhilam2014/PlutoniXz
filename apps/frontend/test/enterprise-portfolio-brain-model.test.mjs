@@ -48,7 +48,7 @@ const applications = [
 
 const hierarchy = {
   enterprise: {
-    label: "PlutoniX Enterprise Brain",
+    label: "PlutoMix Enterprise Brain",
     summary: "Governed portfolio intelligence.",
     updatedAt: "2026-08-21T09:00:00.000Z",
     recorded: true
@@ -64,7 +64,7 @@ test("creates enterprise scope links only for explicit membership and leaves una
   const scope = map.nodes.find((node) => node.kind === "enterprise-scope");
 
   assert.equal(map.root.kind, "enterprise-brain");
-  assert.equal(map.root.label, "PlutoniX Enterprise Brain");
+  assert.equal(map.root.label, "PlutoMix Enterprise Brain");
   assert.deepEqual(map.root.portfolioSummary, { applicationCount: 3, staleCount: 1 });
   assert.deepEqual(scope.enterprise, {
     id: "acme",

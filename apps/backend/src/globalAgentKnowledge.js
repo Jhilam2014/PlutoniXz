@@ -8,28 +8,28 @@ let globalAgentsCache = null;
 let globalAgentsCacheExpiresAt = 0;
 let globalAgentsBuildPromise = null;
 const protectedAgentIds = new Set([
-  "plutonix-fullstack-agent",
-  "plutonix-independent-reviewer",
+  "plutomix-fullstack-agent",
+  "plutomix-independent-reviewer",
   "human-controller",
   "project-execution-agent",
   "project-orchestrator-agent",
   "qagent-controller"
 ]);
 
-export function plutonixRoot() {
-  if (process.env.PLUTONIX_PROJECT_ROOT) return process.env.PLUTONIX_PROJECT_ROOT;
+export function plutomixRoot() {
+  if (process.env.PLUTOMIX_PROJECT_ROOT) return process.env.PLUTOMIX_PROJECT_ROOT;
   const cwd = process.cwd();
   if (fs.existsSync("/workspace/project/apps/backend") && fs.existsSync("/workspace/project/apps/frontend")) return "/workspace/project";
-  if (path.basename(cwd) === "plutonix") return cwd;
-  if (fs.existsSync(path.join(cwd, "plutonix", "apps", "backend"))) return path.join(cwd, "plutonix");
+  if (path.basename(cwd) === "plutomix") return cwd;
+  if (fs.existsSync(path.join(cwd, "plutomix", "apps", "backend"))) return path.join(cwd, "plutomix");
   if (fs.existsSync(path.join(cwd, "apps", "backend")) && fs.existsSync(path.join(cwd, "apps", "frontend"))) return cwd;
   return path.resolve(cwd, "../..");
 }
 
 export function workspaceRoot() {
-  if (process.env.PLUTONIX_WORKSPACE_ROOT) return process.env.PLUTONIX_WORKSPACE_ROOT;
+  if (process.env.PLUTOMIX_WORKSPACE_ROOT) return process.env.PLUTOMIX_WORKSPACE_ROOT;
   if (fs.existsSync("/workspace/apps")) return "/workspace";
-  return process.env.PLUTONIX_WORKSPACE_ROOT || path.resolve(plutonixRoot(), "..");
+  return process.env.PLUTOMIX_WORKSPACE_ROOT || path.resolve(plutomixRoot(), "..");
 }
 
 function uniquePaths(rows) {
@@ -66,7 +66,7 @@ function candidateOpenAiEnvFiles(root) {
   // This lets callers deliberately opt out of ambient repository credentials.
   if (explicitEnvFile) return uniquePaths([explicitEnvFile]);
   const workspace = workspaceRoot();
-  const builder = plutonixRoot();
+  const builder = plutomixRoot();
   return uniquePaths([
     path.join(root, ".env.example"),
     path.join(root, ".env"),
@@ -172,7 +172,7 @@ function redactKnowledgeContent(content = "") {
 function clippedKnowledgeContent(content = "", limit = 12000) {
   const redacted = redactKnowledgeContent(content).trim();
   if (redacted.length <= limit) return redacted;
-  return `${redacted.slice(0, limit)}\n\n[Content clipped in PlutoniX after ${limit} characters. Source file remains local.]`;
+  return `${redacted.slice(0, limit)}\n\n[Content clipped in PlutoMix after ${limit} characters. Source file remains local.]`;
 }
 
 function mdPathCandidates(value = "") {
@@ -201,7 +201,7 @@ async function listOpenAiVectorFiles(config) {
 
 function candidateProjectRoots() {
   const root = workspaceRoot();
-  const builder = plutonixRoot();
+  const builder = plutomixRoot();
   const explicit = String(process.env.GLOBAL_AGENT_KNOWLEDGE_ROOTS || "")
     .split(path.delimiter)
     .map((entry) => entry.trim())
@@ -213,7 +213,7 @@ function candidateProjectRoots() {
 
 function displayProjectName(projectRoot) {
   const name = path.basename(projectRoot);
-  if (name === "plutonix") return "PlutoniX";
+  if (name === "plutomix") return "PlutoMix";
   if (name.toLowerCase() === "geofinderx") return "GeoFinderX";
   if (name.toLowerCase() === "mapex") return "MapEx";
   if (name === "orchestrator-agent-001") return "Orchestrator Agent";
@@ -221,7 +221,7 @@ function displayProjectName(projectRoot) {
 }
 
 function prettyProjectName(value) {
-  if (String(value).toLowerCase() === "project" || String(value).toLowerCase() === "plutonix") return "PlutoniX";
+  if (String(value).toLowerCase() === "project" || String(value).toLowerCase() === "plutomix") return "PlutoMix";
   if (String(value).toLowerCase() === "mapex") return "MapEx";
   if (String(value).toLowerCase() === "geofinderx") return "GeoFinderX";
   return value;
@@ -366,6 +366,9 @@ async function normalizeAgentFromMarkdown({ projectRoot, projectName, filePath, 
     domain,
     definitionType: meta.definition_type || "",
     scope: meta.scope || "",
+    catalogScope: meta.catalog_scope || "global_community",
+    tenantId: meta.tenant_id || "",
+    enterpriseId: meta.enterprise_id || "",
     status: meta.status || vector?.status || "active",
     version: meta.version || "",
     objective,
@@ -555,7 +558,7 @@ function normalizeAgentFromVectorFile(file, vectorStoreId) {
       [
         "# OpenAI Vector Memory Metadata",
         "",
-        "Raw OpenAI vector-store file content is not always downloadable after upload. PlutoniX is showing the retrievable vector metadata and local source pointers for this memory record.",
+        "Raw OpenAI vector-store file content is not always downloadable after upload. PlutoMix is showing the retrievable vector metadata and local source pointers for this memory record.",
         "",
         `Vector file id: ${file.id}`,
         `Vector store id: ${vectorStoreId || ""}`,
@@ -577,7 +580,7 @@ function normalizeAgentFromVectorFile(file, vectorStoreId) {
 async function buildGlobalAgents() {
   const agentsByKey = new Map();
   const roots = [];
-  const builderRoot = plutonixRoot();
+  const builderRoot = plutomixRoot();
   const tokenEconomyByAgent = await summarizeAgentTokenEconomy();
   const openAiConfig = await openAiConfigFor(path.join(workspaceRoot(), "apps", "geofinderx"));
   const remote = await listOpenAiVectorFiles(openAiConfig);
@@ -600,7 +603,7 @@ async function buildGlobalAgents() {
     for (const filePath of markdownFiles) {
       const sourcePath = relativeFromProject(projectRoot, filePath);
       const content = await fs.readFile(filePath, "utf8");
-      const vector = byPath.get(sourcePath) || byPath.get(sourcePath.replace(/^plutonix\//, "")) || null;
+      const vector = byPath.get(sourcePath) || byPath.get(sourcePath.replace(/^plutomix\//, "")) || null;
       let agent = await normalizeAgentFromMarkdown({ projectRoot, projectName, filePath, content, vector });
       agent = applyRegistryScores(agent, registryScores.get(agent.id));
       agent = mergeRemoteVectorStatus(agent, remoteByHash, remoteBySourcePath);
@@ -659,7 +662,7 @@ async function buildGlobalAgents() {
       deletion: protectedAgentIds.has(agent.id)
         ? {
             allowed: false,
-            reason: "This is a required PlutoniX system agent and cannot be deleted independently."
+            reason: "This is a required PlutoMix system agent and cannot be deleted independently."
           }
         : {
             allowed: true,
@@ -855,7 +858,7 @@ export async function deleteGlobalAgent(selector = {}) {
     throw error;
   }
   if (protectedAgentIds.has(agentId)) {
-    const error = new Error("This required PlutoniX system agent cannot be deleted independently.");
+    const error = new Error("This required PlutoMix system agent cannot be deleted independently.");
     error.statusCode = 409;
     throw error;
   }
@@ -872,7 +875,7 @@ export async function deleteGlobalAgent(selector = {}) {
   const selectedRoot = agent.sourceRootId
     ? roots.find((root) => sourceRootId(root) === agent.sourceRootId)
     : null;
-  const config = await openAiConfigFor(selectedRoot || plutonixRoot());
+  const config = await openAiConfigFor(selectedRoot || plutomixRoot());
   const hasLinkedVectorMemory = Boolean(agent.vector?.file_id || selector.vectorFileId);
   if (hasLinkedVectorMemory && (!config.apiKey || !config.vectorStoreId)) {
     const error = new Error("OpenAI Vector Store credentials are required before this agent memory can be deleted.");

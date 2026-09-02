@@ -11,7 +11,7 @@ const flowPath = {
   projectName: "Investor Finder",
   status: "succeeded",
   activeAgents: [
-    { id: "plutonix-fullstack-agent", name: "PlutoniX", role: "Authority" },
+    { id: "plutomix-fullstack-agent", name: "PlutoMix", role: "Authority" },
     { id: "investor-orchestrator", name: "Investor Orchestrator", role: "Executor" }
   ],
   functionalities: [
@@ -113,7 +113,7 @@ test("keeps first-instruction functions when a later execution flow is merged", 
     initialFlowPath: {
       status: "succeeded",
       activeAgents: [
-        { id: "plutonix-fullstack-agent", name: "PlutoniX", role: "Authority" },
+        { id: "plutomix-fullstack-agent", name: "PlutoMix", role: "Authority" },
         { id: "initial-orchestrator", name: "Initial Orchestrator", role: "Executor" }
       ]
     }
@@ -139,7 +139,7 @@ test("preserves previous execution flows before adding the latest functionality"
       {
         projectName: "Investor Finder",
         status: "succeeded",
-        activeAgents: [{ id: "plutonix-fullstack-agent", name: "PlutoniX", role: "Authority" }],
+        activeAgents: [{ id: "plutomix-fullstack-agent", name: "PlutoMix", role: "Authority" }],
         functionalities: [
           { id: "upload", label: "Upload product details", detail: "Capture product context.", state: "completed" }
         ],
@@ -261,8 +261,8 @@ test("upgrades recorded flat route and section nodes into the major functionalit
       nodes: [
         { id: "root", type: "project", label: "Recorded workflow", parentId: "" },
         { id: "objective", sourceId: "functionality-1", type: "functionality", label: "Build a product", parentId: "root", detail: "Requested project functionality selected for implementation." },
-        { id: "catalog", sourceId: "functionality-2", type: "functionality", label: "Section: catalog", parentId: "root", detail: "Included by the PlutoniX feature and route plan." },
-        { id: "search", sourceId: "functionality-3", type: "functionality", label: "Route: Search", parentId: "root", detail: "Included by the PlutoniX feature and route plan." }
+        { id: "catalog", sourceId: "functionality-2", type: "functionality", label: "Section: catalog", parentId: "root", detail: "Included by the PlutoMix feature and route plan." },
+        { id: "search", sourceId: "functionality-3", type: "functionality", label: "Route: Search", parentId: "root", detail: "Included by the PlutoMix feature and route plan." }
       ]
     }
   });

@@ -77,7 +77,7 @@ export async function validateCandidate({ root, proposal, candidate = null } = {
 
 export function reviewCandidate({ proposal, validation, authorAgent = "self-improvement-candidate-worker" } = {}) {
   const reasons = [];
-  if (authorAgent === "plutonix-independent-improvement-reviewer") reasons.push("author_cannot_review_own_change");
+  if (authorAgent === "plutomix-independent-improvement-reviewer") reasons.push("author_cannot_review_own_change");
   if (validation.overallStatus !== "passed") reasons.push("validation_not_passed");
   if (proposal.rejectionReasons?.length) reasons.push(...proposal.rejectionReasons);
   if (["high", "critical"].includes(proposal.riskLevel)) reasons.push("high_risk_requires_human_or_stronger_policy");
@@ -90,12 +90,12 @@ export function reviewCandidate({ proposal, validation, authorAgent = "self-impr
     timestamp: nowIso(),
     status: "reviewed",
     evidenceRefs: [proposal.id, validation.id],
-    actor: "plutonix-independent-improvement-reviewer",
+    actor: "plutomix-independent-improvement-reviewer",
     modelProfile: "",
     proposalId: proposal.proposalId,
-    reviewerAgent: "plutonix-independent-improvement-reviewer",
+    reviewerAgent: "plutomix-independent-improvement-reviewer",
     authorAgent,
-    reviewerIndependent: authorAgent !== "plutonix-independent-improvement-reviewer",
+    reviewerIndependent: authorAgent !== "plutomix-independent-improvement-reviewer",
     decision: approved ? "approved" : "needs_revision",
     reasons,
     securityNotes: ["Logs and model outputs are treated as untrusted input.", "No high-risk autonomous promotion is allowed by default."],

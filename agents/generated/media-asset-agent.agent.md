@@ -5,6 +5,9 @@ role: "media-asset"
 source: "local-agent-registry"
 definition_type: "AgentDefinition"
 scope: "global_reusable"
+catalog_scope: "global_community"
+tenant_id: ""
+enterprise_id: ""
 version: "1.0.0"
 
 ## Responsibility

@@ -60,8 +60,8 @@ export const DEFAULT_SELF_IMPROVEMENT_CONFIG = {
   researchMaxTokensPerDay: 8000,
   researchMaxCostPerDay: 0.5,
   researchSources: [
-    "local:self-improvement-market-vision:runtime/self-improvement/market-vision/plutonix-market-differentiation.json",
-    "local:market-differentiation-pdf:docs/quotes/PlutoniX_Market_Differentiation_Investor_Quotation.pdf"
+    "local:self-improvement-market-vision:runtime/self-improvement/market-vision/plutomix-market-differentiation.json",
+    "local:market-differentiation-pdf:docs/quotes/PlutoMix_Market_Differentiation_Investor_Quotation.pdf"
   ],
   toolBuildEnabled: true,
   toolPlanAutoTrigger: true,
@@ -72,9 +72,9 @@ export const DEFAULT_SELF_IMPROVEMENT_CONFIG = {
 };
 
 export function projectRoot() {
-  if (process.env.PLUTONIX_PROJECT_ROOT) return process.env.PLUTONIX_PROJECT_ROOT;
-  if (process.cwd().endsWith(path.join("plutonix", "apps", "backend"))) return path.resolve(process.cwd(), "../..");
-  if (process.cwd().endsWith("plutonix")) return process.cwd();
+  if (process.env.PLUTOMIX_PROJECT_ROOT) return process.env.PLUTOMIX_PROJECT_ROOT;
+  if (process.cwd().endsWith(path.join("plutomix", "apps", "backend"))) return path.resolve(process.cwd(), "../..");
+  if (process.cwd().endsWith("plutomix")) return process.cwd();
   return path.resolve(process.cwd(), "../..");
 }
 

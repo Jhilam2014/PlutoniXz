@@ -27,7 +27,7 @@ function brainXAssessmentPlan(instruction = "") {
       "Backend: audit the affected API contract, runtime logs, and health evidence; reproduce and repair only a verified unhealthy endpoint.",
       "Economy: compare token, model-call, latency, and paid-tool cost against a bounded local or lower-cost alternative before choosing implementation.",
       requestsResearch
-        ? "R&D: conduct bounded research-paper/technical evidence review only when the task has an unresolved self-improvement or planning question; record sources, alternatives, and why the selected approach fits PlutoniX."
+        ? "R&D: conduct bounded research-paper/technical evidence review only when the task has an unresolved self-improvement or planning question; record sources, alternatives, and why the selected approach fits PlutoMix."
         : "R&D: do not spend research budget unless an unresolved self-improvement or planning question requires external evidence."
     ].join(" "),
     testPlan: [
@@ -65,7 +65,7 @@ export function createProposalFromAnalysis({ analysis, evidencePackage, existing
     actor: "self-improvement-planner",
     modelProfile: analysis.modelProfile || "",
     proposalId: createId("si_prop"),
-    title: improvement?.title || "Observe PlutoniX issue until evidence is sufficient",
+    title: improvement?.title || "Observe PlutoMix issue until evidence is sufficient",
     category: improvement?.category || "observability",
     problem: evidencePackage.problemStatement,
     evidence: evidencePackage.boundedLogExcerpts.map((item) => item.evidenceRef),
@@ -76,12 +76,12 @@ export function createProposalFromAnalysis({ analysis, evidencePackage, existing
     measurableObjective: analysis.shouldProceed
       ? "Reduce recurrence of the detected pattern without reducing feature inventory, API inventory, provider compatibility, or critical workflow availability."
       : "",
-    expectedBenefit: improvement?.expectedBenefit || analysis.expectedBenefit || "Improve PlutoniX reliability.",
+    expectedBenefit: improvement?.expectedBenefit || analysis.expectedBenefit || "Improve PlutoMix reliability.",
     riskLevel,
     affectedFeatures: featureIdsFromEvidence(evidencePackage),
     affectedFiles,
-    affectedAgents: affectedFiles.some((file) => /projectAgents|plutonixAuthority|agents\//i.test(file))
-      ? ["plutonix-fullstack-agent", "project-execution-agent"]
+    affectedAgents: affectedFiles.some((file) => /projectAgents|plutomixAuthority|agents\//i.test(file))
+      ? ["plutomix-fullstack-agent", "project-execution-agent"]
       : [],
     affectedInstructions,
     apiSchemaImpact: affectedFiles.some((file) => /server\.js|controller/i.test(file)) ? "possible_route_behavior_impact" : "none",
@@ -141,12 +141,12 @@ export function createSystemInstructionProposal({ instruction = "", taskType = "
     evidence: evidencePackage.evidenceRefs || [],
     rootCause: "Manual Gotham system-target request requires platform improvement investigation before implementation.",
     proposedSolution: `${assessment.proposedSolution} Implement only a selected, evidence-backed change in an isolated candidate workspace; validate it, require independent review, then apply promotion policy.`,
-    measurableObjective: "Complete the requested platform improvement without modifying generated project workspaces and without regressing inventoried PlutoniX features.",
+    measurableObjective: "Complete the requested platform improvement without modifying generated project workspaces and without regressing inventoried PlutoMix features.",
     expectedBenefit: "Allows direct platform improvement conversations while preserving project-target isolation.",
     riskLevel,
     affectedFeatures: ["gotham-chat-project-generation"],
     affectedFiles: ["apps/backend/src/server.js", "apps/frontend/src/App.jsx"],
-    affectedAgents: ["plutonix-fullstack-agent"],
+    affectedAgents: ["plutomix-fullstack-agent"],
     affectedInstructions: [],
     apiSchemaImpact: "additive_system_target_payload",
     databaseImpact: "none",

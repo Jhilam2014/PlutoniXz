@@ -3,7 +3,7 @@
   "scanned_at": "2026-08-27T17:40:51Z",
   "task_size": "large",
   "product_shape": "existing_product_change",
-  "scope": "PlutoniX Gotham Builder frontend, backend API, identity boundary, persistence, provider integrations, tests, graph, memory, and documentation",
+  "scope": "PlutoMix Gotham Builder frontend, backend API, identity boundary, persistence, provider integrations, tests, graph, memory, and documentation",
   "inspected": [
     "AGENTS.md",
     ".codex/prompts/bootstrap-orchestrator.md",

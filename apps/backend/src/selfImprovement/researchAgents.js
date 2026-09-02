@@ -4,24 +4,24 @@ import { createId, nowIso } from "./store.js";
 
 export const MARKET_RESEARCH_AGENTS = [
   {
-    agentId: "plutonix-competitive-tools-research-agent",
+    agentId: "plutomix-competitive-tools-research-agent",
     role: "competitive-tool-scout",
-    scope: "Compare agentic app builders, coding agents, orchestration dashboards, and deployment products against the PlutoniX market vision: verified delivery, cross-project learning, controlled evolution, customer-owned execution, Gotham Chat clarity and design proof."
+    scope: "Compare agentic app builders, coding agents, orchestration dashboards, and deployment products against the PlutoMix market vision: verified delivery, cross-project learning, controlled evolution, customer-owned execution, Gotham Chat clarity and design proof."
   },
   {
-    agentId: "plutonix-literature-research-agent",
+    agentId: "plutomix-literature-research-agent",
     role: "research-paper-scout",
     scope: "Track relevant papers and technical writeups on agent reliability, evaluation, cost control, self-improvement safety, evidence reports, rollback, outcome-based agent scoring and Project Intelligence Passport design."
   },
 	  {
-	    agentId: "plutonix-marketplace-research-agent",
+	    agentId: "plutomix-marketplace-research-agent",
 	    role: "marketplace-signal-scout",
-	    scope: "Look for marketplace/blog/documentation signals that suggest practical UX, Gotham Chat, buyer-proof, demo, paid-beta, design and workflow improvements aligned with the PlutoniX market differentiation report."
+	    scope: "Look for marketplace/blog/documentation signals that suggest practical UX, Gotham Chat, buyer-proof, demo, paid-beta, design and workflow improvements aligned with the PlutoMix market differentiation report."
 	  },
 	  {
-	    agentId: "plutonix-design-workshop-research-agent",
+	    agentId: "plutomix-design-workshop-research-agent",
 	    role: "periodic-design-workshop-scout",
-	    scope: "Periodically review PlutoniX UI growth, Gotham Chat ergonomics, command placement, frontend workflow clarity, accessibility, responsive behavior, visual hierarchy, and professional aesthetic quality. Recommend user-friendly design improvements that preserve existing functionality and reduce control/log/panel friction."
+	    scope: "Periodically review PlutoMix UI growth, Gotham Chat ergonomics, command placement, frontend workflow clarity, accessibility, responsive behavior, visual hierarchy, and professional aesthetic quality. Recommend user-friendly design improvements that preserve existing functionality and reduce control/log/panel friction."
 	  }
 	];
 
@@ -50,7 +50,7 @@ function sourceList(config = DEFAULT_SELF_IMPROVEMENT_CONFIG) {
 }
 
 export function planMarketResearch({
-  topic = "plutonix improvement opportunities",
+  topic = "plutomix improvement opportunities",
   reason = "investigator-agent-research-signal",
   config = DEFAULT_SELF_IMPROVEMENT_CONFIG,
   previousResearchLogs = []
@@ -106,7 +106,7 @@ export function planMarketResearch({
         "problemStatement",
         "evidenceReferences",
         "competitiveInsight",
-        "expectedPlutoniXBenefit",
+        "expectedPlutoMixBenefit",
         "risk",
         "validationPlan",
         "budgetUsed"

@@ -391,7 +391,7 @@ export function orchestrateBuilderInstruction(rawInstruction) {
   const instructionHash = crypto.createHash("sha256").update(sourceInstruction).digest("hex");
 
   const structuredRequest = {
-    orchestrator: "plutonix-fullstack-agent",
+    orchestrator: "plutomix-fullstack-agent",
     instructionHash,
     sourceInstruction,
     objective: `Create the requested ${productDecision.artifactType.replaceAll("_", " ")} for ${topic} as a ${productDecision.productShape.replaceAll("_", " ")}.`,
@@ -419,7 +419,7 @@ export function orchestrateBuilderInstruction(rawInstruction) {
     ],
     handoff: {
       target: "codex.generate_webpage",
-      generatedAppContainer: process.env.GENERATED_SITE_CONTAINER || "plutonix-generated-site",
+      generatedAppContainer: process.env.GENERATED_SITE_CONTAINER || "plutomix-generated-site",
       restartRequired: true
     },
     fileOperations: []

@@ -33,8 +33,8 @@ const largeModelArtifactExtensions = new Set([
   ".pt",
   ".safetensors"
 ]);
-const maxExportableFileBytes = Number(process.env.PLUTONIX_MAX_EXPORT_FILE_BYTES || 512 * 1024 * 1024);
-const PROJECT_ORIGINS = new Set(["plutonix_created", "imported", "unknown_legacy"]);
+const maxExportableFileBytes = Number(process.env.PLUTOMIX_MAX_EXPORT_FILE_BYTES || 512 * 1024 * 1024);
+const PROJECT_ORIGINS = new Set(["plutomix_created", "imported", "unknown_legacy"]);
 
 export function projectProvenance(project = {}) {
   const explicit = project?.provenance && typeof project.provenance === "object" ? project.provenance : {};
@@ -56,14 +56,14 @@ export function projectProvenance(project = {}) {
       source: "legacy_import_status"
     };
   }
-  // `productDecision` is written by PlutoniX project creation and is not
+  // `productDecision` is written by PlutoMix project creation and is not
   // populated by the archive-import path. It is therefore durable legacy
   // evidence of creation, unlike mutable runtime status.
   if (project?.productDecision && typeof project.productDecision === "object" && Object.keys(project.productDecision).length) {
     return {
-      origin: "plutonix_created",
+      origin: "plutomix_created",
       recordedAt: String(project?.createdAt || ""),
-      source: "legacy_plutonix_product_decision"
+      source: "legacy_plutomix_product_decision"
     };
   }
   return {
@@ -84,6 +84,13 @@ function slugify(value) {
 
 function projectsRoot() {
   return process.env.PROJECTS_ROOT || "/workspace/apps";
+}
+
+function tenantProjectsRoot({ tenantId = "", tenantInstanceKey = "" } = {}) {
+  if (!tenantId) return projectsRoot();
+  const key = String(tenantInstanceKey || "").trim();
+  if (!/^tenant-[a-f0-9]{16}$/.test(key)) throw new Error("A valid tenant instance key is required for a tenant project.");
+  return path.join(projectsRoot(), "tenants", key);
 }
 
 function migrateLegacyWorkspaceDir(project) {
@@ -156,11 +163,11 @@ async function resolveExecutableFromPath(command) {
 }
 
 function projectContainerName(project) {
-  return `plutonix-project-${slugify(project.id)}`;
+  return `plutomix-project-${slugify(project.id)}`;
 }
 
 function defaultContainerName() {
-  return process.env.GENERATED_SITE_CONTAINER || "plutonix-generated-site";
+  return process.env.GENERATED_SITE_CONTAINER || "plutomix-generated-site";
 }
 
 async function readRegistry() {
@@ -180,25 +187,32 @@ async function writeRegistry(projects) {
   await fs.writeJson(registryPath(), projects, { spaces: 2 });
 }
 
-async function reserveProjectFolder(name) {
+async function reserveProjectFolder(name, scope = {}) {
+  const root = tenantProjectsRoot(scope);
+  await fs.ensureDir(root);
   const baseSlug = slugify(name);
   let folderName = baseSlug;
   let counter = 2;
-  while (await fs.pathExists(path.join(projectsRoot(), folderName))) {
+  while (await fs.pathExists(path.join(root, folderName))) {
     folderName = `${baseSlug}-${counter}`;
     counter += 1;
   }
   return {
     folderName,
-    workspaceDir: path.join(projectsRoot(), folderName)
+    workspaceDir: path.join(root, folderName)
   };
 }
 
-async function ensureProjectIgnored(folderName) {
+function projectWorkspaceFromIgnoreInput(folderNameOrWorkspace) {
+  const value = String(folderNameOrWorkspace || "");
+  return path.isAbsolute(value) ? value : path.join(projectsRoot(), value);
+}
+
+async function ensureProjectIgnored(folderNameOrWorkspace) {
   const gitignorePath = parentGitignorePath();
   await fs.ensureDir(path.dirname(gitignorePath));
   const existing = (await fs.pathExists(gitignorePath)) ? await fs.readFile(gitignorePath, "utf8") : "";
-  const projectPath = path.join(projectsRoot(), folderName);
+  const projectPath = projectWorkspaceFromIgnoreInput(folderNameOrWorkspace);
   const relativeEntry = path.relative(path.dirname(gitignorePath), projectPath).split(path.sep).join("/");
   const requiredEntries = [`${relativeEntry}/`];
   const nextEntries = requiredEntries.filter((entry) => !existing.split(/\r?\n/).includes(entry));
@@ -207,12 +221,12 @@ async function ensureProjectIgnored(folderName) {
   await fs.writeFile(gitignorePath, `${existing}${prefix}${nextEntries.join("\n")}\n`);
 }
 
-async function removeProjectIgnoreEntry(folderName) {
+async function removeProjectIgnoreEntry(folderNameOrWorkspace) {
   const gitignorePath = parentGitignorePath();
   if (!(await fs.pathExists(gitignorePath))) return;
-  const projectPath = path.join(projectsRoot(), folderName);
+  const projectPath = projectWorkspaceFromIgnoreInput(folderNameOrWorkspace);
   const target = `${path.relative(path.dirname(gitignorePath), projectPath).split(path.sep).join("/")}/`;
-  const legacyTarget = `${folderName}/`;
+  const legacyTarget = `${path.basename(projectPath)}/`;
   const entries = (await fs.readFile(gitignorePath, "utf8")).split(/\r?\n/);
   await fs.writeFile(gitignorePath, `${entries.filter((entry) => entry !== target && entry !== legacyTarget).join("\n").replace(/\n+$/, "")}\n`);
 }
@@ -345,6 +359,7 @@ async function publicProjectWithRuntime(project) {
 
 function canAccessProject(project, user = {}) {
   if (project?.visibility === "shared") return true;
+  if (project?.tenantId) return Boolean(user.tenantId && user.tenantId === project.tenantId);
   const ownerUserId = project?.ownerUserId || "anonymous";
   const identities = new Set([
     user.id,
@@ -385,13 +400,13 @@ async function ensureFileLines(filePath, requiredLines) {
 
 async function writeStandaloneDockerReadme(workspaceDir, port) {
   const readmePath = path.join(workspaceDir, "README.md");
-  const blockStart = "<!-- plutonix-standalone-docker:start -->";
-  const blockEnd = "<!-- plutonix-standalone-docker:end -->";
+  const blockStart = "<!-- plutomix-standalone-docker:start -->";
+  const blockEnd = "<!-- plutomix-standalone-docker:end -->";
   const block = [
     blockStart,
     "## Standalone Docker",
     "",
-    "This project is packaged to run outside PlutoniX with its own Docker Compose stack.",
+    "This project is packaged to run outside PlutoMix with its own Docker Compose stack.",
     "",
     "1. Copy `.env.example` to `.env` and adjust values if needed.",
     "2. Start the app:",
@@ -403,7 +418,7 @@ async function writeStandaloneDockerReadme(workspaceDir, port) {
     `3. Open the frontend at http://localhost:${port}.`,
     "4. The backend health endpoint is available at http://localhost:8080/api/health.",
     "",
-    "The Docker files are project-local and do not require the PlutoniX backend, PlutoniX frontend, MCP service, or shared preview volume.",
+    "The Docker files are project-local and do not require the PlutoMix backend, PlutoMix frontend, MCP service, or shared preview volume.",
     blockEnd
   ].join("\n");
   const existing = (await fs.pathExists(readmePath)) ? await fs.readFile(readmePath, "utf8") : "";
@@ -421,7 +436,7 @@ async function ensureProjectFiles(workspaceDir, port) {
     await fs.writeJson(
       packagePath,
       {
-        name: "@plutonix/exported-app",
+        name: "@plutomix/exported-app",
         version: "1.0.0",
         private: true,
         type: "module",
@@ -477,7 +492,7 @@ async function ensureProjectFiles(workspaceDir, port) {
     };
     await fs.writeJson(packagePath, packageJson, { spaces: 2 });
   }
-  await ensureProjectHuggingFaceModelWorkspace(workspaceDir, { port }, { source: "plutonix-project-files" });
+  await ensureProjectHuggingFaceModelWorkspace(workspaceDir, { port }, { source: "plutomix-project-files" });
 
   await fs.writeFile(
     path.join(workspaceDir, "run-vite.mjs"),
@@ -573,7 +588,7 @@ async function ensureProjectFiles(workspaceDir, port) {
   await fs.writeJson(
     path.join(workspaceDir, "backend", "package.json"),
     {
-      name: "@plutonix/exported-backend",
+      name: "@plutomix/exported-backend",
       version: "1.0.0",
       private: true,
       type: "module",
@@ -732,7 +747,7 @@ export async function getProject(projectId, options = {}) {
  */
 export async function bindProjectDecisionContinuity(projectId, { user = {}, tenantId, principalId } = {}) {
   if (!projectId || projectId === "default") {
-    const error = new Error("Architecture discovery requires a managed imported or PlutoniX-created project.");
+    const error = new Error("Architecture discovery requires a managed imported or PlutoMix-created project.");
     error.code = "managed_project_required";
     error.status = 400;
     throw error;
@@ -780,7 +795,7 @@ export async function bindProjectDecisionContinuity(projectId, { user = {}, tena
 /** Read-only project access check for the Decision Continuity boundary. */
 export async function getProjectDecisionContinuity(projectId, { user = {}, tenantId } = {}) {
   if (!projectId || projectId === "default") {
-    const error = new Error("Architecture discovery requires a managed imported or PlutoniX-created project.");
+    const error = new Error("Architecture discovery requires a managed imported or PlutoMix-created project.");
     error.code = "managed_project_required";
     error.status = 400;
     throw error;
@@ -868,12 +883,12 @@ export async function updateProjectIdentity(projectId, updates = {}, options = {
 
   let workspaceDir = project.workspaceDir;
   if (nextFolderName !== project.folderName) {
-    if (projects.some((row) => row.id !== project.id && row.folderName === nextFolderName)) {
+    if (projects.some((row) => row.id !== project.id && row.tenantId === project.tenantId && row.folderName === nextFolderName)) {
       throw new Error("Workspace name is already in use.");
     }
-    const workspaceRoot = path.resolve(projectsRoot());
+    const workspaceRoot = path.resolve(tenantProjectsRoot(project));
     const currentWorkspaceDir = path.resolve(project.workspaceDir);
-    const nextWorkspaceDir = path.resolve(path.join(projectsRoot(), nextFolderName));
+    const nextWorkspaceDir = path.resolve(path.join(workspaceRoot, nextFolderName));
     if (path.dirname(currentWorkspaceDir) !== workspaceRoot || path.dirname(nextWorkspaceDir) !== workspaceRoot) {
       throw new Error(`Refusing to rename project workspace outside ${workspaceRoot}.`);
     }
@@ -888,8 +903,8 @@ export async function updateProjectIdentity(projectId, updates = {}, options = {
       runningProjects.delete(project.id);
     }
     await fs.move(currentWorkspaceDir, nextWorkspaceDir);
-    await removeProjectIgnoreEntry(project.folderName);
-    await ensureProjectIgnored(nextFolderName);
+    await removeProjectIgnoreEntry(project.workspaceDir);
+    await ensureProjectIgnored(nextWorkspaceDir);
     workspaceDir = nextWorkspaceDir;
   }
 
@@ -996,7 +1011,7 @@ async function reassignProjectPort(project, failedPorts = []) {
 
 export async function createProject(name, structuredRequest = null, options = {}) {
   const projects = await readRegistry();
-  const { folderName, workspaceDir } = await reserveProjectFolder(name);
+  const { folderName, workspaceDir } = await reserveProjectFolder(name, options);
   const id = `${folderName}-${nanoid(6)}`;
   const port = await nextPort(projects);
   try {
@@ -1004,7 +1019,7 @@ export async function createProject(name, structuredRequest = null, options = {}
     await ensureProjectFiles(workspaceDir, port);
     await installProjectOrchestratorSeed(workspaceDir, { emit: options.emit });
     await linkTemplateNodeModules(workspaceDir);
-    await ensureProjectIgnored(folderName);
+    await ensureProjectIgnored(workspaceDir);
   } catch (error) {
     await fs.remove(workspaceDir);
     throw error;
@@ -1019,12 +1034,23 @@ export async function createProject(name, structuredRequest = null, options = {}
     workspaceDir,
     status: "created",
     provenance: {
-      origin: "plutonix_created",
+      origin: "plutomix_created",
       recordedAt: createdAt,
-      source: "plutonix_project_creation"
+      source: "plutomix_project_creation"
     },
     ownerUserId: options.user?.id || "anonymous",
     ownerName: options.user?.name || "Local user",
+    ownerPrincipalId: options.principalId || options.user?.principalId || "",
+    tenantId: options.tenantId || "",
+    tenantInstanceKey: options.tenantInstanceKey || "",
+    enterprise: options.enterprise ? { id: options.enterprise.id, name: options.enterprise.label || options.enterprise.name } : null,
+    agentSource: options.agentSource || "global_community",
+    decisionContinuity: options.tenantId ? {
+      tenantId: options.tenantId,
+      workspaceId: id,
+      boundAt: createdAt,
+      boundByPrincipalId: options.principalId || options.user?.principalId || ""
+    } : null,
     brandingPalette: options.brandingPalette || null,
     productDecision: structuredRequest?.productDecision || null,
     previewStrategy: structuredRequest?.productDecision?.previewStrategy || "browser",
@@ -1034,7 +1060,7 @@ export async function createProject(name, structuredRequest = null, options = {}
   };
   projects.push(project);
   await writeRegistry(projects);
-  await ensureProjectQAgenticFramework(workspaceDir, project, { source: "plutonix-new-project-generation" });
+  await ensureProjectQAgenticFramework(workspaceDir, project, { source: "plutomix-new-project-generation" });
   await prepareProjectAgentTopology(
     publicProject(project),
     structuredRequest || {
@@ -1050,7 +1076,7 @@ export async function createProject(name, structuredRequest = null, options = {}
 
 export async function importProject(name, archivePath, options = {}) {
   const projects = await readRegistry();
-  const { folderName, workspaceDir } = await reserveProjectFolder(name);
+  const { folderName, workspaceDir } = await reserveProjectFolder(name, options);
   const id = `${folderName}-${nanoid(6)}`;
   const port = await nextPort(projects);
   await fs.ensureDir(workspaceDir);
@@ -1071,7 +1097,7 @@ export async function importProject(name, archivePath, options = {}) {
 
   await ensureProjectFiles(workspaceDir, port);
   await linkTemplateNodeModules(workspaceDir);
-  await ensureProjectIgnored(folderName);
+  await ensureProjectIgnored(workspaceDir);
   const createdAt = new Date().toISOString();
   const project = {
     id,
@@ -1083,17 +1109,28 @@ export async function importProject(name, archivePath, options = {}) {
     provenance: {
       origin: "imported",
       recordedAt: createdAt,
-      source: "plutonix_project_import"
+      source: "plutomix_project_import"
     },
     ownerUserId: options.user?.id || "anonymous",
     ownerName: options.user?.name || "Local user",
+    ownerPrincipalId: options.principalId || options.user?.principalId || "",
+    tenantId: options.tenantId || "",
+    tenantInstanceKey: options.tenantInstanceKey || "",
+    enterprise: options.enterprise ? { id: options.enterprise.id, name: options.enterprise.label || options.enterprise.name } : null,
+    agentSource: options.agentSource || "global_community",
+    decisionContinuity: options.tenantId ? {
+      tenantId: options.tenantId,
+      workspaceId: id,
+      boundAt: createdAt,
+      boundByPrincipalId: options.principalId || options.user?.principalId || ""
+    } : null,
     media: [],
     createdAt,
     updatedAt: createdAt
   };
   projects.push(project);
   await writeRegistry(projects);
-  await ensureProjectHuggingFaceModelWorkspace(workspaceDir, project, { source: "plutonix-project-import" });
+  await ensureProjectHuggingFaceModelWorkspace(workspaceDir, project, { source: "plutomix-project-import" });
   await syncProjectAgentTopology(publicProject(project), {
     objective: `Maintain and improve the imported project ${name}.`,
     pageType: "imported_app_project",
@@ -1179,9 +1216,9 @@ export async function stopProjectInstance(project) {
 }
 
 async function resolveDockerProjectConfiguration(project) {
-  const backendContainerName = process.env.PLUTONIX_BACKEND_CONTAINER || process.env.HOSTNAME;
+  const backendContainerName = process.env.PLUTOMIX_BACKEND_CONTAINER || process.env.HOSTNAME;
   const backend = await inspectContainer(backendContainerName);
-  if (!backend) throw new Error(`PlutoniX backend container ${backendContainerName} could not be inspected.`);
+  if (!backend) throw new Error(`PlutoMix backend container ${backendContainerName} could not be inspected.`);
 
   const workspacePath = path.resolve(project.workspaceDir);
   const workspaceMount = (backend.Mounts || [])
@@ -1194,7 +1231,7 @@ async function resolveDockerProjectConfiguration(project) {
   const relativeWorkspace = path.relative(workspaceMount.Destination, workspacePath);
   const hostWorkspace = path.join(workspaceMount.Source, relativeWorkspace);
   const networkName = process.env.PROJECT_RUNTIME_NETWORK || Object.keys(backend.NetworkSettings?.Networks || {})[0];
-  if (!networkName) throw new Error("PlutoniX backend is not attached to a Docker network.");
+  if (!networkName) throw new Error("PlutoMix backend is not attached to a Docker network.");
 
   return {
     Image: process.env.PROJECT_RUNTIME_IMAGE || backend.Config?.Image,
@@ -1208,8 +1245,8 @@ async function resolveDockerProjectConfiguration(project) {
     Env: ["CI=1", "NO_COLOR=1"],
     ExposedPorts: { [`${project.port}/tcp`]: {} },
     Labels: {
-      "com.plutonix.runtime": "project",
-      "com.plutonix.project-id": project.id
+      "com.plutomix.runtime": "project",
+      "com.plutomix.project-id": project.id
     },
     HostConfig: {
       Binds: [`${hostWorkspace}:${project.workspaceDir}`],
@@ -1283,7 +1320,7 @@ async function startDockerProject(project, options = {}) {
       status = ["created", "recreated"].includes(status) ? `${status}-and-started` : "restarted";
     } catch (error) {
       if (!isStaleDockerNetworkError(error)) throw error;
-      emit("project-runtime-network-recovery", `Docker network reference for ${project.name} is stale; recreating its runtime container on the current PlutoniX network.`, {
+      emit("project-runtime-network-recovery", `Docker network reference for ${project.name} is stale; recreating its runtime container on the current PlutoMix network.`, {
         projectId: project.id,
         containerName,
         error: error.message
@@ -1563,8 +1600,8 @@ export async function startRegisteredProjects() {
       const projectRuntimes = containers.filter((container) => {
         const labels = container.Labels || {};
         const names = Array.isArray(container.Names) ? container.Names : [];
-        return labels["com.plutonix.runtime"] === "project"
-          || names.some((name) => String(name).replace(/^\//, "").startsWith("plutonix-project-"));
+        return labels["com.plutomix.runtime"] === "project"
+          || names.some((name) => String(name).replace(/^\//, "").startsWith("plutomix-project-"));
       });
       await Promise.all(
         projectRuntimes
@@ -1673,7 +1710,8 @@ export async function removeProjectMedia(project, mediaIds = [], options = {}) {
 }
 
 function composeProjectNames(project) {
-  const folderName = String(project.folderName || slugify(project.name));
+  const namespace = project.tenantInstanceKey ? `${project.tenantInstanceKey}-` : "";
+  const folderName = `${namespace}${String(project.folderName || slugify(project.name))}`;
   return new Set([folderName, folderName.replace(/-/g, "_"), folderName.replace(/-/g, "")]);
 }
 
@@ -1690,7 +1728,7 @@ async function deleteDockerProjectResources(project) {
   for (const container of containers) {
     const labels = container.Labels || {};
     if (
-      labels["com.plutonix.project-id"] === project.id ||
+      labels["com.plutomix.project-id"] === project.id ||
       composeNames.has(labels["com.docker.compose.project"])
     ) {
       containerIds.add(container.Id);
@@ -1703,7 +1741,7 @@ async function deleteDockerProjectResources(project) {
   for (const network of networks) {
     const labels = network.Labels || {};
     if (
-      labels["com.plutonix.project-id"] === project.id ||
+      labels["com.plutomix.project-id"] === project.id ||
       composeNames.has(labels["com.docker.compose.project"])
     ) {
       networkIds.add(network.Id);
@@ -1721,7 +1759,7 @@ async function deleteDockerProjectResources(project) {
   for (const volume of volumes) {
     const labels = volume.Labels || {};
     if (
-      labels["com.plutonix.project-id"] === project.id ||
+      labels["com.plutomix.project-id"] === project.id ||
       composeNames.has(labels["com.docker.compose.project"])
     ) {
       volumeNames.add(volume.Name);

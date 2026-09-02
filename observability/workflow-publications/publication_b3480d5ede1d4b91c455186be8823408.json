@@ -4,7 +4,7 @@
   "recordedAt": "2026-08-29T03:10:24.614Z",
   "projectId": "voicetranscriptgenx-QcKNlU",
   "projectName": "voiceTranscriptGenX",
-  "workflowId": "plutonix_4a5aa068-0280-4dda-a6ba-431aa74237af",
+  "workflowId": "plutomix_4a5aa068-0280-4dda-a6ba-431aa74237af",
   "status": "succeeded",
   "publicationDurationMs": 15280,
   "timings": {
@@ -26,7 +26,7 @@
     "whatNext": "/workspace/project/memory/project-intelligence/projects/voicetranscriptgenx-QcKNlU/what-next-knowledge.jsonl",
     "summary": "/workspace/project/memory/agent-knowledge/projects/publication_b3480d5ede1d4b91c455186be8823408.summary.md",
     "agentSummaries": [
-      "/workspace/project/memory/agent-knowledge/agents/plutonix-fullstack-agent.executions.jsonl",
+      "/workspace/project/memory/agent-knowledge/agents/plutomix-fullstack-agent.executions.jsonl",
       "/workspace/project/memory/agent-knowledge/agents/voicetranscriptgenx-orchestrator-agent.executions.jsonl"
     ]
   },

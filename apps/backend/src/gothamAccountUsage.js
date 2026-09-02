@@ -1,6 +1,7 @@
 import crypto from "node:crypto";
 import { probeCodexCli, probeCopilotCli } from "./codexWorkflow.js";
 import { probeCodexAccountUsage } from "./codexAccountProbe.js";
+import { probeClaudeAuthentication, probeClaudeVersion } from "./claudeRuntime.js";
 import { readAgentTokenRows } from "./tokenEconomy.js";
 
 const CACHE_MS = 30_000;
@@ -40,14 +41,14 @@ function profile(owner = {}) {
     displayName: boundedText(owner.displayName, 160) || null,
     email: boundedText(owner.email, 254) || null,
     authMode: boundedText(owner.authMode || "verified_browser_identity", 80),
-    source: "PlutoniX verified identity",
+    source: "PlutoMix verified identity",
     availability: issuer && subject ? "available" : "unavailable",
-    unavailableReason: issuer && subject ? null : "A verified PlutoniX profile is required."
+    unavailableReason: issuer && subject ? null : "A verified PlutoMix profile is required."
   };
 }
 
 function providerLabel(provider) {
-  return ({ codex: "Codex", copilot: "GitHub Copilot" }[provider] || provider || "Provider");
+  return ({ codex: "Codex", claude: "Anthropic Claude Code", copilot: "GitHub Copilot" }[provider] || provider || "Provider");
 }
 
 function normalizeUsageRow(row, { owner, projectId } = {}) {
@@ -108,7 +109,7 @@ function codexAccount(accountProbe, owner, allowDevelopmentIdentity) {
   const raw = accountProbe?.account?.account;
   if (!raw) return unavailableAccount(accountProbe?.error || "Codex app-server did not return an authenticated account.");
   if (!codexIdentityMatchesOwner(accountProbe, owner, allowDevelopmentIdentity)) {
-    return unavailableAccount("The Codex runtime identity is not verified as the current PlutoniX profile.");
+    return unavailableAccount("The Codex runtime identity is not verified as the current PlutoMix profile.");
   }
   const providerAccountId = safeId(raw.chatgptAccountId || raw.accountId || raw.id, 240) || null;
   return {
@@ -144,8 +145,8 @@ function codexAllowance(accountProbe, owner, allowDevelopmentIdentity) {
   if (!codexIdentityMatchesOwner(accountProbe, owner, allowDevelopmentIdentity)) {
     return {
       availability: "unavailable", buckets: [], credits: null, resetCreditsAvailable: null, source: null, observedAt: null,
-      availabilityReason: "Codex allowance is hidden because the runtime identity is not verified as the current PlutoniX profile.",
-      note: "Provider account allowance can include activity outside PlutoniX."
+      availabilityReason: "Codex allowance is hidden because the runtime identity is not verified as the current PlutoMix profile.",
+      note: "Provider account allowance can include activity outside PlutoMix."
     };
   }
   const result = accountProbe?.rateLimits;
@@ -167,13 +168,13 @@ function codexAllowance(accountProbe, owner, allowDevelopmentIdentity) {
     source: available ? "Codex app-server account/rateLimits/read" : null,
     observedAt: available ? accountProbe.observedAt : null,
     availabilityReason: available ? null : accountProbe?.error || "Codex did not return ChatGPT rate-limit data for this authentication mode.",
-    note: "Provider account allowance can include activity outside PlutoniX."
+    note: "Provider account allowance can include activity outside PlutoMix."
   };
 }
 
 function codexAccountActivity(accountProbe, owner, allowDevelopmentIdentity) {
   if (!codexIdentityMatchesOwner(accountProbe, owner, allowDevelopmentIdentity)) {
-    return { availability: "unavailable", summary: null, dailyUsageBuckets: [], source: null, observedAt: null, availabilityReason: "Codex token activity is hidden because the runtime identity is not verified as the current PlutoniX profile." };
+    return { availability: "unavailable", summary: null, dailyUsageBuckets: [], source: null, observedAt: null, availabilityReason: "Codex token activity is hidden because the runtime identity is not verified as the current PlutoMix profile." };
   }
   const summary = accountProbe?.usage?.summary;
   const normalizedSummary = summary && typeof summary === "object" ? {
@@ -201,7 +202,14 @@ function providerSnapshot({ id, runtime, usage, active, accountProbe, owner, all
   const connected = Boolean(runtime?.available || usage || accountProbe?.available);
   const unavailableReason = id === "codex"
     ? accountProbe?.error || "Codex app-server account capabilities are unavailable."
-    : "The current Gotham CLI runtime does not expose account identity or allowance APIs.";
+    : id === "claude"
+      ? runtime?.error || "Claude Code does not expose account identity or allowance APIs through its headless CLI."
+      : "The current Gotham CLI runtime does not expose account identity or allowance APIs.";
+  const account = id === "codex" ? codexAccount(accountProbe, owner, allowDevelopmentIdentity) : {
+    ...unavailableAccount(unavailableReason),
+    authenticationMode: boundedText(runtime?.authMethod, 80) || null,
+    identitySource: runtime?.authMethod ? `${providerLabel(id)} authentication status` : null
+  };
   return {
     id,
     label: providerLabel(id),
@@ -218,7 +226,7 @@ function providerSnapshot({ id, runtime, usage, active, accountProbe, owner, all
       configuredModel: boundedText(runtime?.configuredModel, 160) || null,
       capability: runtime?.available ? "execution_available" : "not_available"
     },
-    account: id === "codex" ? codexAccount(accountProbe, owner, allowDevelopmentIdentity) : unavailableAccount(unavailableReason),
+    account,
     conversation: usage
       ? {
           availability: "available",
@@ -258,7 +266,7 @@ function providerSnapshot({ id, runtime, usage, active, accountProbe, owner, all
       source: null,
       observedAt: null,
       availabilityReason: unavailableReason,
-      note: "Provider account allowance can include activity outside PlutoniX."
+      note: "Provider account allowance can include activity outside PlutoMix."
     },
     accountUsage: id === "codex" ? codexAccountActivity(accountProbe, owner, allowDevelopmentIdentity) : {
       availability: "unavailable", summary: null, dailyUsageBuckets: [], source: null, observedAt: null,
@@ -270,7 +278,7 @@ function providerSnapshot({ id, runtime, usage, active, accountProbe, owner, all
       capacityTokens: null,
       source: null,
       observedAt: null,
-      availabilityReason: "Codex account APIs do not expose context-window occupancy for an active Gotham thread."
+      availabilityReason: `${providerLabel(id)} account APIs do not expose context-window occupancy for an active Gotham thread.`
     }
   };
 }
@@ -283,40 +291,70 @@ export function sanitizeGothamAccountUsage(snapshot) {
   return snapshot;
 }
 
-export function createGothamAccountUsageService({ readRows = readAgentTokenRows, probeCodex = probeCodexCli, probeCodexAccount = probeCodexAccountUsage, probeCopilot = probeCopilotCli, now = () => Date.now(), env = process.env, cacheMs = Number(env.GOTHAM_ACCOUNT_USAGE_CACHE_MS || CACHE_MS) } = {}) {
+export function createGothamAccountUsageService({
+  readRows = readAgentTokenRows,
+  probeCodex = probeCodexCli,
+  probeCodexAccount = probeCodexAccountUsage,
+  probeCopilot = probeCopilotCli,
+  probeClaudeVersionRuntime = probeClaudeVersion,
+  probeClaudeAuthenticationRuntime = probeClaudeAuthentication,
+  now = () => Date.now(),
+  env = process.env,
+  cacheMs = Number(env.GOTHAM_ACCOUNT_USAGE_CACHE_MS || CACHE_MS)
+} = {}) {
   cacheMs = Math.max(5_000, Math.min(300_000, Number(cacheMs) || CACHE_MS));
   const cache = new Map();
 
   function developmentIdentityAuthorized(owner = {}) {
     if (String(env.NODE_ENV || "development").toLowerCase() === "production") return false;
-    if (String(env.PLUTONIX_DEV_AUTH_ENABLED || "").toLowerCase() !== "true") return false;
-    const expectedSubject = boundedText(env.PLUTONIX_DEV_AUTH_SUBJECT || env.VITE_PLUTONIX_DEV_AUTH_SUBJECT || "local:local-plutonix-user", 200);
+    if (String(env.PLUTOMIX_DEV_AUTH_ENABLED || "").toLowerCase() !== "true") return false;
+    const expectedSubject = boundedText(env.PLUTOMIX_DEV_AUTH_SUBJECT || env.VITE_PLUTOMIX_DEV_AUTH_SUBJECT || "local:local-plutomix-user", 200);
     return owner.issuer === "development" && Boolean(expectedSubject) && owner.subject === expectedSubject;
   }
 
-  async function providerRuntime() {
-    const [codex, codexAccountProbe, copilot] = await Promise.all([
+  async function providerRuntime(selectedProvider) {
+    const claudeProbes = selectedProvider?.id === "claude" && selectedProvider.runtime
+      ? Promise.all([
+          probeClaudeVersionRuntime(selectedProvider.runtime, { timeoutMs: Number(env.GOTHAM_ACCOUNT_USAGE_PROBE_TIMEOUT_MS || 3000) }),
+          probeClaudeAuthenticationRuntime(selectedProvider.runtime, { timeoutMs: Number(env.GOTHAM_ACCOUNT_USAGE_PROBE_TIMEOUT_MS || 3000) })
+        ]).catch((error) => [{ available: false, version: "", error: error.message }, { authenticated: false, error: error.message }])
+      : Promise.resolve([{ available: false, version: "" }, { authenticated: false }]);
+    const [codex, codexAccountProbe, copilot, [claudeVersion, claudeAuthentication]] = await Promise.all([
       probeCodex(env.CODEX_BIN || "codex", Number(env.GOTHAM_ACCOUNT_USAGE_PROBE_TIMEOUT_MS || 3000)).catch((error) => ({ available: false, error: error.message })),
       probeCodexAccount(env.CODEX_BIN || "codex", Number(env.GOTHAM_ACCOUNT_USAGE_APP_SERVER_TIMEOUT_MS || 15000)).catch((error) => ({ available: false, error: error.message })),
-      probeCopilot(Number(env.GOTHAM_ACCOUNT_USAGE_PROBE_TIMEOUT_MS || 3000)).catch((error) => ({ available: false, error: error.message }))
+      probeCopilot(Number(env.GOTHAM_ACCOUNT_USAGE_PROBE_TIMEOUT_MS || 3000)).catch((error) => ({ available: false, error: error.message })),
+      claudeProbes
     ]);
     codex.configuredModel = env.OPENAI_DEFAULT_MODEL || null;
-    return { codex, codexAccountProbe, copilot };
+    const claude = {
+      available: claudeVersion.available === true && claudeAuthentication.authenticated === true,
+      version: claudeVersion.version || "",
+      configuredModel: selectedProvider?.modelId || null,
+      authenticated: claudeAuthentication.authenticated === true,
+      authenticationStatus: claudeAuthentication.status || "unavailable",
+      authMethod: claudeAuthentication.authMethod || "",
+      apiProvider: claudeAuthentication.apiProvider || "",
+      error: claudeVersion.error || claudeAuthentication.error || ""
+    };
+    return { codex, codexAccountProbe, copilot, claude };
   }
 
-  async function read({ owner, projectId = "", refresh = false } = {}) {
+  async function read({ owner, projectId = "", refresh = false, selectedProvider = null } = {}) {
     if (!owner?.issuer || !owner?.subject) throw new Error("A verified owner scope is required for Gotham account usage.");
-    const key = `${ownerKey(owner)}:${boundedText(projectId, 160)}`;
+    const selectedProviderId = ["codex", "claude"].includes(selectedProvider?.id) ? selectedProvider.id : "";
+    const selectedProfileId = safeId(selectedProvider?.profileId, 180);
+    const key = `${ownerKey(owner)}:${boundedText(projectId, 160)}:${selectedProviderId}:${selectedProfileId}`;
     const current = cache.get(key);
     const timestamp = now();
     if (current && timestamp - current.createdAt < cacheMs) {
       return { ...current.snapshot, refresh: { status: refresh ? "throttled" : "cached", availableAt: new Date(current.createdAt + cacheMs).toISOString() } };
     }
-    const [rows, runtime] = await Promise.all([readRows(), providerRuntime()]);
+    const [rows, runtime] = await Promise.all([readRows(), providerRuntime(selectedProvider)]);
     const usage = latestUsage(Array.isArray(rows) ? rows : [], { owner, projectId });
-    const activeProvider = usage?.provider || (runtime.codex?.available ? "codex" : runtime.copilot?.available ? "copilot" : "codex");
+    const activeProvider = selectedProviderId || usage?.provider || (runtime.codex?.available ? "codex" : runtime.copilot?.available ? "copilot" : "codex");
     const ids = new Set([activeProvider]);
     if (runtime.codex?.available || usage?.provider === "codex") ids.add("codex");
+    if (selectedProviderId === "claude" || usage?.provider === "claude") ids.add("claude");
     if (runtime.copilot?.available || usage?.provider === "copilot") ids.add("copilot");
     const allowDevelopmentIdentity = developmentIdentityAuthorized(owner);
     const providers = [...ids].map((id) => providerSnapshot({ id, runtime: runtime[id], usage: usage?.provider === id ? usage : null, active: id === activeProvider, accountProbe: id === "codex" ? runtime.codexAccountProbe : null, owner, allowDevelopmentIdentity }));
@@ -335,5 +373,11 @@ export function createGothamAccountUsageService({ readRows = readAgentTokenRows,
     return snapshot;
   }
 
-  return { read, clear(owner, projectId = "") { cache.delete(`${ownerKey(owner)}:${boundedText(projectId, 160)}`); } };
+  return {
+    read,
+    clear(owner, projectId = "") {
+      const prefix = `${ownerKey(owner)}:${boundedText(projectId, 160)}:`;
+      for (const key of cache.keys()) if (key.startsWith(prefix)) cache.delete(key);
+    }
+  };
 }

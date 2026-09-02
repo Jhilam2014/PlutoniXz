@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://plutonix.local/schemas/enterprise-sharing-agreement.schema.json",
-  "title": "PlutoniX Enterprise Information Sharing Agreement",
+  "$id": "https://plutomix.local/schemas/enterprise-sharing-agreement.schema.json",
+  "title": "PlutoMix Enterprise Information Sharing Agreement",
   "type": "object",
   "additionalProperties": false,
   "required": [

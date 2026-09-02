@@ -33,7 +33,7 @@ class FakeProvider extends MLExecutionProvider {
 }
 
 async function fixture(t) {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), "plutonix-gotham-studio-"));
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "plutomix-gotham-studio-"));
   t.after(() => fs.rm(root, { recursive: true, force: true }));
   const provider = new FakeProvider();
   const repository = new GothamStudioRepository({ filePath: path.join(root, "state.json") });

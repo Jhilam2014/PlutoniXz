@@ -41,6 +41,12 @@ function requireSession(req, res) {
 }
 
 export function registerHostingRoutes(app) {
+  app.use("/api/hosting/sessions/:sessionId", (req, res, next) => {
+    const session = getSession(req.params.sessionId);
+    const tenantId = req.plutomixProjectScope?.tenantId || "";
+    if (!session || !tenantId || session.tenant_id !== tenantId) return res.status(404).json({ status: "failed", error: "Hosting session not found." });
+    next();
+  });
   app.get("/api/hosting/projects", async (_req, res) => {
     const projects = await listProjects({ user: userFromRequest(_req) });
     res.json({ status: "ok", projects: projects.filter((project) => !project.isDefault) });
@@ -50,8 +56,8 @@ export function registerHostingRoutes(app) {
     res.json({ status: "ok", providers: listProviders() });
   });
 
-  app.post("/api/hosting/sessions", (_req, res) => {
-    res.json({ status: "ok", session: startSession(), providers: listProviders() });
+  app.post("/api/hosting/sessions", (req, res) => {
+    res.json({ status: "ok", session: startSession({ tenantId: req.plutomixProjectScope.tenantId, userId: userFromRequest(req).id }), providers: listProviders() });
   });
 
   app.get("/api/hosting/sessions/:sessionId", (req, res) => {
@@ -160,7 +166,7 @@ export function registerHostingRoutes(app) {
   });
 
   app.delete("/api/hosting/credentials/:credentialId", (req, res) => {
-    const result = revokeCredential(req.params.credentialId);
+    const result = revokeCredential(req.params.credentialId, { tenantId: req.plutomixProjectScope.tenantId });
     appendCredentialAudit({ type: "credential_deleted", credential_id: req.params.credentialId, created_at: new Date().toISOString() });
     res.json({ status: "ok", credential: result });
   });

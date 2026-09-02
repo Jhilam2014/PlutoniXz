@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "plutonix-hosting-conversation.schema.json",
-  "title": "PlutoniX Hosting Conversation Contracts",
+  "$id": "plutomix-hosting-conversation.schema.json",
+  "title": "PlutoMix Hosting Conversation Contracts",
   "type": "object",
   "definitions": {
     "HostingDeploymentStage": {

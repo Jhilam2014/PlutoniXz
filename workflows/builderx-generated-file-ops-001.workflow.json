@@ -1,5 +1,5 @@
 {
-  "workflow_id": "plutonix-generated-file-ops-001",
+  "workflow_id": "plutomix-generated-file-ops-001",
   "objective": "Generate a bag business app through MCP add/modify/delete file operations and restart the generated app container.",
   "workflow_classification": [
     "software_engineering",

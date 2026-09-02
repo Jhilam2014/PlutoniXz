@@ -1,5 +1,5 @@
 ---
-project_execution_id: plutonix_2248ded2-a9fa-40a8-9332-3e18b6b3ea28
+project_execution_id: plutomix_2248ded2-a9fa-40a8-9332-3e18b6b3ea28
 project_id: voicetranscriptgenx-QcKNlU
 workflow_class: executor
 content_type: "project_summary"
@@ -10,6 +10,6 @@ created_at: 2026-08-29T09:05:46.718Z
 ---
 # Workflow Projection Summary
 getting this error: Too many transcription jobs were started from this client. Try again shortly. it started multiple transcription jobs within a short period, and OpenAI is temporarily refusing another one. Stop launching multiple transcriptions in parallel. If your code does something like Promise.all() over many audio chunks, reduce concurrency—for example, process only 1–3 transcription requests at a time. Unless the job is not completely done show some loading idicator Branding colours: Media Studio (#4B1426, #17433F, #558467, #EFEABB). Recommended for audio. Use these as brand direction 
-Selected path: plutonix-global-orchestration
+Selected path: plutomix-global-orchestration
 Changed files: 4
 Validation: passed

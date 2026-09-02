@@ -1,6 +1,6 @@
 {
-  "workflow_id": "plutonix-run-script-001",
-  "objective": "Create a shell script to run PlutoniX.",
+  "workflow_id": "plutomix-run-script-001",
+  "objective": "Create a shell script to run PlutoMix.",
   "workflow_classification": [
     "devops_cicd",
     "software_engineering"

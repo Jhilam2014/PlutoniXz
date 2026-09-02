@@ -59,21 +59,21 @@ function isProduction(env = process.env) {
 }
 
 export function developmentAuthEnabled(env = process.env) {
-  return !isProduction(env) && String(env.PLUTONIX_DEV_AUTH_ENABLED || "").toLowerCase() === "true";
+  return !isProduction(env) && String(env.PLUTOMIX_DEV_AUTH_ENABLED || "").toLowerCase() === "true";
 }
 
 export function assertProductionIdentityConfiguration(env = process.env) {
   if (!isProduction(env)) return;
-  if (String(env.PLUTONIX_DEV_AUTH_ENABLED || "").toLowerCase() === "true") {
-    throw new Error("Production refuses to start while PLUTONIX_DEV_AUTH_ENABLED=true.");
+  if (String(env.PLUTOMIX_DEV_AUTH_ENABLED || "").toLowerCase() === "true") {
+    throw new Error("Production refuses to start while PLUTOMIX_DEV_AUTH_ENABLED=true.");
   }
-  if (String(env.PLUTONIX_AUTH_MODE || "oidc").toLowerCase() !== "oidc") {
-    throw new Error("Production requires PLUTONIX_AUTH_MODE=oidc.");
+  if (String(env.PLUTOMIX_AUTH_MODE || "oidc").toLowerCase() !== "oidc") {
+    throw new Error("Production requires PLUTOMIX_AUTH_MODE=oidc.");
   }
   required(env, "OIDC_ISSUER");
   required(env, "OIDC_AUDIENCE");
-  if (!String(env.PLUTONIX_CORS_ORIGINS || "").split(",").map((value) => value.trim()).filter(Boolean).length) {
-    throw new Error("Production requires an explicit PLUTONIX_CORS_ORIGINS allowlist for browser bearer requests.");
+  if (!String(env.PLUTOMIX_CORS_ORIGINS || "").split(",").map((value) => value.trim()).filter(Boolean).length) {
+    throw new Error("Production requires an explicit PLUTOMIX_CORS_ORIGINS allowlist for browser bearer requests.");
   }
   if (String(env.OIDC_JWKS_JSON || "").trim()) {
     throw new Error("Production refuses OIDC_JWKS_JSON; use issuer discovery or OIDC_JWKS_URL.");
@@ -216,6 +216,7 @@ export async function verifyOidcToken(token, { env = process.env } = {}) {
     subject: parsed.claims.sub.trim(),
     displayName: String(parsed.claims.name || parsed.claims.preferred_username || "").slice(0, 160),
     email: String(parsed.claims.email || "").slice(0, 254),
+    emailVerified: parsed.claims.email_verified === true,
     tokenType: String(parsed.header.typ),
     claims: { issuer: config.issuer, subject: parsed.claims.sub.trim() }
   };
@@ -277,9 +278,9 @@ export async function externalIdentityFromRequest(req, { env = process.env } = {
     return verifyOidcToken(match[1], { env });
   }
   if (developmentAuthEnabled(env)) {
-    const subject = String(req.get?.("x-plutonix-dev-subject") || "").trim();
+    const subject = String(req.get?.("x-plutomix-dev-subject") || "").trim();
     if (subject && subject.length <= 200) {
-      return { issuer: "development", subject, displayName: String(req.get?.("x-plutonix-dev-name") || "").slice(0, 160), email: "", tokenType: "development", claims: { issuer: "development", subject } };
+      return { issuer: "development", subject, displayName: String(req.get?.("x-plutomix-dev-name") || "").slice(0, 160), email: "", emailVerified: false, tokenType: "development", claims: { issuer: "development", subject } };
     }
   }
   throw new AuthenticationError("A verified bearer token is required.", { code: "authentication_required" });
@@ -289,15 +290,16 @@ export async function externalIdentityFromRequest(req, { env = process.env } = {
 // Decision Continuity surface uses externalIdentityFromRequest plus database
 // membership resolution and never trusts these client-controlled values.
 export function userFromRequest(req) {
-  const userId = String(req.get("x-plutonix-user-id") || req.query?.userId || "").trim();
-  const userName = String(req.get("x-plutonix-user-name") || req.query?.userName || "").trim();
-  const userEmail = String(req.get("x-plutonix-user-email") || req.query?.userEmail || "").trim();
+  if (req?.plutomixUserOverride?.id) return req.plutomixUserOverride;
+  const userId = String(req.get("x-plutomix-user-id") || req.query?.userId || "").trim();
+  const userName = String(req.get("x-plutomix-user-name") || req.query?.userName || "").trim();
+  const userEmail = String(req.get("x-plutomix-user-email") || req.query?.userEmail || "").trim();
   if (!userId && developmentAuthEnabled()) {
-    const subject = String(req.get("x-plutonix-dev-subject") || "").trim();
+    const subject = String(req.get("x-plutomix-dev-subject") || "").trim();
     if (subject && subject.length <= 200) {
       return {
         id: subject.slice(0, 160),
-        name: String(req.get("x-plutonix-dev-name") || "Local PlutoniX User").slice(0, 120),
+        name: String(req.get("x-plutomix-dev-name") || "Local PlutoMix User").slice(0, 120),
         email: "",
         authProvider: "development",
         // Retain access to pre-identity local projects created as anonymous.
@@ -306,7 +308,7 @@ export function userFromRequest(req) {
     }
   }
   if (!userId) return { id: "anonymous", name: "Local user", email: "", authProvider: "local" };
-  return { id: userId.slice(0, 160), name: userName.slice(0, 120) || "PlutoniX user", email: userEmail.slice(0, 160), authProvider: "legacy" };
+  return { id: userId.slice(0, 160), name: userName.slice(0, 120) || "PlutoMix user", email: userEmail.slice(0, 160), authProvider: "legacy" };
 }
 
 export async function authenticateGooglePayload(body = {}, { env = process.env } = {}) {
@@ -317,8 +319,8 @@ export async function authenticateGooglePayload(body = {}, { env = process.env }
 export function restrictedIntent(text) {
   const value = String(text || "").toLowerCase();
   const rules = [
-    { pattern: /(tech|architecture|source|code|implementation|system prompt|internal).{0,80}(agentic[- ]?plutonix|plutonix system|orchestrator)/i, reason: "Requests for internal PlutoniX implementation details are restricted." },
-    { pattern: /(clone|copy|same|exact|replica|duplicate).{0,80}(agentic[- ]?plutonix|plutonix app|this app)/i, reason: "Creating an exact copy of PlutoniX is restricted." },
+    { pattern: /(tech|architecture|source|code|implementation|system prompt|internal).{0,80}(agentic[- ]?plutomix|plutomix system|orchestrator)/i, reason: "Requests for internal PlutoMix implementation details are restricted." },
+    { pattern: /(clone|copy|same|exact|replica|duplicate).{0,80}(agentic[- ]?plutomix|plutomix app|this app)/i, reason: "Creating an exact copy of PlutoMix is restricted." },
     { pattern: /(agent_knowledge_global|global vector|vectordb|vector db|vector store).{0,80}(pull|dump|export|extract|list|download|read|copy)/i, reason: "Direct extraction of global agent knowledge/vector memory is restricted." }
   ];
   return rules.find((rule) => rule.pattern.test(value)) || null;

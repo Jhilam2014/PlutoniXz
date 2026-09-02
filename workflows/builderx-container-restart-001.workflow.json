@@ -1,5 +1,5 @@
 {
-  "workflow_id": "plutonix-container-restart-001",
+  "workflow_id": "plutomix-container-restart-001",
   "objective": "Route builder changes through MCP and restart the generated app container after code generation.",
   "workflow_classification": [
     "software_engineering",

@@ -1,9 +1,9 @@
 {
   "workflow_id": "architecture-ui-feature-gravity-20260816",
-  "name": "PlutoniX architecture UI feature graph correction",
+  "name": "PlutoMix architecture UI feature graph correction",
   "workflow_class": ["software_engineering", "dashboard_ui", "graph_systems", "testing_quality"],
   "task_size": "medium",
-  "objective": "Move branch analysis into PlutoniX, discover Page to UI element to feature relationships, connect UI interactions to evidenced services, and cluster the D3 force graph with gravity.",
+  "objective": "Move branch analysis into PlutoMix, discover Page to UI element to feature relationships, connect UI interactions to evidenced services, and cluster the D3 force graph with gravity.",
   "product_shape": "existing_product_change",
   "status": "completed",
   "agent_id": "project-execution-agent",

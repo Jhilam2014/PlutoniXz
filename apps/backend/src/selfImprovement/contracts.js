@@ -17,7 +17,7 @@ const eventBase = z.object({
   timestamp: z.string().min(10),
   status: statusSchema,
   evidenceRefs: z.array(z.string()).default([]),
-  actor: z.string().default("plutonix-self-improvement"),
+  actor: z.string().default("plutomix-self-improvement"),
   modelProfile: z.string().default("")
 }).strict();
 

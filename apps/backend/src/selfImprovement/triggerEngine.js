@@ -7,7 +7,7 @@ function expectedImpactFor(pattern = {}) {
   if (/runtime|failure|preview/.test(`${pattern.kind} ${pattern.components?.join(" ")}`)) return "Increase execution success rate and reduce failed project-generation or preview workflows.";
   if (/instruction|outcome/.test(pattern.kind || "")) return "Improve instruction-following accuracy and reduce repeated user correction.";
   if (/health|agent/.test(pattern.kind || "")) return "Improve agent health, quality, and reuse decisions.";
-  return "Improve PlutoniX reliability while preserving existing features.";
+  return "Improve PlutoMix reliability while preserving existing features.";
 }
 
 function investigationCostFor(pattern = {}) {
@@ -61,7 +61,7 @@ export function createTriggersFromPatterns(patterns = [], {
 export function createManualTrigger({
   reason,
   severity = "medium",
-  affectedComponents = ["plutonix-platform"],
+  affectedComponents = ["plutomix-platform"],
   evidenceRefs = [],
   confidence = 0.9,
   correlationId = createId("si_manual")

@@ -3,7 +3,7 @@ import fs from "fs-extra";
 import path from "node:path";
 
 function projectRoot() {
-  return process.env.PLUTONIX_PROJECT_ROOT || "/workspace/project";
+  return process.env.PLUTOMIX_PROJECT_ROOT || "/workspace/project";
 }
 
 function tablePath() {
@@ -66,9 +66,15 @@ function normalizedProviderUsage(value) {
   if (!value || typeof value !== "object" || Array.isArray(value)) return null;
   const inputTokens = finiteTokenCount(value.input_tokens ?? value.inputTokens ?? value.prompt_tokens ?? value.promptTokens);
   const outputTokens = finiteTokenCount(value.output_tokens ?? value.outputTokens ?? value.completion_tokens ?? value.completionTokens);
+  const cacheCreationInputTokens = finiteTokenCount(
+    value.cache_creation_input_tokens ?? value.cacheCreationInputTokens
+  ) ?? 0;
+  const cacheReadInputTokens = finiteTokenCount(
+    value.cache_read_input_tokens ?? value.cacheReadInputTokens
+  ) ?? 0;
   const cachedInputTokens = finiteTokenCount(
     value.cached_input_tokens ?? value.cachedInputTokens ?? value.input_tokens_details?.cached_tokens ?? value.prompt_tokens_details?.cached_tokens
-  ) ?? 0;
+  ) ?? cacheCreationInputTokens + cacheReadInputTokens;
   const reasoningOutputTokens = finiteTokenCount(
     value.reasoning_output_tokens ?? value.reasoningOutputTokens ?? value.output_tokens_details?.reasoning_tokens ?? value.completion_tokens_details?.reasoning_tokens
   ) ?? 0;
@@ -79,9 +85,11 @@ function normalizedProviderUsage(value) {
   return {
     inputTokens: normalizedInput,
     cachedInputTokens,
+    cacheCreationInputTokens,
+    cacheReadInputTokens,
     outputTokens: normalizedOutput,
     reasoningOutputTokens,
-    totalTokens: totalTokens ?? normalizedInput + normalizedOutput
+    totalTokens: totalTokens ?? normalizedInput + cacheCreationInputTokens + cacheReadInputTokens + normalizedOutput
   };
 }
 
@@ -111,6 +119,8 @@ export function parseProviderUsageFromEventStream(eventStream = "") {
   return {
     inputTokens: usage.inputTokens,
     cachedInputTokens: usage.cachedInputTokens,
+    cacheCreationInputTokens: usage.cacheCreationInputTokens,
+    cacheReadInputTokens: usage.cacheReadInputTokens,
     outputTokens: usage.outputTokens,
     reasoningOutputTokens: usage.reasoningOutputTokens,
     totalTokens: usage.totalTokens,
@@ -276,8 +286,12 @@ export async function recordAgentTokenUsage(record) {
     // opaque and is never a provider credential or account identifier.
     gothamUsageOwnerKey: String(record.gothamUsageOwnerKey || "").slice(0, 80),
     provider: String(record.provider || "").slice(0, 48),
+    providerProfileId: String(record.providerProfileId || "").slice(0, 160),
     executionModel: String(record.executionModel || record.model || "").slice(0, 160),
     inputTokens,
+    cachedInputTokens: Number(record.cachedInputTokens || 0),
+    cacheCreationInputTokens: Number(record.cacheCreationInputTokens || 0),
+    cacheReadInputTokens: Number(record.cacheReadInputTokens || 0),
     outputTokens,
     totalTokens,
     costModel: cost.model,
@@ -285,6 +299,9 @@ export async function recordAgentTokenUsage(record) {
     outputCredits: cost.outputCredits,
     totalCredits: cost.totalCredits,
     estimatedUsd: cost.estimatedUsd,
+    providerReportedCostUsd: record.providerReportedCostUsd !== null && record.providerReportedCostUsd !== undefined && Number.isFinite(Number(record.providerReportedCostUsd))
+      ? Number(record.providerReportedCostUsd)
+      : null,
     creditUsdRate: cost.creditUsdRate,
     pricingSource: cost.pricingSource,
     durationMs: Number(record.durationMs || 0),
@@ -299,7 +316,7 @@ export async function recordAgentTokenUsage(record) {
     yieldScore: efficiency.yieldScore,
     tokensPerAccuracyPoint: efficiency.tokensPerAccuracyPoint,
     usdPerAccuracyPoint: efficiency.usdPerAccuracyPoint,
-    source: record.source || "plutonix-codex-workflow",
+    source: record.source || "plutomix-provider-workflow",
     usageSource: record.usageSource || "estimated",
     providerUsageSchemaVersion: record.providerUsageSchemaVersion || "",
     estimationMethod: record.usageSource === "provider" ? "" : (record.estimationMethod || "chars_div_4_model_authored_text"),
@@ -348,9 +365,12 @@ export async function summarizeWorkflowTokenUsage(workflowId) {
     attemptCount: attempts.length,
     inputTokens: attempts.reduce((total, row) => total + Number(row.inputTokens || 0), 0),
     cachedInputTokens: attempts.reduce((total, row) => total + Number(row.cachedInputTokens || 0), 0),
+    cacheCreationInputTokens: attempts.reduce((total, row) => total + Number(row.cacheCreationInputTokens || 0), 0),
+    cacheReadInputTokens: attempts.reduce((total, row) => total + Number(row.cacheReadInputTokens || 0), 0),
     outputTokens: attempts.reduce((total, row) => total + Number(row.outputTokens || 0), 0),
     reasoningOutputTokens: attempts.reduce((total, row) => total + Number(row.reasoningOutputTokens || 0), 0),
     totalTokens: attempts.reduce((total, row) => total + Number(row.totalTokens || 0), 0),
+    providerReportedCostUsd: attempts.reduce((total, row) => total + Number(row.providerReportedCostUsd || 0), 0),
     transportBytes: attempts.reduce((total, row) => total + Number(row.transportBytes || 0), 0),
     usageSources: [...new Set(attempts.map((row) => row.usageSource || "estimated"))],
     attempts: attempts.map((row) => ({
@@ -360,13 +380,17 @@ export async function summarizeWorkflowTokenUsage(workflowId) {
       status: row.attemptStatus || "completed",
       failureClass: row.failureClass || "",
       provider: row.provider || "",
+      providerProfileId: row.providerProfileId || "",
       model: row.executionModel || "",
       inputTokens: Number(row.inputTokens || 0),
       cachedInputTokens: Number(row.cachedInputTokens || 0),
+      cacheCreationInputTokens: Number(row.cacheCreationInputTokens || 0),
+      cacheReadInputTokens: Number(row.cacheReadInputTokens || 0),
       outputTokens: Number(row.outputTokens || 0),
       reasoningOutputTokens: Number(row.reasoningOutputTokens || 0),
       totalTokens: Number(row.totalTokens || 0),
       usageSource: row.usageSource || "estimated",
+      providerReportedCostUsd: row.providerReportedCostUsd ?? null,
       durationMs: Number(row.durationMs || 0)
     }))
   };

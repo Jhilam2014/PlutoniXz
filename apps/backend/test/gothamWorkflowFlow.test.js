@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-process.env.PLUTONIX_SERVER_AUTOSTART = "false";
+process.env.PLUTOMIX_SERVER_AUTOSTART = "false";
 
 const { activeGothamExecutionStatus, gothamInstructionFlowPath, hydratePersistedWorkflowRoute } = await import("../src/server.js");
 
@@ -61,9 +61,9 @@ test("keeps the selected adaptive route when Gotham fails before returning a res
   assert.equal(flowPath.decisionTree.state, "selected");
   assert.equal(routing.state, "selected");
   assert.equal(routing.children.find((choice) => choice.id === "delegated_reviewed").state, "selected");
-  assert.equal(flowPath.activeAgents.find((agent) => agent.id === "plutonix-fullstack-agent").status, "completed");
-  assert.equal(flowPath.activeAgents.find((agent) => agent.id === "plutonix-independent-reviewer").status, "skipped");
-  assert.equal(flowPath.selectedPath, "plutonix-global-orchestration");
+  assert.equal(flowPath.activeAgents.find((agent) => agent.id === "plutomix-fullstack-agent").status, "completed");
+  assert.equal(flowPath.activeAgents.find((agent) => agent.id === "plutomix-independent-reviewer").status, "skipped");
+  assert.equal(flowPath.selectedPath, "plutomix-global-orchestration");
   assert.equal(humanChoice.state, "pending");
 });
 

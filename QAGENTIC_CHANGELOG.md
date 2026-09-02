@@ -1,6 +1,6 @@
 # QAgentic Additive Patch Changelog
 
-This patch adds Query Force Agent / QAgentic support without removing existing PlutoniX features.
+This patch adds Query Force Agent / QAgentic support without removing existing PlutoMix features.
 
 ## Added
 

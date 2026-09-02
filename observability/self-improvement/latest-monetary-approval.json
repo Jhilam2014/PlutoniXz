@@ -10,7 +10,7 @@
   "component": "authentication",
   "solutionKind": "external_paid_tool",
   "problemStatement": "A workflow complexity issue was detected. The likely solution may require a monetary resource. Affected component: authentication. Evidence: Task type: Medium Gotham mode: executor Mode contract: Execution mode. Implement the requested coding change, update required files, validate, and report evidence. task : add a SQL database with this Databricks and the S",
-  "approvalPrompt": "Approve estimated monthly_or_usage_based spend of about $25.00, or ask PlutoniX to pursue a cheaper internal solution.",
+  "approvalPrompt": "Approve estimated monthly_or_usage_based spend of about $25.00, or ask PlutoMix to pursue a cheaper internal solution.",
   "costEstimate": {
     "requiresMonetaryValue": true,
     "estimatedUsd": 25,
@@ -21,12 +21,12 @@
   },
   "cheaperAlternatives": [
     "Build a local deterministic analysis tool from existing logs and metrics.",
-    "Reuse existing PlutoniX agents or route to a smaller model profile.",
+    "Reuse existing PlutoMix agents or route to a smaller model profile.",
     "Add instrumentation and caching before paying for an external service.",
     "Simplify the UI/workflow or split the agent task into smaller bounded steps."
   ],
   "decision": "approve",
   "decidedAt": "2026-08-29T03:05:01.524Z",
-  "decidedBy": "local:local-plutonix-user",
+  "decidedBy": "local:local-plutomix-user",
   "note": ""
 }

@@ -18,7 +18,7 @@ test("authorized managed-project analysis is source-cited, tenant-bound, anticip
   const runId = `${process.pid}-${Date.now()}`;
   const tenantId = `architecture-tenant-${runId}`;
   const issuer = `https://issuer.test/architecture-${runId}`;
-  const audience = "plutonix-architecture-tests";
+  const audience = "plutomix-architecture-tests";
   const proposer = `architecture-proposer-${runId}`;
   const auditor = `architecture-auditor-${runId}`;
   const { privateKey, publicKey } = crypto.generateKeyPairSync("rsa", { modulusLength: 2048 });
@@ -28,7 +28,7 @@ test("authorized managed-project analysis is source-cited, tenant-bound, anticip
     const payload = base64Url({ iss: issuer, sub: subject, aud: audience, exp: Math.floor(Date.now() / 1000) + 300 });
     return `${header}.${payload}.${crypto.sign("RSA-SHA256", Buffer.from(`${header}.${payload}`), privateKey).toString("base64url")}`;
   };
-  const temporaryRoot = await fs.mkdtemp(path.join(os.tmpdir(), "plutonix-architecture-http-"));
+  const temporaryRoot = await fs.mkdtemp(path.join(os.tmpdir(), "plutomix-architecture-http-"));
   const projectRoot = path.join(temporaryRoot, "control-plane");
   const projectsRoot = path.join(temporaryRoot, "projects");
   const workspaceDir = path.join(projectsRoot, "imported-fixture");
@@ -53,8 +53,8 @@ test("authorized managed-project analysis is source-cited, tenant-bound, anticip
 
   const previous = Object.fromEntries([
     "NODE_ENV", "DECISION_CONTINUITY_ADAPTER", "DECISION_CONTINUITY_DATABASE_URL", "DECISION_CONTINUITY_DURABLE_WORKFLOWS",
-    "PLUTONIX_AUTH_MODE", "OIDC_ISSUER", "OIDC_AUDIENCE", "OIDC_JWKS_JSON", "OIDC_JWKS_URL", "PLUTONIX_DEV_AUTH_ENABLED",
-    "PLUTONIX_SERVER_AUTOSTART", "PLUTONIX_PROJECT_ROOT", "PROJECTS_ROOT", "PROJECTS_REGISTRY_PATH", "PROJECT_AGENT_RUNTIME_ROOT",
+    "PLUTOMIX_AUTH_MODE", "OIDC_ISSUER", "OIDC_AUDIENCE", "OIDC_JWKS_JSON", "OIDC_JWKS_URL", "PLUTOMIX_DEV_AUTH_ENABLED",
+    "PLUTOMIX_SERVER_AUTOSTART", "PLUTOMIX_PROJECT_ROOT", "PROJECTS_ROOT", "PROJECTS_REGISTRY_PATH", "PROJECT_AGENT_RUNTIME_ROOT",
     "PROJECT_AGENT_MARKDOWN_ROOT", "PROJECT_AGENT_NEO4J_PATH", "AGENTIC_SYSTEM_GRAPH_PATH", "FRONTEND_AGENTIC_SYSTEM_GRAPH_PATH",
     "PROJECT_BRANCH_DISCOVERY_MODEL_ASSIST_ENABLED", "PROJECT_RUNTIME_MODE", "SELF_IMPROVEMENT_ENABLED"
   ].map((key) => [key, process.env[key]]));
@@ -63,14 +63,14 @@ test("authorized managed-project analysis is source-cited, tenant-bound, anticip
     DECISION_CONTINUITY_ADAPTER: "postgres",
     DECISION_CONTINUITY_DATABASE_URL: databaseUrl,
     DECISION_CONTINUITY_DURABLE_WORKFLOWS: "false",
-    PLUTONIX_AUTH_MODE: "oidc",
+    PLUTOMIX_AUTH_MODE: "oidc",
     OIDC_ISSUER: issuer,
     OIDC_AUDIENCE: audience,
     OIDC_JWKS_JSON: JSON.stringify({ keys: [jwk] }),
     OIDC_JWKS_URL: "",
-    PLUTONIX_DEV_AUTH_ENABLED: "false",
-    PLUTONIX_SERVER_AUTOSTART: "false",
-    PLUTONIX_PROJECT_ROOT: projectRoot,
+    PLUTOMIX_DEV_AUTH_ENABLED: "false",
+    PLUTOMIX_SERVER_AUTOSTART: "false",
+    PLUTOMIX_PROJECT_ROOT: projectRoot,
     PROJECTS_ROOT: projectsRoot,
     PROJECTS_REGISTRY_PATH: path.join(projectRoot, "projects.json"),
     PROJECT_AGENT_RUNTIME_ROOT: path.join(projectRoot, "runtime", "agents", "projects"),
@@ -88,7 +88,7 @@ test("authorized managed-project analysis is source-cited, tenant-bound, anticip
   await identity.provisionMembership({ principalId: proposer, tenantId, roles: ["proposer"] });
   await identity.provisionPrincipal({ id: auditor, issuer, subject: auditor, type: "human", displayName: "Architecture auditor" });
   await identity.provisionMembership({ principalId: auditor, tenantId, roles: ["auditor"] });
-  const { app, closePlutonixServerResources } = await import("../../src/server.js");
+  const { app, closePlutoMixServerResources } = await import("../../src/server.js");
   const server = await new Promise((resolve, reject) => {
     const listener = app.listen(0, "127.0.0.1", () => resolve(listener));
     listener.once("error", reject);
@@ -99,7 +99,7 @@ test("authorized managed-project analysis is source-cited, tenant-bound, anticip
       method,
       headers: {
         authorization: `Bearer ${bearer(subject)}`,
-        "x-plutonix-tenant-id": tenantId,
+        "x-plutomix-tenant-id": tenantId,
         ...(body ? { "content-type": "application/json" } : {})
       },
       body: body ? JSON.stringify(body) : undefined
@@ -109,7 +109,7 @@ test("authorized managed-project analysis is source-cited, tenant-bound, anticip
   };
   context.after(async () => {
     await new Promise((resolve) => server.close(resolve));
-    await closePlutonixServerResources();
+    await closePlutoMixServerResources();
     await identity.pool?.end();
     await fs.rm(temporaryRoot, { recursive: true, force: true });
     for (const [key, value] of Object.entries(previous)) {

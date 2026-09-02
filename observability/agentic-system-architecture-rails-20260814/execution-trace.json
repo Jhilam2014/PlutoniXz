@@ -5,7 +5,7 @@
   "product_shape": "existing_product_change",
   "context_budget": "medium_context",
   "agents_reused": [
-    "plutonix-fullstack-agent",
+    "plutomix-fullstack-agent",
     "architecture_review",
     "design_review",
     "data_science_review"

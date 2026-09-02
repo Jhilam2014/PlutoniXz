@@ -1,6 +1,6 @@
 ---
-workflow_id: "plutonix-agentic-d3-market-ready-001"
-agent_id: "plutonix-fullstack-agent"
+workflow_id: "plutomix-agentic-d3-market-ready-001"
+agent_id: "plutomix-fullstack-agent"
 subagent_id: "design-workshop-team"
 prompt_type: "handoff"
 created_at: "2026-07-24T15:02:00Z"

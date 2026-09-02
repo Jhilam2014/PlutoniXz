@@ -33,7 +33,7 @@ function evidencePackage() {
   };
 }
 
-async function createTempRoot(context, prefix = "plutonix-self-improvement-") {
+async function createTempRoot(context, prefix = "plutomix-self-improvement-") {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), prefix));
   context.after(async () => {
     await fs.rm(root, { recursive: true, force: true });
@@ -220,7 +220,7 @@ test("investigator agent checks logged events and escalates repeated quality iss
 });
 
 test("event-driven control plane creates a proposal only after investigator problem statement", async (context) => {
-  const root = await createTempRoot(context, "plutonix-self-improvement-investigator-");
+  const root = await createTempRoot(context, "plutomix-self-improvement-investigator-");
   const emitted = [];
   const controlPlane = createSelfImprovementControlPlane({
     root,
@@ -318,12 +318,12 @@ test("tool capability agent plans internal tools for sluggish or complex workflo
   const plan = assessToolAndOptimizationNeed({
     event: {
       id: "ui-slow-1",
-      type: "plutonix-ui-warning",
+      type: "plutomix-ui-warning",
       message: "The app screen is sluggish and has too many clicks, so workflow complexity is high"
     },
     investigation: {
       id: "si_investigation_ui",
-      component: "plutonix-ui",
+      component: "plutomix-ui",
       severity: "medium",
       keyParameters: { efficiency: true, uiFriction: true }
     },
@@ -341,7 +341,7 @@ test("tool capability agent plans internal tools for sluggish or complex workflo
 });
 
 test("event-driven control plane builds internal tool candidates for sluggishness evidence", async (context) => {
-  const root = await createTempRoot(context, "plutonix-self-improvement-tooling-");
+  const root = await createTempRoot(context, "plutomix-self-improvement-tooling-");
   const emitted = [];
   const controlPlane = createSelfImprovementControlPlane({
     root,
@@ -364,10 +364,10 @@ test("event-driven control plane builds internal tool candidates for sluggishnes
 
   await controlPlane.start();
   const result = await controlPlane.recordRuntimeEvent({
-    id: "plutonix-ui-slow-1",
-    type: "plutonix-ui-warning",
+    id: "plutomix-ui-slow-1",
+    type: "plutomix-ui-warning",
     status: "warning",
-    message: "PlutoniX UI screen is sluggish and too many clicks make the workflow complex"
+    message: "PlutoMix UI screen is sluggish and too many clicks make the workflow complex"
   });
   assert.equal(result.checked, true);
   assert.match(result.toolPlanId, /^si_tool_plan_/);
@@ -386,7 +386,7 @@ test("event-driven control plane builds internal tool candidates for sluggishnes
 });
 
 test("paid tool plans require monetary approval and can produce cheaper alternatives", async (context) => {
-  const root = await createTempRoot(context, "plutonix-self-improvement-money-");
+  const root = await createTempRoot(context, "plutomix-self-improvement-money-");
   const emitted = [];
   const controlPlane = createSelfImprovementControlPlane({
     root,
@@ -410,7 +410,7 @@ test("paid tool plans require monetary approval and can produce cheaper alternat
   await controlPlane.start();
   const result = await controlPlane.recordRuntimeEvent({
     id: "paid-tool-1",
-    type: "plutonix-tool-gap",
+    type: "plutomix-tool-gap",
     status: "warning",
     message: "Need paid marketplace external API tool to inspect competitor blogs and research papers"
   });
@@ -512,7 +512,7 @@ test("candidate validation requires isolation, rollback artifact, and independen
   assert.equal(review.reviewerIndependent, true);
   assert.equal(review.decision, "approved");
 
-  const selfReview = reviewCandidate({ proposal, validation, authorAgent: "plutonix-independent-improvement-reviewer" });
+  const selfReview = reviewCandidate({ proposal, validation, authorAgent: "plutomix-independent-improvement-reviewer" });
   assert.equal(selfReview.reviewerIndependent, false);
   assert.equal(selfReview.decision, "needs_revision");
 });
@@ -600,7 +600,7 @@ test("control plane handles Gotham system-target instructions without project wo
 });
 
 test("control plane respects a zero per-cycle call ceiling", async (context) => {
-  const root = await createTempRoot(context, "plutonix-self-improvement-budget-");
+  const root = await createTempRoot(context, "plutomix-self-improvement-budget-");
   const controlPlane = createSelfImprovementControlPlane({
     root,
     configProvider: () => ({
@@ -629,7 +629,7 @@ test("control plane respects a zero per-cycle call ceiling", async (context) => 
 });
 
 test("control plane startup is event-driven ad hoc and does not schedule periodic cycles", async (context) => {
-  const root = await createTempRoot(context, "plutonix-self-improvement-adhoc-");
+  const root = await createTempRoot(context, "plutomix-self-improvement-adhoc-");
   const events = [];
   const controlPlane = createSelfImprovementControlPlane({
     root,

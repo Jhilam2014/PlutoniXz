@@ -1,9 +1,9 @@
 {
   "version": 1,
-  "projectId": "plutonix",
-  "projectName": "plutonix",
+  "projectId": "plutomix",
+  "projectName": "plutomix",
   "models": [],
   "services": [],
-  "source": "plutonix-root-huggingface-workspace",
+  "source": "plutomix-root-huggingface-workspace",
   "updatedAt": "2026-08-04T00:00:00.000Z"
 }

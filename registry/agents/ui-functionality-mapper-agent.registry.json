@@ -26,6 +26,26 @@
       "status": "active",
       "contextPath": ".agentic/orchestrator-agent.md",
       "createdAt": "2026-08-30T17:33:59.894Z"
+    },
+    {
+      "id": "project-agent-assignment:jobhunt-0SHrjF:ui-functionality-mapper-agent",
+      "projectId": "jobhunt-0SHrjF",
+      "agentId": "ui-functionality-mapper-agent",
+      "role": "ui-functionality-mapper",
+      "projectResponsibility": "Convert screenshots, Figma frames, product images, and named-app visual references into a ui_node_to_functionality map with behavior, state, data/API contracts, and validation criteria.",
+      "status": "active",
+      "contextPath": ".agentic/orchestrator-agent.md",
+      "createdAt": "2026-08-31T13:35:49.644Z"
+    },
+    {
+      "id": "project-agent-assignment:jobhunt2-PXJCTy:ui-functionality-mapper-agent",
+      "projectId": "jobhunt2-PXJCTy",
+      "agentId": "ui-functionality-mapper-agent",
+      "role": "ui-functionality-mapper",
+      "projectResponsibility": "Convert screenshots, Figma frames, product images, and named-app visual references into a ui_node_to_functionality map with behavior, state, data/API contracts, and validation criteria.",
+      "status": "active",
+      "contextPath": ".agentic/orchestrator-agent.md",
+      "createdAt": "2026-09-02T18:21:07.114Z"
     }
   ],
   "reuse_decisions": [
@@ -39,17 +59,42 @@
       "similarityScore": 1,
       "reason": "Reused the existing global ui-functionality-mapper definition; project context is stored in a separate assignment.",
       "createdAt": "2026-08-30T17:33:59.894Z"
+    },
+    {
+      "id": "agent-reuse:jobhunt-0SHrjF:ui-functionality-mapper-agent",
+      "projectExecution": "jobhunt-0SHrjF",
+      "selectedAgent": "ui-functionality-mapper-agent",
+      "requestedRole": "ui-functionality-mapper",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global ui-functionality-mapper definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-31T13:35:49.644Z"
+    },
+    {
+      "id": "agent-reuse:jobhunt2-PXJCTy:ui-functionality-mapper-agent",
+      "projectExecution": "jobhunt2-PXJCTy",
+      "selectedAgent": "ui-functionality-mapper-agent",
+      "requestedRole": "ui-functionality-mapper",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global ui-functionality-mapper definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-09-02T18:21:07.113Z"
     }
   ],
   "latest_reuse_decision": {
-    "id": "agent-reuse:voicetranscriptgenx-QcKNlU:ui-functionality-mapper-agent",
-    "projectExecution": "voicetranscriptgenx-QcKNlU",
+    "id": "agent-reuse:jobhunt2-PXJCTy:ui-functionality-mapper-agent",
+    "projectExecution": "jobhunt2-PXJCTy",
     "selectedAgent": "ui-functionality-mapper-agent",
     "requestedRole": "ui-functionality-mapper",
     "decisionType": "exact_reuse",
     "reuseConfidenceScore": 100,
     "similarityScore": 1,
     "reason": "Reused the existing global ui-functionality-mapper definition; project context is stored in a separate assignment.",
-    "createdAt": "2026-08-30T17:33:59.894Z"
-  }
+    "createdAt": "2026-09-02T18:21:07.113Z"
+  },
+  "catalog_scope": "global_community",
+  "tenant_id": "",
+  "enterprise_id": ""
 }

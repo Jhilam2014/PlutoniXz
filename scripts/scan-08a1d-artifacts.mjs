@@ -98,7 +98,7 @@ async function gitleaksFile(relative, report, origin) {
 }
 async function streamStaticFindings(source, origin) {
   const patterns = [
-    ['plutonix-fake-secret', /plutonix_fake_secret_[A-Za-z0-9]{24}/],
+    ['plutomix-fake-secret', /plutomix_fake_secret_[A-Za-z0-9]{24}/],
     ['gcp-api-key', /\bAIza[0-9A-Za-z_-]{35}\b/],
     ['openai-api-key', /\bsk-(?:proj-)?[A-Za-z0-9_-]{20,}\b/],
     ['generic-api-key', /\b(?:api[_-]?key|access[_-]?token|secret|password)\b\s*(?:[:=]|is)\s*["']?[A-Za-z0-9_-]{24,}/i],
@@ -220,7 +220,7 @@ async function scanStaticDirectory(directory, origin, { rejectLinks = false } = 
   return { rows, entryCount, declaredBytes: bytes, exitCode: rows.length ? 1 : 0 };
 }
 async function scanZip(relative, reportDir) {
-  const preflight = await safeZipPreflight(relative); const temp = await mkdtemp(path.join(os.tmpdir(), 'plutonix-08a1d-zip-')); let outcome;
+  const preflight = await safeZipPreflight(relative); const temp = await mkdtemp(path.join(os.tmpdir(), 'plutomix-08a1d-zip-')); let outcome;
   try {
     let extracted = await command('/usr/bin/unzip', ['-qq', path.resolve(relative), '-d', temp]);
     if (extracted.timedOut || ![0, 1].includes(extracted.code)) extracted = await command('/usr/bin/ditto', ['-x', '-k', path.resolve(relative), temp]);

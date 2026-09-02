@@ -108,7 +108,7 @@ export function observedDecisionXBranchInput({
     {
       id: boundedId(`build-request-${digest({ buildKey, instruction }).slice(0, 32)}`, "build-request"),
       type: "artifact",
-      source: "plutonix.generate.request",
+      source: "plutomix.generate.request",
       observedAt: new Date().toISOString(),
       accessPolicy: "workspace",
       digest: digest({ instruction: boundedText(instruction, 4_000), projectId: project?.id || "", correlationId })
@@ -174,9 +174,9 @@ export function observedDecisionXBranchInput({
     },
     disposition: { alternativesConsidered: observedAlternatives(workflow?.flowPath) },
     producedBy: {
-      agentId: boundedId(workflow?.agentId || "plutonix-fullstack-agent", "plutonix-fullstack-agent"),
+      agentId: boundedId(workflow?.agentId || "plutomix-fullstack-agent", "plutomix-fullstack-agent"),
       actorId: boundedId(actor?.id, "") || undefined,
-      source: "plutonix.generate"
+      source: "plutomix.generate"
     },
     executionProvenance: {
       provider: route?.selectedProvider || undefined,

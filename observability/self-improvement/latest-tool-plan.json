@@ -7,12 +7,12 @@
   "status": "duplicate_suppressed",
   "normalizedKey": "8a75391c2d33ae9958a15272",
   "source": "self-improvement-tool-capability-agent",
-  "agentId": "plutonix-tool-capability-agent",
+  "agentId": "plutomix-tool-capability-agent",
   "agentRole": "capability-gap-and-operational-optimization-agent",
   "eventId": "1786987165693-2a868029e3a3c",
   "eventType": "vector-sync-deferred",
   "investigationId": "si_investigation_84089ce7-a8c7-453e-8894-0151bbfac349",
-  "component": "plutonix-runtime",
+  "component": "plutomix-runtime",
   "severity": "low",
   "solutionKind": "platform_optimization",
   "need": {
@@ -21,14 +21,14 @@
     "complexity": false,
     "paid": false
   },
-  "problemStatement": "A sluggishness or resource-efficiency issue was detected. Affected component: plutonix-runtime. Evidence: Vector memory sync deferred until at least 5 files are pending.",
+  "problemStatement": "A sluggishness or resource-efficiency issue was detected. Affected component: plutomix-runtime. Evidence: Vector memory sync deferred until at least 5 files are pending.",
   "affectedComponents": [
-    "plutonix-runtime"
+    "plutomix-runtime"
   ],
   "proposedTool": {
-    "name": "PlutoniX Sluggishness Profiler",
-    "slug": "plutonix-sluggishness-profiler",
-    "capability": "Analyze bounded PlutoniX evidence and return a deterministic improvement recommendation.",
+    "name": "PlutoMix Sluggishness Profiler",
+    "slug": "plutomix-sluggishness-profiler",
+    "capability": "Analyze bounded PlutoMix evidence and return a deterministic improvement recommendation.",
     "interface": "runtime/self-improvement generated-tool manifest",
     "inputs": [
       "bounded runtime event",
@@ -65,7 +65,7 @@
   "approvalPrompt": "",
   "cheaperAlternatives": [
     "Build a local deterministic analysis tool from existing logs and metrics.",
-    "Reuse existing PlutoniX agents or route to a smaller model profile.",
+    "Reuse existing PlutoMix agents or route to a smaller model profile.",
     "Add instrumentation and caching before paying for an external service.",
     "Simplify the UI/workflow or split the agent task into smaller bounded steps."
   ],

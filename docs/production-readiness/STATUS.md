@@ -69,11 +69,11 @@ No migrations, ledger refactors, database changes, feature flags, deployments, c
 
 ### Validation evidence
 
-- `docker run … plutonix-backend:latest npm test` from an ephemeral copy at the original repository layout — 115 passed, 0 failed (18.428 s).
-- `docker run … plutonix-backend:latest node --test test/decisionContinuity.test.js` — 8 passed, 0 failed (includes the new restart characterization).
-- `docker run … plutonix-frontend:latest npm test` — 17 passed, 0 failed.
-- `docker run … plutonix-frontend:latest npm run build` — passed; Vite emitted only its >500 kB chunk-size warning.
-- `docker run … plutonix-generated-site:latest npm run build` — passed.
+- `docker run … plutomix-backend:latest npm test` from an ephemeral copy at the original repository layout — 115 passed, 0 failed (18.428 s).
+- `docker run … plutomix-backend:latest node --test test/decisionContinuity.test.js` — 8 passed, 0 failed (includes the new restart characterization).
+- `docker run … plutomix-frontend:latest npm test` — 17 passed, 0 failed.
+- `docker run … plutomix-frontend:latest npm run build` — passed; Vite emitted only its >500 kB chunk-size warning.
+- `docker run … plutomix-generated-site:latest npm run build` — passed.
 - `python3 scripts/validate_project.py` — success; 16 required paths checked and no JSON errors.
 - `docker compose config` — passed.
 - `node --check` for `decisionContinuity.js`, `decisionContinuityProjection.js`, and `server.js` — passed.
@@ -82,12 +82,12 @@ No migrations, ledger refactors, database changes, feature flags, deployments, c
 Exact commands used (the full backend runner copies only `apps/backend` into a disposable container so `import.meta.dirname` retains its repository-relative layout):
 
 ```sh
-docker run --name plutonix-step0-backend -d -v "$PWD:/source:ro" plutonix-backend:latest sh -lc 'set -eu; mkdir -p /tmp/project/apps; cp -a /source/apps/backend /tmp/project/apps/backend; for item in AGENTS.md CLAUDE.md .codex .claude .github agents schemas docs qagentic-support; do [ -e "/source/$item" ] && ln -s "/source/$item" "/tmp/project/$item"; done; ln -s /workspace/backend/node_modules /tmp/project/apps/backend/node_modules; cd /tmp/project/apps/backend; npm test'
-docker logs plutonix-step0-backend
-docker run --rm -v "$PWD/apps/backend/src:/workspace/backend/src:ro" -v "$PWD/apps/backend/test:/workspace/backend/test:ro" plutonix-backend:latest node --test test/decisionContinuity.test.js
-docker run --rm -v "$PWD/apps/frontend/public:/workspace/frontend/public:ro" -v "$PWD/apps/frontend/src:/workspace/frontend/src:ro" -v "$PWD/apps/frontend/test:/workspace/frontend/test:ro" plutonix-frontend:latest npm test
-docker run --rm -v "$PWD/apps/frontend/src:/workspace/frontend/src:ro" -v "$PWD/apps/frontend/public:/workspace/frontend/public:ro" -v "$PWD/apps/frontend/vite.config.js:/workspace/frontend/vite.config.js:ro" -v "$PWD/apps/frontend/run-vite.mjs:/workspace/frontend/run-vite.mjs:ro" plutonix-frontend:latest npm run build
-docker run --rm -v "$PWD/apps/generated-site/src:/workspace/generated-site/src:ro" -v "$PWD/apps/generated-site/run-vite.mjs:/workspace/generated-site/run-vite.mjs:ro" plutonix-generated-site:latest npm run build
+docker run --name plutomix-step0-backend -d -v "$PWD:/source:ro" plutomix-backend:latest sh -lc 'set -eu; mkdir -p /tmp/project/apps; cp -a /source/apps/backend /tmp/project/apps/backend; for item in AGENTS.md CLAUDE.md .codex .claude .github agents schemas docs qagentic-support; do [ -e "/source/$item" ] && ln -s "/source/$item" "/tmp/project/$item"; done; ln -s /workspace/backend/node_modules /tmp/project/apps/backend/node_modules; cd /tmp/project/apps/backend; npm test'
+docker logs plutomix-step0-backend
+docker run --rm -v "$PWD/apps/backend/src:/workspace/backend/src:ro" -v "$PWD/apps/backend/test:/workspace/backend/test:ro" plutomix-backend:latest node --test test/decisionContinuity.test.js
+docker run --rm -v "$PWD/apps/frontend/public:/workspace/frontend/public:ro" -v "$PWD/apps/frontend/src:/workspace/frontend/src:ro" -v "$PWD/apps/frontend/test:/workspace/frontend/test:ro" plutomix-frontend:latest npm test
+docker run --rm -v "$PWD/apps/frontend/src:/workspace/frontend/src:ro" -v "$PWD/apps/frontend/public:/workspace/frontend/public:ro" -v "$PWD/apps/frontend/vite.config.js:/workspace/frontend/vite.config.js:ro" -v "$PWD/apps/frontend/run-vite.mjs:/workspace/frontend/run-vite.mjs:ro" plutomix-frontend:latest npm run build
+docker run --rm -v "$PWD/apps/generated-site/src:/workspace/generated-site/src:ro" -v "$PWD/apps/generated-site/run-vite.mjs:/workspace/generated-site/run-vite.mjs:ro" plutomix-generated-site:latest npm run build
 python3 scripts/validate_project.py
 docker compose config
 ```
@@ -152,9 +152,9 @@ The event hash is canonical JSON SHA-256 with `hashVersion`, `previousHash`, and
 Exact commands (container/database names are disposable local test resources):
 
 ```sh
-docker run -d --name plutonix-step1-postgres -e POSTGRES_DB=decision_continuity_test -e POSTGRES_USER=plutonix -e POSTGRES_HOST_AUTH_METHOD=trust -p 55432:5432 postgres:16-alpine
-docker exec -i plutonix-step1-postgres psql -v ON_ERROR_STOP=1 -U plutonix -d decision_continuity_test < database/migrations/002_decision_continuity_postgres.sql
-docker run --rm --network container:plutonix-step1-postgres -e DECISION_CONTINUITY_TEST_DATABASE_URL='postgres://plutonix@127.0.0.1:5432/decision_continuity_test' -v "$PWD:/source:ro" node:22-alpine sh -lc 'mkdir -p /tmp/project/apps; cp -a /source/apps/backend /tmp/project/apps/backend; cd /tmp/project/apps/backend; npm install --ignore-scripts; node --test test/integration/decisionContinuityPostgres.integration.test.js'
+docker run -d --name plutomix-step1-postgres -e POSTGRES_DB=decision_continuity_test -e POSTGRES_USER=plutomix -e POSTGRES_HOST_AUTH_METHOD=trust -p 55432:5432 postgres:16-alpine
+docker exec -i plutomix-step1-postgres psql -v ON_ERROR_STOP=1 -U plutomix -d decision_continuity_test < database/migrations/002_decision_continuity_postgres.sql
+docker run --rm --network container:plutomix-step1-postgres -e DECISION_CONTINUITY_TEST_DATABASE_URL='postgres://plutomix@127.0.0.1:5432/decision_continuity_test' -v "$PWD:/source:ro" node:22-alpine sh -lc 'mkdir -p /tmp/project/apps; cp -a /source/apps/backend /tmp/project/apps/backend; cd /tmp/project/apps/backend; npm install --ignore-scripts; node --test test/integration/decisionContinuityPostgres.integration.test.js'
 git diff --check
 ```
 
@@ -190,7 +190,7 @@ Scope: the implemented Decision Continuity API and durable worker surface only; 
 - `decisionContinuityPostgres.integration.test.js`: 6/6 passed.
 - `decisionContinuityWorkflow.integration.test.js`: 4/4 passed.
 - `decisionContinuityWorkflowGate.integration.test.js`: 5/5 passed, including the real SIGTERM drain and the new worker capability/revocation recheck.
-- Production startup test with `PLUTONIX_DEV_AUTH_ENABLED=true` and otherwise valid PostgreSQL/OIDC placeholders exited nonzero with the intended refusal.
+- Production startup test with `PLUTOMIX_DEV_AUTH_ENABLED=true` and otherwise valid PostgreSQL/OIDC placeholders exited nonzero with the intended refusal.
 - `docker compose config` passed with an explicit non-secret placeholder `DECISION_CONTINUITY_DATABASE_URL`; `git diff --check` passed.
 - Frontend production build completed using the current mounted source. The current frontend model suite is **not green**: 15/17 passed and 2 failed in `agentic-system-model.test.mjs`, both expecting the reviewer/QAgent graph classification. `apps/frontend/src/functionalityGraphModel.js` and that test were already dirty before this Step 3 work and are outside the identity surface, so they were preserved rather than changed.
 
@@ -206,7 +206,7 @@ GATE: BLOCKED — the Step 3 Decision Continuity identity/security implementatio
 ## Step 4 — governed runtime promotion lifecycle
 
 Recorded: 2026-08-10  
-Scope: one existing PlutoniX runtime target only: the safe self-improvement runtime policy consumed by `readSelfImprovementConfig()`. This is an implementation and local integration gate, not an activation of a customer production environment.
+Scope: one existing PlutoMix runtime target only: the safe self-improvement runtime policy consumed by `readSelfImprovementConfig()`. This is an implementation and local integration gate, not an activation of a customer production environment.
 
 ### Delivered controls
 
@@ -321,7 +321,7 @@ Recorded: 2026-08-10
 
 ### Delivered controls and evidence
 
-- Removed literal Apify credentials from `.env.example`; examples now contain placeholders only. Added `PLUTONIX_SECRETS_PROVIDER`, `PLUTONIX_ENCRYPTION_KEY_REF`, `PLUTONIX_EGRESS_ALLOWLIST`, and bounded API-body configuration.
+- Removed literal Apify credentials from `.env.example`; examples now contain placeholders only. Added `PLUTOMIX_SECRETS_PROVIDER`, `PLUTOMIX_ENCRYPTION_KEY_REF`, `PLUTOMIX_EGRESS_ALLOWLIST`, and bounded API-body configuration.
 - `apps/backend/src/operationalSecurity.js` provides structured redaction and an OpenTelemetry-log-compatible JSON envelope (service resource, 32-hex trace ID, 16-hex span ID, HTTP semantic attributes). `x-request-id` is echoed for correlation. A tenant hash is emitted only after membership authorization resolves it; no client tenant selector is trusted for telemetry. Production startup now rejects file authority, non-durable workflows, development authentication, explicitly insecure secrets-provider modes, and missing/wildcard secrets/encryption/egress configuration. Docker Compose forwards the required references to the API and worker.
 - `apps/backend/test/operationalSecurity.test.js`: **2/2 passed**, covering headers/tokens/database URLs/provider keys/protected evidence fields, non-sensitive metadata retention, OTEL-compatible ID shape, and production fail-closed configuration. The real PostgreSQL HTTP authorization matrix also passed **1/1**, covering **19 routes and 149 matrix HTTP requests**, plus a 413 oversized-body case that returns the supplied correlation header without reflecting the submitted marker. It demonstrated authorized tenant-safe request telemetry. Syntax and diff checks passed.
 - Backend production dependency scan: `npm audit --omit=dev --json` reported **0 critical, 0 high, 0 moderate, 1 low** vulnerability: transitive `body-parser` invalid-limit denial of service. Frontend production dependency scan reported **0 findings** across 102 production and 53 optional dependencies. No SBOM/container scan or signed-artifact claim was made.
@@ -377,7 +377,7 @@ The complete artifact-root scan cannot be reported clean: the reachable-history 
 ### Tests and exact results
 
 - `sh -n scripts/secret-scan.sh && sh scripts/secret-scan.sh verify-fixture` — exit 0; fake-token detection, report redaction, expected failing scan, and post-removal passing scan verified (26.8 seconds observed wall time).
-- `docker run --rm -v "$PWD/apps/backend/src:/workspace/backend/src:ro" -v "$PWD/apps/backend/test:/workspace/backend/test:ro" plutonix-backend:latest node --test test/operationalSecurity.test.js` — exit 0; 3 passed, 0 failed, 2.056 seconds.
+- `docker run --rm -v "$PWD/apps/backend/src:/workspace/backend/src:ro" -v "$PWD/apps/backend/test:/workspace/backend/test:ro" plutomix-backend:latest node --test test/operationalSecurity.test.js` — exit 0; 3 passed, 0 failed, 2.056 seconds.
 - `docker run … gitleaks … detect --source /repo --log-opts='--all' …` — exit 1; 32 redacted unresolved findings; duration not captured as noted above.
 
 ### User action required and blockers
@@ -454,7 +454,7 @@ SCAN_TIMEOUT_SECONDS=900 SECRET_SCAN_MEMORY_LIMIT=2g SECRET_SCAN_CPUS=2 \
 - Docker Node 22 artifact inventory command — exit 0, about 13 seconds observed; 21 inventory records validated.
 - Reconciliation validator with `--require-closure` — exit 1 as expected, reporting incomplete logical closure. Artifact validator with `--require-coverage` — exit 1 as expected, reporting incomplete artifact coverage. These expected failures prove the new gates fail closed.
 - A disposable Docker Node test supplied a deliberately non-redacted synthetic report with no credential value. The reconciliation validator rejected it before manifest processing (exit 1 as expected), proving the raw-secret-field guard fails closed.
-- `docker run --rm -v "$PWD/apps/backend/src:/workspace/backend/src:ro" -v "$PWD/apps/backend/test:/workspace/backend/test:ro" plutonix-backend:latest node --test test/operationalSecurity.test.js` — exit 0, 0.522 seconds reported by Node; 3 passed, 0 failed.
+- `docker run --rm -v "$PWD/apps/backend/src:/workspace/backend/src:ro" -v "$PWD/apps/backend/test:/workspace/backend/test:ro" plutomix-backend:latest node --test test/operationalSecurity.test.js` — exit 0, 0.522 seconds reported by Node; 3 passed, 0 failed.
 - `ruby -e 'require "yaml"; YAML.load_file(".github/workflows/secret-scan.yml")'`, `sh -n scripts/secret-scan.sh`, `git diff --check`, and `docker compose config --quiet` — exit 0. Workflow syntax was parsed locally only; no remote run is claimed.
 - `git check-ignore --quiet .env` — exit 0. Only ignore status was checked; `.env` content was not read.
 

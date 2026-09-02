@@ -265,7 +265,7 @@ Act as the local memory-bearing execution agent for this workspace. Use existing
 - Neo4j local artifacts are generated.
 - Vector provider resolution is recorded.
 - ChromaDB fallback is generated when configured vector DB is absent.
-- PlutoniX Graphical Model page is present.
+- PlutoMix Graphical Model page is present.
 - Verification report is written.
 
 ## Validation Rules
@@ -304,18 +304,18 @@ def graph_data() -> dict:
         "nodes": [
             {"id": "project:orchestrator-agent-001", "type": "project", "label": ROOT.name, "group": "project", "risk_level": "low", "status": "active", "metadata": {}},
             {"id": f"workflow:{WORKFLOW_ID}", "type": "workflow", "label": "Bootstrap Orchestrator", "group": "workflow", "risk_level": "low", "status": "complete", "metadata": {}},
-            {"id": "agent:plutonix-fullstack-agent", "type": "agent", "label": "PlutoniX Fullstack Agent", "group": "global-agent", "risk_level": "medium", "status": "active", "agent_id": "plutonix-fullstack-agent", "cluster_id": "plutonix-fullstack", "metadata": {"capabilityScore": 60, "role": "global-plutonix-orchestrator", "domain": "fullstack"}},
+            {"id": "agent:plutomix-fullstack-agent", "type": "agent", "label": "PlutoMix Fullstack Agent", "group": "global-agent", "risk_level": "medium", "status": "active", "agent_id": "plutomix-fullstack-agent", "cluster_id": "plutomix-fullstack", "metadata": {"capabilityScore": 60, "role": "global-plutomix-orchestrator", "domain": "fullstack"}},
             {"id": f"agent:{AGENT_ID}", "type": "agent", "label": "Project Execution Agent", "group": "agent", "risk_level": "medium", "status": "active", "agent_id": AGENT_ID, "metadata": {"capabilityScore": 60}},
             {"id": "functionality:agent-memory", "type": "cluster", "label": "Agent Memory", "group": "memory", "risk_level": "medium", "status": "bootstrapped", "cluster_id": "agent-memory", "metadata": {}},
             {"id": "functionality:neo4j-graph", "type": "graph_store", "label": "Neo4j Graph Artifacts", "group": "graph", "risk_level": "medium", "status": "ready" if NEO4J_READY else "pending_credentials", "metadata": {}},
             {"id": "functionality:vector-memory", "type": "vector_store", "label": "Vector Memory", "group": "vector", "risk_level": "medium", "status": VECTOR["status"], "metadata": {"provider": VECTOR["provider"]}},
-            {"id": "page:agentic-system-d3", "type": "page", "label": "PlutoniX Graphical Model Page", "group": "d3", "risk_level": "low", "status": "ready", "metadata": {"path": "agentic-system/d3/index.html"}},
+            {"id": "page:agentic-system-d3", "type": "page", "label": "PlutoMix Graphical Model Page", "group": "d3", "risk_level": "low", "status": "ready", "metadata": {"path": "agentic-system/d3/index.html"}},
             {"id": "validation:bootstrap-artifacts", "type": "validation", "label": "Bootstrap Artifact Validation", "group": "validation", "risk_level": "low", "status": "pending", "metadata": {}},
         ],
         "links": [
             {"source": "project:orchestrator-agent-001", "target": f"workflow:{WORKFLOW_ID}", "type": "contains", "weight": 1, "metadata": {}},
-            {"source": "project:orchestrator-agent-001", "target": "agent:plutonix-fullstack-agent", "type": "has_agent", "weight": 2, "metadata": {}},
-            {"source": "agent:plutonix-fullstack-agent", "target": f"agent:{AGENT_ID}", "type": "delegates_to", "weight": 1, "metadata": {}},
+            {"source": "project:orchestrator-agent-001", "target": "agent:plutomix-fullstack-agent", "type": "has_agent", "weight": 2, "metadata": {}},
+            {"source": "agent:plutomix-fullstack-agent", "target": f"agent:{AGENT_ID}", "type": "delegates_to", "weight": 1, "metadata": {}},
             {"source": f"workflow:{WORKFLOW_ID}", "target": f"agent:{AGENT_ID}", "type": "assigned_to", "weight": 1, "metadata": {}},
             {"source": f"agent:{AGENT_ID}", "target": "functionality:agent-memory", "type": "owns", "weight": 1, "metadata": {}},
             {"source": f"agent:{AGENT_ID}", "target": "functionality:neo4j-graph", "type": "owns", "weight": 1, "metadata": {}},
@@ -578,8 +578,8 @@ Local Cypher artifacts are generated for the orchestrator bootstrap. Live sync r
         "generated_at": NOW,
         "agents": [
             {
-                "agent_id": "plutonix-fullstack-agent",
-                "owns": ["plutonix-control-surface", "backend-generation-api", "project-creation-handoff"],
+                "agent_id": "plutomix-fullstack-agent",
+                "owns": ["plutomix-control-surface", "backend-generation-api", "project-creation-handoff"],
                 "validates": ["project-local-agent-routing"],
             },
             {
@@ -788,7 +788,7 @@ loadGraph().then(render).catch(error => {
   statusEl.textContent = error.message;
 });
 """)
-    write("docs/agentic-system-d3-page.md", """# PlutoniX Graphical Model Page
+    write("docs/agentic-system-d3-page.md", """# PlutoMix Graphical Model Page
 
 Open `agentic-system/d3/index.html` from a local static server rooted at the repository root. The page reads `topology/d3/agentic-system-graph.json` and visualizes agents, memory, Neo4j graph status, vector status, validation, and ownership relationships.
 """)
@@ -1243,7 +1243,7 @@ def write_workflow_observability() -> None:
             "Created root artifact folders.",
             "Created default project execution agent.",
             "Generated Neo4j artifacts.",
-            "Generated PlutoniX Graphical Model page.",
+            "Generated PlutoMix Graphical Model page.",
             f"Resolved vector provider: {VECTOR['provider']}.",
         ],
     })
@@ -1368,7 +1368,7 @@ raise SystemExit(0 if result['status'] == 'success' else 1)
 
 
 def write_qagentic_support() -> None:
-    write("qagentic-support/README.md", """# QAgentic Support for PlutoniX
+    write("qagentic-support/README.md", """# QAgentic Support for PlutoMix
 
 Base QAgentic support is generated at project onset. Runtime QAgents are generated only when objective gaps are detected.
 

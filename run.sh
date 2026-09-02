@@ -10,7 +10,7 @@ GENERATED_URL="http://localhost:${GENERATED_SITE_PORT:-5174}"
 
 usage() {
   cat <<'EOF'
-PlutoniX runner
+PlutoMix runner
 
 Usage:
   ./run.sh              Build if needed and start all containers
@@ -94,7 +94,7 @@ wait_for_url "generated site" "$GENERATED_URL"
 
 cat <<EOF
 
-PlutoniX is running.
+PlutoMix is running.
 
 Frontend:       $FRONTEND_URL
 Backend API:    $BACKEND_URL

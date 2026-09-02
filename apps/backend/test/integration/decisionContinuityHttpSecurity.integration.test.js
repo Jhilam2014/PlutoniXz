@@ -18,8 +18,8 @@ const trustedService = `matrix-service-${runId}`;
 const approver = `matrix-approver-${runId}`;
 const insufficientHuman = `matrix-insufficient-human-${runId}`;
 const insufficientService = `matrix-insufficient-service-${runId}`;
-const oidcIssuer = `https://issuer.test/plutonix-${runId}`;
-const oidcAudience = "plutonix-decision-continuity-tests";
+const oidcIssuer = `https://issuer.test/plutomix-${runId}`;
+const oidcAudience = "plutomix-decision-continuity-tests";
 const { privateKey, publicKey } = crypto.generateKeyPairSync("rsa", { modulusLength: 2048 });
 const publicJwk = { ...publicKey.export({ format: "jwk" }), kid: `test-key-${runId}`, use: "sig", key_ops: ["verify"] };
 const workspaceFor = (tenantId) => `workspace-${tenantId}`;
@@ -50,19 +50,19 @@ function branchInput(tenantId, label, overrides = {}) {
 }
 
 function userHeaders(tenantId, extra = {}) {
-  return { authorization: `Bearer ${bearerToken(tenantId)}`, "x-plutonix-tenant-id": tenantId, ...extra };
+  return { authorization: `Bearer ${bearerToken(tenantId)}`, "x-plutomix-tenant-id": tenantId, ...extra };
 }
 
 function serviceHeaders(tenantId = tenants.a, extra = {}) {
   return {
     authorization: `Bearer ${bearerToken(trustedService)}`,
-    "x-plutonix-tenant-id": tenantId,
+    "x-plutomix-tenant-id": tenantId,
     ...extra
   };
 }
 
 function headersForPrincipal(subject, tenantId, extra = {}) {
-  return { authorization: `Bearer ${bearerToken(subject)}`, "x-plutonix-tenant-id": tenantId, ...extra };
+  return { authorization: `Bearer ${bearerToken(subject)}`, "x-plutomix-tenant-id": tenantId, ...extra };
 }
 
 function resourcePath(route, fixture) {
@@ -244,7 +244,7 @@ function requestCase(entry, caseName, fixture) {
     headers = entry.trust === "trusted_service" ? serviceHeaders(tenants.b) : headersForPrincipal(tenants.a, tenants.b);
     tenantId = tenants.b;
   } else if (caseName === "tenant_mismatch") {
-    headers = entry.trust === "trusted_service" ? serviceHeaders(tenants.b) : userHeaders(tenants.a, { "x-plutonix-tenant-id": tenants.b });
+    headers = entry.trust === "trusted_service" ? serviceHeaders(tenants.b) : userHeaders(tenants.a, { "x-plutomix-tenant-id": tenants.b });
   }
   const idempotencyKey = entry.execution === "read" ? undefined : `http-${entry.key}-${caseName}-${runId}`;
   if (idempotencyKey) headers["idempotency-key"] = idempotencyKey;
@@ -324,20 +324,20 @@ test("the lifecycle HTTP authorization and tenant-isolation matrix covers every 
 
   const previousEnvironment = Object.fromEntries([
     "NODE_ENV", "DECISION_CONTINUITY_ADAPTER", "DECISION_CONTINUITY_DATABASE_URL", "DECISION_CONTINUITY_DURABLE_WORKFLOWS",
-    "PLUTONIX_AUTH_MODE", "OIDC_ISSUER", "OIDC_AUDIENCE", "OIDC_JWKS_JSON", "OIDC_JWKS_URL", "PLUTONIX_DEV_AUTH_ENABLED", "PLUTONIX_SERVER_AUTOSTART"
+    "PLUTOMIX_AUTH_MODE", "OIDC_ISSUER", "OIDC_AUDIENCE", "OIDC_JWKS_JSON", "OIDC_JWKS_URL", "PLUTOMIX_DEV_AUTH_ENABLED", "PLUTOMIX_SERVER_AUTOSTART"
   ].map((key) => [key, process.env[key]]));
   Object.assign(process.env, {
     NODE_ENV: "test",
     DECISION_CONTINUITY_ADAPTER: "postgres",
     DECISION_CONTINUITY_DATABASE_URL: databaseUrl,
     DECISION_CONTINUITY_DURABLE_WORKFLOWS: "true",
-    PLUTONIX_AUTH_MODE: "oidc",
+    PLUTOMIX_AUTH_MODE: "oidc",
     OIDC_ISSUER: oidcIssuer,
     OIDC_AUDIENCE: oidcAudience,
     OIDC_JWKS_JSON: JSON.stringify({ keys: [publicJwk] }),
     OIDC_JWKS_URL: "",
-    PLUTONIX_DEV_AUTH_ENABLED: "false",
-    PLUTONIX_SERVER_AUTOSTART: "false"
+    PLUTOMIX_DEV_AUTH_ENABLED: "false",
+    PLUTOMIX_SERVER_AUTOSTART: "false"
   });
 
   const store = new PostgresDecisionContinuityStore({ databaseUrl, reconsiderationCooldownMs: 0 });
@@ -361,7 +361,7 @@ test("the lifecycle HTTP authorization and tenant-isolation matrix covers every 
   await identityAccess.provisionMembership({ principalId: insufficientService, tenantId: tenants.a, serviceScopes: [] });
   const fixtureA = await createFixture(store, fixtureQueue, tenants.a, "a");
   const fixtureB = await createFixture(store, fixtureQueue, tenants.b, "b");
-  const { app, closePlutonixServerResources } = await import("../../src/server.js");
+  const { app, closePlutoMixServerResources } = await import("../../src/server.js");
   const server = await new Promise((resolve, reject) => {
     const listener = app.listen(0, "127.0.0.1", () => resolve(listener));
     listener.once("error", reject);
@@ -379,7 +379,7 @@ test("the lifecycle HTTP authorization and tenant-isolation matrix covers every 
   assert.doesNotMatch(oversized.text, new RegExp(oversizedMarker));
   context.after(async () => {
     await new Promise((resolve) => server.close(resolve));
-    await closePlutonixServerResources();
+    await closePlutoMixServerResources();
     await fixtureQueue.pool?.query(
       "UPDATE decision_continuity_workflow_jobs SET state = 'cancelled', cancelled_at = clock_timestamp() WHERE tenant_id = ANY($1::text[]) AND state IN ('pending', 'retry', 'leased')",
       [[tenants.a, tenants.b]]

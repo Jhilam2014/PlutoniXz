@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-31T06:26:19.586Z",
+  "generatedAt": "2026-09-02T20:32:41.650Z",
   "agents": {
     "geofinderx-orchestrator-agent": {
       "totalRuns": 5,
@@ -1047,7 +1047,7 @@
           "usdPerAccuracyPoint": 0.024515,
           "taskType": "Medium",
           "instructionHash": "a3f5906566fb2a8452ad8a7fb8976050c0e450b9516295afaa1f8b2accd52df5",
-          "instructionSummary": "Task type: Medium task : thumbnail capture functionality with ui, keep it here as well UI reference 1 selected from playground: [id:ui-a-open-in-drive-221, tag:a, label:\"Open in Drive\", classes:\"plutonix-reference-selected\"]. Branding colou",
+          "instructionSummary": "Task type: Medium task : thumbnail capture functionality with ui, keep it here as well UI reference 1 selected from playground: [id:ui-a-open-in-drive-221, tag:a, label:\"Open in Drive\", classes:\"plutomix-reference-selected\"]. Branding colou",
           "buildId": "codex_rKNfRG7zcX",
           "projectName": "spyDash"
         },
@@ -1693,7 +1693,7 @@
           "usdPerAccuracyPoint": 0.01304,
           "taskType": "Medium",
           "instructionHash": "f5dd42879a934bbeeca131dc3f7d371edd89ceacd4fb375e0f1c4d99fce8325f",
-          "instructionSummary": "Task type: Medium task : keep the design and colour branding like plutonix. That is more alike a professional tool design. Branding colours: Calm Service (#607456, #EEE0CC, #BA6A4C, #7B2525). Recommended for professional. Use these ",
+          "instructionSummary": "Task type: Medium task : keep the design and colour branding like plutomix. That is more alike a professional tool design. Branding colours: Calm Service (#607456, #EEE0CC, #BA6A4C, #7B2525). Recommended for professional. Use these ",
           "buildId": "codex_X4wV7nzzSC",
           "projectName": "ResearchAndDevX"
         },
@@ -1719,7 +1719,7 @@
           "usdPerAccuracyPoint": 0.011745,
           "taskType": "Medium",
           "instructionHash": "e63a8070993b21e7d7526f3067fe2aaf0cb526b52478b1167046e877e3f10b4f",
-          "instructionSummary": "Task type: Medium task : Use the colour branding of PlutoniX Branding colours: Navy Glass (#0B2447, #19376D, #576CBC, #A5D7E8). Recommended as a versatile professional default. Use these as brand direction while maintaining accessib",
+          "instructionSummary": "Task type: Medium task : Use the colour branding of PlutoMix Branding colours: Navy Glass (#0B2447, #19376D, #576CBC, #A5D7E8). Recommended as a versatile professional default. Use these as brand direction while maintaining accessib",
           "buildId": "codex_0cPlg391Zx",
           "projectName": "ResearchAndDevX"
         }
@@ -1727,7 +1727,7 @@
       "inputEstimatedUsd": 0.12149,
       "outputEstimatedUsd": 4.25349
     },
-    "plutonix-auto-repair-agent": {
+    "plutomix-auto-repair-agent": {
       "totalRuns": 18,
       "inputTokens": 9282863,
       "outputTokens": 732632,
@@ -2399,7 +2399,7 @@
       "inputEstimatedUsd": 0.35008,
       "outputEstimatedUsd": 17.77443
     },
-    "plutonix-independent-reviewer": {
+    "plutomix-independent-reviewer": {
       "totalRuns": 5,
       "inputTokens": 2434244,
       "outputTokens": 243476,
@@ -2603,7 +2603,7 @@
       "inputEstimatedUsd": 0.03197,
       "outputEstimatedUsd": 0.69471
     },
-    "plutonix-fullstack-agent": {
+    "plutomix-fullstack-agent": {
       "totalRuns": 17,
       "inputTokens": 6267261,
       "outputTokens": 338720,
@@ -4611,7 +4611,7 @@
       "inputEstimatedUsd": 28.980655,
       "outputEstimatedUsd": 20.95602
     },
-    "plutonix-completion-checker": {
+    "plutomix-completion-checker": {
       "totalRuns": 2,
       "inputTokens": 1820812,
       "outputTokens": 9027,
@@ -4686,6 +4686,106 @@
       ],
       "inputEstimatedUsd": 9.10406,
       "outputEstimatedUsd": 0.27081
+    },
+    "jobhunt-orchestrator-agent": {
+      "totalRuns": 1,
+      "inputTokens": 1195025,
+      "outputTokens": 31282,
+      "totalTokens": 1226307,
+      "inputCredits": 149.378125,
+      "outputCredits": 23.4615,
+      "totalCredits": 172.839625,
+      "estimatedUsd": 6.913585,
+      "averageTotalTokens": 1226307,
+      "averageInputTokens": 1195025,
+      "averageOutputTokens": 31282,
+      "averageUsd": 6.913585,
+      "averageAccuracyValue": 82,
+      "averageEfficiencyScore": 53,
+      "averageAbilityScore": 65,
+      "tokensPerAccuracyPoint": 14954.96,
+      "usdPerAccuracyPoint": 0.084312,
+      "lastRunAt": "2026-08-31T13:56:44.235Z",
+      "timeline": [
+        {
+          "createdAt": "2026-08-31T13:56:44.235Z",
+          "totalTokens": 1226307,
+          "inputTokens": 1195025,
+          "outputTokens": 31282,
+          "inputCredits": 149.378125,
+          "outputCredits": 23.4615,
+          "totalCredits": 172.839625,
+          "estimatedUsd": 6.913585,
+          "costModel": "gpt-5.5",
+          "accuracyValue": 82,
+          "efficiencyScore": 53,
+          "abilityScore": 65,
+          "tokenThriftScore": 15,
+          "costThriftScore": 32,
+          "speedScore": 44,
+          "outputBalanceScore": 68,
+          "yieldScore": 17,
+          "tokensPerAccuracyPoint": 14954.96,
+          "usdPerAccuracyPoint": 0.084312,
+          "taskType": "Medium",
+          "instructionHash": "34fdf2c2dfaf3cb044022f0a9f38bcb8701e0fe7d05852b67a1e57c3a906a8d0",
+          "instructionSummary": "Create a web application for job hunt and and submit job search with uploaded cv. also the uploaded cv should be improvised according to the ATS system and create the cv accordingly the cover letter. Find the similar job available to post t",
+          "buildId": "codex_E3SaYpX5Ve",
+          "projectName": "JobHunt"
+        }
+      ],
+      "inputEstimatedUsd": 5.975125,
+      "outputEstimatedUsd": 0.93846
+    },
+    "jobhunt2-orchestrator-agent": {
+      "totalRuns": 1,
+      "inputTokens": 1275763,
+      "outputTokens": 31581,
+      "totalTokens": 1307344,
+      "inputCredits": 159.470375,
+      "outputCredits": 23.68575,
+      "totalCredits": 183.156125,
+      "estimatedUsd": 7.326245,
+      "averageTotalTokens": 1307344,
+      "averageInputTokens": 1275763,
+      "averageOutputTokens": 31581,
+      "averageUsd": 7.326245,
+      "averageAccuracyValue": 82,
+      "averageEfficiencyScore": 53,
+      "averageAbilityScore": 65,
+      "tokensPerAccuracyPoint": 15943.22,
+      "usdPerAccuracyPoint": 0.089344,
+      "lastRunAt": "2026-09-02T18:32:42.815Z",
+      "timeline": [
+        {
+          "createdAt": "2026-09-02T18:32:42.815Z",
+          "totalTokens": 1307344,
+          "inputTokens": 1275763,
+          "outputTokens": 31581,
+          "inputCredits": 159.470375,
+          "outputCredits": 23.68575,
+          "totalCredits": 183.156125,
+          "estimatedUsd": 7.326245,
+          "costModel": "gpt-5.5",
+          "accuracyValue": 82,
+          "efficiencyScore": 53,
+          "abilityScore": 65,
+          "tokenThriftScore": 14,
+          "costThriftScore": 31,
+          "speedScore": 49,
+          "outputBalanceScore": 68,
+          "yieldScore": 17,
+          "tokensPerAccuracyPoint": 15943.22,
+          "usdPerAccuracyPoint": 0.089344,
+          "taskType": "Medium",
+          "instructionHash": "a5c5b0b65e24825db1000ef23077048f490114fed6139d3c06a0557e3549b0dc",
+          "instructionSummary": "Create a web application for job hunt and and submit job search with uploaded cv. also the uploaded cv should be improvised according to the ATS system and create the cv accordingly the cover letter. Find the similar job available to post t",
+          "buildId": "codex_LwkY7xqYqu",
+          "projectName": "JobHunt2"
+        }
+      ],
+      "inputEstimatedUsd": 6.378815,
+      "outputEstimatedUsd": 0.94743
     }
   }
 }

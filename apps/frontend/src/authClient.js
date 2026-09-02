@@ -15,8 +15,8 @@ if (import.meta.hot) {
   });
 }
 
-const developmentAuthEnabled = import.meta.env.VITE_PLUTONIX_DEV_AUTH_ENABLED === "true";
-const developmentAuthSubject = String(import.meta.env.VITE_PLUTONIX_DEV_AUTH_SUBJECT || "local:local-plutonix-user").trim();
+const developmentAuthEnabled = import.meta.env.VITE_PLUTOMIX_DEV_AUTH_ENABLED === "true";
+const developmentAuthSubject = String(import.meta.env.VITE_PLUTOMIX_DEV_AUTH_SUBJECT || "local:local-plutomix-user").trim();
 
 function publicUser(user = {}) {
   if (!user || typeof user !== "object") return null;
@@ -30,7 +30,7 @@ function publicUser(user = {}) {
 }
 
 function notify() {
-  window.dispatchEvent(new CustomEvent("plutonix-user-updated", { detail: currentUser }));
+  window.dispatchEvent(new CustomEvent("plutomix-user-updated", { detail: currentUser }));
 }
 
 export function getStoredUser() {
@@ -68,7 +68,7 @@ export function clearUser() {
 }
 
 export function authHeaders() {
-  if (developmentAuthEnabled && developmentSubject) return { "x-plutonix-dev-subject": developmentSubject };
+  if (developmentAuthEnabled && developmentSubject) return { "x-plutomix-dev-subject": developmentSubject };
   if (bearerToken) return { authorization: `Bearer ${bearerToken}` };
   return {};
 }
@@ -79,5 +79,15 @@ export function authFetch(pathOrUrl, options = {}) {
     ...(options.headers || {})
   };
   // This API uses authorization headers, never ambient cookie credentials.
+  return fetch(pathOrUrl, { ...options, credentials: "omit", headers });
+}
+
+// Platform administration must evaluate the verified OIDC email and must not
+// inherit the local development membership compatibility subject.
+export function verifiedIdentityFetch(pathOrUrl, options = {}) {
+  const headers = {
+    ...(bearerToken ? { authorization: `Bearer ${bearerToken}` } : authHeaders()),
+    ...(options.headers || {})
+  };
   return fetch(pathOrUrl, { ...options, credentials: "omit", headers });
 }

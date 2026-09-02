@@ -1,9 +1,0 @@
-{
-  "workflow_id": "plutonix-layout-agentic-d3-001",
-  "registered_at": "2026-06-25T10:34:26Z",
-  "status": "completed",
-  "owner_agent": "project-execution-agent",
-  "reuse_decision": "exact_reuse",
-  "memory_sync_required": false,
-  "notes": "Reused existing execution agent for frontend layout, observability, and D3 topology updates."
-}

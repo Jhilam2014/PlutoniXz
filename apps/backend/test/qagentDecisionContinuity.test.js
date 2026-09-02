@@ -88,7 +88,7 @@ function evaluator({ status = "accepted", evaluatorId = "independent-evaluator",
 }
 
 async function seeded(context) {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), "plutonix-qagent-decision-"));
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "plutomix-qagent-decision-"));
   context.after(async () => fs.rm(root, { recursive: true, force: true }));
   const store = createDecisionContinuityStore({ root, reconsiderationCooldownMs: 0 });
   const first = await store.createBranch({

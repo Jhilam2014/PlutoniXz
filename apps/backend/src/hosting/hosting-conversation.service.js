@@ -7,8 +7,8 @@ import { addLog, addMessage, createSession, getSession, updateSession } from "./
 import { appendCredentialAudit, appendDeploymentAudit } from "./deployment-audit.service.js";
 import { runMockDeployment, rollbackMockDeployment } from "./deployment-pipeline.service.js";
 
-export function startSession() {
-  return createSession();
+export function startSession(scope = {}) {
+  return createSession(scope);
 }
 
 export function sendMessage(sessionId, content) {
@@ -22,7 +22,7 @@ export function assistantPromptForStage(stage) {
     project_selection: "Select the generated project you want to deploy. I will only use project metadata and never copy secrets into memory.",
     deployment_goal: "Tell me the deployment goal: preview, MVP launch, production handoff, or custom infrastructure.",
     provider_selection: "Choose a cloud provider. For simple MVP web/API apps, Google Cloud Run is the default recommendation.",
-    stack_selection: "Confirm the stack. I recommend a containerized Node.js web/API deployment for generated PlutoniX projects.",
+    stack_selection: "Confirm the stack. I recommend a containerized Node.js web/API deployment for generated PlutoMix projects.",
     region_selection: "Choose the closest compliant region for your users.",
     credential_method_selection: "Choose OIDC/workload identity if possible. Manual keys should be a last resort.",
     permission_preview: "Review the least-privilege permissions before connecting credentials.",
@@ -84,6 +84,7 @@ export function onboardCredentials(sessionId, credentialPayload) {
   if (!session) throw new Error("Hosting session not found.");
   const metadata = storeCredentialMetadata({
     sessionId,
+    tenantId: session.tenant_id,
     providerId: session.selected_provider,
     credentialMethod: session.credential_method,
     credentialPayload

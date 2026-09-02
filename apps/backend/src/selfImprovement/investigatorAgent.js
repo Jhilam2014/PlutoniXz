@@ -2,7 +2,7 @@ import { DEFAULT_SELF_IMPROVEMENT_CONFIG } from "./constants.js";
 import { fingerprintText, neutralizeLogInstruction } from "./redaction.js";
 import { createId, nowIso, stableHash } from "./store.js";
 
-const INVESTIGATOR_AGENT_ID = "plutonix-self-improvement-investigator-agent";
+const INVESTIGATOR_AGENT_ID = "plutomix-self-improvement-investigator-agent";
 
 function textForEvent(event = {}) {
   return `${event.type || ""} ${event.status || ""} ${event.message || ""}`.toLowerCase();
@@ -18,9 +18,9 @@ function componentForEvent(event = {}) {
   if (/project-instance|project-runtime|preview|vite|docker|port|not become ready/.test(text)) return "managed-project-runtime";
   if (/gotham|generate|codex|claude|model|workflow/.test(text)) return "gotham-generation";
   if (/token|cost|model-call|budget|efficiency/.test(text)) return "token-economy";
-  if (/ui|screen|click|select|dropdown|tab|abandon|friction/.test(text)) return "plutonix-ui";
+  if (/ui|screen|click|select|dropdown|tab|abandon|friction/.test(text)) return "plutomix-ui";
   if (/hosting|deploy|rollback|cloud/.test(text)) return "hosting";
-  return "plutonix-runtime";
+  return "plutomix-runtime";
 }
 
 function keyParameters(event = {}) {

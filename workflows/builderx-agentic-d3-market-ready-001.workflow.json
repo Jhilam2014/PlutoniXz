@@ -1,6 +1,6 @@
 {
-  "workflow_id": "plutonix-agentic-d3-market-ready-001",
-  "name": "PlutoniX Graphical Model market-readiness workshop",
+  "workflow_id": "plutomix-agentic-d3-market-ready-001",
+  "name": "PlutoMix Graphical Model market-readiness workshop",
   "workflow_class": [
     "software_engineering",
     "dashboard_ui",
@@ -9,11 +9,11 @@
     "testing_quality"
   ],
   "task_size": "large",
-  "objective": "Redesign the PlutoniX Graphical Model page into a production-quality agent operations workbench and maintain a living improvement plan.",
+  "objective": "Redesign the PlutoMix Graphical Model page into a production-quality agent operations workbench and maintain a living improvement plan.",
   "status": "completed",
   "created_at": "2026-07-24T15:00:00Z",
   "updated_at": "2026-07-24T15:57:17Z",
-  "agent_id": "plutonix-fullstack-agent",
+  "agent_id": "plutomix-fullstack-agent",
   "reuse_decision": "exact_reuse",
   "review_mode": "design_team_read_only_reviews_plus_local_release_audit",
   "review_note": "Three independent design reviews completed. The final delegated regression reviewer was unavailable because its service usage limit was reached; the release gate was completed locally with model tests, production build, syntax checks, artifact checks, and desktop/mobile browser QA."

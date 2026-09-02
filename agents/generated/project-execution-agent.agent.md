@@ -73,7 +73,7 @@ Act as the local memory-bearing execution agent for this workspace. Use existing
 - Neo4j local artifacts are generated.
 - Vector provider resolution is recorded.
 - ChromaDB fallback is generated when configured vector DB is absent.
-- PlutoniX Graphical Model page is present.
+- PlutoMix Graphical Model page is present.
 - Verification report is written.
 
 ## Validation Rules

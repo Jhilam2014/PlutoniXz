@@ -4,7 +4,7 @@
   "context_budget": "medium_context",
   "model_provider": "openai",
   "model_name": "codex",
-  "agent_id": "plutonix-fullstack-agent",
+  "agent_id": "plutomix-fullstack-agent",
   "phase": "final_response",
   "input_tokens": 0,
   "output_tokens": 0,

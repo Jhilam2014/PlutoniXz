@@ -58,7 +58,7 @@ test("backend scoring ignores a model-supplied score and accepts only evidence-b
 });
 
 test("prepares real reader runs and only queues implementation after accepted proposals", async () => {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), "plutonix-intel-"));
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "plutomix-intel-"));
   await fs.writeFile(path.join(root, "package.json"), "{\"name\":\"intel-test\"}");
   try {
     const { instruction, selection } = webSelection();
@@ -73,7 +73,7 @@ test("prepares real reader runs and only queues implementation after accepted pr
 });
 
 test("runs at most one bounded repair after an actionable verification failure", async () => {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), "plutonix-intel-repair-"));
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "plutomix-intel-repair-"));
   try {
     const { instruction, selection } = webSelection();
     const runtime = await prepareIntelWorkflow({ profileSelection: selection, instruction, workspaceDir: root, workflowId: "intel_repair_workflow" });
@@ -91,7 +91,7 @@ test("runs at most one bounded repair after an actionable verification failure",
 
 test("fails malformed agent records and rejects out-of-root workspaces", async () => {
   assert.throws(() => IntelAgentResultSchema.parse({ schemaVersion: "1.0" }), /Required/);
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), "plutonix-intel-root-"));
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "plutomix-intel-root-"));
   const workspace = path.join(root, "project");
   await fs.mkdir(workspace);
   try {
@@ -103,7 +103,7 @@ test("fails malformed agent records and rejects out-of-root workspaces", async (
 });
 
 test("spreadsheet validation detects stored formula errors before rendering", async () => {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), "plutonix-intel-workbook-"));
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "plutomix-intel-workbook-"));
   const workbookPath = path.join(root, "deliverables", "invalid.xlsx");
   await fs.mkdir(path.dirname(workbookPath), { recursive: true });
   const workbook = new AdmZip();
@@ -124,10 +124,13 @@ test("spreadsheet validation detects stored formula errors before rendering", as
   }
 });
 
-test("uses CLI transport with safe Codex sandbox modes and no unsafe bypass flags", async () => {
+test("uses provider-neutral CLI transport with bounded read/write modes and no unsafe bypass flags", async () => {
   const workflowSource = await fs.readFile(new URL("../src/codexWorkflow.js", import.meta.url), "utf8");
+  const claudeRuntimeSource = await fs.readFile(new URL("../src/claudeRuntime.js", import.meta.url), "utf8");
   const bootstrapSource = await fs.readFile(new URL("../src/projectBootstrap.js", import.meta.url), "utf8");
   assert.match(workflowSource, /"--sandbox",\s*"workspace-write"/);
-  assert.match(workflowSource, /"--sandbox",\s*"read-only"/);
-  assert.equal(/dangerously-bypass-approvals-and-sandbox|dangerously-skip-permissions/.test(`${workflowSource}\n${bootstrapSource}`), false);
+  assert.match(workflowSource, /"--sandbox",\s*mode/);
+  assert.match(workflowSource, /mode:\s*"read-only"/);
+  assert.match(workflowSource, /CLAUDE_EXECUTION_MODES\.READ_ONLY/);
+  assert.equal(/dangerously-bypass-approvals-and-sandbox|dangerously-skip-permissions|bypassPermissions/.test(`${workflowSource}\n${claudeRuntimeSource}\n${bootstrapSource}`), false);
 });

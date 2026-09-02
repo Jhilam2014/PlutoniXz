@@ -19,11 +19,11 @@ async function main() {
   const source = await readFile(new URL('./scan-08a1d-artifacts.mjs', import.meta.url), 'utf8');
   for (const required of ['entry.split(\'/\').includes(\'..\')', '^[dlh-]', 'metadata.nlink > 1', 'runtime/secret-scan', 'maxEntries', 'maxRatio', 'maxDepth', 'file security status', 'mkdtemp', 'ditto', 'scanChunkedSource', 'STREAMED_STATIC_STRINGS_NO_RAW_TEMPORARY_COPY', 'UNSUPPORTED_DISK_IMAGE']) assert.ok(source.includes(required), `missing traversal/link/nesting/bomb/encryption/timeout/cleanup control: ${required}`);
   assert.ok(!source.includes(':/artifact:rw'), 'artifacts may never be mounted writable');
-  const temporary = await mkdtemp(path.join(os.tmpdir(), 'plutonix-08a1d-test-'));
+  const temporary = await mkdtemp(path.join(os.tmpdir(), 'plutomix-08a1d-test-'));
   try {
     const exported = path.join(temporary, 'frontend-export'); const reports = path.join(temporary, 'reports');
     await mkdir(exported); await mkdir(reports);
-    const synthetic = ['plutonix_fake_', 'secret_', 'abcdefghijklmnopqrstuvwx'].join('');
+    const synthetic = ['plutomix_fake_', 'secret_', 'abcdefghijklmnopqrstuvwx'].join('');
     await writeFile(path.join(exported, 'bundle.js'), `const fixture = "${synthetic}";\n`);
     const report = path.join(reports, 'frontend-export.gitleaks.json');
     const scan = await gitleaksDirectory(exported, report, 'apps/frontend/dist/fixture-export');

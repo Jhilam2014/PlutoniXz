@@ -21,7 +21,7 @@ const repeated = buildCanonicalInventory(reports([safe('/worktree/example.json',
 assert.deepEqual(repeated, buildCanonicalInventory(reports([safe('/worktree/example.json', 'stable')], 'worktree'), 'test'));
 assert.equal(JSON.stringify(overlap).includes('"Secret"'), false); assert.equal(JSON.stringify(overlap).includes('"Match"'), false);
 
-const fixtureRoot = await mkdtemp(path.join(tmpdir(), 'plutonix-08a1b-'));
+const fixtureRoot = await mkdtemp(path.join(tmpdir(), 'plutomix-08a1b-'));
 const reportPath = path.join(fixtureRoot, 'safe.gitleaks.json');
 const unsafeReportPath = path.join(fixtureRoot, 'unsafe.gitleaks.json');
 const manifestPath = path.join(fixtureRoot, 'manifest.json');

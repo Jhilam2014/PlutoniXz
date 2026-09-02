@@ -6,12 +6,13 @@ function fingerprint(value) {
   return crypto.createHash("sha256").update(String(value || "")).digest("hex").slice(0, 12);
 }
 
-export function storeCredentialMetadata({ sessionId, providerId, credentialMethod, credentialPayload = {} }) {
+export function storeCredentialMetadata({ sessionId, tenantId, providerId, credentialMethod, credentialPayload = {} }) {
   const raw = JSON.stringify(credentialPayload);
   const credentialId = `cred_${crypto.randomUUID()}`;
   vault.set(credentialId, {
     encrypted_reference: `mock-vault://${credentialId}`,
     fingerprint: fingerprint(raw),
+    tenant_id: tenantId,
     created_at: new Date().toISOString()
   });
   return {
@@ -27,7 +28,9 @@ export function storeCredentialMetadata({ sessionId, providerId, credentialMetho
   };
 }
 
-export function revokeCredential(credentialId) {
-  const existed = vault.delete(credentialId);
+export function revokeCredential(credentialId, { tenantId = "" } = {}) {
+  const record = vault.get(credentialId);
+  const existed = Boolean(record && tenantId && record.tenant_id === tenantId);
+  if (existed) vault.delete(credentialId);
   return { credential_id: credentialId, status: existed ? "deleted" : "not_found", deleted_at: new Date().toISOString() };
 }

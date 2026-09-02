@@ -1,11 +1,11 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "PlutoniX Gotham Policy Manifest",
+  "title": "PlutoMix Gotham Policy Manifest",
   "type": "object",
   "additionalProperties": false,
   "required": ["schemaVersion", "version", "precedence", "packs"],
   "properties": {
-    "schemaVersion": { "const": "plutonix-policy-manifest/v1" },
+    "schemaVersion": { "const": "plutomix-policy-manifest/v1" },
     "version": { "type": "string", "minLength": 1 },
     "precedence": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
     "packs": {

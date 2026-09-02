@@ -1,0 +1,36 @@
+{
+  "publicationId": "publication_3bac7f32a6c3f04b4a973e58e20494bc",
+  "idempotencyKey": "3bac7f32a6c3f04b4a973e58e20494bcd787ec6f7d06f59c25f4db04d087aa39",
+  "recordedAt": "2026-08-31T13:56:44.606Z",
+  "projectId": "jobhunt-0SHrjF",
+  "projectName": "JobHunt",
+  "workflowId": "plutomix_d256d79a-2b74-4fa6-95b4-9ed5e65e578d",
+  "status": "succeeded",
+  "publicationDurationMs": 6034,
+  "timings": {
+    "preparationDurationMs": 557,
+    "decisionPersistenceDurationMs": 8,
+    "modelExecutionDurationMs": 1251840,
+    "validationDurationMs": 128,
+    "previewDurationMs": 109,
+    "publicationQueueDurationMs": null,
+    "publicationDurationMs": 6034
+  },
+  "topology": {
+    "status": "published",
+    "publicationDurationMs": 6013
+  },
+  "localMemory": {
+    "status": "published",
+    "instructionProjection": "/workspace/project/memory/project-intelligence/projects/jobhunt-0SHrjF/project-instructions.jsonl",
+    "whatNext": "/workspace/project/memory/project-intelligence/projects/jobhunt-0SHrjF/what-next-knowledge.jsonl",
+    "summary": "/workspace/project/memory/agent-knowledge/projects/publication_3bac7f32a6c3f04b4a973e58e20494bc.summary.md",
+    "agentSummaries": [
+      "/workspace/project/memory/agent-knowledge/agents/plutomix-fullstack-agent.executions.jsonl",
+      "/workspace/project/memory/agent-knowledge/agents/jobhunt-orchestrator-agent.executions.jsonl"
+    ]
+  },
+  "vectorSync": {
+    "status": "scheduled_after_local_publication"
+  }
+}

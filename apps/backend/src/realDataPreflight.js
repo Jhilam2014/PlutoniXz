@@ -112,7 +112,7 @@ export function analyzeRealDataNeed(input = {}) {
   );
   const projectIdentityLooksGeneric =
     !projectName.trim() ||
-    /^(new project|untitled|generated site|plutonix default workspace|plutonix system)$/i.test(projectName.trim());
+    /^(new project|untitled|generated site|plutomix default workspace|plutomix system)$/i.test(projectName.trim());
   const hasNamedSubject =
     !projectIdentityLooksGeneric ||
     /\b(for|about|called|named|brand|company|org|organization|product|startup|business)\s+["']?[A-Z0-9][A-Za-z0-9& ._-]{2,}/.test(

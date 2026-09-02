@@ -3,7 +3,7 @@
 Gotham generation uses three ownership phases.
 
 1. Deterministic preparation reads the latest canonical workflow decisions, selects the adaptive route, records the prepared checkpoint, binds project agents, and writes only the project-local context required by Gotham.
-2. Gotham implements the project change. PlutoniX validates the output, performs preview handoff, records the terminal execution outcome, and durably enqueues one publication receipt before returning the HTTP response.
+2. Gotham implements the project change. PlutoMix validates the output, performs preview handoff, records the terminal execution outcome, and durably enqueues one publication receipt before returning the HTTP response.
 3. The deterministic backend publisher drains the durable outbox only while Gotham is idle. It publishes project instruction and what-next projections, project execution memory, agent/project topology, Neo4j seed data, backend and frontend D3 snapshots, registry/observability views, and then schedules the existing idle vector-memory synchronizer.
 
 ## Canonical decisions and derived projections

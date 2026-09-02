@@ -3,8 +3,8 @@ import crypto from "node:crypto";
 import test from "node:test";
 import { AuthenticationError, assertProductionIdentityConfiguration, authenticateGooglePayload, externalIdentityFromRequest, userFromRequest, verifyGoogleIdentityToken, verifyOidcToken } from "../src/auth.js";
 
-const issuer = "https://issuer.test/plutonix-unit";
-const audience = "plutonix-api";
+const issuer = "https://issuer.test/plutomix-unit";
+const audience = "plutomix-api";
 const first = crypto.generateKeyPairSync("rsa", { modulusLength: 2048 });
 const rotated = crypto.generateKeyPairSync("rsa", { modulusLength: 2048 });
 const jwk = (key, kid) => ({ ...key.export({ format: "jwk" }), kid, use: "sig", key_ops: ["verify"] });
@@ -24,7 +24,7 @@ function signedToken({ key = first.privateKey, kid = "primary", header = {}, cla
 function testEnvironment() {
   return {
     NODE_ENV: "test",
-    PLUTONIX_AUTH_MODE: "oidc",
+    PLUTOMIX_AUTH_MODE: "oidc",
     OIDC_ISSUER: issuer,
     OIDC_AUDIENCE: audience,
     OIDC_JWKS_JSON: JSON.stringify({ keys }),
@@ -86,23 +86,23 @@ test("Google sign-in uses its client ID instead of unrelated enterprise OIDC set
 });
 
 test("development header identities require the explicit non-production flag and production guards fail closed", async () => {
-  const identity = await externalIdentityFromRequest({ get: (name) => name === "x-plutonix-dev-subject" ? "developer" : "" }, {
-    env: { NODE_ENV: "development", PLUTONIX_DEV_AUTH_ENABLED: "true" }
+  const identity = await externalIdentityFromRequest({ get: (name) => name === "x-plutomix-dev-subject" ? "developer" : "" }, {
+    env: { NODE_ENV: "development", PLUTOMIX_DEV_AUTH_ENABLED: "true" }
   });
   assert.equal(identity.subject, "developer");
   await rejectsCode(externalIdentityFromRequest({ get: () => "developer" }, {
-    env: { NODE_ENV: "test", PLUTONIX_DEV_AUTH_ENABLED: "false" }
+    env: { NODE_ENV: "test", PLUTOMIX_DEV_AUTH_ENABLED: "false" }
   }), "authentication_required");
   assert.throws(
-    () => assertProductionIdentityConfiguration({ NODE_ENV: "production", PLUTONIX_AUTH_MODE: "oidc", PLUTONIX_DEV_AUTH_ENABLED: "true", OIDC_ISSUER: issuer, OIDC_AUDIENCE: audience, PLUTONIX_CORS_ORIGINS: "https://app.example" }),
-    /PLUTONIX_DEV_AUTH_ENABLED/
+    () => assertProductionIdentityConfiguration({ NODE_ENV: "production", PLUTOMIX_AUTH_MODE: "oidc", PLUTOMIX_DEV_AUTH_ENABLED: "true", OIDC_ISSUER: issuer, OIDC_AUDIENCE: audience, PLUTOMIX_CORS_ORIGINS: "https://app.example" }),
+    /PLUTOMIX_DEV_AUTH_ENABLED/
   );
   assert.throws(
-    () => assertProductionIdentityConfiguration({ NODE_ENV: "production", PLUTONIX_AUTH_MODE: "oidc", OIDC_ISSUER: issuer, OIDC_AUDIENCE: audience }),
-    /PLUTONIX_CORS_ORIGINS/
+    () => assertProductionIdentityConfiguration({ NODE_ENV: "production", PLUTOMIX_AUTH_MODE: "oidc", OIDC_ISSUER: issuer, OIDC_AUDIENCE: audience }),
+    /PLUTOMIX_CORS_ORIGINS/
   );
   assert.doesNotThrow(
-    () => assertProductionIdentityConfiguration({ NODE_ENV: "production", PLUTONIX_AUTH_MODE: "oidc", OIDC_ISSUER: issuer, OIDC_AUDIENCE: audience, PLUTONIX_CORS_ORIGINS: "https://app.example" })
+    () => assertProductionIdentityConfiguration({ NODE_ENV: "production", PLUTOMIX_AUTH_MODE: "oidc", OIDC_ISSUER: issuer, OIDC_AUDIENCE: audience, PLUTOMIX_CORS_ORIGINS: "https://app.example" })
   );
 });
 
@@ -129,17 +129,17 @@ test("non-production bearer authentication uses Google only when enterprise OIDC
 });
 
 test("development profile projects use the same subject alias as the Decision Continuity identity", () => {
-  const previous = process.env.PLUTONIX_DEV_AUTH_ENABLED;
-  process.env.PLUTONIX_DEV_AUTH_ENABLED = "true";
+  const previous = process.env.PLUTOMIX_DEV_AUTH_ENABLED;
+  process.env.PLUTOMIX_DEV_AUTH_ENABLED = "true";
   try {
     const user = userFromRequest({
-      get: (name) => name === "x-plutonix-dev-subject" ? "local:local-plutonix-user" : "",
+      get: (name) => name === "x-plutomix-dev-subject" ? "local:local-plutomix-user" : "",
       query: {}
     });
-    assert.equal(user.id, "local:local-plutonix-user");
+    assert.equal(user.id, "local:local-plutomix-user");
     assert.deepEqual(user.aliases, ["anonymous"]);
   } finally {
-    if (previous === undefined) delete process.env.PLUTONIX_DEV_AUTH_ENABLED;
-    else process.env.PLUTONIX_DEV_AUTH_ENABLED = previous;
+    if (previous === undefined) delete process.env.PLUTOMIX_DEV_AUTH_ENABLED;
+    else process.env.PLUTOMIX_DEV_AUTH_ENABLED = previous;
   }
 });

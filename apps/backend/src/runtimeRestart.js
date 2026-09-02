@@ -2,7 +2,7 @@ import http from "node:http";
 import fs from "node:fs";
 
 const socketPath = process.env.DOCKER_SOCKET_PATH || "/var/run/docker.sock";
-const containerName = process.env.GENERATED_SITE_CONTAINER || "plutonix-generated-site";
+const containerName = process.env.GENERATED_SITE_CONTAINER || "plutomix-generated-site";
 const restartGeneratedContainer = String(process.env.RESTART_GENERATED_CONTAINER || "false").toLowerCase() === "true";
 
 function dockerRequest(pathname, method = "GET") {

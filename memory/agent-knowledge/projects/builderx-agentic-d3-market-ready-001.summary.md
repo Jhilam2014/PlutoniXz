@@ -1,6 +1,6 @@
 ---
-agent_id: "plutonix-fullstack-agent"
-project_execution_id: "plutonix-agentic-d3-market-ready-001"
+agent_id: "plutomix-fullstack-agent"
+project_execution_id: "plutomix-agentic-d3-market-ready-001"
 workflow_class: "software_engineering,dashboard_ui,observability,ai_agent_system,testing_quality"
 domain: "frontend,observability,llm_agents,graph_systems"
 deliverable_type: "production_ui_and_living_design_plan"

@@ -1,8 +1,8 @@
 {
-  "workflow_id": "plutonix-container-restart-001",
+  "workflow_id": "plutomix-container-restart-001",
   "mode": "single_agent",
   "agents": [
-    "plutonix-fullstack-agent"
+    "plutomix-fullstack-agent"
   ],
   "changed_files": [
     "docker-compose.yml",

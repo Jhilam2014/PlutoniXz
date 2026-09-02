@@ -195,7 +195,7 @@ svg.lucide {
 }
 
 :root[data-theme="dark"] .product-mark {
-  content: url("/branding/plutonix-dark-icon.png");
+  content: url("/branding/plutomix-dark-icon.png");
 }
 
 .product-copy {

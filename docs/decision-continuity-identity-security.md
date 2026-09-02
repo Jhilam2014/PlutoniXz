@@ -71,9 +71,9 @@ Separation of duties is server-side and independent of the role matrix:
 
 ## Browser and API client handling
 
-The frontend keeps the bearer token only in module memory and sends it as `Authorization: Bearer …` with `credentials: "omit"`. It does not put bearer credentials into localStorage, sessionStorage, IndexedDB, or a client-readable cookie; a reload requires a new identity-provider login. Production CORS requires an exact comma-separated `PLUTONIX_CORS_ORIGINS` allowlist and does not enable credentialed requests. Since this API does not use ambient session cookies, CSRF is not an authentication mechanism for these routes; normal XSS defenses, CSP, dependency controls, and short token lifetimes remain essential.
+The frontend keeps the bearer token only in module memory and sends it as `Authorization: Bearer …` with `credentials: "omit"`. It does not put bearer credentials into localStorage, sessionStorage, IndexedDB, or a client-readable cookie; a reload requires a new identity-provider login. Production CORS requires an exact comma-separated `PLUTOMIX_CORS_ORIGINS` allowlist and does not enable credentialed requests. Since this API does not use ambient session cookies, CSRF is not an authentication mechanism for these routes; normal XSS defenses, CSP, dependency controls, and short token lifetimes remain essential.
 
-`PLUTONIX_DEV_AUTH_ENABLED=true` is the only development identity bypass. It accepts only `x-plutonix-dev-subject`, is omitted from the normal frontend unless `VITE_PLUTONIX_DEV_AUTH_ENABLED=true`, and production startup refuses it. Legacy user and service headers are not an authorization path for Decision Continuity.
+`PLUTOMIX_DEV_AUTH_ENABLED=true` is the only development identity bypass. It accepts only `x-plutomix-dev-subject`, is omitted from the normal frontend unless `VITE_PLUTOMIX_DEV_AUTH_ENABLED=true`, and production startup refuses it. Legacy user and service headers are not an authorization path for Decision Continuity.
 
 ## Required production configuration
 
@@ -83,9 +83,9 @@ DECISION_CONTINUITY_ADAPTER=postgres
 DECISION_CONTINUITY_DATABASE_URL=postgresql://... # deployment secret reference
 DECISION_CONTINUITY_DURABLE_WORKFLOWS=true
 
-PLUTONIX_AUTH_MODE=oidc
+PLUTOMIX_AUTH_MODE=oidc
 OIDC_ISSUER=https://issuer.example
-OIDC_AUDIENCE=plutonix-decision-continuity
+OIDC_AUDIENCE=plutomix-decision-continuity
 # Set one explicit endpoint or use issuer discovery through OIDC_ISSUER.
 OIDC_JWKS_URL=https://issuer.example/keys
 OIDC_ALLOWED_ALGORITHMS=RS256,RS384,RS512,ES256,ES384,ES512
@@ -93,8 +93,8 @@ OIDC_ACCEPTED_TOKEN_TYPES=JWT,at+jwt
 OIDC_JWKS_CACHE_MS=300000
 OIDC_JWKS_STALE_GRACE_MS=300000
 OIDC_CLOCK_SKEW_SECONDS=60
-PLUTONIX_CORS_ORIGINS=https://app.example
-PLUTONIX_DEV_AUTH_ENABLED=false
+PLUTOMIX_CORS_ORIGINS=https://app.example
+PLUTOMIX_DEV_AUTH_ENABLED=false
 
 DECISION_CONTINUITY_WORKER_PRINCIPAL_ID=workflow-worker-prod-01
 

@@ -3,20 +3,20 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link id="plutonix-favicon" rel="icon" type="image/png" href="/branding/plutonix-icon.png" />
-    <meta name="description" content="PlutoniX Studio builds, explains, and governs applications and digital products with evidence-backed agents, decision continuity, and enterprise controls." />
-    <meta property="og:title" content="PlutoniX Studio" />
+    <link id="plutomix-favicon" rel="icon" type="image/png" href="/branding/plutomix-icon.png" />
+    <meta name="description" content="PlutoMix Studio builds, explains, and governs applications and digital products with evidence-backed agents, decision continuity, and enterprise controls." />
+    <meta property="og:title" content="PlutoMix Studio" />
     <meta property="og:description" content="Build, understand, and govern the right digital product with evidence-backed agents and decision continuity." />
     <meta property="og:image" content="/og.png" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="PlutoniX Studio" />
+    <meta name="twitter:title" content="PlutoMix Studio" />
     <meta name="twitter:description" content="Build, understand, and govern the right digital product with evidence-backed agents and decision continuity." />
     <meta name="twitter:image" content="/og.png" />
-    <title>PlutoniX Studio</title>
+    <title>PlutoMix Studio</title>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script>
       (() => {
-        const iconPath = "/branding/plutonix-icon.png";
+        const iconPath = "/branding/plutomix-icon.png";
         const colorScheme = window.matchMedia("(prefers-color-scheme: dark)");
         const renderFavicon = () => {
           const image = new Image();
@@ -29,7 +29,7 @@
             context.globalCompositeOperation = "source-in";
             context.fillStyle = colorScheme.matches ? "#FFFFFF" : "#171321";
             context.fillRect(0, 0, canvas.width, canvas.height);
-            const favicon = document.getElementById("plutonix-favicon");
+            const favicon = document.getElementById("plutomix-favicon");
             if (favicon) favicon.href = canvas.toDataURL("image/png");
           };
           image.src = iconPath;

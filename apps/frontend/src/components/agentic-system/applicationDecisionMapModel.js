@@ -1,4 +1,4 @@
-import { analysisFunctionalities, branchRows } from "../../plutonixAnalysisModel.js";
+import { analysisFunctionalities, branchRows } from "../../plutomixAnalysisModel.js";
 
 // A selected ledger branch is a decision outcome too. It used to be omitted
 // from the application map because the first version only rendered alternative
@@ -245,8 +245,8 @@ const AGENT_VISUAL_TYPES = Object.freeze({
 
 const AGENT_VISUAL_TYPE_ALIASES = Object.freeze({
   "project-execution-fallback": "project-execution",
-  "plutonix-fullstack": "fullstack",
-  "global-plutonix-orchestrator": "project-orchestrator",
+  "plutomix-fullstack": "fullstack",
+  "global-plutomix-orchestrator": "project-orchestrator",
   "adaptive-review": "independent-reviewer",
   "review-agent": "independent-reviewer",
   "independent-review": "independent-reviewer",

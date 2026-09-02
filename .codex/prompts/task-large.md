@@ -19,7 +19,7 @@ Rules:
 - Break the work into tasks and assign to agents.
 - Update local agent files under agents/generated/.
 - Update Neo4j graph database artifacts for agents, workflows, components, APIs, services, files, and functionalities.
-- Update PlutoniX Graphical Model page.
+- Update PlutoMix Graphical Model page.
 - Store redacted prompts, agent decisions, execution summaries, and validation summaries in vector memory.
 - Use ChromaDB fallback if OpenAI Vector Store is missing.
 - Follow ROOT_WORKSPACE_GENERATION_POLICY.md.
@@ -38,4 +38,4 @@ After completion, report:
 - validation result
 - Neo4j update status
 - vector memory provider used
-- PlutoniX Graphical Model page path
+- PlutoMix Graphical Model page path

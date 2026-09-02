@@ -11,7 +11,7 @@ function readEnvValue(filePath, key) {
 
 function canonicalLocalhostPlugin() {
   return {
-    name: "plutonix-canonical-localhost",
+    name: "plutomix-canonical-localhost",
     configureServer(server) {
       server.middlewares.use((req, res, next) => {
         const host = req.headers.host || "";
@@ -44,7 +44,7 @@ export default defineConfig(({ mode }) => {
 
   return {
     envDir: envRoot,
-    base: process.env.PLUTONIX_DESKTOP_BUILD === "1" ? "./" : "/",
+    base: process.env.PLUTOMIX_DESKTOP_BUILD === "1" ? "./" : "/",
     define: {
       "import.meta.env.VITE_GOOGLE_CLIENT_ID": JSON.stringify(googleClientId),
       "import.meta.env.GOOGLE_CLIENT_ID": JSON.stringify(googleClientId)

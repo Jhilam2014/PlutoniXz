@@ -14,13 +14,13 @@ function severityFromText(value = "", fallback = "medium") {
 function componentFromEvent(row = {}) {
   const text = `${row.type || ""} ${row.message || ""}`.toLowerCase();
   if (/hosting|deploy|rollback|credential/.test(text)) return "hosting";
-  if (/ui|ux|design|layout|panel|chat|scroll|button|control|modal|dropdown|navigation|responsive|aesthetic|frontend|gotham chat/.test(text)) return "plutonix-ui-ux";
+  if (/ui|ux|design|layout|panel|chat|scroll|button|control|modal|dropdown|navigation|responsive|aesthetic|frontend|gotham chat/.test(text)) return "plutomix-ui-ux";
   if (/project-instance|project-runtime|preview|vite|docker|port/.test(text)) return "managed-project-runtime";
   if (/repair/.test(text)) return "automatic-repair";
   if (/vector|memory|agent-memory/.test(text)) return "agent-memory";
   if (/gotham|generate|codex|claude|model/.test(text)) return "gotham-generation";
   if (/auth|google|profile/.test(text)) return "authentication";
-  return "plutonix-runtime";
+  return "plutomix-runtime";
 }
 
 const instructionStopWords = new Set([
@@ -156,7 +156,7 @@ function signalBase({ correlationId = "", source = "self-improvement-observer", 
   };
 }
 
-function createSignal({ kind, severity, component, target = { type: "system", id: "plutonix" }, message = "", metadata = {}, correlationId = "", source = "self-improvement-observer" }) {
+function createSignal({ kind, severity, component, target = { type: "system", id: "plutomix" }, message = "", metadata = {}, correlationId = "", source = "self-improvement-observer" }) {
   const safeMessage = neutralizeLogInstruction(message, { maxLength: 700 });
   const fingerprint = stableHash(`${kind}:${component}:${fingerprintText(safeMessage || JSON.stringify(metadata || {}))}`).slice(0, 24);
   return ImprovementSignalSchema.parse({
@@ -272,7 +272,7 @@ export function observeSystemInstruction({ instruction = "", taskType = "Medium"
     kind: "system_improvement_instruction",
     severity: /hard|large|complex/.test(normalizedTaskType) ? "high" : "medium",
     component: "system-improvement-chat",
-    target: { type: "system", id: "plutonix" },
+    target: { type: "system", id: "plutomix" },
     message: instruction,
     metadata: {
       taskType,
@@ -289,8 +289,8 @@ export function observeInvestigatorFinding(investigation = {}, { correlationId =
     source: "self-improvement-investigator-agent",
     kind: "investigator_problem_statement",
     severity: investigation.severity || "medium",
-    component: investigation.component || "plutonix-runtime",
-    target: { type: "system", id: "plutonix" },
+    component: investigation.component || "plutomix-runtime",
+    target: { type: "system", id: "plutomix" },
     message: investigation.problemStatement,
     metadata: {
       investigationId: investigation.id || "",
@@ -311,8 +311,8 @@ export function observeToolCapabilityFinding(toolPlan = {}, { correlationId = ""
     source: "self-improvement-tool-capability-agent",
     kind: toolPlan.solutionKind === "external_paid_tool" ? "paid_tool_approval_required" : "tool_or_optimization_plan",
     severity: toolPlan.severity || "medium",
-    component: toolPlan.component || "plutonix-runtime",
-    target: { type: "system", id: "plutonix" },
+    component: toolPlan.component || "plutomix-runtime",
+    target: { type: "system", id: "plutomix" },
     message: toolPlan.problemStatement,
     metadata: {
       toolPlanId: toolPlan.id || "",

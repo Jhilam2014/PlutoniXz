@@ -1,4 +1,4 @@
-# GitHub Copilot instructions for PlutoniX
+# GitHub Copilot instructions for PlutoMix
 
 The canonical orchestrator instruction is `AGENTS.md`.
 

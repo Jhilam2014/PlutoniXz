@@ -1,8 +1,8 @@
 {
   "recordedAt": "2026-08-15T16:30:00Z",
-  "source": "plutonix-orchestrator",
-  "projectId": "plutonix",
-  "projectName": "PlutoniX",
+  "source": "plutomix-orchestrator",
+  "projectId": "plutomix",
+  "projectName": "PlutoMix",
   "instructionSummary": "Fix repeated project-prefixed agent creation using reusable definitions and project assignments.",
   "candidateDevelopmentPaths": [
     "keep project-prefixed definitions",

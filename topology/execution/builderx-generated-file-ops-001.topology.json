@@ -1,8 +1,8 @@
 {
-  "workflow_id": "plutonix-generated-file-ops-001",
+  "workflow_id": "plutomix-generated-file-ops-001",
   "mode": "single_agent",
   "agents": [
-    "plutonix-fullstack-agent"
+    "plutomix-fullstack-agent"
   ],
   "changed_files": [
     "apps/backend/src/orchestratorAgent.js",

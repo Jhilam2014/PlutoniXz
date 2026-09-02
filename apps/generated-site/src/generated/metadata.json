@@ -3,7 +3,7 @@
   "instructionHash": "e413c726c6b2fdb43422c467a6a678fe19d8eb1026faeea435e2255d7fc0865a",
   "generatedAt": "2026-06-26T00:00:00.000Z",
   "title": "Vogue Elegance",
-  "orchestrator": "plutonix-fullstack-agent",
+  "orchestrator": "plutomix-fullstack-agent",
   "objective": "Generate a professional landing page for digital product.",
   "orchestrated": {
     "pageType": "professional_landing_page",

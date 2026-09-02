@@ -1,6 +1,6 @@
 ---
-workflow_id: "plutonix-agentic-d3-market-ready-001"
-agent_id: "plutonix-fullstack-agent"
+workflow_id: "plutomix-agentic-d3-market-ready-001"
+agent_id: "plutomix-fullstack-agent"
 prompt_type: "task"
 created_at: "2026-07-24T15:00:00Z"
 ---

@@ -7,11 +7,11 @@ import { publishProjectAgentTopology } from "./projectAgents.js";
 import { redactOperational } from "./operationalSecurity.js";
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../..");
-export const WORKFLOW_PUBLICATION_SCHEMA_VERSION = "plutonix-workflow-publication/v1";
+export const WORKFLOW_PUBLICATION_SCHEMA_VERSION = "plutomix-workflow-publication/v1";
 export const WORKFLOW_PUBLISHER_VERSION = "workflow-projection-publisher/v1";
 
 function publisherRoot(explicitRoot) {
-  return explicitRoot || process.env.WORKFLOW_PUBLICATION_ROOT || process.env.PLUTONIX_PROJECT_ROOT || repoRoot;
+  return explicitRoot || process.env.WORKFLOW_PUBLICATION_ROOT || process.env.PLUTOMIX_PROJECT_ROOT || repoRoot;
 }
 
 function safeFileBase(value) {
@@ -74,7 +74,7 @@ export async function buildWorkflowPublicationReceipt(input = {}) {
     parentWorkflowId: String(input.parentWorkflowId || input.result?.parentWorkflowId || workflowId).slice(0, 240),
     childExecutionIds: Array.isArray(input.childExecutionIds || input.result?.childExecutionIds) ? (input.childExecutionIds || input.result?.childExecutionIds).slice(0, 100).map(String) : [],
     projectId: String(input.projectId || input.project?.id || "").slice(0, 240),
-    projectName: String(input.projectName || input.project?.name || "PlutoniX default workspace").slice(0, 320),
+    projectName: String(input.projectName || input.project?.name || "PlutoMix default workspace").slice(0, 320),
     taskType: String(input.taskType || "Medium").slice(0, 80),
     workflowMode: String(input.workflowMode || "executor").slice(0, 80),
     status: String(input.status || "failed").slice(0, 80),
@@ -202,7 +202,7 @@ async function appendUniqueJsonLine(filePath, record, idempotencyKey) {
 }
 
 function projectionPaths(root, projectId, publicationId) {
-  const projectKey = safeFileBase(projectId || "plutonix-default");
+  const projectKey = safeFileBase(projectId || "plutomix-default");
   const historyRoot = path.join(root, "memory", "project-intelligence", "projects", projectKey);
   return {
     instructionProjection: path.join(historyRoot, "project-instructions.jsonl"),
@@ -332,7 +332,7 @@ export class WorkflowProjectionPublisher {
     };
     await appendUniqueJsonLine(paths.instructionProjection, {
       ...common,
-      source: "plutonix-workflow-publication",
+      source: "plutomix-workflow-publication",
       taskType: receipt.taskType,
       workflowMode: receipt.workflowMode,
       instructionSummary: receipt.instructionSummary,
@@ -350,7 +350,7 @@ export class WorkflowProjectionPublisher {
     }, receipt.idempotencyKey);
     await appendUniqueJsonLine(paths.whatNext, {
       ...common,
-      source: "plutonix-workflow-publication",
+      source: "plutomix-workflow-publication",
       instructionSummary: receipt.instructionSummary,
       flowPath: receipt.flowPath,
       selectedBranches: receipt.selectedBranches,
@@ -366,7 +366,7 @@ export class WorkflowProjectionPublisher {
       await atomicWriteFile(paths.summary, [
         "---",
         `project_execution_id: ${receipt.workflowId}`,
-        `project_id: ${receipt.projectId || "plutonix-default"}`,
+        `project_id: ${receipt.projectId || "plutomix-default"}`,
         `workflow_class: ${receipt.workflowMode || "executor"}`,
         'content_type: "project_summary"',
         `status: ${receipt.status}`,
@@ -393,7 +393,7 @@ export class WorkflowProjectionPublisher {
       const agentSummaryPath = path.join(paths.agentSummaryRoot, `${safeFileBase(agentId)}.executions.jsonl`);
       await appendUniqueJsonLine(agentSummaryPath, {
         ...common,
-        source: "plutonix-workflow-publication",
+        source: "plutomix-workflow-publication",
         agentId,
         agent: typeof agent === "object" ? agent : { id: agentId },
         selectedPath: receipt.selectedPath,

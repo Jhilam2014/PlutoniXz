@@ -8,7 +8,7 @@ import { ensureProjectQAgenticFramework } from "../src/projectBootstrap.js";
 const repositoryRoot = path.resolve(import.meta.dirname, "../../..");
 
 test("project bootstrap synchronizes canonical Product Shape and QAgent schemas", async (context) => {
-  const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "plutonix-qagent-parity-"));
+  const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "plutomix-qagent-parity-"));
   context.after(() => fs.rm(workspaceDir, { recursive: true, force: true }));
   await fs.mkdir(path.join(workspaceDir, "schemas"), { recursive: true });
   await fs.writeFile(

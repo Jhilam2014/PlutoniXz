@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Check, Copy, ExternalLink, KeyRound, Loader2, LogOut, Pencil, Plus, RefreshCw, ShieldAlert, ShieldCheck, Trash2, X } from "lucide-react";
 import { authFetch } from "./authClient.js";
-import { activeProviderSummary, authMethodLabel, consumeEphemeralSecret, defaultProviderAuthMethod, providerActions, providerLogoSource, providerStatusLabel, safeLoginBody, TERMINAL_PROVIDER_LOGIN_STATES } from "./aiProviderModel.js";
+import { activeProviderSummary, authMethodLabel, consumeEphemeralSecret, defaultProviderAuthMethod, providerActions, providerLogoSource, providerStatusLabel, safeAccountLabel, safeLoginBody, safeProviderErrorMessage, TERMINAL_PROVIDER_LOGIN_STATES } from "./aiProviderModel.js";
 
 function initials(name) {
   return String(name || "AI").split(/\s+/).map((part) => part[0]).join("").slice(0, 2).toUpperCase();
@@ -9,7 +9,7 @@ function initials(name) {
 
 async function responseJson(response) {
   const body = await response.json().catch(() => ({}));
-  if (!response.ok) throw new Error(body.error || "The provider operation could not be completed.");
+  if (!response.ok) throw new Error(safeProviderErrorMessage(body.error));
   return body;
 }
 
@@ -22,6 +22,7 @@ export default function AiAccountsPanel({ backendUrl, workspaceId, currentUserId
   const [authMethod, setAuthMethod] = useState("browser_oauth");
   const [displayName, setDisplayName] = useState("");
   const [secret, setSecret] = useState("");
+  const [authorizationCode, setAuthorizationCode] = useState("");
   const [loginSession, setLoginSession] = useState(null);
   const [browserNotice, setBrowserNotice] = useState("");
   const openedChallengeRef = useRef("");
@@ -63,6 +64,7 @@ export default function AiAccountsPanel({ backendUrl, workspaceId, currentUserId
         }
         if (TERMINAL_PROVIDER_LOGIN_STATES.has(data.session.state)) {
           window.clearInterval(timer);
+          setAuthorizationCode("");
           await load({ refresh: true });
         }
       } catch (pollError) {
@@ -80,8 +82,32 @@ export default function AiAccountsPanel({ backendUrl, workspaceId, currentUserId
     setAuthMethod(method);
     setDisplayName(`${provider.name} profile`);
     setSecret("");
+    setAuthorizationCode("");
     setLoginSession(null);
     setBrowserNotice("");
+  };
+
+  const submitAuthorization = async () => {
+    if (!loginSession?.authorizationInputRequired || !authorizationCode.trim()) return;
+    let ephemeralAuthorizationCode = consumeEphemeralSecret(authorizationCode, setAuthorizationCode);
+    const requestBody = { workspaceId: workspaceId || undefined, authorizationCode: ephemeralAuthorizationCode };
+    setWorkingKey(`${loginSession.providerId}:authorize`);
+    setError("");
+    try {
+      const data = await responseJson(await authFetch(`${backendUrl}/api/ai-providers/${loginSession.providerId}/login/${loginSession.id}/authorize`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(requestBody)
+      }));
+      setLoginSession(data.session);
+      setBrowserNotice("Authorization submitted securely. Waiting for Claude Code to verify the profile.");
+    } catch (authorizationError) {
+      setError(authorizationError.message);
+    } finally {
+      requestBody.authorizationCode = undefined;
+      ephemeralAuthorizationCode = "";
+      setWorkingKey("");
+    }
   };
 
   const submitConnect = async (event) => {
@@ -99,6 +125,7 @@ export default function AiAccountsPanel({ backendUrl, workspaceId, currentUserId
       }));
       requestBody.secret = undefined;
       setLoginSession(data.session);
+      setAuthorizationCode("");
     } catch (connectError) {
       requestBody.secret = undefined;
       setError(connectError.message);
@@ -145,13 +172,13 @@ export default function AiAccountsPanel({ backendUrl, workspaceId, currentUserId
 
   if (!open) return null;
   return (
-    <div className="ai-accounts-backdrop" role="presentation" onMouseDown={(event) => event.target === event.currentTarget && onClose?.()}>
+    <div className="ai-accounts-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) { setAuthorizationCode(""); onClose?.(); } }}>
       <section className="ai-accounts-panel" role="dialog" aria-modal="true" aria-labelledby="ai-accounts-title">
         <header>
           <div><KeyRound size={20} /><span><strong id="ai-accounts-title">AI Accounts</strong><small>Provider CLI profiles for {workspaceId ? "this workspace" : "your global default"}</small></span></div>
           <div className="ai-accounts-header-actions">
             <button type="button" onClick={() => load({ refresh: true })} disabled={loading} title="Refresh CLI detection"><RefreshCw className={loading ? "spin" : ""} size={16} /></button>
-            <button type="button" onClick={onClose} aria-label="Close AI Accounts"><X size={18} /></button>
+            <button type="button" onClick={() => { setAuthorizationCode(""); onClose?.(); }} aria-label="Close AI Accounts"><X size={18} /></button>
           </div>
         </header>
         {error ? <div className="ai-accounts-error" role="alert"><ShieldAlert size={16} /><span>{error}</span></div> : null}
@@ -173,7 +200,7 @@ export default function AiAccountsPanel({ backendUrl, workspaceId, currentUserId
                 </div>
                 <dl>
                   <div><dt>Active profile</dt><dd>{active?.displayName || "None"}</dd></div>
-                  <div><dt>Account</dt><dd>{active?.accountLabel || "Not available"}</dd></div>
+                  <div><dt>Account</dt><dd>{safeAccountLabel(active?.accountLabel)}</dd></div>
                   <div><dt>Authentication</dt><dd>{active ? authMethodLabel(active.authMethod) : "—"}</dd></div>
                   <div><dt>Expiry</dt><dd>{active?.expiresAt ? new Date(active.expiresAt).toLocaleString() : "Not reported"}</dd></div>
                   <div><dt>Last verified</dt><dd>{active?.lastVerifiedAt ? new Date(active.lastVerifiedAt).toLocaleString() : "Never"}</dd></div>
@@ -208,15 +235,15 @@ export default function AiAccountsPanel({ backendUrl, workspaceId, currentUserId
           })}
         </div>
         {connectProvider ? (
-          <form className="ai-connect-sheet" onSubmit={submitConnect}>
-            <header><div><strong>Connect {connectProvider.name}</strong><small>PlutoniX runs only the provider’s approved CLI command.</small></div><button type="button" onClick={() => setConnectProviderId("")}><X size={16} /></button></header>
+          <form className="ai-connect-sheet" onSubmit={(event) => { if (!loginSession) return submitConnect(event); event.preventDefault(); if (loginSession.authorizationInputRequired) return submitAuthorization(); return undefined; }}>
+            <header><div><strong>Connect {connectProvider.name}</strong><small>PlutoMix runs only the provider’s approved CLI command.</small></div><button type="button" onClick={() => { setAuthorizationCode(""); setConnectProviderId(""); }}><X size={16} /></button></header>
             <label>Local profile name<input value={displayName} onChange={(event) => setDisplayName(event.target.value)} maxLength={80} required /></label>
             <label>Authentication method<select value={authMethod} onChange={(event) => { setAuthMethod(event.target.value); setSecret(""); }}>
               {connectProvider.authMethods.filter((method) => !["existing_session", "unsupported"].includes(method)).map((method) => <option key={method} value={method}>{authMethodLabel(method)}{method === connectProvider.preferredAuthMethod ? " (recommended)" : ""}</option>)}
             </select></label>
             {connectProvider.authMethodNotice ? <small className="ai-auth-method-notice">{connectProvider.authMethodNotice}</small> : null}
             {authMethod === "device_code" ? <small className="ai-auth-method-notice">Open the verification page and enter the one-time code shown here. No localhost callback is required.</small> : null}
-            {authMethod === "api_token" ? <label>Provider token<input type="password" autoComplete="off" value={secret} onChange={(event) => setSecret(event.target.value)} required /><small>Sent once to the CLI over stdin. Never saved in browser storage, PlutoniX metadata, or audit events.</small></label> : null}
+            {authMethod === "api_token" ? <label>Provider token<input type="password" autoComplete="off" value={secret} onChange={(event) => setSecret(event.target.value)} required /><small>Sent once to the CLI over stdin. Never saved in browser storage, PlutoMix metadata, or audit events.</small></label> : null}
             {loginSession ? (
               <div className="ai-login-challenge">
                 <strong>{providerStatusLabel(loginSession.state)}</strong>
@@ -226,8 +253,10 @@ export default function AiAccountsPanel({ backendUrl, workspaceId, currentUserId
                   {loginSession.authorizationUrl ? <a href={loginSession.authorizationUrl} target="_blank" rel="noreferrer"><ExternalLink size={14} />Open verification page</a> : null}
                   {loginSession.deviceCode ? <button type="button" onClick={() => navigator.clipboard.writeText(loginSession.deviceCode)}><Copy size={14} />Copy code</button> : null}
                 </div>
+                {loginSession.authorizationInputRequired ? <label>Authorization code<input type="password" autoComplete="off" value={authorizationCode} onChange={(event) => setAuthorizationCode(event.target.value)} maxLength={4096} required /><small>After signing in, paste the one-time code shown by Claude. It is sent once to the waiting CLI and is never saved.</small><button type="button" className="primary" onClick={submitAuthorization} disabled={Boolean(workingKey) || authorizationCode.trim().length < 4}>{workingKey ? <Loader2 className="spin" size={15} /> : <ShieldCheck size={15} />}Submit authorization</button></label> : null}
+                {loginSession.authorizationSubmitted ? <small>Authorization submitted. Waiting for Claude Code to verify the profile…</small> : null}
                 {browserNotice ? <small>{browserNotice}</small> : null}
-                {loginSession.error ? <p>{loginSession.error}</p> : null}
+                {loginSession.error ? <p>{safeProviderErrorMessage(loginSession.error)}</p> : null}
               </div>
             ) : <button className="primary" type="submit" disabled={Boolean(workingKey)}>{workingKey ? <Loader2 className="spin" size={15} /> : <ShieldCheck size={15} />}Begin secure sign-in</button>}
           </form>

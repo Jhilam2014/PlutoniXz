@@ -11,7 +11,7 @@ const staticPolicyCache = new Map();
 export function resolveGothamPolicyRoot({ policyRoot = "", env = process.env } = {}) {
   const explicitPolicyRoot = String(policyRoot || env.GOTHAM_POLICY_ROOT || "").trim();
   if (explicitPolicyRoot) return path.resolve(explicitPolicyRoot);
-  const mountedProjectRoot = String(env.PLUTONIX_PROJECT_ROOT || "").trim();
+  const mountedProjectRoot = String(env.PLUTOMIX_PROJECT_ROOT || "").trim();
   if (mountedProjectRoot) {
     const mountedPolicyRoot = path.resolve(mountedProjectRoot, "policies");
     if (fs.existsSync(path.join(mountedPolicyRoot, "manifest.json"))) return mountedPolicyRoot;
@@ -24,7 +24,7 @@ function digest(value) {
 }
 
 function assertManifest(manifest) {
-  if (!manifest || manifest.schemaVersion !== "plutonix-policy-manifest/v1" || !manifest.version || !Array.isArray(manifest.packs)) {
+  if (!manifest || manifest.schemaVersion !== "plutomix-policy-manifest/v1" || !manifest.version || !Array.isArray(manifest.packs)) {
     throw new Error("Gotham policy manifest is invalid.");
   }
   const ids = new Set();
@@ -173,7 +173,7 @@ export async function compileGothamContext(input = {}, options = {}) {
     throw new Error(`Mandatory Gotham context requires ${totalTokens} estimated tokens, exceeding the hard limit of ${hardLimit}.`);
   }
   return {
-    schemaVersion: "plutonix-gotham-compiled-context/v1",
+    schemaVersion: "plutomix-gotham-compiled-context/v1",
     policyVersion: manifest.version,
     policyBundleHash: digest(staticBundle),
     workflowMode: selector.workflowMode,

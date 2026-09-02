@@ -1,14 +1,14 @@
-# PlutoniX Graphical Model Design Workshop
+# PlutoMix Graphical Model Design Workshop
 
-> Superseded for the PlutoniX Analysis workspace on 2026-08-19. The former
+> Superseded for the PlutoMix Analysis workspace on 2026-08-19. The former
 > Overview, Dependencies, Functionality Flow, Explore, BrainX, and decision
 > canvases were replaced by the enterprise/application analysis contract in
-> `docs/plutonix-analysis-workshop.md`. This document remains as historical
+> `docs/plutomix-analysis-workshop.md`. This document remains as historical
 > design evidence for the standalone mandatory Agentic System D3 artifact.
 
 Status: Active living plan  
 Last reviewed: 2026-07-24  
-Workflow: `plutonix-agentic-d3-market-ready-001`
+Workflow: `plutomix-agentic-d3-market-ready-001`
 
 ## Product Position
 
@@ -138,7 +138,7 @@ Interaction rules:
 - The production bundle compiles 2,164 modules.
 - Desktop and mobile default views retain nine visible objects with no horizontal overflow or browser errors.
 - Exact-agent search opens the correct dependency focus and four-tab inspector.
-- Open Logs opens PlutoniX with the requested agent filter active.
+- Open Logs opens PlutoMix with the requested agent filter active.
 - Inspect Agent opens an immediate topology-backed profile, then resolves against the global agent-memory index.
 - The global agent index returns fresh cached data over HTTP in 0.76 seconds and stale data in 2.8ms while refreshing in the background.
 - A synthetic 160-node, 280-relationship browser test selected `progressive-hybrid`, emitted zero SVG relationship paths, drew 7,628 sampled nontransparent Canvas pixels, and measured 19.5ms with no browser errors.

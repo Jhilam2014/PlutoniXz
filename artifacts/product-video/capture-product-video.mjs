@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 
 const root = path.dirname(fileURLToPath(import.meta.url));
 const outputDir = path.join(root, "captures");
-const appUrl = process.env.PLUTONIX_PRODUCT_DEMO_URL || "http://localhost:5173";
+const appUrl = process.env.PLUTOMIX_PRODUCT_DEMO_URL || "http://localhost:5173";
 const errors = [];
 const captured = [];
 
@@ -41,6 +41,15 @@ async function clickWorkspace(label) {
 }
 
 await page.goto(appUrl, { waitUntil: "commit" });
+const developmentProfileButton = page.getByRole("button", { name: "Use enabled development profile" });
+const developmentProfileAvailable = await developmentProfileButton
+  .waitFor({ state: "visible", timeout: 5000 })
+  .then(() => true)
+  .catch(() => false);
+if (developmentProfileAvailable) {
+  page.once("dialog", (dialog) => dialog.accept("PlutoMix Demo User"));
+  await developmentProfileButton.click();
+}
 await page.locator(".workspace-tabs").waitFor({ state: "visible" });
 await settle(1800);
 
@@ -54,7 +63,7 @@ const availableProjects = await projectSelect.locator("option").evaluateAll((opt
   value: option.value
 })));
 const selectedProject = availableProjects.find((option) => /mapex/i.test(option.text))
-  || availableProjects.find((option) => option.value && !/plutonix system/i.test(option.text));
+  || availableProjects.find((option) => option.value && !/plutomix system/i.test(option.text));
 if (selectedProject) {
   await projectSelect.selectOption(selectedProject.value);
   await settle(2200);
@@ -67,12 +76,12 @@ await instructionEditor.fill(
 );
 await capture("02-builder-evidence-gate");
 
-await clickWorkspace(/^PlutoniX$/);
+await clickWorkspace(/^PlutoMix$/);
 const analysisTab = page.locator(".agentic-system-subtabs button", { hasText: /^Analysis$/ }).first();
 await analysisTab.waitFor({ state: "visible" });
 await analysisTab.click();
-await page.locator(".plutonix-analysis-workspace").waitFor({ state: "visible" });
-await page.locator(".plutonix-analysis-portfolio").waitFor({ state: "visible" });
+await page.locator(".plutomix-analysis-workspace").waitFor({ state: "visible" });
+await page.locator(".plutomix-analysis-portfolio").waitFor({ state: "visible" });
 await settle(5000);
 await capture("03-analysis-portfolio");
 
@@ -88,12 +97,16 @@ if (await openPortfolioMap.count()) {
   await capture("04-portfolio-intelligence");
 }
 
-const preferredApplication = page.locator(".plutonix-analysis-directory-item", { hasText: /mapex/i }).first();
-const fallbackApplication = page.locator(".plutonix-analysis-directory-item").first();
-const application = await preferredApplication.count() ? preferredApplication : fallbackApplication;
-await application.click();
-await page.locator(".plutonix-analysis-application").waitFor({ state: "visible" });
-await settle(4000);
+const preferredApplication = page.locator(".plutomix-analysis-directory-item", { hasText: /mapex/i }).first();
+const fallbackApplication = page.locator(".plutomix-analysis-directory-item").first();
+const application = await preferredApplication.count()
+  ? preferredApplication
+  : (await fallbackApplication.count() ? fallbackApplication : null);
+if (application) {
+  await application.click();
+  await page.locator(".plutomix-analysis-application").waitFor({ state: "visible" });
+  await settle(4000);
+}
 await capture("05-application-decisions");
 
 const governance = page.locator(".enterprise-brain-governance").first();

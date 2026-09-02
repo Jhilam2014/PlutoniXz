@@ -2,8 +2,8 @@
   "generated_at": "2026-06-25T00:00:00+05:30",
   "assignments": [
     {
-      "agent_id": "plutonix-fullstack-agent",
-      "agent_name": "PlutoniX Fullstack Agent",
+      "agent_id": "plutomix-fullstack-agent",
+      "agent_name": "PlutoMix Fullstack Agent",
       "agent_level": "1",
       "domain": "fullstack",
       "assigned_clusters": [

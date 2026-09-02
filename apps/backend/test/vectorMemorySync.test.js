@@ -39,12 +39,12 @@ test("vector sync has a three-attempt daily scheduling budget by default", () =>
 });
 
 test("daily vector-sync scheduling budget survives successive scheduler calls", async () => {
-  const temporaryRoot = await mkdtemp(path.join(os.tmpdir(), "plutonix-vector-sync-"));
-  const originalRoot = process.env.PLUTONIX_PROJECT_ROOT;
+  const temporaryRoot = await mkdtemp(path.join(os.tmpdir(), "plutomix-vector-sync-"));
+  const originalRoot = process.env.PLUTOMIX_PROJECT_ROOT;
   const originalEnabled = process.env.AGENT_MEMORY_SYNC_ENABLED;
   const scheduleStatePath = path.join(temporaryRoot, "observability", "agent-memory", "vector-sync-schedule.json");
   try {
-    process.env.PLUTONIX_PROJECT_ROOT = temporaryRoot;
+    process.env.PLUTOMIX_PROJECT_ROOT = temporaryRoot;
     process.env.AGENT_MEMORY_SYNC_ENABLED = "false";
     const scheduleOptions = {
       reason: "unit-test-daily-budget",
@@ -65,8 +65,8 @@ test("daily vector-sync scheduling budget survives successive scheduler calls", 
     assert.equal(fourth.scheduled_runs, 3);
     assert.equal(JSON.parse(await readFile(scheduleStatePath, "utf8")).scheduled_runs, 3);
   } finally {
-    if (originalRoot === undefined) delete process.env.PLUTONIX_PROJECT_ROOT;
-    else process.env.PLUTONIX_PROJECT_ROOT = originalRoot;
+    if (originalRoot === undefined) delete process.env.PLUTOMIX_PROJECT_ROOT;
+    else process.env.PLUTOMIX_PROJECT_ROOT = originalRoot;
     if (originalEnabled === undefined) delete process.env.AGENT_MEMORY_SYNC_ENABLED;
     else process.env.AGENT_MEMORY_SYNC_ENABLED = originalEnabled;
     await rm(temporaryRoot, { recursive: true, force: true });

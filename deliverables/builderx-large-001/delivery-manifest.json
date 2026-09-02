@@ -1,5 +1,5 @@
 {
-  "workflow_id": "plutonix-large-001",
+  "workflow_id": "plutomix-large-001",
   "deliverables": [
     "docker-compose.yml",
     "apps/frontend",

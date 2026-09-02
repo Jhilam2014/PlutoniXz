@@ -67,7 +67,7 @@ Use the local database profile, then run migrations and the suite inside the bac
 
 ```sh
 docker compose --profile decision-continuity-postgres up -d decision-continuity-db
-DECISION_CONTINUITY_DATABASE_URL='postgres://plutonix@localhost:5433/plutonix_decision_continuity' npm --prefix apps/backend run decision-continuity:migrate
+DECISION_CONTINUITY_DATABASE_URL='postgres://plutomix@localhost:5433/plutomix_decision_continuity' npm --prefix apps/backend run decision-continuity:migrate
 DECISION_CONTINUITY_TEST_DATABASE_URL='postgres://…' npm --prefix apps/backend run test:integration
 npm --prefix apps/backend test
 docker compose config

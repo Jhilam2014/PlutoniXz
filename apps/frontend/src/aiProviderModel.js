@@ -71,11 +71,61 @@ export function defaultProviderAuthMethod(provider) {
 export function activeProviderSummary(providers, preferredProviderId = "codex") {
   const executableProviders = (providers || []).filter((item) => item.gothamExecutionSupported);
   const provider = executableProviders.find((item) => item.providerId === preferredProviderId) || executableProviders.find((item) => item.activeProfile?.status === "connected") || executableProviders[0] || null;
+  const profile = provider?.activeProfile || null;
+  const selectedModel = String(
+    profile?.selectedModel ||
+    profile?.modelId ||
+    provider?.selectedModel ||
+    provider?.modelId ||
+    provider?.runtime?.configuredModel ||
+    ""
+  ).trim();
+  const status = profile?.status || "disconnected";
   return {
     providerId: provider?.providerId || preferredProviderId,
     providerName: provider?.name || "AI provider",
-    profileId: provider?.activeProfile?.id || "",
-    profileName: provider?.activeProfile?.displayName || "No active profile",
-    valid: provider?.activeProfile?.status === "connected"
+    profileId: profile?.id || "",
+    profileName: profile?.displayName || "No active profile",
+    status,
+    statusLabel: providerStatusLabel(status),
+    verified: status === "connected" && Boolean(profile?.lastVerifiedAt),
+    verificationLabel: status === "connected"
+      ? (profile?.lastVerifiedAt ? "Connected / verified" : "Connected / verification pending")
+      : providerStatusLabel(status),
+    selectedModel,
+    valid: status === "connected"
   };
+}
+
+export function freezeProviderSelection(summary = {}) {
+  return Object.freeze({
+    providerId: String(summary.providerId || "").trim(),
+    profileId: String(summary.profileId || "").trim()
+  });
+}
+
+export function providerExecutionFromResult(result = {}) {
+  return result?.providerExecution || result?.codex || null;
+}
+
+export function safeProviderErrorMessage(value) {
+  const text = String(value || "The provider operation could not be completed.")
+    .replace(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi, (email) => {
+      const [local = "", domain = ""] = email.split("@");
+      if (local.includes("***")) return email;
+      return `${local.slice(0, 1) || "*"}***@${domain}`;
+    })
+    .replace(/(?:\/[\w.-]+)+\/(?:\.claude|\.codex|ai-provider-profiles)(?:\/[\w.@-]+)*/gi, "[isolated provider profile]")
+    .replace(/\b(?:bearer\s+)?(?:sk|key|token|secret)[-_][A-Za-z0-9._-]{8,}\b/gi, "[redacted credential]")
+    .replace(/\s+/g, " ")
+    .trim();
+  return (text || "The provider operation could not be completed.").slice(0, 320);
+}
+
+export function safeAccountLabel(value) {
+  return String(value || "Not available").replace(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi, (email) => {
+    const [local = "", domain = ""] = email.split("@");
+    if (local.includes("***")) return email;
+    return `${local.slice(0, 1) || "*"}***@${domain}`;
+  });
 }

@@ -5,7 +5,7 @@ ROOT="${0:A:h}"
 CAPTURES="$ROOT/captures"
 RENDER="$ROOT/render"
 PUBLIC_MEDIA="$ROOT/../../apps/frontend/public/media/product-video"
-SYNTHESIZER_RATE="${PLUTONIX_DEMO_NARRATION_RATE:-180}"
+SYNTHESIZER_RATE="${PLUTOMIX_DEMO_NARRATION_RATE:-180}"
 mkdir -p "$RENDER" "$PUBLIC_MEDIA"
 
 if ! command -v say >/dev/null 2>&1; then
@@ -89,16 +89,16 @@ ffmpeg -loglevel error -y \
   -map "[vout]" -map "[aout]" \
   -t 78 -c:v libx264 -preset slow -crf 18 -pix_fmt yuv420p \
   -c:a aac -b:a 192k -ar 48000 -movflags +faststart \
-  "$ROOT/plutonix-product-video.mp4"
+  "$ROOT/plutomix-product-video.mp4"
 
-ffmpeg -loglevel error -y -ss 00:00:39 -i "$ROOT/plutonix-product-video.mp4" -frames:v 1 "$ROOT/poster.png"
-ffmpeg -loglevel error -y -i "$ROOT/plutonix-product-video.mp4" -vf "fps=1/8,scale=384:216,tile=5x2:padding=8:margin=8" -frames:v 1 "$ROOT/video-contact-sheet.png"
+ffmpeg -loglevel error -y -ss 00:00:39 -i "$ROOT/plutomix-product-video.mp4" -frames:v 1 "$ROOT/poster.png"
+ffmpeg -loglevel error -y -i "$ROOT/plutomix-product-video.mp4" -vf "fps=1/8,scale=384:216,tile=5x2:padding=8:margin=8" -frames:v 1 "$ROOT/video-contact-sheet.png"
 
-cp "$ROOT/plutonix-product-video.mp4" "$PUBLIC_MEDIA/plutonix-product-video.mp4"
-cp "$ROOT/poster.png" "$PUBLIC_MEDIA/plutonix-product-video-poster.png"
-cp "$ROOT/captions.vtt" "$PUBLIC_MEDIA/plutonix-product-video.vtt"
-cmp "$ROOT/plutonix-product-video.mp4" "$PUBLIC_MEDIA/plutonix-product-video.mp4"
-cmp "$ROOT/poster.png" "$PUBLIC_MEDIA/plutonix-product-video-poster.png"
-cmp "$ROOT/captions.vtt" "$PUBLIC_MEDIA/plutonix-product-video.vtt"
+cp "$ROOT/plutomix-product-video.mp4" "$PUBLIC_MEDIA/plutomix-product-video.mp4"
+cp "$ROOT/poster.png" "$PUBLIC_MEDIA/plutomix-product-video-poster.png"
+cp "$ROOT/captions.vtt" "$PUBLIC_MEDIA/plutomix-product-video.vtt"
+cmp "$ROOT/plutomix-product-video.mp4" "$PUBLIC_MEDIA/plutomix-product-video.mp4"
+cmp "$ROOT/poster.png" "$PUBLIC_MEDIA/plutomix-product-video-poster.png"
+cmp "$ROOT/captions.vtt" "$PUBLIC_MEDIA/plutomix-product-video.vtt"
 
-ffprobe -v error -show_entries format=duration:stream=codec_name,codec_type,width,height -of json "$ROOT/plutonix-product-video.mp4"
+ffprobe -v error -show_entries format=duration:stream=codec_name,codec_type,width,height -of json "$ROOT/plutomix-product-video.mp4"

@@ -1,12 +1,12 @@
-Meet PlutoniX, the multi-artifact product-building cockpit.
+Meet PlutoMix, the multi-artifact product-building cockpit.
 
-In Builder, a team describes a product or artifact. PlutoniX classifies its shape, keeps the requested deliverable primary, and asks for missing data or integration context before work continues.
+In Builder, a team describes a product or artifact. PlutoMix classifies its shape, keeps the requested deliverable primary, and asks for missing data or integration context before work continues.
 
 Analysis turns individual builds into an evidenced application portfolio. Each App BrainX remains private. Enterprise tags organize the view; they never authorize cross-application access.
 
 Open the portfolio map to inspect enterprise scopes, recorded relationships, unassigned applications, and evidence.
 
-At application level, PlutoniX separates observed source behavior from recorded selections, deferred options, rejected options, constraints, and reconsideration signals.
+At application level, PlutoMix separates observed source behavior from recorded selections, deferred options, rejected options, constraints, and reconsideration signals.
 
 The governed BrainX boundary is separate. An authorized scope records bindings, policy, evidence, budgets, and receipts. DecisionX captures development facts. AIX selects eligible candidates and fails closed when none qualify. ResearchX is allowlisted and review-only. AgenticX reuses policy-checked, sanitized knowledge.
 
@@ -14,4 +14,4 @@ The delivery graph connects build context, functionality, decisions, agents, and
 
 Cloud Hosting guides a reviewable plan, approval, health check, and rollback. Deployment is simulated.
 
-PlutoniX turns instructions into working products, with evidence to govern and evolve them.
+PlutoMix turns instructions into working products, with evidence to govern and evolve them.

@@ -98,7 +98,7 @@ export function classifyGothamTask({
   const plannedReviewCalls = resolvedTaskType === "Hard" && workflowMode !== "planner" ? 1 : 0;
   const plannedExecutionCalls = workflowMode === "planner" ? 0 : 1;
   return {
-    schemaVersion: "plutonix-gotham-task-classification/v1",
+    schemaVersion: "plutomix-gotham-task-classification/v1",
     requestedTaskType: override,
     resolvedTaskType,
     overrideStatus,

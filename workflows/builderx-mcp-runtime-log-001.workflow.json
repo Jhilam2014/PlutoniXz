@@ -1,5 +1,5 @@
 {
-  "workflow_id": "plutonix-mcp-runtime-log-001",
+  "workflow_id": "plutomix-mcp-runtime-log-001",
   "objective": "Add visible and persisted MCP runtime logging for generation status.",
   "workflow_classification": [
     "software_engineering",

@@ -41,7 +41,7 @@ function source(overrides = {}) {
 }
 
 async function fixture(context, { serviceConfig, sourceFetcher, governance, observationCallback } = {}) {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), "plutonix-researchx-"));
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "plutomix-researchx-"));
   context.after(() => fs.rm(root, { recursive: true, force: true }));
   const store = createDecisionContinuityStore({ root });
   const calls = [];

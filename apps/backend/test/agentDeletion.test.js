@@ -12,8 +12,8 @@ import {
 import { syncProjectAgentTopology } from "../src/projectAgents.js";
 
 const environmentKeys = [
-  "PLUTONIX_PROJECT_ROOT",
-  "PLUTONIX_WORKSPACE_ROOT",
+  "PLUTOMIX_PROJECT_ROOT",
+  "PLUTOMIX_WORKSPACE_ROOT",
   "GLOBAL_AGENT_KNOWLEDGE_ROOTS",
   "OPENAI_AGENT_ENV_FILE",
   "OPENAI_API_KEY",
@@ -28,8 +28,8 @@ const environmentKeys = [
 
 test("deletes an agent definition, local memory, registry references, and topology membership", async (context) => {
   const previousEnvironment = Object.fromEntries(environmentKeys.map((key) => [key, process.env[key]]));
-  const temporaryRoot = await fs.mkdtemp(path.join(os.tmpdir(), "plutonix-agent-delete-"));
-  const builderRoot = path.join(temporaryRoot, "plutonix");
+  const temporaryRoot = await fs.mkdtemp(path.join(os.tmpdir(), "plutomix-agent-delete-"));
+  const builderRoot = path.join(temporaryRoot, "plutomix");
   const workspaceDir = path.join(temporaryRoot, "apps", "demo-project");
   const agentId = "demo-project-orchestrator-agent";
   const generatedAgentPath = path.join(builderRoot, "agents", "generated", `${agentId}.agent.md`);
@@ -42,8 +42,8 @@ test("deletes an agent definition, local memory, registry references, and topolo
   const sharedRegistryPath = path.join(builderRoot, "registry", "agents", "agent-knowledge-registry.json");
 
   Object.assign(process.env, {
-    PLUTONIX_PROJECT_ROOT: builderRoot,
-    PLUTONIX_WORKSPACE_ROOT: temporaryRoot,
+    PLUTOMIX_PROJECT_ROOT: builderRoot,
+    PLUTOMIX_WORKSPACE_ROOT: temporaryRoot,
     GLOBAL_AGENT_KNOWLEDGE_ROOTS: builderRoot,
     OPENAI_AGENT_ENV_FILE: path.join(temporaryRoot, "missing.env"),
     PROJECT_AGENT_RUNTIME_ROOT: path.dirname(topologyPath),
@@ -115,7 +115,7 @@ test("deletes an agent definition, local memory, registry references, and topolo
           }
         ],
         relationships: [
-          { source: "plutonix-fullstack-agent", target: agentId, type: "RUNTIME_DELEGATES_TO" },
+          { source: "plutomix-fullstack-agent", target: agentId, type: "RUNTIME_DELEGATES_TO" },
           { source: agentId, target: "demo-project-runtime-packaging-agent", type: "DELEGATES_TO" }
         ]
       },
@@ -199,11 +199,11 @@ test("deletes an agent definition, local memory, registry references, and topolo
   await assert.rejects(fs.access(generatedAgentPath));
 });
 
-test("refuses deletion of required PlutoniX system agents", async () => {
-  for (const agentId of ["plutonix-fullstack-agent", "project-execution-agent", "project-orchestrator-agent", "qagent-controller"]) {
+test("refuses deletion of required PlutoMix system agents", async () => {
+  for (const agentId of ["plutomix-fullstack-agent", "project-execution-agent", "project-orchestrator-agent", "qagent-controller"]) {
     await assert.rejects(
       deleteGlobalAgent({ agentId }),
-      /required PlutoniX system agent cannot be deleted/i
+      /required PlutoMix system agent cannot be deleted/i
     );
   }
 });

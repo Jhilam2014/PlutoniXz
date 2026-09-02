@@ -45,9 +45,9 @@
     {
       "taskId": "golden-system-target-isolation",
       "title": "Gotham system target cannot accidentally modify a generated project",
-      "inputTarget": { "type": "system", "systemId": "plutonix" },
+      "inputTarget": { "type": "system", "systemId": "plutomix" },
       "instruction": "Improve the platform project selector reliability.",
-      "expected": { "projectIdUsed": false, "requiresImprovementProposal": true, "targetWorkspace": "plutonix-root" }
+      "expected": { "projectIdUsed": false, "requiresImprovementProposal": true, "targetWorkspace": "plutomix-root" }
     },
     {
       "taskId": "golden-project-target-isolation",

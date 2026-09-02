@@ -1,13 +1,13 @@
-# PlutoniX Enterprise Evolution Plan
+# PlutoMix Enterprise Evolution Plan
 
 Status: active implementation plan  
-Scope: governed decision continuity for the existing PlutoniX control plane
+Scope: governed decision continuity for the existing PlutoMix control plane
 
 ## Current capability map
 
 | Area | Existing evidence | Current state |
 | --- | --- | --- |
-| React operator surface | `apps/frontend/src/App.jsx`, `apps/frontend/src/functionalityGraphModel.js` | Existing Builder, PlutoniX, Agents, Hosting, graph, Intel, and suggestion surfaces. |
+| React operator surface | `apps/frontend/src/App.jsx`, `apps/frontend/src/functionalityGraphModel.js` | Existing Builder, PlutoMix, Agents, Hosting, graph, Intel, and suggestion surfaces. |
 | Express control-plane API | `apps/backend/src/server.js` | REST, SSE runtime events, project lifecycle, self-improvement, Intel profiles, model-pool, and generated-project endpoints. |
 | File-backed operational records | `apps/backend/src/selfImprovement/store.js`, `apps/backend/src/projectManager.js` | JSON/JSONL records and registries; suitable for a backwards-compatible local ledger adapter, but not a multi-node transactional database. |
 | Existing governance primitives | `apps/backend/src/selfImprovement/{policy,validation,controlPlane}.js` | Candidate validation, monetary approval, promotion decision, rollback record, risk policy, and proposal evidence exist for self-improvement. |
@@ -125,11 +125,11 @@ DECISION_CONTINUITY_ROOT=/secure/runtime/decision-continuity
 
 # Production requires verified OIDC and explicit browser origins. Provision
 # principals/memberships in PostgreSQL through the controlled admin process.
-PLUTONIX_AUTH_MODE=oidc
+PLUTOMIX_AUTH_MODE=oidc
 OIDC_ISSUER=https://issuer.example
-OIDC_AUDIENCE=plutonix-decision-continuity
+OIDC_AUDIENCE=plutomix-decision-continuity
 OIDC_JWKS_URL=https://issuer.example/keys
-PLUTONIX_CORS_ORIGINS=https://app.example
+PLUTOMIX_CORS_ORIGINS=https://app.example
 DECISION_CONTINUITY_WORKER_PRINCIPAL_ID=workflow-worker-prod-01
 
 DECISION_CONTINUITY_MAX_RECONSIDERATIONS_PER_TENANT_PER_DAY=25

@@ -19,7 +19,7 @@ const monitor = { type: "service", id: "independent-monitor" };
 
 function candidate(overrides = {}) {
   return {
-    schemaVersion: "plutonix-self-improvement-runtime-policy/v1",
+    schemaVersion: "plutomix-self-improvement-runtime-policy/v1",
     targetKey: "self-improvement-runtime-policy",
     policy: {
       enabled: true, mode: "sandbox", maxCallsPerCycle: 2, maxTokensPerCycle: 1000, maxCostPerDay: 0.1,

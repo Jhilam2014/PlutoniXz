@@ -12,7 +12,7 @@ test("keeps simple managed-project work on the single-call path", () => {
   });
   assert.equal(route.mode, "single");
   assert.equal(route.plannedModelCalls, 1);
-  assert.equal(route.executionAgent, "plutonix-fullstack-agent");
+  assert.equal(route.executionAgent, "plutomix-fullstack-agent");
 });
 
 test("delegates ordinary medium work without paying for a reviewer", () => {

@@ -2,9 +2,9 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { codexPrompt, deterministicPublicationOwnershipPrompt } from "../src/codexWorkflow.js";
 
-test("Gotham prompt assigns PlutoniX control-plane graph and memory publication to the backend", () => {
+test("Gotham prompt assigns PlutoMix control-plane graph and memory publication to the backend", () => {
   const contract = deterministicPublicationOwnershipPrompt();
-  assert.match(contract, /Do not create or update PlutoniX control-plane Neo4j, D3 topology/i);
+  assert.match(contract, /Do not create or update PlutoMix control-plane Neo4j, D3 topology/i);
   assert.match(contract, /deterministic backend publisher owns mandatory graph and memory projections/i);
   assert.match(contract, /does not prohibit application-owned graph or memory functionality/i);
 

@@ -25,7 +25,7 @@
       "projectResponsibility": "Read the project instruction, enforce app-private and agreement-gated enterprise context, record checkpoint alternatives, decide required specialist bindings, and coordinate Gotham workflow handoff.",
       "status": "active",
       "contextPath": ".agentic/orchestrator-agent.md",
-      "createdAt": "2026-08-31T06:26:20.355Z"
+      "createdAt": "2026-09-02T20:37:08.511Z"
     },
     {
       "id": "project-agent-assignment:geofinderx-2yFsDY:project-orchestrator-agent",
@@ -196,6 +196,26 @@
       "status": "active",
       "contextPath": ".agentic/orchestrator-agent.md",
       "createdAt": "2026-08-30T18:50:44.868Z"
+    },
+    {
+      "id": "project-agent-assignment:jobhunt-0SHrjF:project-orchestrator-agent",
+      "projectId": "jobhunt-0SHrjF",
+      "agentId": "project-orchestrator-agent",
+      "role": "project-orchestrator",
+      "projectResponsibility": "Read the project instruction, enforce app-private and agreement-gated enterprise context, record checkpoint alternatives, decide required specialist bindings, and coordinate Gotham workflow handoff.",
+      "status": "active",
+      "contextPath": ".agentic/orchestrator-agent.md",
+      "createdAt": "2026-09-01T10:55:36.429Z"
+    },
+    {
+      "id": "project-agent-assignment:jobhunt2-PXJCTy:project-orchestrator-agent",
+      "projectId": "jobhunt2-PXJCTy",
+      "agentId": "project-orchestrator-agent",
+      "role": "project-orchestrator",
+      "projectResponsibility": "Read the project instruction, enforce app-private and agreement-gated enterprise context, record checkpoint alternatives, decide required specialist bindings, and coordinate Gotham workflow handoff.",
+      "status": "active",
+      "contextPath": ".agentic/orchestrator-agent.md",
+      "createdAt": "2026-09-02T19:53:42.519Z"
     }
   ],
   "reuse_decisions": [
@@ -208,7 +228,7 @@
       "reuseConfidenceScore": 100,
       "similarityScore": 1,
       "reason": "Reused the existing global project-orchestrator definition; project context is stored in a separate assignment.",
-      "createdAt": "2026-08-31T06:26:20.354Z"
+      "createdAt": "2026-09-02T20:37:08.511Z"
     },
     {
       "id": "agent-reuse:geofinderx-2yFsDY:project-orchestrator-agent",
@@ -396,6 +416,28 @@
       "similarityScore": 1,
       "reason": "Reused the existing global project-orchestrator definition; project context is stored in a separate assignment.",
       "createdAt": "2026-08-30T18:50:44.868Z"
+    },
+    {
+      "id": "agent-reuse:jobhunt-0SHrjF:project-orchestrator-agent",
+      "projectExecution": "jobhunt-0SHrjF",
+      "selectedAgent": "project-orchestrator-agent",
+      "requestedRole": "project-orchestrator",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global project-orchestrator definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-09-01T10:55:36.429Z"
+    },
+    {
+      "id": "agent-reuse:jobhunt2-PXJCTy:project-orchestrator-agent",
+      "projectExecution": "jobhunt2-PXJCTy",
+      "selectedAgent": "project-orchestrator-agent",
+      "requestedRole": "project-orchestrator",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global project-orchestrator definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-09-02T19:53:42.519Z"
     }
   ],
   "latest_reuse_decision": {
@@ -407,6 +449,9 @@
     "reuseConfidenceScore": 100,
     "similarityScore": 1,
     "reason": "Reused the existing global project-orchestrator definition; project context is stored in a separate assignment.",
-    "createdAt": "2026-08-31T06:26:20.354Z"
-  }
+    "createdAt": "2026-09-02T20:37:08.511Z"
+  },
+  "catalog_scope": "global_community",
+  "tenant_id": "",
+  "enterprise_id": ""
 }

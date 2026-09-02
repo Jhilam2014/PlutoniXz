@@ -14,7 +14,7 @@ import {
 } from "../src/workflowDecisionContinuity.js";
 
 async function fixture(context) {
-  const root = await mkdtemp(path.join(os.tmpdir(), "plutonix-publication-"));
+  const root = await mkdtemp(path.join(os.tmpdir(), "plutomix-publication-"));
   const workspaceDir = path.join(root, "workspace");
   await mkdir(workspaceDir, { recursive: true });
   await writeFile(path.join(workspaceDir, "changed.js"), "export const changed = true;\n");
@@ -30,7 +30,7 @@ async function fixture(context) {
     status: "succeeded",
     startedAt: "2026-08-29T00:00:00.000Z",
     completedAt: "2026-08-29T00:00:01.000Z",
-    selectedPath: "plutonix-global-orchestration",
+    selectedPath: "plutomix-global-orchestration",
     selectedBranches: [{ id: "selected-a", disposition: "selected", reason: "authoritative selection" }],
     rejectedBranches: [{ id: "rejected-a", disposition: "rejected", reason: "constraint failed" }],
     deferredBranches: [{ id: "deferred-a", disposition: "deferred", reason: "human approval required" }],
@@ -38,7 +38,7 @@ async function fixture(context) {
     changedFiles: ["changed.js"],
     instructionSummary: "Implement the requested behavior without token sk_abcdefghijklmnopqrst.",
     validation: { status: "passed" },
-    flowPath: { selectedPath: "plutonix-global-orchestration" }
+    flowPath: { selectedPath: "plutomix-global-orchestration" }
   });
   return { root, workspaceDir, receipt };
 }

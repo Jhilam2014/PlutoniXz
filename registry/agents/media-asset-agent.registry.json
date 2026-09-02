@@ -26,6 +26,26 @@
       "status": "active",
       "contextPath": ".agentic/orchestrator-agent.md",
       "createdAt": "2026-08-30T17:33:59.894Z"
+    },
+    {
+      "id": "project-agent-assignment:jobhunt-0SHrjF:media-asset-agent",
+      "projectId": "jobhunt-0SHrjF",
+      "agentId": "media-asset-agent",
+      "role": "media-asset",
+      "projectResponsibility": "Track uploaded media references, identify screenshot/UI reference nodes, and expose each prominent node as a functional implementation or explicit fallback requirement.",
+      "status": "active",
+      "contextPath": ".agentic/orchestrator-agent.md",
+      "createdAt": "2026-08-31T13:35:49.644Z"
+    },
+    {
+      "id": "project-agent-assignment:jobhunt2-PXJCTy:media-asset-agent",
+      "projectId": "jobhunt2-PXJCTy",
+      "agentId": "media-asset-agent",
+      "role": "media-asset",
+      "projectResponsibility": "Track uploaded media references, identify screenshot/UI reference nodes, and expose each prominent node as a functional implementation or explicit fallback requirement.",
+      "status": "active",
+      "contextPath": ".agentic/orchestrator-agent.md",
+      "createdAt": "2026-09-02T18:21:07.114Z"
     }
   ],
   "reuse_decisions": [
@@ -39,17 +59,42 @@
       "similarityScore": 1,
       "reason": "Reused the existing global media-asset definition; project context is stored in a separate assignment.",
       "createdAt": "2026-08-30T17:33:59.894Z"
+    },
+    {
+      "id": "agent-reuse:jobhunt-0SHrjF:media-asset-agent",
+      "projectExecution": "jobhunt-0SHrjF",
+      "selectedAgent": "media-asset-agent",
+      "requestedRole": "media-asset",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global media-asset definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-08-31T13:35:49.644Z"
+    },
+    {
+      "id": "agent-reuse:jobhunt2-PXJCTy:media-asset-agent",
+      "projectExecution": "jobhunt2-PXJCTy",
+      "selectedAgent": "media-asset-agent",
+      "requestedRole": "media-asset",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global media-asset definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-09-02T18:21:07.113Z"
     }
   ],
   "latest_reuse_decision": {
-    "id": "agent-reuse:voicetranscriptgenx-QcKNlU:media-asset-agent",
-    "projectExecution": "voicetranscriptgenx-QcKNlU",
+    "id": "agent-reuse:jobhunt2-PXJCTy:media-asset-agent",
+    "projectExecution": "jobhunt2-PXJCTy",
     "selectedAgent": "media-asset-agent",
     "requestedRole": "media-asset",
     "decisionType": "exact_reuse",
     "reuseConfidenceScore": 100,
     "similarityScore": 1,
     "reason": "Reused the existing global media-asset definition; project context is stored in a separate assignment.",
-    "createdAt": "2026-08-30T17:33:59.894Z"
-  }
+    "createdAt": "2026-09-02T18:21:07.113Z"
+  },
+  "catalog_scope": "global_community",
+  "tenant_id": "",
+  "enterprise_id": ""
 }

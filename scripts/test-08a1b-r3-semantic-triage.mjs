@@ -50,7 +50,7 @@ const malformedEnvironment = controlledEnvironmentContextFromBuffer(Buffer.from(
 assert.equal(malformedEnvironment.generic_secret_parser, false);
 assert.equal(evaluateSemanticEvidence({ candidate: Buffer.from('malformed-value', 'utf8'), canonicalMembers: [member], context: malformedEnvironment }).semantic_state, 'SEMANTICALLY_UNRESOLVED');
 
-for (const rule of ['aws-access-token', 'gcp-api-key', 'generic-api-key', 'linkedin-client-id', 'openai-api-key', 'plutonix-fake-secret']) {
+for (const rule of ['aws-access-token', 'gcp-api-key', 'generic-api-key', 'linkedin-client-id', 'openai-api-key', 'plutomix-fake-secret']) {
   const spec = ruleSemanticsFor(rule); assert.ok(spec.detector_contract && spec.semantic_assertion && spec.parser && spec.hardening, `${rule} needs a deterministic rule contract`);
 }
 assert.equal(noCandidateBearingData({ semantic_state: 'SEMANTICALLY_UNRESOLVED', missing_predicates: ['SOURCE_SCHEMA_OR_DETERMINISTIC_PRODUCER_CONTRACT_REQUIRED'] }), true);

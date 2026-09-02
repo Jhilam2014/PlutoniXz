@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "project_name": "plutonix",
+    "project_name": "plutomix",
     "generated_at": "2026-06-29T22:53:21+00:00",
     "workflow_id": "bootstrap-orchestrator-001",
     "source": "orchestrator",
@@ -21,7 +21,7 @@
     {
       "id": "project:orchestrator-agent-001",
       "type": "project",
-      "label": "plutonix",
+      "label": "plutomix",
       "group": "project",
       "risk_level": "low",
       "status": "active",
@@ -37,17 +37,17 @@
       "metadata": {}
     },
     {
-      "id": "agent:plutonix-fullstack-agent",
+      "id": "agent:plutomix-fullstack-agent",
       "type": "agent",
-      "label": "PlutoniX Fullstack Agent",
+      "label": "PlutoMix Fullstack Agent",
       "group": "global-agent",
       "risk_level": "medium",
       "status": "active",
-      "agent_id": "plutonix-fullstack-agent",
-      "cluster_id": "plutonix-fullstack",
+      "agent_id": "plutomix-fullstack-agent",
+      "cluster_id": "plutomix-fullstack",
       "metadata": {
         "capabilityScore": 60,
-        "role": "global-plutonix-orchestrator",
+        "role": "global-plutomix-orchestrator",
         "domain": "fullstack"
       }
     },
@@ -96,7 +96,7 @@
     {
       "id": "page:agentic-system-d3",
       "type": "page",
-      "label": "PlutoniX Graphical Model Page",
+      "label": "PlutoMix Graphical Model Page",
       "group": "d3",
       "risk_level": "low",
       "status": "ready",
@@ -280,13 +280,13 @@
     },
     {
       "source": "project:orchestrator-agent-001",
-      "target": "agent:plutonix-fullstack-agent",
+      "target": "agent:plutomix-fullstack-agent",
       "type": "has_agent",
       "weight": 2,
       "metadata": {}
     },
     {
-      "source": "agent:plutonix-fullstack-agent",
+      "source": "agent:plutomix-fullstack-agent",
       "target": "agent:project-execution-agent",
       "type": "delegates_to",
       "weight": 1,

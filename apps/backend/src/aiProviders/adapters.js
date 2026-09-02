@@ -90,9 +90,11 @@ export function runProviderProcess(command, args, {
   env = process.env,
   timeoutMs = DEFAULT_TIMEOUT_MS,
   input,
+  keepStdinOpen = false,
   signal,
   spawnFactory = spawn,
-  onOutput
+  onOutput,
+  onStdinReady
 } = {}) {
   return new Promise((resolve, reject) => {
     let stdout = "";
@@ -107,6 +109,7 @@ export function runProviderProcess(command, args, {
       clearTimeout(timer);
       clearTimeout(killTimer);
       signal?.removeEventListener?.("abort", abort);
+      onStdinReady?.(null);
       if (error) reject(error);
       else resolve(result);
     };
@@ -116,7 +119,7 @@ export function runProviderProcess(command, args, {
         env,
         shell: false,
         windowsHide: true,
-        stdio: [input === undefined ? "ignore" : "pipe", "pipe", "pipe"]
+        stdio: [input === undefined && !keepStdinOpen ? "ignore" : "pipe", "pipe", "pipe"]
       });
     } catch (error) {
       finish(null, new ProviderAdapterError("The provider CLI could not be started.", { code: "cli_start_failed", category: "cli_process_terminated" }));
@@ -131,6 +134,17 @@ export function runProviderProcess(command, args, {
     };
     const abort = () => terminate();
     signal?.addEventListener?.("abort", abort, { once: true });
+    if (keepStdinOpen) {
+      // A CLI can close its input between a status poll and the user's
+      // submission. Treat that race as a normal login failure, not an
+      // unhandled stream error in the backend process.
+      child.stdin?.on?.("error", () => {});
+      onStdinReady?.((value) => {
+        if (settled || child.stdin?.destroyed || child.stdin?.writableEnded) return false;
+        child.stdin?.write?.(String(value));
+        return true;
+      });
+    }
     if (input !== undefined) {
       child.stdin?.end(String(input));
       input = undefined;
@@ -279,7 +293,7 @@ export class CliProviderAdapter {
     return childEnvironment(this.env, { [this.definition.isolationEnv]: runtimeDir });
   }
 
-  async run(operation, { scope, profile, timeoutMs = DEFAULT_TIMEOUT_MS, input, signal, onOutput } = {}) {
+  async run(operation, { scope, profile, timeoutMs = DEFAULT_TIMEOUT_MS, input, keepStdinOpen = false, signal, onOutput, onStdinReady } = {}) {
     const installation = await this.detectInstallation();
     if (!installation.installed) throw new ProviderAdapterError(`${this.definition.name} CLI is not installed.`, { code: "cli_not_installed", status: 409, category: "cli_not_installed", recovery: ["Install or upgrade CLI"] });
     if (!installation.supportedVersion) throw new ProviderAdapterError(`${this.definition.name} CLI version is unsupported.`, { code: "unsupported_cli_version", status: 409, category: "unsupported_cli_version", recovery: ["Install or upgrade CLI"] });
@@ -287,9 +301,11 @@ export class CliProviderAdapter {
       env: await this.profileEnvironment(scope, profile),
       timeoutMs,
       input,
+      keepStdinOpen,
       signal,
       spawnFactory: this.spawnFactory,
-      onOutput
+      onOutput,
+      onStdinReady
     });
   }
 
@@ -312,7 +328,7 @@ export class CliProviderAdapter {
     }
   }
 
-  async beginLogin({ authMethod, scope, profile, secret, signal, onProgress }) {
+  async beginLogin({ authMethod, scope, profile, secret, signal, onProgress, onAuthorizationInputReady }) {
     if (this.definition.authMethods.includes(authMethod) && !this.availableAuthMethods().includes(authMethod)) {
       throw new ProviderAdapterError("Browser sign-in cannot reach the Codex localhost callback from this backend runtime. Use device-code authorization instead.", {
         code: "browser_callback_unavailable",
@@ -325,12 +341,17 @@ export class CliProviderAdapter {
       throw new ProviderAdapterError(`${this.definition.name} does not support the requested authentication method.`, { code: "unsupported_auth_method", status: 409, category: "unsupported" });
     }
     const aggregate = { value: "" };
+    const interactiveAuthorization = this.providerId === "claude" && ["browser_oauth", "enterprise_login"].includes(authMethod);
     const result = await this.run(authMethod, {
       scope,
       profile,
       timeoutMs: LOGIN_TIMEOUT_MS,
       input: authMethod === "api_token" ? `${String(secret || "").trim()}\n` : undefined,
+      keepStdinOpen: interactiveAuthorization,
       signal,
+      onStdinReady: interactiveAuthorization ? (write) => {
+        onAuthorizationInputReady?.(write ? (authorizationCode) => write(`${authorizationCode}\n`) : null);
+      } : undefined,
       onOutput: ({ rawText }) => {
         aggregate.value = appendBounded(aggregate.value, rawText);
         const challenge = extractAuthorizationChallenge(aggregate.value, this.definition.authDomains);
@@ -353,7 +374,9 @@ export class CliProviderAdapter {
   async runtime(scope, profile) {
     const installation = await this.detectInstallation();
     if (!installation.installed || !installation.supportedVersion) throw new ProviderAdapterError("The selected provider runtime is unavailable.", { code: "provider_unavailable", status: 409 });
-    return { command: installation.executable, env: await this.profileEnvironment(scope, profile) };
+    const runtime = { command: installation.executable, env: await this.profileEnvironment(scope, profile) };
+    if (this.providerId !== "claude") return runtime;
+    return { ...runtime, providerId: "claude", profileId: String(profile.id || ""), workspaceId: String(scope.workspaceId || "") };
   }
 }
 

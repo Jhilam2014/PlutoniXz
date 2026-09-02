@@ -1,9 +1,0 @@
-{
-  "workflow_id": "plutonix-hot-reload-stability-001",
-  "registered_at": "2026-06-25T10:16:11Z",
-  "status": "completed",
-  "owner_agent": "project-execution-agent",
-  "reuse_decision": "exact_reuse",
-  "memory_sync_required": false,
-  "notes": "Reused existing execution agent for a generated-site runtime stability fix."
-}

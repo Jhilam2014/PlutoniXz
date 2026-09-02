@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "plutonix/project-type-profile/1.0",
-  "title": "PlutoniX Project Type Profile",
+  "$id": "plutomix/project-type-profile/1.0",
+  "title": "PlutoMix Project Type Profile",
   "type": "object",
   "required": ["schemaVersion", "id", "displayName", "status", "detection", "capabilities", "availableRoles", "defaultRoles", "scoringDimensions", "validationPipeline", "executionAdapter", "previewAdapter", "limits"],
   "properties": {

@@ -1,8 +1,8 @@
 {
   "recordedAt": "2026-08-15T18:17:00Z",
-  "source": "plutonix-orchestrator",
-  "projectId": "plutonix",
-  "projectName": "PlutoniX",
+  "source": "plutomix-orchestrator",
+  "projectId": "plutomix",
+  "projectName": "PlutoMix",
   "instructionSummary": "Connect Architecture pages to their real service and data dependencies, simplify visible connections to relation-only lines, move semantics into Insight, and remove Project genesis from the feature graph.",
   "candidateDevelopmentPaths": [
     "add presentation-only page spokes",

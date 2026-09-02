@@ -110,7 +110,7 @@ async function validateCodeProject(workspaceDir, profileId) {
 async function validateDocumentRender(files) {
   const document = files.find((file) => /\.(pdf|docx)$/i.test(file.relative));
   if (!document) return [{ id: "render-inspection", status: "failed", detail: "No PDF or DOCX deliverable was available for rendered visual inspection." }];
-  const renderRoot = await fs.mkdtemp(path.join(os.tmpdir(), "plutonix-document-render-"));
+  const renderRoot = await fs.mkdtemp(path.join(os.tmpdir(), "plutomix-document-render-"));
   try {
     let pdfPath = document.absolute;
     const checks = [];
@@ -156,7 +156,7 @@ async function validateWorkbook(files) {
     if (!(await commandAvailable("soffice"))) {
       return [...checks, { id: "workbook-recalculation", status: "failed", detail: "LibreOffice Calc is unavailable, so workbook recalculation and rendered preview cannot be claimed." }];
     }
-    const renderRoot = await fs.mkdtemp(path.join(os.tmpdir(), "plutonix-workbook-render-"));
+    const renderRoot = await fs.mkdtemp(path.join(os.tmpdir(), "plutomix-workbook-render-"));
     try {
       const conversion = await runCommand("soffice", ["--headless", "--convert-to", "pdf", "--outdir", renderRoot, workbook.absolute], renderRoot, 120_000);
       const pdfPath = conversion.status === "passed" ? await findRenderedPdf(renderRoot) : "";

@@ -21,7 +21,7 @@ project mount is healthy.
 
 Codex creates lock-protected command aliases below `CODEX_HOME/tmp/arg0` for
 `codex-linux-sandbox` and `apply_patch`. Compose overlays that `tmp` directory
-with the `plutonix-gotham-codex-runtime-v1` native Linux volume while retaining
+with the `plutomix-gotham-codex-runtime-v1` native Linux volume while retaining
 the user's host-mounted Codex configuration and authentication above it. This
 keeps concurrent janitor/lock operations off the host bind mount, where a live
 alias directory could otherwise be removed and poison an active workflow.
@@ -40,9 +40,9 @@ mode, or `seccomp=unconfined`. Revalidate the complete boundary after upgrading
 Docker or Codex against an actual mounted project workspace with:
 
 ```sh
-docker exec -w /workspace/apps/<project> plutonix-backend \
+docker exec -w /workspace/apps/<project> plutomix-backend \
   codex --disable unified_exec sandbox -c 'sandbox_mode="workspace-write"' \
-  /bin/sh -lc 'set -eu; probe=.plutonix-sandbox-preflight-$$; trap '\''rm -f "$probe"'\'' EXIT; test -r .; : > "$probe"; test -w "$probe"'
+  /bin/sh -lc 'set -eu; probe=.plutomix-sandbox-preflight-$$; trap '\''rm -f "$probe"'\'' EXIT; test -r .; : > "$probe"; test -w "$probe"'
 ```
 
 The expected result is exit code `0`, no Bubblewrap diagnostic, and no leftover
@@ -51,7 +51,7 @@ selected mount; `/bin/true` alone is not a sufficient workspace health check.
 Confirm the effective runtime controls separately:
 
 ```sh
-docker inspect -f 'security_opt={{json .HostConfig.SecurityOpt}} masked_paths={{json .HostConfig.MaskedPaths}} readonly_paths={{json .HostConfig.ReadonlyPaths}} cap_add={{json .HostConfig.CapAdd}} privileged={{.HostConfig.Privileged}} pid={{.HostConfig.PidMode}}' plutonix-backend
+docker inspect -f 'security_opt={{json .HostConfig.SecurityOpt}} masked_paths={{json .HostConfig.MaskedPaths}} readonly_paths={{json .HostConfig.ReadonlyPaths}} cap_add={{json .HostConfig.CapAdd}} privileged={{.HostConfig.Privileged}} pid={{.HostConfig.PidMode}}' plutomix-backend
 ```
 
 Docker documents that its normal seccomp profile blocks namespace-creation

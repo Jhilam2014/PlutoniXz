@@ -1,6 +1,6 @@
 const KNOWN_AGENT_VISUALS = Object.freeze({
-  "plutonix-fullstack-agent": { color: "#334155", accent: "#38bdf8", label: "Fullstack", initials: "PX" },
-  "plutonix-independent-reviewer": { color: "#581c87", accent: "#e879f9", label: "Reviewer", initials: "PR" },
+  "plutomix-fullstack-agent": { color: "#334155", accent: "#38bdf8", label: "Fullstack", initials: "PX" },
+  "plutomix-independent-reviewer": { color: "#581c87", accent: "#e879f9", label: "Reviewer", initials: "PR" },
   "project-execution-agent": { color: "#0f766e", accent: "#22c55e", label: "Execution", initials: "PX" },
   "human-controller": { color: "#7f1d1d", accent: "#fb7185", label: "Human", initials: "HC" },
   "agent-memory-sync": { color: "#4c1d95", accent: "#a78bfa", label: "Memory", initials: "AM" },
@@ -87,7 +87,7 @@ export function agentIconKind(avatar = {}) {
   if (/api|backend|service|integration|webhook/.test(value)) return "api";
   if (/voice|audio|speech/.test(value)) return "voice";
   if (/map|geo|location|route/.test(value)) return "geo";
-  if (value.includes("orchestrator") || value.includes("plutonix") || value.includes("fullstack")) return "orchestrator";
+  if (value.includes("orchestrator") || value.includes("plutomix") || value.includes("fullstack")) return "orchestrator";
   if (value.includes("ui") || value.includes("composition") || value.includes("frontend")) return "ui";
   if (/content|copy|media|ocr|document/.test(value)) return "content";
   if (value.includes("data") || value.includes("database")) return "data";

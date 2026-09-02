@@ -1,8 +1,8 @@
 {
-  "workflow_id": "plutonix-mcp-runtime-log-001",
+  "workflow_id": "plutomix-mcp-runtime-log-001",
   "mode": "single_agent",
   "agents": [
-    "plutonix-fullstack-agent"
+    "plutomix-fullstack-agent"
   ],
   "changed_files": [
     "docker-compose.yml",

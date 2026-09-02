@@ -1,5 +1,5 @@
 {
-  "workflow_id": "plutonix-orchestrator-mcp-001",
+  "workflow_id": "plutomix-orchestrator-mcp-001",
   "objective": "Restructure builder app instructions through the orchestrator agent before sending them to MCP generation.",
   "workflow_classification": [
     "software_engineering",

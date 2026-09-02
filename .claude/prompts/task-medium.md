@@ -18,7 +18,7 @@ Rules:
 - Create or update agents only when required.
 - Patch focused areas instead of rewriting the whole app.
 - Update Neo4j graph artifacts for changed components and functionality.
-- Update PlutoniX Graphical Model page.
+- Update PlutoMix Graphical Model page.
 - Store redacted task prompt, decisions, and validation summary in vector memory.
 - Use ChromaDB fallback if OpenAI Vector Store is missing.
 - Follow ROOT_WORKSPACE_GENERATION_POLICY.md.
@@ -36,4 +36,4 @@ After completion, report:
 - validation result
 - Neo4j update status
 - vector memory provider used
-- PlutoniX Graphical Model page path
+- PlutoMix Graphical Model page path

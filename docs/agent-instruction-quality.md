@@ -1,6 +1,6 @@
 # Agent Instruction And Response Quality Standard
 
-This is the shared instruction and response standard for PlutoniX agents, specialist agents, QAgents, and provider adapters. It applies to Codex, Claude, GitHub Copilot, and MCP-invoked agents.
+This is the shared instruction and response standard for PlutoMix agents, specialist agents, QAgents, and provider adapters. It applies to Codex, Claude, GitHub Copilot, and MCP-invoked agents.
 
 ## Task packets
 

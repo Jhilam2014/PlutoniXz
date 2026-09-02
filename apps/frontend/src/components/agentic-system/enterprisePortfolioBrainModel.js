@@ -441,7 +441,7 @@ export function buildPortfolioIntelligenceMap({ applications = [], relations = [
   const root = {
     id: "enterprise-brain:portfolio",
     kind: "enterprise-brain",
-    label: rootBrain.label || "PlutoniX Enterprise Brain",
+    label: rootBrain.label || "PlutoMix Enterprise Brain",
     summary: rootBrain.summary,
     updatedAt: rootBrain.updatedAt,
     recorded: rootBrain.recorded,

@@ -2,8 +2,8 @@
   "workflow_id": "architecture-ui-feature-gravity-20260816",
   "status": "delivered",
   "deliverables": [
-    {"path": "apps/frontend/src/App.jsx", "summary": "Architecture analysis now belongs to the PlutoniX page and is absent from Project Tools."},
-    {"path": "apps/frontend/src/App.css", "summary": "Added responsive, theme-aware PlutoniX analysis toolbar styling."},
+    {"path": "apps/frontend/src/App.jsx", "summary": "Architecture analysis now belongs to the PlutoMix page and is absent from Project Tools."},
+    {"path": "apps/frontend/src/App.css", "summary": "Added responsive, theme-aware PlutoMix analysis toolbar styling."},
     {"path": "apps/backend/src/projectBranchDiscovery.js", "summary": "Discovers primary pages, nested UI elements, interaction features, and source-backed UI-to-service dependencies."},
     {"path": "apps/backend/src/projectAgents.js", "summary": "Projects UIElement and Feature nodes and their hierarchy into graph outputs."},
     {"path": "apps/frontend/public/agentic-system/d3/agentic-system-model.js", "summary": "Models Page, UI element, interaction feature, API, service, and data layers."},

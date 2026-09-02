@@ -13,7 +13,7 @@ test("keeps runtime self-improvement triggers disabled by default", () => {
 });
 
 test("allows explicit runtime trigger opt-in", () => {
-  assert.equal(selfImprovementRuntimeEventsEnabled({ PLUTONIX_SELF_IMPROVEMENT_RUNTIME_EVENTS: "true" }), true);
-  assert.equal(orchestratorRuntimeSelfHealEnabled({ PLUTONIX_ORCHESTRATOR_SELF_HEAL: "1" }), true);
+  assert.equal(selfImprovementRuntimeEventsEnabled({ PLUTOMIX_SELF_IMPROVEMENT_RUNTIME_EVENTS: "true" }), true);
+  assert.equal(orchestratorRuntimeSelfHealEnabled({ PLUTOMIX_ORCHESTRATOR_SELF_HEAL: "1" }), true);
   assert.equal(selfImprovementStartupCycleEnabled({ SELF_IMPROVEMENT_STARTUP_CYCLE_ENABLED: "false" }), false);
 });

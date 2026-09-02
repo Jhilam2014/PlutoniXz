@@ -52,7 +52,7 @@ function routeRequest(taskRole = "generation", overrides = {}) {
 }
 
 async function fixture(context, { adapter, registryConfig } = {}) {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), "plutonix-brainx-"));
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "plutomix-brainx-"));
   context.after(() => fs.rm(root, { recursive: true, force: true }));
   const store = createDecisionContinuityStore({ root });
   const calls = [];

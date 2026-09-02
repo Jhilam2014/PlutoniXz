@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://plutonix.local/schemas/token-observability.schema.json",
+  "$id": "https://plutomix.local/schemas/token-observability.schema.json",
   "title": "Token Observability Event",
   "type": "object",
   "additionalProperties": false,

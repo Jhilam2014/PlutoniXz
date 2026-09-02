@@ -17,7 +17,7 @@ Create and verify the bootstrap artifacts required by AGENTS.md, including:
 3. Local agent registry.
 4. Neo4j graph artifacts.
 5. Agent-to-functionality graph schema.
-6. PlutoniX Graphical Model page.
+6. PlutoMix Graphical Model page.
 7. OpenAI Vector Store integration if configured in `.env`.
 8. ChromaDB fallback if no vector DB is configured in `.env`.
 9. Prompt memory ingestion for orchestrator, agents, subagents, handoff prompts, validation prompts, and correction prompts.

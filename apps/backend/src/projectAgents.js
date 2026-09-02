@@ -46,7 +46,7 @@ const reusableRoleResponsibilities = Object.freeze({
 });
 
 function projectRoot() {
-  return process.env.PLUTONIX_PROJECT_ROOT || repoRoot;
+  return process.env.PLUTOMIX_PROJECT_ROOT || repoRoot;
 }
 
 function agentRuntimeRoot() {
@@ -161,7 +161,10 @@ function reusableAgentDefinition(agent) {
     source: agent.source || "instruction-derived",
     definitionType: "AgentDefinition",
     scope: "global_reusable",
-    version: agent.version || "1.0.0"
+    version: agent.version || "1.0.0",
+    catalogScope: agent.catalogScope || "global_community",
+    tenantId: agent.tenantId || "",
+    enterpriseId: agent.enterpriseId || ""
   };
 }
 
@@ -234,21 +237,21 @@ function needsDesignWorkshopAgent(structuredRequest = {}, productDecision = {}) 
   ].filter(Boolean).join(" ").toLowerCase();
   return (
     ["browser_app", "production_application", "deep_complex_platform"].includes(productDecision.productShape) ||
-    /agentic[- ]?plutonix|plutonix|gotham|frontend|ui|ux|design|layout|panel|chat|dashboard|workflow|controls?|modal|graph|navigation|responsive/.test(text)
+    /agentic[- ]?plutomix|plutomix|gotham|frontend|ui|ux|design|layout|panel|chat|dashboard|workflow|controls?|modal|graph|navigation|responsive/.test(text)
   );
 }
 
-const managedBlockStart = "<!-- plutonix-project-orchestrator:start -->";
-const managedBlockEnd = "<!-- plutonix-project-orchestrator:end -->";
+const managedBlockStart = "<!-- plutomix-project-orchestrator:start -->";
+const managedBlockEnd = "<!-- plutomix-project-orchestrator:end -->";
 
 async function writeManagedEntryFile(filePath, title) {
   const block = [
     managedBlockStart,
     `# ${title}`,
     "",
-    "For PlutoniX-managed Gotham runs, the backend supplies the selected policy packs, current canonical decisions, and bounded agent context directly in the execution prompt.",
+    "For PlutoMix-managed Gotham runs, the backend supplies the selected policy packs, current canonical decisions, and bounded agent context directly in the execution prompt.",
     "`.agentic/orchestrator-agent.md` is a compact project identity and manual-workflow handoff; it is not a second global policy manual.",
-    "PlutoniX Fullstack Agent remains the authority for scope, delegation, validation, retries, and completion.",
+    "PlutoMix Fullstack Agent remains the authority for scope, delegation, validation, retries, and completion.",
     managedBlockEnd
   ].join("\n");
   const existing = (await fs.pathExists(filePath)) ? await fs.readFile(filePath, "utf8") : "";
@@ -299,7 +302,7 @@ async function writeProjectLocalOrchestrator(topology) {
     `preview_port: ${topology.project.port}`,
     `enterprise_id: ${topology.project.enterpriseId || "unassigned"}`,
     `enterprise_name: ${topology.project.enterpriseName || "Unassigned"}`,
-    "authority: plutonix-delegated-project-context",
+    "authority: plutomix-delegated-project-context",
     "",
     "## Core Objective",
     "Deliver the highest achievable implementation accuracy with the lowest justified token and tool cost.",
@@ -313,7 +316,7 @@ async function writeProjectLocalOrchestrator(topology) {
     "- Do not invent results, expose secrets, repeat raw history, or call functionality implemented until its end-to-end behavior is proven.",
     "",
     "## Delegated Execution Contract",
-    "PlutoniX Fullstack Agent owns the parent task and completion criteria. This agent advises and executes only the bounded delegation supplied by PlutoniX.",
+    "PlutoMix Fullstack Agent owns the parent task and completion criteria. This agent advises and executes only the bounded delegation supplied by PlutoMix.",
     "1. Classify each request as tiny, small, medium, or large before using tools.",
     "2. Inspect the smallest relevant set of files, symbols, routes, schemas, tests, and runtime state.",
     "3. Reuse project-local patterns and agents before creating a new specialist or abstraction.",
@@ -347,10 +350,10 @@ async function writeProjectLocalOrchestrator(topology) {
     "- When a recorded constraint or agreement changes, create a reviewable reconsideration suggestion for affected deferred branches. Do not silently activate a branch, rerun implementation, or rewrite the earlier checkpoint.",
     "",
     "## Deterministic Control-Plane Publication Ownership",
-    "- Graph, topology, registry, observability, local-memory, and vector-memory publishing remain mandatory for PlutoniX-managed work.",
-    "- During a PlutoniX-managed Gotham execution, implement the requested project change and return changed-file, input-consumption, validation, review, and recovery evidence only.",
-    "- Do not create or update PlutoniX control-plane Neo4j seeds, D3 topology snapshots, global agent registry projections, prompt ledgers, workflow memory, what-next summaries, vector-memory records, or completion observability artifacts from the model workflow.",
-    "- PlutoniX backend code stores the authoritative path, branch disposition, approval, and execution outcome synchronously, then durably queues deterministic graph and memory projections.",
+    "- Graph, topology, registry, observability, local-memory, and vector-memory publishing remain mandatory for PlutoMix-managed work.",
+    "- During a PlutoMix-managed Gotham execution, implement the requested project change and return changed-file, input-consumption, validation, review, and recovery evidence only.",
+    "- Do not create or update PlutoMix control-plane Neo4j seeds, D3 topology snapshots, global agent registry projections, prompt ledgers, workflow memory, what-next summaries, vector-memory records, or completion observability artifacts from the model workflow.",
+    "- PlutoMix backend code stores the authoritative path, branch disposition, approval, and execution outcome synchronously, then durably queues deterministic graph and memory projections.",
     "- Model completion means implementation evidence is available; it does not mean queued projections have completed.",
     "- Publication failure is observable and retryable and must never activate, promote, reconsider, or implement a selected, rejected, or deferred branch.",
     "- Standalone/manual workflows outside the managed runtime retain their existing publishing requirements unless they explicitly use the backend publisher.",
@@ -360,7 +363,7 @@ async function writeProjectLocalOrchestrator(topology) {
     "- Before selecting stack, routes, components, agents, or styling, consume the server-owned Product Shape Contract.",
     "- Preserve the selected artifact type, product shape, generation depth, interaction model, information density, navigation model, output paths, and prohibited defaults.",
     "- Choose the smallest complete solution. Do not turn artifacts, APIs, automations, scripts, or infrastructure into decorative web apps.",
-    "- PlutoniX is a multi-artifact system. Preserve web, mobile, PDF, document, flyer, image, presentation, workbook, data, media, API, script, automation, and service requests as their real primary outputs.",
+    "- PlutoMix is a multi-artifact system. Preserve web, mobile, PDF, document, flyer, image, presentation, workbook, data, media, API, script, automation, and service requests as their real primary outputs.",
     "- Spreadsheet work must produce a real workbook or delimited-data artifact with required sheets, formulas, tables, formatting, validation, and recalculation evidence; an HTML table is not a workbook substitute.",
     "- Non-browser completion requires artifact-native evidence: parse/open success, requested output path, supplied-input consumption, and domain checks for layout, dimensions, formulas, media metadata, or executable contracts.",
     "- The Playground preview strategy must match the artifact: browser/device, PDF, image/print, workbook, document, presentation, code/data, audio, or video.",
@@ -370,15 +373,15 @@ async function writeProjectLocalOrchestrator(topology) {
     "- Record why the selected shape is neither underbuilt nor overbuilt in generated metadata and validation evidence.",
     "",
     "## Standalone Containerization",
-    "- This project must remain runnable outside PlutoniX with project-local Docker assets.",
+    "- This project must remain runnable outside PlutoMix with project-local Docker assets.",
     "- Maintain `Dockerfile`, `.dockerignore`, `docker-compose.yml`, `.env.example`, and README Docker run instructions at the project root.",
-    "- Docker assets must not depend on PlutoniX backend, PlutoniX frontend, MCP services, shared preview volumes, or PlutoniX-only environment variables unless explicitly required by the project.",
+    "- Docker assets must not depend on PlutoMix backend, PlutoMix frontend, MCP services, shared preview volumes, or PlutoMix-only environment variables unless explicitly required by the project.",
     "- When runtime dependencies, ports, build commands, or environment variables change, update the standalone Docker files in the same task.",
     "- If Docker cannot be executed in the current environment, validate file presence and syntax as far as possible and report that runtime validation was not run.",
     "",
     "## Hugging Face Model Workspace",
     "- Every generated project includes a project-local Hugging Face model workspace under `models/huggingface/`.",
-    "- When a PlutoniX or project task requires a Hugging Face model, first register it in `models/huggingface/model-manifest.json` and download the complete repository locally, including all model weight files and shards, with `npm run hf:models:download -- <namespace/model>` or `node scripts/huggingface-models.mjs download <namespace/model>`.",
+    "- When a PlutoMix or project task requires a Hugging Face model, first register it in `models/huggingface/model-manifest.json` and download the complete repository locally, including all model weight files and shards, with `npm run hf:models:download -- <namespace/model>` or `node scripts/huggingface-models.mjs download <namespace/model>`.",
     "- If the task asks to search for a suitable Hugging Face model, record the selected repository ID and estimated repository size in GB in the manifest before implementation, inform the user of that size, then download the complete repository locally and read its model card.",
     "- Run `npm run hf:models:build` after downloads so `models/huggingface/services/` describes the local service boundary that backend or script code should use.",
     "- Prefer the local repository path over remote inference providers for generated-project functionality. Keep `HF_TOKEN` in the environment only and never write tokens into project files, logs, graphs, manifests, or prompts.",
@@ -421,7 +424,7 @@ async function writeProjectLocalOrchestrator(topology) {
     ...supportAgents.map((agent) => `- ${agent.name} (${agent.role}): ${agent.responsibility}`),
     "",
     "## Execution Handoff",
-    "Gotham and Claude must follow the PlutoniX parent orchestration envelope. Use this file for project identity, specialist context, and local accuracy/token constraints without redefining the parent task.",
+    "Gotham and Claude must follow the PlutoMix parent orchestration envelope. Use this file for project identity, specialist context, and local accuracy/token constraints without redefining the parent task.",
     ""
   ].join("\n");
   const compactPolicy = [
@@ -432,11 +435,11 @@ async function writeProjectLocalOrchestrator(topology) {
     `workspace: ${topology.project.workspaceDir}`,
     `preview_port: ${topology.project.port}`,
     `enterprise_id: ${topology.project.enterpriseId || "unassigned"}`,
-    "authority: plutonix-delegated-project-context",
+    "authority: plutomix-delegated-project-context",
     "policy_handoff_version: 2",
     "",
     "## Managed Runtime Handoff",
-    "- The PlutoniX backend context compiler supplies the authoritative, task-selected policy packs and a fresh canonical decision snapshot immediately before Gotham execution.",
+    "- The PlutoMix backend context compiler supplies the authoritative, task-selected policy packs and a fresh canonical decision snapshot immediately before Gotham execution.",
     "- Do not scan the root policy manual, unrelated agent definitions, graph artifacts, memory ledgers, or observability history unless the compiled task context explicitly selects them.",
     "- Implement only the bounded project change and return changed-file, input-consumption, validation, review, and recovery evidence.",
     "- Preserve existing features, project conventions, user-authored instructions, secrets boundaries, real-data requirements, and the server-owned Product Shape Contract.",
@@ -445,7 +448,7 @@ async function writeProjectLocalOrchestrator(topology) {
     "## Decision And Publication Boundary",
     "- Canonical selected, rejected, and deferred branches, rationale, approvals, reconsideration state, and execution outcomes are synchronously owned by the backend decision store.",
     "- Never activate or reinterpret a rejected or deferred branch from source code, graph presence, memory, retry, or recommendation evidence.",
-    "- PlutoniX control-plane graph, Neo4j, D3, registry, observability, local-memory, and vector-memory publication remains mandatory but is owned by the deterministic backend publisher.",
+    "- PlutoMix control-plane graph, Neo4j, D3, registry, observability, local-memory, and vector-memory publication remains mandatory but is owned by the deterministic backend publisher.",
     "- Model completion is implementation completion, not projection completion. Do not publish or claim completion of those projections from Gotham.",
     "- Application-owned graph or memory behavior explicitly requested by the user remains valid project work.",
     "",
@@ -463,7 +466,7 @@ async function writeProjectLocalOrchestrator(topology) {
     ...supportAgents.map((agent) => `- Support: ${agent.name} (${agent.role}) — ${agent.responsibility}`),
     "",
     "## Manual Or Standalone Use",
-    "Outside a PlutoniX-managed run, treat this file as the local handoff and follow repository/user instructions. Mandatory publication requirements remain unless that workflow explicitly delegates them to the backend publisher.",
+    "Outside a PlutoMix-managed run, treat this file as the local handoff and follow repository/user instructions. Mandatory publication requirements remain unless that workflow explicitly delegates them to the backend publisher.",
     "Never expose credentials, tokens, private environment values, unnecessary raw prompts, or cross-tenant information.",
     ""
   ].join("\n");
@@ -780,13 +783,31 @@ export function buildProjectAgentTopology(project, structuredRequest = {}, exist
         responsibility: agent.responsibility,
         source: "instruction-derived"
       }));
-  const requestedDefinitions = [...infrastructure.map(reusableAgentDefinition), ...specialistRequests];
-  const candidates = uniqueAgentDefinitions([
+  const agentCatalog = structuredRequest.agentCatalog || {
+    source: project.agentSource || "global_community",
+    tenantId: project.tenantId || "",
+    enterpriseId: project.enterprise?.id || ""
+  };
+  const enterpriseCatalog = agentCatalog.source === "enterprise";
+  const catalogPrefix = enterpriseCatalog
+    ? `enterprise-${crypto.createHash("sha256").update(`${agentCatalog.tenantId}:${agentCatalog.enterpriseId}`).digest("hex").slice(0, 10)}-`
+    : "";
+  const requestedDefinitions = [...infrastructure.map(reusableAgentDefinition), ...specialistRequests]
+    .map((definition) => enterpriseCatalog ? { ...definition, id: `${catalogPrefix}${definition.id}` } : definition);
+  const allCandidates = uniqueAgentDefinitions([
     ...availableDefinitions,
     ...(existingTopology?.agentModelVersion === agentModelVersion ? existingTopology.agents || [] : [])
   ]);
+  const candidates = enterpriseCatalog
+    ? allCandidates.filter((agent) => agent.catalogScope === "enterprise" && agent.tenantId === agentCatalog.tenantId && agent.enterpriseId === agentCatalog.enterpriseId)
+    : allCandidates.filter((agent) => agent.catalogScope !== "enterprise");
   const resolutions = requestedDefinitions.map((requested) => resolveAgent(requested, candidates, project));
-  const agents = resolutions.map((resolution) => resolution.agent);
+  const agents = resolutions.map((resolution) => ({
+    ...resolution.agent,
+    catalogScope: enterpriseCatalog ? "enterprise" : "global_community",
+    tenantId: enterpriseCatalog ? agentCatalog.tenantId : "",
+    enterpriseId: enterpriseCatalog ? agentCatalog.enterpriseId : ""
+  }));
   const agentReuseDecisions = resolutions.map((resolution) => resolution.decision);
   assertReuseDecisionCoverage(agents, agentReuseDecisions);
   const requestedResponsibilityByRole = new Map([
@@ -810,8 +831,11 @@ export function buildProjectAgentTopology(project, structuredRequest = {}, exist
       port: project.port,
       previewUrl: project.previewUrl,
       origin: project.provenance?.origin || project.origin || existingTopology?.project?.origin || (project.status === "imported" ? "imported" : "unknown_legacy"),
+      tenantId: project.tenantId || "",
+      tenantInstanceKey: project.tenantInstanceKey || "",
       enterpriseId: project.enterprise?.id || "",
-      enterpriseName: project.enterprise?.name || ""
+      enterpriseName: project.enterprise?.name || "",
+      agentSource: agentCatalog.source
     },
     instruction: {
       hash: structuredRequest.instructionHash,
@@ -836,7 +860,7 @@ export function buildProjectAgentTopology(project, structuredRequest = {}, exist
     architectureBranches: Array.isArray(structuredRequest.architectureBranches) ? structuredRequest.architectureBranches.slice(0, 200) : [],
     relationships: [
       {
-        source: "plutonix-fullstack-agent",
+        source: "plutomix-fullstack-agent",
         target: orchestrator.id,
         type: "RUNTIME_DELEGATES_TO"
       },
@@ -910,7 +934,10 @@ async function readRegisteredAgentDefinitions() {
         role,
         responsibility: row.responsibility || infrastructure?.responsibility || row.objective || `Reusable ${role} agent.`,
         source: "local-agent-registry",
-        version: row.version || "1.0.0"
+        version: row.version || "1.0.0",
+        catalogScope: row.catalog_scope || row.catalogScope,
+        tenantId: row.tenant_id || row.tenantId,
+        enterpriseId: row.enterprise_id || row.enterpriseId
       }));
     }
   }
@@ -1031,6 +1058,9 @@ async function writeAgentRegistries(topology) {
       role: agent.role,
       definitionType: "AgentDefinition",
       scope: "global_reusable",
+      catalog_scope: agent.catalogScope || "global_community",
+      tenant_id: agent.tenantId || "",
+      enterprise_id: agent.enterpriseId || "",
       version: agent.version || "1.0.0",
       status: existing.status || "active",
       capability_score: existing.capability_score || {
@@ -1062,6 +1092,9 @@ async function writeAgentMarkdown(topology, existingTopology = null) {
       `source: "${agent.source}"`,
       'definition_type: "AgentDefinition"',
       'scope: "global_reusable"',
+      `catalog_scope: "${agent.catalogScope || "global_community"}"`,
+      `tenant_id: "${agent.tenantId || ""}"`,
+      `enterprise_id: "${agent.enterpriseId || ""}"`,
       `version: "${agent.version || "1.0.0"}"`,
       "",
       "## Responsibility",
@@ -1078,11 +1111,11 @@ async function writeAgentMarkdown(topology, existingTopology = null) {
 async function writeGeneratedNeo4jSeed(topologies, canonicalDecisions = []) {
   await fs.ensureDir(path.dirname(generatedGraphPath()));
   const lines = [
-    "// Generated by PlutoniX project-agent registry.",
+    "// Generated by PlutoMix project-agent registry.",
     "// Reusable Agent definitions are global; ProjectAgentAssignment nodes carry project context.",
-    "MERGE (:Agent {id: 'plutonix-fullstack-agent', name: 'PlutoniX Fullstack Agent', role: 'global-orchestrator', status: 'active'})",
-    "MERGE (:Agent {id: 'plutonix-independent-reviewer', name: 'PlutoniX Independent Reviewer', role: 'reviewer', status: 'available', read_only: true})",
-    "MATCH (o:Agent {id: 'plutonix-fullstack-agent'}), (r:Agent {id: 'plutonix-independent-reviewer'}) MERGE (o)-[:MAY_REQUEST_REVIEW_FROM {adaptive: true}]->(r)",
+    "MERGE (:Agent {id: 'plutomix-fullstack-agent', name: 'PlutoMix Fullstack Agent', role: 'global-orchestrator', status: 'active'})",
+    "MERGE (:Agent {id: 'plutomix-independent-reviewer', name: 'PlutoMix Independent Reviewer', role: 'reviewer', status: 'available', read_only: true})",
+    "MATCH (o:Agent {id: 'plutomix-fullstack-agent'}), (r:Agent {id: 'plutomix-independent-reviewer'}) MERGE (o)-[:MAY_REQUEST_REVIEW_FROM {adaptive: true}]->(r)",
     ""
   ];
   for (const topology of topologies) {
@@ -1235,20 +1268,20 @@ function graphRowsForTopology(topology) {
   const projectNodeId = `project:${topology.project.id}`;
   const nodes = [
     {
-      id: "agent:plutonix-fullstack-agent",
+      id: "agent:plutomix-fullstack-agent",
       type: "agent",
-      label: "PlutoniX Fullstack Agent",
+      label: "PlutoMix Fullstack Agent",
       group: "global-agent",
       risk_level: "medium",
       status: "active",
-      agent_id: "plutonix-fullstack-agent",
-      cluster_id: "plutonix-fullstack",
+      agent_id: "plutomix-fullstack-agent",
+      cluster_id: "plutomix-fullstack",
       metadata: {
         dynamicProjectGraph: true,
-        role: "global-plutonix-orchestrator",
+        role: "global-plutomix-orchestrator",
         domain: "fullstack",
-        responsibility: "Owns the PlutoniX control surface, backend generation API, and project creation handoff.",
-        description: "Global PlutoniX agent that creates and delegates to project-local orchestrators."
+        responsibility: "Owns the PlutoMix control surface, backend generation API, and project creation handoff.",
+        description: "Global PlutoMix agent that creates and delegates to project-local orchestrators."
       }
     },
     {
@@ -1268,20 +1301,20 @@ function graphRowsForTopology(topology) {
         workspaceDir: topology.project.workspaceDir,
         port: topology.project.port,
         previewUrl: topology.project.previewUrl,
-        origin: topology.project.origin || "plutonix_created",
+        origin: topology.project.origin || "plutomix_created",
         enterpriseId: topology.project.enterpriseId || "",
         enterpriseName: topology.project.enterpriseName || "",
-        description: topology.instruction.objective || `Managed PlutoniX project for ${topology.project.name}.`
+        description: topology.instruction.objective || `Managed PlutoMix project for ${topology.project.name}.`
       }
     },
     {
-      id: "agent:plutonix-independent-reviewer",
+      id: "agent:plutomix-independent-reviewer",
       type: "agent",
-      label: "PlutoniX Independent Reviewer",
+      label: "PlutoMix Independent Reviewer",
       group: "review-agent",
       risk_level: "low",
       status: "available",
-      agent_id: "plutonix-independent-reviewer",
+      agent_id: "plutomix-independent-reviewer",
       cluster_id: "adaptive-review",
       metadata: { dynamicProjectGraph: true, readOnly: true, adaptive: true }
     },
@@ -1352,7 +1385,7 @@ function graphRowsForTopology(topology) {
         deliveryPhaseRank: Number(functionality.chronology?.deliveryPhaseRank ?? 0),
         timelineInferred: Boolean(functionality.chronology?.inferred),
         timelineConfidence: Number(functionality.chronology?.confidence ?? 0),
-        projectOrigin: topology.project.origin || "plutonix_created",
+        projectOrigin: topology.project.origin || "plutomix_created",
         parentEntityId: functionality.parentEntityId || "",
         parentEntityNodeId: functionality.parentEntityId ? `functionality:${topology.project.id}:${functionality.parentEntityId}` : "",
         parentRelationshipType: functionality.parentRelationshipType || "",
@@ -1412,15 +1445,15 @@ function graphRowsForTopology(topology) {
   ];
   const links = [
     {
-      source: "agent:plutonix-fullstack-agent",
+      source: "agent:plutomix-fullstack-agent",
       target: projectNodeId,
       type: "creates_project",
       weight: 2,
       metadata: { dynamicProjectGraph: true, projectId: topology.project.id }
     },
     {
-      source: "agent:plutonix-fullstack-agent",
-      target: "agent:plutonix-independent-reviewer",
+      source: "agent:plutomix-fullstack-agent",
+      target: "agent:plutomix-independent-reviewer",
       type: "may_request_review_from",
       weight: 1,
       metadata: { dynamicProjectGraph: true, adaptive: true, readOnly: true }
@@ -1646,8 +1679,8 @@ async function selfImprovementGraphRows() {
     readJsonLineRecords(path.join(runtimeRoot, "research", "research-agent-usage.jsonl"), 12),
     readJsonLineRecords(path.join(runtimeRoot, "tools", "tool-incorporation-plans.jsonl"), 12),
     readJsonLineRecords(path.join(runtimeRoot, "approvals", "monetary-approvals.jsonl"), 12),
-    fs.pathExists(path.join(runtimeRoot, "market-vision", "plutonix-market-differentiation.json"))
-      .then((exists) => exists ? fs.readJson(path.join(runtimeRoot, "market-vision", "plutonix-market-differentiation.json")) : null)
+    fs.pathExists(path.join(runtimeRoot, "market-vision", "plutomix-market-differentiation.json"))
+      .then((exists) => exists ? fs.readJson(path.join(runtimeRoot, "market-vision", "plutomix-market-differentiation.json")) : null)
       .catch(() => null),
     fs.pathExists(path.join(projectRoot(), "observability", "model-pool", "huggingface-latest.json"))
       .then((exists) => exists ? fs.readJson(path.join(projectRoot(), "observability", "model-pool", "huggingface-latest.json")) : null)
@@ -1656,26 +1689,26 @@ async function selfImprovementGraphRows() {
   const metadata = { dynamicSelfImprovementGraph: true };
   const researchAgentNodes = [
     {
-      id: "agent:plutonix-competitive-tools-research-agent",
+      id: "agent:plutomix-competitive-tools-research-agent",
       label: "Competitive Tools Research Agent",
       role: "competitive-tool-scout"
     },
     {
-      id: "agent:plutonix-literature-research-agent",
+      id: "agent:plutomix-literature-research-agent",
       label: "Literature Research Agent",
       role: "research-paper-scout"
     },
     {
-      id: "agent:plutonix-marketplace-research-agent",
+      id: "agent:plutomix-marketplace-research-agent",
       label: "Marketplace Research Agent",
       role: "marketplace-signal-scout"
     }
   ];
   const nodes = [
     {
-      id: "system:plutonix",
+      id: "system:plutomix",
       type: "system",
-      label: "PlutoniX System",
+      label: "PlutoMix System",
       group: "platform",
       risk_level: "medium",
       status: "managed",
@@ -1694,35 +1727,35 @@ async function selfImprovementGraphRows() {
       metadata: { ...metadata, description: "Non-blocking signal observer for runtime logs, health reports, and Gotham system instructions." }
     },
     {
-      id: "agent:plutonix-self-improvement-investigator-agent",
+      id: "agent:plutomix-self-improvement-investigator-agent",
       type: "agent",
       label: "Self-Improvement Investigator Agent",
       group: "self-improvement",
       risk_level: "low",
       status: investigations.some((row) => row.shouldTrigger) ? "escalated" : "watching",
-      agent_id: "plutonix-self-improvement-investigator-agent",
+      agent_id: "plutomix-self-improvement-investigator-agent",
       cluster_id: "self-improvement",
       metadata: { ...metadata, description: "Checks every logged event for quality, efficiency, security, UI friction, and repeated failure signals." }
     },
     {
-      id: "agent:plutonix-tool-capability-agent",
+      id: "agent:plutomix-tool-capability-agent",
       type: "agent",
       label: "Tool Capability Agent",
       group: "self-improvement",
       risk_level: "low",
       status: toolPlans.length ? "planning" : "available",
-      agent_id: "plutonix-tool-capability-agent",
+      agent_id: "plutomix-tool-capability-agent",
       cluster_id: "self-improvement",
       metadata: { ...metadata, description: "Detects missing tools, sluggishness, and workflow complexity from logged evidence." }
     },
     {
-      id: "agent:plutonix-autonomous-tool-builder-agent",
+      id: "agent:plutomix-autonomous-tool-builder-agent",
       type: "agent",
       label: "Autonomous Tool Builder Agent",
       group: "self-improvement",
       risk_level: "medium",
       status: toolPlans.some((row) => row.status === "ready_for_candidate") ? "building_candidates" : "gated",
-      agent_id: "plutonix-autonomous-tool-builder-agent",
+      agent_id: "plutomix-autonomous-tool-builder-agent",
       cluster_id: "self-improvement",
       metadata: { ...metadata, description: "Builds safe generated-tool candidates and routes paid capability requests to approval." }
     },
@@ -1792,7 +1825,7 @@ async function selfImprovementGraphRows() {
         dynamicModelPoolGraph: true,
         serviceCount: hfModelPoolStatus?.services || 0,
         averageDownloadMs: hfModelPoolStatus?.performance?.averageDownloadMs || 0,
-        description: "Local service registry for downloaded Hugging Face models used by small PlutoniX and self-improvement tasks."
+        description: "Local service registry for downloaded Hugging Face models used by small PlutoMix and self-improvement tasks."
       }
     },
     ...researchAgentNodes.map((agent) => ({
@@ -1876,18 +1909,18 @@ async function selfImprovementGraphRows() {
     ] : [])
   ];
   const links = [
-    { source: "system:plutonix", target: "agent:plutonix-self-improvement-investigator-agent", type: "streams_logged_events_to", weight: 2, metadata },
-    { source: "agent:plutonix-self-improvement-investigator-agent", target: "self-improvement:observer", type: "emits_problem_signal_to", weight: 2, metadata },
-    { source: "agent:plutonix-self-improvement-investigator-agent", target: "self-improvement:planner", type: "can_trigger_proposal_for", weight: 2, metadata },
-    { source: "agent:plutonix-self-improvement-investigator-agent", target: "agent:plutonix-tool-capability-agent", type: "shares_quality_context_with", weight: 2, metadata },
-    { source: "agent:plutonix-tool-capability-agent", target: "agent:plutonix-autonomous-tool-builder-agent", type: "requests_tool_build_from", weight: 2, metadata },
-    { source: "agent:plutonix-autonomous-tool-builder-agent", target: "self-improvement:monetary-approval-gate", type: "requires_cost_gate_when_paid", weight: 2, metadata },
-    { source: "agent:plutonix-autonomous-tool-builder-agent", target: "self-improvement:planner", type: "feeds_tool_output_to", weight: 1, metadata },
+    { source: "system:plutomix", target: "agent:plutomix-self-improvement-investigator-agent", type: "streams_logged_events_to", weight: 2, metadata },
+    { source: "agent:plutomix-self-improvement-investigator-agent", target: "self-improvement:observer", type: "emits_problem_signal_to", weight: 2, metadata },
+    { source: "agent:plutomix-self-improvement-investigator-agent", target: "self-improvement:planner", type: "can_trigger_proposal_for", weight: 2, metadata },
+    { source: "agent:plutomix-self-improvement-investigator-agent", target: "agent:plutomix-tool-capability-agent", type: "shares_quality_context_with", weight: 2, metadata },
+    { source: "agent:plutomix-tool-capability-agent", target: "agent:plutomix-autonomous-tool-builder-agent", type: "requests_tool_build_from", weight: 2, metadata },
+    { source: "agent:plutomix-autonomous-tool-builder-agent", target: "self-improvement:monetary-approval-gate", type: "requires_cost_gate_when_paid", weight: 2, metadata },
+    { source: "agent:plutomix-autonomous-tool-builder-agent", target: "self-improvement:planner", type: "feeds_tool_output_to", weight: 1, metadata },
     { source: "self-improvement:observer", target: "self-improvement:aggregator", type: "emits_signals_to", weight: 2, metadata },
     { source: "self-improvement:aggregator", target: "self-improvement:planner", type: "triggers_proposals_for", weight: 2, metadata },
     { source: "self-improvement:planner", target: "self-improvement:validation", type: "requires_validation_by", weight: 2, metadata },
-    { source: "self-improvement:planner", target: "system:plutonix", type: "may_improve", weight: 1, metadata },
-    { source: "system:plutonix", target: "model-pool:huggingface", type: "owns_local_model_pool", weight: 2, metadata },
+    { source: "self-improvement:planner", target: "system:plutomix", type: "may_improve", weight: 1, metadata },
+    { source: "system:plutomix", target: "model-pool:huggingface", type: "owns_local_model_pool", weight: 2, metadata },
     { source: "model-pool:huggingface", target: "model-pool:huggingface-local-services", type: "registers_local_services_for", weight: 2, metadata },
     { source: "model-pool:huggingface-local-services", target: "self-improvement:planner", type: "serves_small_self_improvement_tasks_for", weight: 2, metadata },
     ...researchAgentNodes.flatMap((agent) => [
@@ -1896,9 +1929,9 @@ async function selfImprovementGraphRows() {
     ]),
     ...(marketVision ? [
       { source: "self-improvement:market-vision", target: "self-improvement:planner", type: "guides_roadmap_for", weight: 2, metadata },
-      { source: "self-improvement:market-vision", target: "agent:plutonix-marketplace-research-agent", type: "guides_research_for", weight: 2, metadata },
-      { source: "self-improvement:market-vision", target: "agent:plutonix-competitive-tools-research-agent", type: "guides_research_for", weight: 2, metadata },
-      { source: "self-improvement:market-vision", target: "agent:plutonix-literature-research-agent", type: "guides_research_for", weight: 2, metadata },
+      { source: "self-improvement:market-vision", target: "agent:plutomix-marketplace-research-agent", type: "guides_research_for", weight: 2, metadata },
+      { source: "self-improvement:market-vision", target: "agent:plutomix-competitive-tools-research-agent", type: "guides_research_for", weight: 2, metadata },
+      { source: "self-improvement:market-vision", target: "agent:plutomix-literature-research-agent", type: "guides_research_for", weight: 2, metadata },
       ...(marketVision.marketReadyPillars || []).map((pillar) => ({
         source: "self-improvement:market-vision",
         target: `self-improvement:market-pillar:${pillar.id}`,
@@ -1908,7 +1941,7 @@ async function selfImprovementGraphRows() {
       })),
       ...(marketVision.investorDiscoveryPlan ? [
         { source: "self-improvement:market-vision", target: "self-improvement:investor-discovery", type: "defines_investor_discovery_plan", weight: 2, metadata },
-        { source: "self-improvement:investor-discovery", target: "agent:plutonix-marketplace-research-agent", type: "assigns_research_to", weight: 2, metadata },
+        { source: "self-improvement:investor-discovery", target: "agent:plutomix-marketplace-research-agent", type: "assigns_research_to", weight: 2, metadata },
         { source: "self-improvement:investor-discovery", target: "self-improvement:planner", type: "feeds_validated_outreach_experiments_to", weight: 1, metadata }
       ] : []),
       ...((marketVision.checkpointTimeline?.checkpoints || []).map((checkpoint) => ({
@@ -1941,7 +1974,7 @@ async function selfImprovementGraphRows() {
       }
     });
     links.push(
-      { source: "agent:plutonix-self-improvement-investigator-agent", target: investigationNodeId, type: "records", weight: 1, metadata },
+      { source: "agent:plutomix-self-improvement-investigator-agent", target: investigationNodeId, type: "records", weight: 1, metadata },
       ...(investigation.shouldTrigger ? [{ source: investigationNodeId, target: "self-improvement:planner", type: "sends_problem_statement_to", weight: 2, metadata }] : [])
     );
   }
@@ -1985,8 +2018,8 @@ async function selfImprovementGraphRows() {
       }
     });
     links.push(
-      { source: "agent:plutonix-tool-capability-agent", target: toolPlanNodeId, type: "plans", weight: 1, metadata },
-      { source: toolPlanNodeId, target: toolPlan.monetaryApprovalRequired ? "self-improvement:monetary-approval-gate" : "agent:plutonix-autonomous-tool-builder-agent", type: toolPlan.monetaryApprovalRequired ? "awaits_approval_from" : "can_be_built_by", weight: 2, metadata }
+      { source: "agent:plutomix-tool-capability-agent", target: toolPlanNodeId, type: "plans", weight: 1, metadata },
+      { source: toolPlanNodeId, target: toolPlan.monetaryApprovalRequired ? "self-improvement:monetary-approval-gate" : "agent:plutomix-autonomous-tool-builder-agent", type: toolPlan.monetaryApprovalRequired ? "awaits_approval_from" : "can_be_built_by", weight: 2, metadata }
     );
   }
 
@@ -2043,7 +2076,7 @@ async function selfImprovementGraphRows() {
     });
     links.push(
       { source: "self-improvement:planner", target: proposalNodeId, type: "creates", weight: 2, metadata },
-      { source: proposalNodeId, target: "system:plutonix", type: "affects_component", weight: 1, metadata },
+      { source: proposalNodeId, target: "system:plutomix", type: "affects_component", weight: 1, metadata },
       { source: proposalNodeId, target: "self-improvement:validation", type: "must_pass", weight: 2, metadata }
     );
   }
@@ -2087,7 +2120,7 @@ async function selfImprovementGraphRows() {
       status: rollback.status || "rolled_back",
       metadata: { ...metadata, rollbackId: rollback.id, proposalId: rollback.proposalId, reason: rollback.reason }
     });
-    links.push({ source: rollbackNodeId, target: "system:plutonix", type: "restores", weight: 2, metadata });
+    links.push({ source: rollbackNodeId, target: "system:plutomix", type: "restores", weight: 2, metadata });
   }
 
   return {
@@ -2104,14 +2137,15 @@ async function selfImprovementGraphRows() {
   };
 }
 
-export async function buildAgenticSystemGraph({ canonicalDecisions = null } = {}) {
+export async function buildAgenticSystemGraph({ canonicalDecisions = null, tenantId = "" } = {}) {
   const basePath = topologyGraphPath();
   const baseGraph = (await fs.pathExists(basePath))
     ? await fs.readJson(basePath)
     : { metadata: {}, nodes: [], links: [] };
   const baseNodes = (baseGraph.nodes || []).filter((node) => !node.metadata?.dynamicProjectGraph && !node.metadata?.dynamicSelfImprovementGraph);
   const baseLinks = (baseGraph.links || []).filter((link) => !link.metadata?.dynamicProjectGraph && !link.metadata?.dynamicSelfImprovementGraph);
-  const topologies = await readProjectAgentTopologies();
+  const allTopologies = await readProjectAgentTopologies();
+  const topologies = tenantId ? allTopologies.filter((topology) => topology.project?.tenantId === tenantId) : allTopologies;
   const projectRows = topologies.map(graphRowsForTopology);
   const decisionRows = graphRowsForCanonicalDecisions(
     canonicalDecisions || await readCanonicalDecisionContinuityRecords(),
@@ -2157,9 +2191,17 @@ export async function prepareProjectAgentTopology(project, structuredRequest = {
     readProjectAgentTopologies(),
     readRegisteredAgentDefinitions()
   ]);
+  const agentCatalog = structuredRequest.agentCatalog || { source: project.agentSource || "global_community", tenantId: project.tenantId || "", enterpriseId: project.enterprise?.id || "" };
+  const enterpriseCatalog = agentCatalog.source === "enterprise";
+  const eligibleTopologies = enterpriseCatalog
+    ? existingTopologies.filter((item) => item.project?.tenantId === agentCatalog.tenantId && item.project?.enterpriseId === agentCatalog.enterpriseId)
+    : existingTopologies;
+  const eligibleRegisteredDefinitions = enterpriseCatalog
+    ? registeredDefinitions.filter((item) => item.catalogScope === "enterprise" && item.tenantId === agentCatalog.tenantId && item.enterpriseId === agentCatalog.enterpriseId)
+    : registeredDefinitions.filter((item) => item.catalogScope !== "enterprise");
   const availableDefinitions = uniqueAgentDefinitions([
-    ...registeredDefinitions,
-    ...existingTopologies.flatMap((item) => item.agents || [])
+    ...eligibleRegisteredDefinitions,
+    ...eligibleTopologies.flatMap((item) => item.agents || [])
   ]);
   const topology = withoutDeletedAgents(
     buildProjectAgentTopology(project, structuredRequest, existingTopology, availableDefinitions),

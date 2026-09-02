@@ -11,7 +11,7 @@ The deterministic projection publisher was independently verified outside the HT
 1. The backend classifies `Auto` as Simple, Medium, or Hard from request boundaries and risk.
 2. It reads `policies/manifest.json`, verifies pack hashes, selects core plus one lifecycle, task-size, and artifact-domain pack, and compiles a bounded static policy bundle.
 3. Immediately before execution it adds the current instruction, completion criteria, project-state digest, selected agent definition, and a fresh canonical decision snapshot.
-4. Gotham implements the bounded project change and returns evidence. It does not scan policy directories or publish PlutoniX control-plane projections.
+4. Gotham implements the bounded project change and returns evidence. It does not scan policy directories or publish PlutoMix control-plane projections.
 5. Canonical path, branch dispositions, and terminal outcome remain synchronous. A durable publication receipt is queued before the HTTP result returns.
 6. Local graph and memory projections publish asynchronously; the existing idle vector-memory scheduler runs only after local publication succeeds.
 
@@ -37,7 +37,7 @@ Failure classes distinguish model-cache schema, CLI/model compatibility, missing
 
 At startup, known model-cache candidates under `GOTHAM_HOME`/`CODEX_HOME` are inspected once per resolved runtime home. Incompatible files are atomically moved into `cache-recovery/`; compatible caches remain untouched. A filesystem lock coordinates concurrent preparation.
 
-Infrastructure replay is capped by `PLUTONIX_INFRASTRUCTURE_REPLAY_LIMIT` (maximum one). The backend first verifies workspace access, CLI, cache, and sandbox health. It replays the original instruction only when health passes and no partial project changes were observed. It never turns an infrastructure diagnostic into a code-repair prompt.
+Infrastructure replay is capped by `PLUTOMIX_INFRASTRUCTURE_REPLAY_LIMIT` (maximum one). The backend first verifies workspace access, CLI, cache, and sandbox health. It replays the original instruction only when health passes and no partial project changes were observed. It never turns an infrastructure diagnostic into a code-repair prompt.
 
 ## Usage accounting
 

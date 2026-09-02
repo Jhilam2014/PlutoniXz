@@ -2066,12 +2066,12 @@
     {
       "id": "file-4fdmxjcs774p2uDjVQuWXp",
       "status": "completed",
-      "source_path": "agents/generated/plutonix-fullstack-agent.agent.md"
+      "source_path": "agents/generated/plutomix-fullstack-agent.agent.md"
     },
     {
       "id": "file-C5bFepNgU7tjaeRwKQgkZD",
       "status": "completed",
-      "source_path": "memory/agent-knowledge/agents/plutonix-fullstack-agent.v1.0.0.md"
+      "source_path": "memory/agent-knowledge/agents/plutomix-fullstack-agent.v1.0.0.md"
     },
     {
       "id": "file-G5JmoqvHzeCif3g6agyTGV",
@@ -2716,7 +2716,7 @@
     {
       "id": "file-XKXm7uybsGCiR86sVUxeju",
       "status": "completed",
-      "source_path": "memory/agent-knowledge/prompts/agentic-system-dependencies-explore-20260814.plutonix-fullstack-agent.agentic-system-dependencies-explore-task.prompt.md"
+      "source_path": "memory/agent-knowledge/prompts/agentic-system-dependencies-explore-20260814.plutomix-fullstack-agent.agentic-system-dependencies-explore-task.prompt.md"
     },
     {
       "id": "file-7RHUUcFCJWjh6Ju74fN2dK",
@@ -2741,7 +2741,7 @@
     {
       "id": "file-YSmBvt9xw3H3eUuu1A72VB",
       "status": "completed",
-      "source_path": "memory/agent-knowledge/prompts/agentic-system-architecture-rails-20260814.plutonix-fullstack-agent.task.prompt.md"
+      "source_path": "memory/agent-knowledge/prompts/agentic-system-architecture-rails-20260814.plutomix-fullstack-agent.task.prompt.md"
     },
     {
       "id": "file-QJfwHzMmLm1fCr49sVSBD9",

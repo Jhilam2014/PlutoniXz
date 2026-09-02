@@ -1,5 +1,5 @@
 {
-  "workflow_id": "plutonix-container-restart-001",
+  "workflow_id": "plutomix-container-restart-001",
   "tasks": [
     {
       "id": "route-frontend-through-mcp",

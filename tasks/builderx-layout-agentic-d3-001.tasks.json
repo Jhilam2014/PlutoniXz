@@ -1,9 +1,9 @@
 {
-  "workflow_id": "plutonix-layout-agentic-d3-001",
+  "workflow_id": "plutomix-layout-agentic-d3-001",
   "tasks": [
     {
       "task_id": "layout-restructure",
-      "description": "Create a three-zone workspace with wide chat, center Playground, and right-side PlutoniX panel.",
+      "description": "Create a three-zone workspace with wide chat, center Playground, and right-side PlutoMix panel.",
       "status": "completed"
     },
     {

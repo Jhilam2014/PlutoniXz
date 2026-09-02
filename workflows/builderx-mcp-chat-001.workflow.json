@@ -1,5 +1,5 @@
 {
-  "workflow_id": "plutonix-mcp-chat-001",
+  "workflow_id": "plutomix-mcp-chat-001",
   "name": "MCP Builder chat interface",
   "workflow_class": ["software_engineering", "dashboard_ui", "observability"],
   "task_size": "medium",

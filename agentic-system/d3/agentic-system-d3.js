@@ -41,7 +41,7 @@ function nodeCategory(node) {
   if (node?.type === "project") return "project";
   if (node?.type === "agent") {
     if (node?.metadata?.supportAgent || haystack.includes("qagent")) return "qagent";
-    if (haystack.includes("orchestrator") || haystack.includes("plutonix-fullstack") || haystack.includes("global-plutonix")) return "orchestrator";
+    if (haystack.includes("orchestrator") || haystack.includes("plutomix-fullstack") || haystack.includes("global-plutomix")) return "orchestrator";
     return "normal-agent";
   }
   if (node?.type === "system") return "system";

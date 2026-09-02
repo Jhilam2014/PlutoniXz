@@ -1,5 +1,5 @@
 {
-  "workflow_id": "plutonix-generated-file-ops-001",
+  "workflow_id": "plutomix-generated-file-ops-001",
   "deliverables": [
     "apps/backend/src/generator.js",
     "apps/backend/src/orchestratorAgent.js",

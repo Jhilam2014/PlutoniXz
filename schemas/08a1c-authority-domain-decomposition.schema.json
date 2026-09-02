@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://plutonix.local/schemas/08a1c-authority-domain-decomposition.schema.json",
+  "$id": "https://plutomix.local/schemas/08a1c-authority-domain-decomposition.schema.json",
   "title": "08A1C-R3 authority-domain decomposition",
   "type": "object",
   "required": ["schema_version", "reviewed_at", "source_inventory", "decomposition_policy", "totals", "authority_domains"],

@@ -1,5 +1,5 @@
 {
-  "workflow_id": "plutonix-runtime-log-400-001",
+  "workflow_id": "plutomix-runtime-log-400-001",
   "tasks": [
     {
       "task_id": "runtime-log-backend-retention",

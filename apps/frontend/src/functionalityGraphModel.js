@@ -142,7 +142,7 @@ function recordedActionLabel(item, index) {
 
 function legacyGraph(flowPath = {}, projectId = "") {
   const agents = normalizedAgents(flowPath.activeAgents || []);
-  const builder = agents.find((agent) => agent.id === "plutonix-fullstack-agent");
+  const builder = agents.find((agent) => agent.id === "plutomix-fullstack-agent");
   const reviewer = agents.find((agent) => /reviewer|qagent/i.test(`${agent.id} ${agent.role}`));
   const executor = agents.find(
     (agent) => agent.id !== builder?.id && agent.id !== reviewer?.id && !/reviewer|qagent/i.test(`${agent.id} ${agent.role}`)
@@ -234,7 +234,7 @@ function initialInstructionGraph(flowPath = {}, projectId = "") {
   if (!hierarchy.length) return null;
   const initialFlowPath = flowPath.initialFlowPath || {};
   const agents = normalizedAgents(initialFlowPath.activeAgents || []);
-  const builder = agents.find((agent) => agent.id === "plutonix-fullstack-agent");
+  const builder = agents.find((agent) => agent.id === "plutomix-fullstack-agent");
   const reviewer = agents.find((agent) => /reviewer|qagent/i.test(`${agent.id} ${agent.role}`));
   const executor = agents.find(
     (agent) => agent.id !== builder?.id && agent.id !== reviewer?.id && !/reviewer|qagent/i.test(`${agent.id} ${agent.role}`)
@@ -316,7 +316,7 @@ function restoreRecordedPlanHierarchy(nodes = [], rootId = "") {
       node.id !== primary.id &&
       node.parentId === rootId &&
       node.type === "functionality" &&
-      (/^(?:section|route):/i.test(node.label || "") || /included by the plutonix feature and route plan/i.test(node.detail || ""));
+      (/^(?:section|route):/i.test(node.label || "") || /included by the plutomix feature and route plan/i.test(node.detail || ""));
     return plannedChild ? { ...node, type: "subfunctionality", parentId: primary.id } : node;
   });
 }

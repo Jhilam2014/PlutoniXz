@@ -68,7 +68,7 @@ The user should not need to paste bootstrap instructions repeatedly.
 
 ## UNIVERSAL INSTRUCTION AND RESPONSE QUALITY CONTRACT
 
-All PlutoniX agents, subagents, QAgents, provider adapters, and MCP-invoked agents must follow `docs/agent-instruction-quality.md`.
+All PlutoMix agents, subagents, QAgents, provider adapters, and MCP-invoked agents must follow `docs/agent-instruction-quality.md`.
 
 - Before delegation, suggested-next-instruction generation, or non-trivial execution, create a compact packet with **Goal**, **Context**, **Scope**, **Constraints**, **Requirements**, and **Done when** criteria.
 - For complex work, inspect relevant evidence and create a short dependency-aware plan before editing. Preserve completed work; use chronological instruction history only to identify unresolved, failed, or explicitly requested gaps.
@@ -78,7 +78,7 @@ All PlutoniX agents, subagents, QAgents, provider adapters, and MCP-invoked agen
 
 ## GOTHAM CHAT WORKFLOW MODE CONTRACT
 
-PlutoniX and the orchestrator must understand and preserve the Gotham Chat workflow modes:
+PlutoMix and the orchestrator must understand and preserve the Gotham Chat workflow modes:
 
 - **Planner**: analyze the request, research the codebase and available evidence, produce a plan, identify risks, and suggest the implementation approach. Planner mode must not edit files, delete files, run destructive commands, or claim implementation completion.
 - **Debugger**: reproduce, inspect, diagnose, and isolate failures. Debugger mode may run tests, inspect logs, trace regressions, and recommend or apply focused fixes when the user asks for debugging work, while preserving unrelated behavior.
@@ -96,8 +96,8 @@ Feature preservation is mandatory. Do not delete, remove, disable, hide, or weak
 ## DETERMINISTIC CONTROL-PLANE PUBLICATION OWNERSHIP
 
 - Mandatory graph, Neo4j, D3, registry, observability, local-memory, and vector-memory publishing remains in force.
-- During a PlutoniX-managed Gotham execution, the model implements the requested project change and returns implementation, changed-file, input-consumption, validation, review, and recovery evidence only.
-- The PlutoniX backend publisher owns mandatory control-plane graph and memory projections after model execution. Model completion does not mean queued projection publication has completed.
+- During a PlutoMix-managed Gotham execution, the model implements the requested project change and returns implementation, changed-file, input-consumption, validation, review, and recovery evidence only.
+- The PlutoMix backend publisher owns mandatory control-plane graph and memory projections after model execution. Model completion does not mean queued projection publication has completed.
 - Canonical path selection, selected/rejected/deferred branch dispositions, rationale, approvals, reconsideration state, and execution outcomes remain synchronous and durable before a terminal response. Store the decision synchronously; publish representations asynchronously.
 - A publication retry or graph/memory representation must preserve the recorded disposition exactly and must never activate, promote, reconsider, or implement a rejected or deferred branch.
 - Standalone or manual workflows outside the managed runtime retain their existing publication requirements unless they explicitly use the deterministic publisher.
@@ -106,7 +106,7 @@ Feature preservation is mandatory. Do not delete, remove, disable, hide, or weak
 
 ## PROVIDER PROMPT PARITY ENTRYPOINTS
 
-PlutoniX must maintain equivalent bootstrap, task-router, task-size, and QAgentic prompt files for each supported coding assistant surface.
+PlutoMix must maintain equivalent bootstrap, task-router, task-size, and QAgentic prompt files for each supported coding assistant surface.
 
 Required provider prompt sets:
 
@@ -162,10 +162,10 @@ If provider prompt files conflict with `AGENTS.md`, `AGENTS.md` wins. Provider p
 - Product shape is one of `artifact_only`, `focused_task_tool`, `app_shaped_page`, `production_application`, `deep_complex_platform`, `service_or_automation`, or `existing_product_change`. Choose the smallest shape that satisfies every hard requirement.
 - Control-plane requirements such as agents, Neo4j, D3, vector memory, observability, or Docker do not prove that the user-facing deliverable needs a website, dashboard, application shell, or deeper product shape.
 - Runtime prompts and validation must consume the Product Shape Contract without silently reclassifying it. Non-web artifacts may change task-appropriate project paths; successful work is not limited to `src/generated`.
-- Use adaptive routing: simple/localized work stays in one PlutoniX-owned execution; medium managed-project work uses a bounded project executor; hard, cross-boundary, or high-risk work adds an independent read-only reviewer when the model-call budget permits.
+- Use adaptive routing: simple/localized work stays in one PlutoMix-owned execution; medium managed-project work uses a bounded project executor; hard, cross-boundary, or high-risk work adds an independent read-only reviewer when the model-call budget permits.
 - Route selection must be deterministic, versioned, observable, and constrained by an explicit model-call ceiling.
 - Retry only transient infrastructure failures. Deterministic execution or validation failures must fail closed or receive a revised plan, never a blind repeat.
-- Independent review must verify workspace evidence, must not modify files, and must return an explicit pass/fail verdict before PlutoniX can approve completion.
+- Independent review must verify workspace evidence, must not modify files, and must return an explicit pass/fail verdict before PlutoMix can approve completion.
 <!-- canonical-runtime-policy:end -->
 
 This file is the canonical orchestrator behavior contract. It must be usable by OpenAI Codex/GPT models and Anthropic Claude/Claude Code models.
@@ -263,7 +263,7 @@ registry/vector/vector-provider.registry.json
 observability/vector-memory/latest-vector-write.json
 ```
 
-For tiny/small coding tasks, the orchestrator may perform an **incremental graph and D3 update** instead of a full project-wide regeneration. However, it must not skip Neo4j artifact creation, graph mapping, vector memory creation, prompt capture, or PlutoniX Graphical Model page creation.
+For tiny/small coding tasks, the orchestrator may perform an **incremental graph and D3 update** instead of a full project-wide regeneration. However, it must not skip Neo4j artifact creation, graph mapping, vector memory creation, prompt capture, or PlutoMix Graphical Model page creation.
 
 ---
 
@@ -2054,7 +2054,7 @@ This upgrade is complete only when:
 28. Bootstrap-only memory verification creates local agent files, memory summaries, vector sync index, and OpenAI Vector Store verification logs.
 29. Neo4j database artifacts are generated for every project, including agent-to-functionality nodes and relationships.
 30. If Neo4j credentials are missing, local Cypher, graph JSON, D3 data, and pending sync logs are still generated.
-31. A separate PlutoniX Graphical Model page is generated or updated for every project.
+31. A separate PlutoMix Graphical Model page is generated or updated for every project.
 32. Vector memory is always available through OpenAI Vector Store, external vector DB, or generated local ChromaDB fallback.
 33. If no vector DB is available in `.env`, ChromaDB instance files, scripts, config, collections, and verification logs are generated.
 34. Agent and subagent prompts are redacted, summarized, hashed, written to the prompt ledger, and embedded in vector memory.
@@ -2795,7 +2795,7 @@ Allowed product shapes:
 - `service_or_automation`: API, CLI, script, worker, scheduled job, data workflow, infrastructure, or contract/executable output where UI is not primary.
 - `existing_product_change`: preserve the established architecture and UX shape and implement only the bounded requested change.
 
-Complexity must be scored from roles, workflows, entities, persistence, integrations, governance, background work, operational scale, surface area, and risk. The word `platform`, an enterprise tone, the existence of PlutoniX control-plane machinery, or the availability of a React template is never sufficient evidence for deeper product shape.
+Complexity must be scored from roles, workflows, entities, persistence, integrations, governance, background work, operational scale, surface area, and risk. The word `platform`, an enterprise tone, the existence of PlutoMix control-plane machinery, or the availability of a React template is never sufficient evidence for deeper product shape.
 
 Hard selection rules:
 
@@ -2825,7 +2825,7 @@ The route decision must be reflected in generated source, metadata, memory/topol
 
 ## TECHNOLOGY STACK INFERENCE POLICY
 
-When the user does not mention a technology stack, runtime, framework, programming language, platform, or artifact format, PlutoniX must not default blindly to a web app, React app, TypeScript app, Python app, or any other fixed template.
+When the user does not mention a technology stack, runtime, framework, programming language, platform, or artifact format, PlutoMix must not default blindly to a web app, React app, TypeScript app, Python app, or any other fixed template.
 
 The orchestrator must analyze the problem statement and select the best suitable technology stack for the objective. The analysis must consider:
 
@@ -2974,7 +2974,7 @@ OpenAPI planning must validate against `schemas/openapi-planning.schema.json`.
 
 ## STANDALONE CONTAINERIZATION POLICY
 
-When PlutoniX creates a new project, the generated project must include the necessary files to run as a standalone containerized Docker application outside the PlutoniX playground.
+When PlutoMix creates a new project, the generated project must include the necessary files to run as a standalone containerized Docker application outside the PlutoMix playground.
 
 For every newly created project, generate or update these project-local files unless the user explicitly asks for a non-containerized artifact:
 
@@ -2986,7 +2986,7 @@ README.md
 .env.example
 ```
 
-The Docker assets must be project-specific and runnable from the generated project root, not dependent on the PlutoniX monorepo, shared playground volumes, or PlutoniX-only environment variables.
+The Docker assets must be project-specific and runnable from the generated project root, not dependent on the PlutoMix monorepo, shared playground volumes, or PlutoMix-only environment variables.
 
 The generated `Dockerfile` must:
 
@@ -2995,7 +2995,7 @@ The generated `Dockerfile` must:
 - build production assets when the framework requires a build step,
 - expose the application port,
 - run the app with a production-safe start command,
-- avoid copying secrets, local caches, `node_modules/`, build artifacts that should be regenerated, and unrelated PlutoniX files.
+- avoid copying secrets, local caches, `node_modules/`, build artifacts that should be regenerated, and unrelated PlutoMix files.
 
 The generated `docker-compose.yml` must:
 
@@ -3004,7 +3004,7 @@ The generated `docker-compose.yml` must:
 - map a configurable host port to the container port,
 - load optional variables from `.env` when applicable,
 - include required companion services only when the generated app actually needs them,
-- avoid coupling the standalone app to PlutoniX backend, frontend, generated-site, or MCP services unless the project explicitly depends on them.
+- avoid coupling the standalone app to PlutoMix backend, frontend, generated-site, or MCP services unless the project explicitly depends on them.
 
 The generated `.env.example` must list all required runtime configuration keys with safe placeholder values and no secrets.
 
@@ -3016,7 +3016,7 @@ If the project type does not need Docker for execution, still generate a minimal
 
 ## PROJECT WHAT-NEXT KNOWLEDGE POLICY
 
-PlutoniX must maintain project "what next thing to do" knowledge for every created or edited project.
+PlutoMix must maintain project "what next thing to do" knowledge for every created or edited project.
 
 This knowledge records how the system selected the next development path from available possibilities, what evidence supported that choice, what alternatives were rejected, what human choices were requested, and what outcome happened after execution.
 
@@ -3054,13 +3054,13 @@ The Human Agent choice-selection flow must:
 - store the human decision in the what-next knowledge record,
 - continue only after the selected path is clear.
 
-The UI should visualize the project-creation path whenever PlutoniX creates a project. The selected path must be highlighted; unselected paths must be muted, disabled, and non-selectable. The flow view should be collapsed by default when idle, expand during project creation, and collapse after Gotham generation completes unless the user manually expands it.
+The UI should visualize the project-creation path whenever PlutoMix creates a project. The selected path must be highlighted; unselected paths must be muted, disabled, and non-selectable. The flow view should be collapsed by default when idle, expand during project creation, and collapse after Gotham generation completes unless the user manually expands it.
 
 ---
 
 ## DETERMINISTIC APPLICATION-BUILDING PATH POLICY
 
-PlutoniX must choose the application-building path deterministically within explicit constraints. The same objective, workspace state, available project knowledge, and user constraints must produce the same selected path unless new evidence, human choice, validation results, or project files changed.
+PlutoMix must choose the application-building path deterministically within explicit constraints. The same objective, workspace state, available project knowledge, and user constraints must produce the same selected path unless new evidence, human choice, validation results, or project files changed.
 
 The objective is not only to satisfy the initial instruction literally. The objective is to transform the initial instruction into the closest achievable end application by adding relevant, justified features that improve usefulness, completeness, usability, reliability, deployability, and maintainability without violating scope, safety, cost, time, or user intent.
 
@@ -3096,25 +3096,25 @@ Tie-breaking must be deterministic:
 
 When generating an application, the orchestrator must infer and add relevant features only when they support the end objective. Examples of relevant feature expansion include necessary data models, empty/loading/error states, navigation, auth placeholders, API boundaries, observability, Docker packaging, accessibility, responsive behavior, persistence, tests, and admin/review flows when the app type justifies them.
 
-When a user provides a screenshot, product screenshot, design image, Figma frame, UI mock, or named-app visual reference, PlutoniX must treat it as both a visual reference and a functional product clue. The output must not stop at a look-alike shell. The orchestrator must identify the visible UI nodes, controls, panels, navigation items, tables, charts, editors, drawers, buttons, filters, tabs, status chips, command bars, and empty-state surfaces; map each meaningful UI node to an intended user action, data state, API/client contract, local state transition, or explicit unavailable-integration fallback; and expand the implementation until the represented workflow is functionally usable within the project scope.
+When a user provides a screenshot, product screenshot, design image, Figma frame, UI mock, or named-app visual reference, PlutoMix must treat it as both a visual reference and a functional product clue. The output must not stop at a look-alike shell. The orchestrator must identify the visible UI nodes, controls, panels, navigation items, tables, charts, editors, drawers, buttons, filters, tabs, status chips, command bars, and empty-state surfaces; map each meaningful UI node to an intended user action, data state, API/client contract, local state transition, or explicit unavailable-integration fallback; and expand the implementation until the represented workflow is functionally usable within the project scope.
 
 If intelligence/research mode is enabled, or if the screenshot references a known product category or named tool such as Databricks, Salesforce, Linear, GitHub, Notion, Slack, Stripe, or similar, the orchestrator must use the research agent or UI-exploration agent before implementation when available. The research pass must infer the purpose of each major UI region, common workflows behind the controls, expected data entities, interaction patterns, and realistic feature boundaries. If live research or external exploration is unavailable, record that limitation and derive a conservative functionality map from the screenshot, user prompt, project domain, and existing workspace evidence.
 
-Screenshot-derived implementation must include a `ui_node_to_functionality` map in project metadata or documentation. Each mapped node must be marked as `implemented`, `fallback`, `out_of_scope`, or `needs_credentials`, with a short reason. PlutoniX must not mark the task complete while prominent visible controls are decorative only, unless the user explicitly requested a static mockup or visual clone.
+Screenshot-derived implementation must include a `ui_node_to_functionality` map in project metadata or documentation. Each mapped node must be marked as `implemented`, `fallback`, `out_of_scope`, or `needs_credentials`, with a short reason. PlutoMix must not mark the task complete while prominent visible controls are decorative only, unless the user explicitly requested a static mockup or visual clone.
 
-As PlutoniX or any generated app grows functionality, the Agentic System main brain must periodically review UI/UX quality through a design workshop lens. This review must include design strategy, UX workflow, frontend implementation, accessibility, responsive behavior, visual hierarchy, information density, command placement, and regression risk. The workshop must preserve all existing functionality while improving usability, professional aesthetic quality, layout clarity, and control discoverability. Major actions such as run, stop, approve, publish, save, upload, or destructive controls must remain visible in the primary working window whenever practical, without requiring the user to scroll through logs or secondary panels.
+As PlutoMix or any generated app grows functionality, the Agentic System main brain must periodically review UI/UX quality through a design workshop lens. This review must include design strategy, UX workflow, frontend implementation, accessibility, responsive behavior, visual hierarchy, information density, command placement, and regression risk. The workshop must preserve all existing functionality while improving usability, professional aesthetic quality, layout clarity, and control discoverability. Major actions such as run, stop, approve, publish, save, upload, or destructive controls must remain visible in the primary working window whenever practical, without requiring the user to scroll through logs or secondary panels.
 
-The design workshop review must be triggered when a PlutoniX-facing surface gains new controls, panels, workflows, agent capabilities, graph views, runtime logs, suggested-instruction sections, modal workflows, or project-management features. It must identify overcrowded areas, duplicated controls, low-value text, hidden primary actions, inconsistent spacing, weak contrast, broken responsive behavior, and generic styling. Accepted changes must be professional, aesthetic, domain-appropriate, and user-friendly; rejected design ideas must be recorded when they would remove functionality, hide important state, or add decorative clutter.
+The design workshop review must be triggered when a PlutoMix-facing surface gains new controls, panels, workflows, agent capabilities, graph views, runtime logs, suggested-instruction sections, modal workflows, or project-management features. It must identify overcrowded areas, duplicated controls, low-value text, hidden primary actions, inconsistent spacing, weak contrast, broken responsive behavior, and generic styling. Accepted changes must be professional, aesthetic, domain-appropriate, and user-friendly; rejected design ideas must be recorded when they would remove functionality, hide important state, or add decorative clutter.
 
-PlutoniX should progressively become more self-sustaining: each run must improve future path selection by writing what-next knowledge, validation outcomes, reusable feature patterns, agent efficiency signals, correction patterns, and Human Agent decisions. Self-sustaining does not mean unsupervised risky behavior. It means the system increasingly knows what to do next, asks humans only when the deterministic evidence is insufficient, and uses accumulated project knowledge to generate applications closer to complete and production-ready.
+PlutoMix should progressively become more self-sustaining: each run must improve future path selection by writing what-next knowledge, validation outcomes, reusable feature patterns, agent efficiency signals, correction patterns, and Human Agent decisions. Self-sustaining does not mean unsupervised risky behavior. It means the system increasingly knows what to do next, asks humans only when the deterministic evidence is insufficient, and uses accumulated project knowledge to generate applications closer to complete and production-ready.
 
 ---
 
 ## FULL APPLICATION FEATURE COVERAGE POLICY
 
-When PlutoniX creates a new app, it must generate the best suitable application for the user objective, not a thin demo, placeholder, or proof of concept unless the user explicitly asks for a demo or POC.
+When PlutoMix creates a new app, it must generate the best suitable application for the user objective, not a thin demo, placeholder, or proof of concept unless the user explicitly asks for a demo or POC.
 
-PlutoniX is not limited to classic web apps. It must classify the requested output, runtime, platform, and business use case from the instruction, then generate the most suitable application, automation, document, API, or digital artifact. Supported targets include, but are not limited to:
+PlutoMix is not limited to classic web apps. It must classify the requested output, runtime, platform, and business use case from the instruction, then generate the most suitable application, automation, document, API, or digital artifact. Supported targets include, but are not limited to:
 
 - web apps, websites, dashboards, portals, SaaS surfaces, marketplaces, and commerce flows,
 - mobile applications and app surfaces, including iOS, Android, hybrid/cross-platform apps, mobile-first prototypes, app-style flows, and responsive app shells,
@@ -3129,7 +3129,7 @@ PlutoniX is not limited to classic web apps. It must classify the requested outp
 - Swagger/OpenAPI endpoints, Swagger UI pages, OpenAPI JSON/YAML, API reference portals, backend documentation, endpoint catalogs, and integration guides,
 - hybrid artifacts that combine app UI, document sections, API documentation, media references, and export/print views.
 
-The orchestrator must not force every request into a generic website template. If the instruction asks for a flyer, PDF, image, workbook, spreadsheet, mobile app, iOS app, Android app, hybrid app, Python app, Python script, executable automation, Flask/FastAPI service, Swagger endpoint, API page, document, presentation, media file, or other artifact, PlutoniX must preserve that artifact intent while still applying feature coverage, real-data rules, accessibility, responsive design, packaging, validation, and project-local policies as appropriate.
+The orchestrator must not force every request into a generic website template. If the instruction asks for a flyer, PDF, image, workbook, spreadsheet, mobile app, iOS app, Android app, hybrid app, Python app, Python script, executable automation, Flask/FastAPI service, Swagger endpoint, API page, document, presentation, media file, or other artifact, PlutoMix must preserve that artifact intent while still applying feature coverage, real-data rules, accessibility, responsive design, packaging, validation, and project-local policies as appropriate.
 
 For non-web outputs, the orchestrator must choose the correct generation strategy instead of wrapping everything in a webpage:
 
@@ -3142,9 +3142,9 @@ For non-web outputs, the orchestrator must choose the correct generation strateg
 - presentation requests must generate a real slide artifact or explicitly requested presentation source, with coherent slide hierarchy, visual composition, and downloadable output;
 - Swagger/OpenAPI requests must generate valid API contracts and documentation surfaces rather than decorative API-looking pages only.
 
-The PlutoniX Playground must adapt to the Product Shape Contract and artifact inventory. Browser-facing applications use responsive device preview. PDFs use a document reader. Flyers and images use a print/image canvas. Workbooks and CSV/TSV data use a grid with sheet tabs, cell coordinates, values, and formulas. Documents use a page surface. Presentations use slide navigation and stage preview. Code/data, audio, and video use their appropriate viewers. Artifact switching, open, and download controls must remain visible in the primary workspace. The original artifact is authoritative; extracted previews are bounded inspection aids.
+The PlutoMix Playground must adapt to the Product Shape Contract and artifact inventory. Browser-facing applications use responsive device preview. PDFs use a document reader. Flyers and images use a print/image canvas. Workbooks and CSV/TSV data use a grid with sheet tabs, cell coordinates, values, and formulas. Documents use a page surface. Presentations use slide navigation and stage preview. Code/data, audio, and video use their appropriate viewers. Artifact switching, open, and download controls must remain visible in the primary workspace. The original artifact is authoritative; extracted previews are bounded inspection aids.
 
-Artifact-specific completion gates are mandatory. Validation must prove the requested primary file exists in the contracted output path, opens or parses successfully, consumes supplied inputs, and satisfies its domain contract. Workbook validation must inspect formulas and sheets. PDF/print validation must inspect pagination and visual composition. Image validation must inspect dimensions and format. Media validation must inspect playable output metadata. Application and service validation must inspect runnable behavior and contracts. PlutoniX must not claim completion from a browser preview alone when the contracted output is non-browser.
+Artifact-specific completion gates are mandatory. Validation must prove the requested primary file exists in the contracted output path, opens or parses successfully, consumes supplied inputs, and satisfies its domain contract. Workbook validation must inspect formulas and sheets. PDF/print validation must inspect pagination and visual composition. Image validation must inspect dimensions and format. Media validation must inspect playable output metadata. Application and service validation must inspect runnable behavior and contracts. PlutoMix must not claim completion from a browser preview alone when the contracted output is non-browser.
 
 The orchestrator must extract direct and indirect functionality from:
 
@@ -3164,9 +3164,9 @@ Uploaded project documentation must be treated as durable source material. It mu
 
 Uploaded media references must receive the same source-material treatment. Media staged during new-project creation must be attached to the created project, referenced in the Gotham generation prompt, and used only as authorized reference/context for the requested artifact.
 
-When the user asks PlutoniX/Gotham to build a web app, mobile app, PDF, video, image, audio, flyer, tool, or any other artifact that requires business, backend, integration, media, profile, product, financial, or content data, PlutoniX must use real integration data, uploaded references, selected UI references, or user-provided static content. If that data is missing, PlutoniX must ask for the smallest set of required inputs inside the Gotham Builder section through an attention-indicated button and HTML inputs/modal. If a required input can be satisfied by a media/source file, the required-data modal must include an upload control for that field. Filled inputs and uploaded references are source material for the next Gotham chat iteration. Once the inputs are successfully used, PlutoniX may remove them; if Gotham did not use or misunderstood an input, it must ask again with a narrower clarification.
+When the user asks PlutoMix/Gotham to build a web app, mobile app, PDF, video, image, audio, flyer, tool, or any other artifact that requires business, backend, integration, media, profile, product, financial, or content data, PlutoMix must use real integration data, uploaded references, selected UI references, or user-provided static content. If that data is missing, PlutoMix must ask for the smallest set of required inputs inside the Gotham Builder section through an attention-indicated button and HTML inputs/modal. If a required input can be satisfied by a media/source file, the required-data modal must include an upload control for that field. Filled inputs and uploaded references are source material for the next Gotham chat iteration. Once the inputs are successfully used, PlutoMix may remove them; if Gotham did not use or misunderstood an input, it must ask again with a narrower clarification.
 
-PlutoniX and generated projects must not explain how to use or what the generated app/tool/media is unless the user asks for that explanation. Required hints must be placed in labels, tooltips, empty states, or compact manual surfaces.
+PlutoMix and generated projects must not explain how to use or what the generated app/tool/media is unless the user asks for that explanation. Required hints must be placed in labels, tooltips, empty states, or compact manual surfaces.
 
 ---
 
@@ -3174,7 +3174,7 @@ PlutoniX and generated projects must not explain how to use or what the generate
 
 ## REAL DATA FIRST APPLICATION GENERATION POLICY
 
-When PlutoniX creates or edits an application, production data architecture is mandatory by default.
+When PlutoMix creates or edits an application, production data architecture is mandatory by default.
 
 The orchestrator must not generate dummy, fake, mock, sample, placeholder, or hardcoded business data unless the user explicitly asks for:
 
@@ -4498,7 +4498,7 @@ topology/d3/agent-cluster-graph.schema.json
 docs/d3-agent-cluster-visualization.md
 ```
 
-If the project has a frontend or dashboard, the orchestrator must generate or update a separate PlutoniX Graphical Model visualization page/component. For tiny/small tasks, update only affected nodes and links when possible, but do not skip page creation:
+If the project has a frontend or dashboard, the orchestrator must generate or update a separate PlutoMix Graphical Model visualization page/component. For tiny/small tasks, update only affected nodes and links when possible, but do not skip page creation:
 
 ```text
 apps/frontend/src/components/agentic-system/AgentClusterGraph.tsx
@@ -4763,7 +4763,7 @@ Default behavior for coding tasks:
 6. update only affected memory, graph, and observability artifacts.
 ```
 
-Full project discovery, full Neo4j regeneration, and full D3 regeneration are NOT allowed for tiny or small coding tasks by default; however, incremental Neo4j artifact updates, vector prompt memory writes, and the PlutoniX Graphical Model page are mandatory for every task.
+Full project discovery, full Neo4j regeneration, and full D3 regeneration are NOT allowed for tiny or small coding tasks by default; however, incremental Neo4j artifact updates, vector prompt memory writes, and the PlutoMix Graphical Model page are mandatory for every task.
 
 They are allowed only when at least one condition is true:
 
@@ -4888,7 +4888,7 @@ use existing project-execution-agent
 avoid creating specialist agents
 do not perform full project discovery
 do not perform full Neo4j regeneration
-do not perform full D3 regeneration, but keep the mandatory PlutoniX Graphical Model page and affected graph nodes updated
+do not perform full D3 regeneration, but keep the mandatory PlutoMix Graphical Model page and affected graph nodes updated
 use targeted scan only if required
 write minimal observability only
 ```
@@ -4914,7 +4914,7 @@ update affected memory summary only
 update affected graph nodes only if graph exists
 do not perform full project discovery
 do not perform full Neo4j regeneration
-do not perform full D3 regeneration, but keep the mandatory PlutoniX Graphical Model page and affected graph nodes updated
+do not perform full D3 regeneration, but keep the mandatory PlutoMix Graphical Model page and affected graph nodes updated
 use incremental topology updates only if ownership changed
 ```
 
@@ -5405,7 +5405,7 @@ This upgrade is complete only when:
 <!-- qagentic-support:start -->
 # QAGENTIC SUPPORT MANDATE
 
-PlutoniX must generate QAgentic support for every new project without removing or weakening any existing orchestrator behavior.
+PlutoMix must generate QAgentic support for every new project without removing or weakening any existing orchestrator behavior.
 
 ## Project Generation Rule
 
@@ -5452,11 +5452,11 @@ QAgentic support is additive. It must not remove existing features, files, agent
 <!-- huggingface-model-workspace:start -->
 # HUGGING FACE MODEL WORKSPACE MANDATE
 
-PlutoniX and every generated project must use a project-local Hugging Face model workspace whenever a task requires Hugging Face models.
+PlutoMix and every generated project must use a project-local Hugging Face model workspace whenever a task requires Hugging Face models.
 
-## PlutoniX Rule
+## PlutoMix Rule
 
-For PlutoniX system/self-improvement work, register and download models under:
+For PlutoMix system/self-improvement work, register and download models under:
 
 ```text
 models/huggingface/model-manifest.json
@@ -5484,7 +5484,7 @@ Do not silently switch to paid remote inference providers when the user asked fo
 <!-- gotham-studio-control-plane:start -->
 # GOTHAM STUDIO AI/ML EXECUTION CONTRACT
 
-Gotham Studio is an additive, protected workspace inside Gotham Builder. It is the provider-neutral control plane for project-scoped AI/ML pipelines, jobs, experiments, models, provider health, lifecycle evidence, and links back to Gotham chat and the Functionality Graph. It must not replace the public Studio landing workspace or remove any existing Builder, PlutoniX, Agents, Hosting, memory, graph, or observability behavior.
+Gotham Studio is an additive, protected workspace inside Gotham Builder. It is the provider-neutral control plane for project-scoped AI/ML pipelines, jobs, experiments, models, provider health, lifecycle evidence, and links back to Gotham chat and the Functionality Graph. It must not replace the public Studio landing workspace or remove any existing Builder, PlutoMix, Agents, Hosting, memory, graph, or observability behavior.
 
 ## Routing and execution authority
 

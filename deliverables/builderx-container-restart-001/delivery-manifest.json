@@ -1,5 +1,5 @@
 {
-  "workflow_id": "plutonix-container-restart-001",
+  "workflow_id": "plutomix-container-restart-001",
   "deliverables": [
     "docker-compose.yml",
     "apps/backend/src/runtimeRestart.js",

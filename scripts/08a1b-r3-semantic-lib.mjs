@@ -60,7 +60,7 @@ export const RULE_SEMANTICS = Object.freeze({
     parser: 'STRICT_OPENAI_KEY',
     hardening: 'Require a strict parser plus a repository authentication-client, secret configuration, or credential-store consumption trace.',
   },
-  'plutonix-fake-secret': {
+  'plutomix-fake-secret': {
     detector_contract: 'Repository-defined synthetic fixture marker.',
     semantic_assertion: 'SYNTHETIC_FIXTURE_MARKER',
     parser: 'DETERMINISTIC_TEST_FIXTURE_CONTRACT',

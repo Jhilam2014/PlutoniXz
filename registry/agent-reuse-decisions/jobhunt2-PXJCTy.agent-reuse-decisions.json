@@ -1,0 +1,72 @@
+{
+  "projectId": "jobhunt2-PXJCTy",
+  "agentModelVersion": "2.0.0",
+  "decisions": [
+    {
+      "id": "agent-reuse:jobhunt2-PXJCTy:project-orchestrator-agent",
+      "projectExecution": "jobhunt2-PXJCTy",
+      "selectedAgent": "project-orchestrator-agent",
+      "requestedRole": "project-orchestrator",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global project-orchestrator definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-09-02T19:53:42.519Z"
+    },
+    {
+      "id": "agent-reuse:jobhunt2-PXJCTy:qagent-controller",
+      "projectExecution": "jobhunt2-PXJCTy",
+      "selectedAgent": "qagent-controller",
+      "requestedRole": "qagent-controller",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global qagent-controller definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-09-02T19:53:42.519Z"
+    },
+    {
+      "id": "agent-reuse:jobhunt2-PXJCTy:experience-composition-agent",
+      "projectExecution": "jobhunt2-PXJCTy",
+      "selectedAgent": "experience-composition-agent",
+      "requestedRole": "experience-composition",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global experience-composition definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-09-02T19:53:42.519Z"
+    },
+    {
+      "id": "agent-reuse:jobhunt2-PXJCTy:data-contract-agent",
+      "projectExecution": "jobhunt2-PXJCTy",
+      "selectedAgent": "data-contract-agent",
+      "requestedRole": "data-contract",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global data-contract definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-09-02T19:53:42.519Z"
+    },
+    {
+      "id": "agent-reuse:jobhunt2-PXJCTy:runtime-packaging-agent",
+      "projectExecution": "jobhunt2-PXJCTy",
+      "selectedAgent": "runtime-packaging-agent",
+      "requestedRole": "runtime-packaging",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global runtime-packaging definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-09-02T19:53:42.519Z"
+    },
+    {
+      "id": "agent-reuse:jobhunt2-PXJCTy:design-workshop-review-agent",
+      "projectExecution": "jobhunt2-PXJCTy",
+      "selectedAgent": "design-workshop-review-agent",
+      "requestedRole": "design-workshop-review",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global design-workshop-review definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-09-02T19:53:42.519Z"
+    }
+  ]
+}

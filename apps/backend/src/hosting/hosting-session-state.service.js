@@ -20,10 +20,11 @@ function writeSessions(sessions) {
   fs.writeFileSync(statePath, JSON.stringify(sessions, null, 2));
 }
 
-export function createSession() {
+export function createSession({ tenantId = "", userId = "" } = {}) {
   const session = {
     session_id: `host_${crypto.randomUUID()}`,
-    user_id: null,
+    user_id: userId || null,
+    tenant_id: tenantId || null,
     project_id: null,
     current_stage: "project_selection",
     selected_provider: null,

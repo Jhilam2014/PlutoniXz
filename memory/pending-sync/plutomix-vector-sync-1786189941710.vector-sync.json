@@ -1,0 +1,15 @@
+{
+  "workflow_id": "plutomix-vector-sync-1786189941710",
+  "reason": "periodic",
+  "status": "failed",
+  "started_at": "2026-08-08T11:52:21.710Z",
+  "completed_at": "2026-08-08T11:52:21.710Z",
+  "errors": [
+    "fetch failed"
+  ],
+  "local_files_scanned": 0,
+  "files_uploaded": 0,
+  "files_skipped": 0,
+  "files_failed": 1,
+  "pending_sync_count": 1
+}

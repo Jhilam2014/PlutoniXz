@@ -4,7 +4,7 @@ This generated Vite React page renders a premium Vogue Elegance commerce landing
 
 ## Orchestrator Plan
 
-- Orchestrator: `plutonix-fullstack-agent`
+- Orchestrator: `plutomix-fullstack-agent`
 - Objective: `Generate a professional landing page for digital product.`
 - Instruction hash: `e413c726c6b2fdb43422c467a6a678fe19d8eb1026faeea435e2255d7fc0865a`
 - Page type: `professional_landing_page`

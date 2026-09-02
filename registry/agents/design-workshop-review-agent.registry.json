@@ -25,7 +25,7 @@
       "projectResponsibility": "Periodically review growing UI/UX surfaces with design strategy, frontend implementation, accessibility, responsive behavior, visual hierarchy, command placement, and professional aesthetic quality while preserving all existing functionality.",
       "status": "active",
       "contextPath": ".agentic/orchestrator-agent.md",
-      "createdAt": "2026-08-31T06:26:20.355Z"
+      "createdAt": "2026-09-02T20:37:08.511Z"
     },
     {
       "id": "project-agent-assignment:geofinderx-2yFsDY:design-workshop-review-agent",
@@ -156,6 +156,26 @@
       "status": "active",
       "contextPath": ".agentic/orchestrator-agent.md",
       "createdAt": "2026-08-29T14:09:04.191Z"
+    },
+    {
+      "id": "project-agent-assignment:jobhunt-0SHrjF:design-workshop-review-agent",
+      "projectId": "jobhunt-0SHrjF",
+      "agentId": "design-workshop-review-agent",
+      "role": "design-workshop-review",
+      "projectResponsibility": "Periodically review growing UI/UX surfaces with design strategy, frontend implementation, accessibility, responsive behavior, visual hierarchy, command placement, and professional aesthetic quality while preserving all existing functionality.",
+      "status": "active",
+      "contextPath": ".agentic/orchestrator-agent.md",
+      "createdAt": "2026-09-01T10:55:36.429Z"
+    },
+    {
+      "id": "project-agent-assignment:jobhunt2-PXJCTy:design-workshop-review-agent",
+      "projectId": "jobhunt2-PXJCTy",
+      "agentId": "design-workshop-review-agent",
+      "role": "design-workshop-review",
+      "projectResponsibility": "Periodically review growing UI/UX surfaces with design strategy, frontend implementation, accessibility, responsive behavior, visual hierarchy, command placement, and professional aesthetic quality while preserving all existing functionality.",
+      "status": "active",
+      "contextPath": ".agentic/orchestrator-agent.md",
+      "createdAt": "2026-09-02T19:53:42.519Z"
     }
   ],
   "reuse_decisions": [
@@ -168,7 +188,7 @@
       "reuseConfidenceScore": 100,
       "similarityScore": 1,
       "reason": "Reused the existing global design-workshop-review definition; project context is stored in a separate assignment.",
-      "createdAt": "2026-08-31T06:26:20.355Z"
+      "createdAt": "2026-09-02T20:37:08.511Z"
     },
     {
       "id": "agent-reuse:geofinderx-2yFsDY:design-workshop-review-agent",
@@ -312,6 +332,28 @@
       "similarityScore": 1,
       "reason": "Reused the existing global design-workshop-review definition; project context is stored in a separate assignment.",
       "createdAt": "2026-08-29T14:09:04.190Z"
+    },
+    {
+      "id": "agent-reuse:jobhunt-0SHrjF:design-workshop-review-agent",
+      "projectExecution": "jobhunt-0SHrjF",
+      "selectedAgent": "design-workshop-review-agent",
+      "requestedRole": "design-workshop-review",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global design-workshop-review definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-09-01T10:55:36.429Z"
+    },
+    {
+      "id": "agent-reuse:jobhunt2-PXJCTy:design-workshop-review-agent",
+      "projectExecution": "jobhunt2-PXJCTy",
+      "selectedAgent": "design-workshop-review-agent",
+      "requestedRole": "design-workshop-review",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global design-workshop-review definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-09-02T19:53:42.519Z"
     }
   ],
   "latest_reuse_decision": {
@@ -323,6 +365,9 @@
     "reuseConfidenceScore": 100,
     "similarityScore": 1,
     "reason": "Reused the existing global design-workshop-review definition; project context is stored in a separate assignment.",
-    "createdAt": "2026-08-31T06:26:20.355Z"
-  }
+    "createdAt": "2026-09-02T20:37:08.511Z"
+  },
+  "catalog_scope": "global_community",
+  "tenant_id": "",
+  "enterprise_id": ""
 }

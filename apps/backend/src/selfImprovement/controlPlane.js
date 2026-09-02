@@ -478,7 +478,7 @@ export function createSelfImprovementControlPlane({
         ? [createManualTrigger({
             reason: investigation.problemStatement || "Self-improvement investigator found a possible platform issue.",
             severity: investigation.severity || "medium",
-            affectedComponents: investigation.affectedComponents || [investigation.component || "plutonix-runtime"],
+            affectedComponents: investigation.affectedComponents || [investigation.component || "plutomix-runtime"],
             evidenceRefs: signals.map((signal) => signal.id),
             confidence: investigation.qualityScore || 0.8,
             correlationId: cycleId
@@ -487,7 +487,7 @@ export function createSelfImprovementControlPlane({
         ? [createManualTrigger({
             reason: "Gotham system target requested platform improvement proposal.",
             severity: /hard|large|complex/i.test(systemInstruction.taskType || "") ? "high" : "medium",
-            affectedComponents: ["plutonix-platform", "gotham-system-target"],
+            affectedComponents: ["plutomix-platform", "gotham-system-target"],
             evidenceRefs: signals.map((signal) => signal.id),
             correlationId: cycleId
           })]
@@ -600,8 +600,8 @@ export function createSelfImprovementControlPlane({
           id: toolOutcome.toolPlan.id,
           problemStatement: toolOutcome.toolPlan.problemStatement,
           severity: toolOutcome.toolPlan.severity || "medium",
-          affectedComponents: toolOutcome.toolPlan.affectedComponents || [toolOutcome.toolPlan.component || "plutonix-runtime"],
-          component: toolOutcome.toolPlan.component || "plutonix-runtime",
+          affectedComponents: toolOutcome.toolPlan.affectedComponents || [toolOutcome.toolPlan.component || "plutomix-runtime"],
+          component: toolOutcome.toolPlan.component || "plutomix-runtime",
           qualityScore: 0.8
         }
       });
@@ -677,8 +677,8 @@ export function createSelfImprovementControlPlane({
           approvalPrompt: "",
           proposedTool: {
             ...(sourceToolPlan.proposedTool || {}),
-            name: "PlutoniX Cheaper Internal Alternative Tool",
-            slug: "plutonix-cheaper-internal-alternative-tool",
+            name: "PlutoMix Cheaper Internal Alternative Tool",
+            slug: "plutomix-cheaper-internal-alternative-tool",
             capability: "Replace a paid capability request with a local bounded analysis or automation tool."
           },
           shouldTriggerImprovement: true

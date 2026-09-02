@@ -12,7 +12,7 @@ import {
 } from "../src/projectChangeHistory.js";
 
 async function fixture() {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), "plutonix-change-history-"));
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "plutomix-change-history-"));
   const workspaceDir = path.join(root, "app");
   await fs.mkdir(workspaceDir);
   await fs.writeFile(path.join(workspaceDir, "app.js"), "before\n");

@@ -56,8 +56,8 @@ export const PROVIDER_DEFINITIONS = Object.freeze({
     executableNames: Object.freeze(["claude"]),
     configuredExecutableEnv: "CLAUDE_BIN",
     versionArgs: Object.freeze(["--version"]),
-    minimumVersion: "1.0.0",
-    authDomains: Object.freeze(["claude.ai", "console.anthropic.com", "anthropic.com"]),
+    minimumVersion: "2.1.248",
+    authDomains: Object.freeze(["claude.com", "claude.ai", "console.anthropic.com", "anthropic.com"]),
     isolationEnv: "CLAUDE_CONFIG_DIR",
     commands: Object.freeze({
       status: Object.freeze(["auth", "status"]),
@@ -68,7 +68,7 @@ export const PROVIDER_DEFINITIONS = Object.freeze({
     authMethods: Object.freeze(["browser_oauth", "enterprise_login", "existing_session"]),
     capabilities: Object.freeze(["login", "logout", "multiple_profiles", "profile_switch"]),
     supportsIsolatedProfiles: true,
-    gothamExecutionSupported: false,
+    gothamExecutionSupported: true,
     verification: "status_command",
     authMode: "browser_oauth",
     notes: "CLAUDE_CONFIG_DIR is the documented isolation mechanism for side-by-side accounts."

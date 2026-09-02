@@ -25,7 +25,7 @@
       "projectResponsibility": "Evaluate end-of-response objective gaps and produce stop decisions or strict next-instruction packets without directly implementing code.",
       "status": "active",
       "contextPath": ".agentic/orchestrator-agent.md",
-      "createdAt": "2026-08-31T06:26:20.355Z"
+      "createdAt": "2026-09-02T20:37:08.511Z"
     },
     {
       "id": "project-agent-assignment:geofinderx-2yFsDY:qagent-controller",
@@ -196,6 +196,26 @@
       "status": "active",
       "contextPath": ".agentic/orchestrator-agent.md",
       "createdAt": "2026-08-30T18:50:44.868Z"
+    },
+    {
+      "id": "project-agent-assignment:jobhunt-0SHrjF:qagent-controller",
+      "projectId": "jobhunt-0SHrjF",
+      "agentId": "qagent-controller",
+      "role": "qagent-controller",
+      "projectResponsibility": "Evaluate end-of-response objective gaps and produce stop decisions or strict next-instruction packets without directly implementing code.",
+      "status": "active",
+      "contextPath": ".agentic/orchestrator-agent.md",
+      "createdAt": "2026-09-01T10:55:36.429Z"
+    },
+    {
+      "id": "project-agent-assignment:jobhunt2-PXJCTy:qagent-controller",
+      "projectId": "jobhunt2-PXJCTy",
+      "agentId": "qagent-controller",
+      "role": "qagent-controller",
+      "projectResponsibility": "Evaluate end-of-response objective gaps and produce stop decisions or strict next-instruction packets without directly implementing code.",
+      "status": "active",
+      "contextPath": ".agentic/orchestrator-agent.md",
+      "createdAt": "2026-09-02T19:53:42.519Z"
     }
   ],
   "reuse_decisions": [
@@ -208,7 +228,7 @@
       "reuseConfidenceScore": 100,
       "similarityScore": 1,
       "reason": "Reused the existing global qagent-controller definition; project context is stored in a separate assignment.",
-      "createdAt": "2026-08-31T06:26:20.354Z"
+      "createdAt": "2026-09-02T20:37:08.511Z"
     },
     {
       "id": "agent-reuse:geofinderx-2yFsDY:qagent-controller",
@@ -396,6 +416,28 @@
       "similarityScore": 1,
       "reason": "Reused the existing global qagent-controller definition; project context is stored in a separate assignment.",
       "createdAt": "2026-08-30T18:50:44.868Z"
+    },
+    {
+      "id": "agent-reuse:jobhunt-0SHrjF:qagent-controller",
+      "projectExecution": "jobhunt-0SHrjF",
+      "selectedAgent": "qagent-controller",
+      "requestedRole": "qagent-controller",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global qagent-controller definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-09-01T10:55:36.429Z"
+    },
+    {
+      "id": "agent-reuse:jobhunt2-PXJCTy:qagent-controller",
+      "projectExecution": "jobhunt2-PXJCTy",
+      "selectedAgent": "qagent-controller",
+      "requestedRole": "qagent-controller",
+      "decisionType": "exact_reuse",
+      "reuseConfidenceScore": 100,
+      "similarityScore": 1,
+      "reason": "Reused the existing global qagent-controller definition; project context is stored in a separate assignment.",
+      "createdAt": "2026-09-02T19:53:42.519Z"
     }
   ],
   "latest_reuse_decision": {
@@ -407,6 +449,9 @@
     "reuseConfidenceScore": 100,
     "similarityScore": 1,
     "reason": "Reused the existing global qagent-controller definition; project context is stored in a separate assignment.",
-    "createdAt": "2026-08-31T06:26:20.354Z"
-  }
+    "createdAt": "2026-09-02T20:37:08.511Z"
+  },
+  "catalog_scope": "global_community",
+  "tenant_id": "",
+  "enterprise_id": ""
 }

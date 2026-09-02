@@ -325,7 +325,7 @@ function agentRunFromResult(result, permissionMode = "read-only") {
     role: result.role,
     status: result.status,
     permissionMode,
-    provider: "plutonix-local-reader",
+    provider: "plutomix-local-reader",
     transport: "in-process",
     findings: result.findings,
     evidence: result.evidence,

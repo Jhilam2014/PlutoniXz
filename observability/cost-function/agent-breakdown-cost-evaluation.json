@@ -1,6 +1,6 @@
 {
   "generated_at": "2026-06-25T00:00:00+05:30",
-  "workflow_id": "plutonix-large-001",
+  "workflow_id": "plutomix-large-001",
   "task_size": "large",
   "decision": "single_fullstack_agent",
   "reason": "The initial product build spans frontend, backend, generated runtime, and Docker, but the files are tightly coupled and early-stage. One fullstack agent minimizes coordination cost while preserving clear cluster ownership.",

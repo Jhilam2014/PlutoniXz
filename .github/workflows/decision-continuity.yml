@@ -23,15 +23,15 @@ jobs:
         image: postgres:16-alpine
         env:
           POSTGRES_DB: decision_continuity_ci
-          POSTGRES_USER: plutonix
+          POSTGRES_USER: plutomix
           POSTGRES_HOST_AUTH_METHOD: trust
         ports: ['5432:5432']
         options: >-
-          --health-cmd "pg_isready -U plutonix -d decision_continuity_ci"
+          --health-cmd "pg_isready -U plutomix -d decision_continuity_ci"
           --health-interval 5s --health-timeout 5s --health-retries 10
     env:
-      DECISION_CONTINUITY_TEST_DATABASE_URL: postgres://plutonix@127.0.0.1:5432/decision_continuity_ci
-      DECISION_CONTINUITY_DATABASE_URL: postgres://plutonix@127.0.0.1:5432/decision_continuity_ci
+      DECISION_CONTINUITY_TEST_DATABASE_URL: postgres://plutomix@127.0.0.1:5432/decision_continuity_ci
+      DECISION_CONTINUITY_DATABASE_URL: postgres://plutomix@127.0.0.1:5432/decision_continuity_ci
       DECISION_CONTINUITY_ADAPTER: postgres
       DECISION_CONTINUITY_DURABLE_WORKFLOWS: 'true'
       NODE_ENV: test

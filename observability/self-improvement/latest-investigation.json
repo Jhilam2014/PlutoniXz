@@ -3,11 +3,11 @@
   "schemaVersion": "1.0.0",
   "timestamp": "2026-08-17T17:19:26.288Z",
   "checked": true,
-  "agentId": "plutonix-self-improvement-investigator-agent",
+  "agentId": "plutomix-self-improvement-investigator-agent",
   "agentRole": "event-quality-efficiency-investigator",
   "eventId": "1786987165693-2a868029e3a3c",
   "eventType": "vector-sync-deferred",
-  "component": "plutonix-runtime",
+  "component": "plutomix-runtime",
   "fingerprint": "bc972cfef25a5fd770668118",
   "qualityScore": 0.21,
   "severity": "low",
@@ -25,7 +25,7 @@
   "shouldTrigger": false,
   "problemStatement": "",
   "affectedComponents": [
-    "plutonix-runtime"
+    "plutomix-runtime"
   ],
   "recommendedAction": "Record lightweight check only.",
   "eventExcerpt": "Vector memory sync deferred until at least 5 files are pending."

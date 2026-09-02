@@ -7,7 +7,7 @@ import { createDecisionContinuityStore, evaluateConstraintExpression } from "../
 import { buildDecisionContinuityGraph, compareDecisionBranches } from "../src/decisionContinuityProjection.js";
 
 async function createStore(context) {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), "plutonix-decision-continuity-"));
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "plutomix-decision-continuity-"));
   context.after(async () => fs.rm(root, { recursive: true, force: true }));
   return createDecisionContinuityStore({
     root,
@@ -57,7 +57,7 @@ test("persists an immutable branch lineage with evidence and a journaled disposi
 });
 
 test("reopens the local snapshot without rewriting its append-only branch history", async (context) => {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), "plutonix-decision-continuity-restart-"));
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "plutomix-decision-continuity-restart-"));
   context.after(async () => fs.rm(root, { recursive: true, force: true }));
   const store = createDecisionContinuityStore({ root });
   const branch = await store.createBranch(branchInput(), { tenantId: tenantA, actor: operator });

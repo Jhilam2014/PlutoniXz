@@ -1,6 +1,6 @@
 # Gotham Studio
 
-Gotham Studio is PlutoniX's project-scoped AI/ML execution control plane. It turns a Gotham ML objective into durable logical pipeline and job records, then submits external compute only after an authenticated operator uses Executor mode and the selected provider passes the job's policy checks.
+Gotham Studio is PlutoMix's project-scoped AI/ML execution control plane. It turns a Gotham ML objective into durable logical pipeline and job records, then submits external compute only after an authenticated operator uses Executor mode and the selected provider passes the job's policy checks.
 
 It is an internal Builder workspace, not a second public product. Open it with the **Studio** control in the Gotham Builder header. The public landing workspace remains unchanged.
 
@@ -42,7 +42,7 @@ Provider-native IDs, run IDs, raw states, timestamps, sanitized errors, retry li
 
 ## Codex Account & Usage
 
-The Builder account panel starts a short-lived, read-only Codex App Server session and reads `account/read`, `account/rateLimits/read`, and `account/usage/read`. For ChatGPT-authenticated Codex sessions this can populate the account email, plan/authentication type, allowance windows, reset credits, lifetime token summary, and daily token buckets. In production, provider data is returned only when the Codex account email exactly matches the verified PlutoniX profile email; a shared backend login therefore cannot disclose account-wide usage to another profile. Development authentication has no email claim, so its production-forbidden local fallback requires the exact `PLUTONIX_DEV_AUTH_SUBJECT` configured for the backend. No access or refresh token is read, stored, logged, or returned.
+The Builder account panel starts a short-lived, read-only Codex App Server session and reads `account/read`, `account/rateLimits/read`, and `account/usage/read`. For ChatGPT-authenticated Codex sessions this can populate the account email, plan/authentication type, allowance windows, reset credits, lifetime token summary, and daily token buckets. In production, provider data is returned only when the Codex account email exactly matches the verified PlutoMix profile email; a shared backend login therefore cannot disclose account-wide usage to another profile. Development authentication has no email claim, so its production-forbidden local fallback requires the exact `PLUTOMIX_DEV_AUTH_SUBJECT` configured for the backend. No access or refresh token is read, stored, logged, or returned.
 
 Codex does not expose a provider account ID for every authentication mode, so that field remains explicitly unavailable when absent. **Latest Gotham execution in this project** is the newest owner/project-scoped execution ledger entry, not the current browser conversation. Context-window occupancy also remains unavailable because the short-lived account session has no active Gotham thread from which to derive it. These boundaries follow the official [Codex App Server account methods](https://developers.openai.com/codex/app-server/) and keep subscription allowance separate from context occupancy.
 

@@ -1,10 +1,10 @@
-# PlutoniX Product Demo Video
+# PlutoMix Product Demo Video
 
 Status: current 1080p product demo source and regeneration guide.
 
 ## Purpose
 
-The product demo tells the current, bounded PlutoniX workflow without turning a preview into a claim of production authority. It is intended for product discovery, onboarding, and internal review.
+The product demo tells the current, bounded PlutoMix workflow without turning a preview into a claim of production authority. It is intended for product discovery, onboarding, and internal review.
 
 The narrative is:
 
@@ -57,7 +57,7 @@ Run the frontend and backend from the working tree, then capture against the int
 ```sh
 docker compose up -d backend
 npm --prefix apps/frontend run dev -- --port 5175
-PLUTONIX_PRODUCT_DEMO_URL=http://localhost:5175 node artifacts/product-video/capture-product-video.mjs
+PLUTOMIX_PRODUCT_DEMO_URL=http://localhost:5175 node artifacts/product-video/capture-product-video.mjs
 zsh artifacts/product-video/render-product-video.sh
 ```
 
@@ -66,10 +66,10 @@ The renderer uses macOS `say`, Playwright, and FFmpeg. It regenerates narration/
 Verify the result before publishing:
 
 ```sh
-ffprobe -v error -show_entries format=duration:stream=codec_name,codec_type,width,height -of json artifacts/product-video/plutonix-product-video.mp4
-shasum artifacts/product-video/plutonix-product-video.mp4 apps/frontend/public/media/product-video/plutonix-product-video.mp4
-shasum artifacts/product-video/poster.png apps/frontend/public/media/product-video/plutonix-product-video-poster.png
-cmp artifacts/product-video/captions.vtt apps/frontend/public/media/product-video/plutonix-product-video.vtt
+ffprobe -v error -show_entries format=duration:stream=codec_name,codec_type,width,height -of json artifacts/product-video/plutomix-product-video.mp4
+shasum artifacts/product-video/plutomix-product-video.mp4 apps/frontend/public/media/product-video/plutomix-product-video.mp4
+shasum artifacts/product-video/poster.png apps/frontend/public/media/product-video/plutomix-product-video-poster.png
+cmp artifacts/product-video/captions.vtt apps/frontend/public/media/product-video/plutomix-product-video.vtt
 ```
 
 The MP4 should be a 1920×1080 H.264/AAC film with an approximately 78-second runtime. Inspect the contact sheet or the video directly and confirm that all shots show the current Analysis workflow rather than the retired Graphical Model capture flow.

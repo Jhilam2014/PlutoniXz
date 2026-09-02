@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 
 const outputDir = path.join(path.dirname(fileURLToPath(import.meta.url)), "render");
 const titles = [
-  ["01", "PLUTONIX", "From instruction to the right primary deliverable"],
+  ["01", "PLUTOMIX", "From instruction to the right primary deliverable"],
   ["02", "BUILDER + EVIDENCE GATES", "Shape the request; supply only the missing context"],
   ["03", "ANALYSIS PORTFOLIO", "Source-backed application inventory and decision posture"],
   ["04", "PORTFOLIO INTELLIGENCE", "Explicit scopes, private App BrainX, and recorded links"],
@@ -13,7 +13,7 @@ const titles = [
   ["07", "DELIVERY DECISION GRAPH", "Build context, functionality, outcomes, agents, and services"],
   ["08", "PRODUCT DOCUMENT", "Current workflow, strategy, and safety boundaries"],
   ["09", "MOCK-SAFE CLOUD HOSTING", "Review, approval, health checks, and rollback"],
-  ["10", "BUILD WITH EVIDENCE", "PlutoniX"]
+  ["10", "BUILD WITH EVIDENCE", "PlutoMix"]
 ];
 
 const browser = await chromium.launch({ headless: true });

@@ -58,7 +58,10 @@ test("Account & Usage distinguishes provider-wide activity from the latest proje
   assert.ok(appSource.includes("usageResetRemaining"));
   assert.ok(appSource.includes('style={{ "--allowance-hue": compactAllowanceHue }}'));
   assert.ok(appSource.includes("Math.round(142 - compactAllowance.percentUsed * 1.38)"));
-  assert.ok(appSource.includes('provider.id === "codex"'));
+  assert.ok(appSource.includes("compactAllowanceFor(activeProvider)"));
+  assert.ok(appSource.includes('params.set("providerId", gothamProviderId)'));
+  assert.ok(appSource.includes('params.set("profileId", gothamProviderSummary.profileId)'));
+  assert.ok(appSource.includes("Not exposed for this authenticated {provider.label} account."));
   assert.ok(appSource.includes("if (!currentUser?.id) return undefined;\n    loadGothamAccountUsage();"));
 });
 
@@ -66,7 +69,7 @@ test("Gotham Chat reattaches to backend execution after browser refresh", () => 
   assert.ok(appSource.includes('/api/generate/status'));
   assert.ok(appSource.includes('runningInstructionFromExecution'));
   assert.ok(appSource.includes('setGenerating(true)'));
-  assert.ok(appSource.includes('plutonix-selected-project:'));
+  assert.ok(appSource.includes('plutomix-selected-project:'));
   assert.ok(appSource.includes('loadProjectInstructions(selectedProjectId)'));
 });
 

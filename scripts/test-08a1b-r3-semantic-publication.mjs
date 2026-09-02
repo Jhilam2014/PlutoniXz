@@ -9,7 +9,7 @@ import { publishStagedFiles } from './publish-08a1b-r3-semantic-repair.mjs';
 import { validateCurrentR4SemanticStatus } from './verify-08a1c-r4-semantic-status.mjs';
 import { validate08A1DSemanticGate } from './verify-08a1d-semantic-gate.mjs';
 
-const root = await mkdtemp(path.join(os.tmpdir(), 'plutonix-semantic-publish-'));
+const root = await mkdtemp(path.join(os.tmpdir(), 'plutomix-semantic-publish-'));
 try {
   const currentA = path.join(root, 'current-a.json'); const currentB = path.join(root, 'current-b.json');
   const stageA = path.join(root, 'stage-a.json'); const stageB = path.join(root, 'stage-b.json');

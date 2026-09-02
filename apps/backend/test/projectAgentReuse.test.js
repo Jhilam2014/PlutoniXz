@@ -7,7 +7,7 @@ import { buildProjectAgentTopology, prepareProjectAgentTopology, publishProjectA
 import { createCanonicalWorkflowDecisionRecord, persistCanonicalWorkflowDecision } from "../src/workflowDecisionContinuity.js";
 
 const environmentKeys = [
-  "PLUTONIX_PROJECT_ROOT",
+  "PLUTOMIX_PROJECT_ROOT",
   "PROJECT_AGENT_RUNTIME_ROOT",
   "PROJECT_AGENT_MARKDOWN_ROOT",
   "PROJECT_AGENT_ARCHIVE_ROOT",
@@ -74,16 +74,30 @@ test("artifact-specific instructions stay on assignments instead of shared defin
   assert.equal(workbook.agentReuseDecisions.find((item) => item.selectedAgent === definition.id).decisionType, "exact_reuse");
 });
 
+test("enterprise agent catalogs use a tenant-enterprise namespace and never reuse another enterprise definition", () => {
+  const firstProject = { ...project("enterprise-alpha"), tenantId: "tenant-a", enterprise: { id: "commerce", name: "Commerce" }, agentSource: "enterprise" };
+  const firstRequest = { ...mediumRequest, agentCatalog: { source: "enterprise", tenantId: "tenant-a", enterpriseId: "commerce" } };
+  const first = buildProjectAgentTopology(firstProject, firstRequest);
+  assert.equal(first.project.agentSource, "enterprise");
+  assert.ok(first.agents.every((agent) => agent.id.startsWith("enterprise-") && agent.catalogScope === "enterprise"));
+  assert.ok(first.agents.every((agent) => agent.tenantId === "tenant-a" && agent.enterpriseId === "commerce"));
+
+  const otherProject = { ...project("enterprise-beta"), tenantId: "tenant-a", enterprise: { id: "research", name: "Research" }, agentSource: "enterprise" };
+  const other = buildProjectAgentTopology(otherProject, { ...mediumRequest, agentCatalog: { source: "enterprise", tenantId: "tenant-a", enterpriseId: "research" } }, null, first.agents);
+  assert.ok(other.agents.every((agent) => !first.agents.some((candidate) => candidate.id === agent.id)));
+  assert.ok(other.agentReuseDecisions.every((decision) => decision.decisionType === "create_new_agent"));
+});
+
 test("preparation binds local topology without rebuilding shared graph projections", async (context) => {
   const previousEnvironment = Object.fromEntries(environmentKeys.map((key) => [key, process.env[key]]));
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), "plutonix-agent-prepare-"));
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "plutomix-agent-prepare-"));
   const workspaceDir = path.join(root, "workspace");
   const graphPath = path.join(root, "topology", "agentic-system-graph.json");
   const frontendGraphPath = path.join(root, "frontend", "agentic-system-graph.json");
   const neo4jPath = path.join(root, "graph", "generated-project-agents.cypher");
   await fs.mkdir(workspaceDir, { recursive: true });
   Object.assign(process.env, {
-    PLUTONIX_PROJECT_ROOT: root,
+    PLUTOMIX_PROJECT_ROOT: root,
     PROJECT_AGENT_RUNTIME_ROOT: path.join(root, "runtime", "agents", "projects"),
     PROJECT_AGENT_MARKDOWN_ROOT: path.join(root, "agents", "generated"),
     PROJECT_AGENT_ARCHIVE_ROOT: path.join(root, "agents", "archived"),
@@ -139,7 +153,7 @@ test("preparation binds local topology without rebuilding shared graph projectio
 
 test("sync archives legacy project-prefixed definitions and persists reuse decisions", async (context) => {
   const previousEnvironment = Object.fromEntries(environmentKeys.map((key) => [key, process.env[key]]));
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), "plutonix-agent-reuse-"));
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "plutomix-agent-reuse-"));
   const workspaceDir = path.join(root, "workspace");
   const runtimeRoot = path.join(root, "runtime", "agents", "projects");
   const generatedRoot = path.join(root, "agents", "generated");
@@ -150,7 +164,7 @@ test("sync archives legacy project-prefixed definitions and persists reuse decis
   await fs.mkdir(generatedRoot, { recursive: true });
 
   Object.assign(process.env, {
-    PLUTONIX_PROJECT_ROOT: root,
+    PLUTOMIX_PROJECT_ROOT: root,
     PROJECT_AGENT_RUNTIME_ROOT: runtimeRoot,
     PROJECT_AGENT_MARKDOWN_ROOT: generatedRoot,
     PROJECT_AGENT_ARCHIVE_ROOT: archiveRoot,

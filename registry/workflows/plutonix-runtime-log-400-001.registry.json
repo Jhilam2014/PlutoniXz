@@ -1,9 +1,0 @@
-{
-  "workflow_id": "plutonix-runtime-log-400-001",
-  "registered_at": "2026-06-25T07:03:20Z",
-  "status": "completed",
-  "owner_agent": "project-execution-agent",
-  "reuse_decision": "exact_reuse",
-  "memory_sync_required": false,
-  "notes": "Small observability enhancement reused the local project execution agent; no specialist agent was created."
-}

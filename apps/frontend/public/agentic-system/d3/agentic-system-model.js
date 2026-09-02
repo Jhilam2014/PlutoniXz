@@ -61,7 +61,7 @@ export function humanize(value) {
 }
 
 export function shortName(value, max = 18) {
-  const text = String(value || "Unnamed").replace(/\b(agent|project|system|plutonix)\b/gi, "").replace(/\s+/g, " ").trim() || String(value || "Unnamed");
+  const text = String(value || "Unnamed").replace(/\b(agent|project|system|plutomix)\b/gi, "").replace(/\s+/g, " ").trim() || String(value || "Unnamed");
   return text.length > max ? `${text.slice(0, max - 1)}…` : text;
 }
 
@@ -109,7 +109,7 @@ export function inferAgentType(node) {
   // QAgents are their own visual role: they remain reviewers functionally, but must not blend into standard review nodes.
   if (node?.type === "agent" && haystack.includes("qagent")) return "qagent";
   if (node?.type === "agent" && (node?.metadata?.supportAgent || haystack.includes("review"))) return "reviewer";
-  if (node?.type === "agent" && (haystack.includes("orchestrator") || haystack.includes("global-plutonix"))) return "orchestrator";
+  if (node?.type === "agent" && (haystack.includes("orchestrator") || haystack.includes("global-plutomix"))) return "orchestrator";
   if (node?.type === "agent") return "worker";
   if (node?.type === "cluster") return "capability";
   if (["service", "api", "page", "ui_element", "workflow", "feature", "validation", "database"].includes(node?.type)) return node.type;

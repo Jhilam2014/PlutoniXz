@@ -1105,16 +1105,16 @@ test("the inspector contract exposes functionality hierarchy, factual efficiency
   assert.ok(renderer.includes("architectureSelectedLink ? 4.2") && renderer.includes(": 0.7"), "Explore keeps selected connectors emphatic while thinning the default connector");
 });
 
-test("Architecture analysis is owned by the PlutoniX page instead of project tools", () => {
+test("Architecture analysis is owned by the PlutoMix page instead of project tools", () => {
   const app = fs.readFileSync(new URL("../src/App.jsx", import.meta.url), "utf8");
-  const analysisWorkspace = fs.readFileSync(new URL("../src/PlutonixAnalysisWorkspace.jsx", import.meta.url), "utf8");
+  const analysisWorkspace = fs.readFileSync(new URL("../src/PlutoMixAnalysisWorkspace.jsx", import.meta.url), "utf8");
   const projectToolsStart = app.indexOf('<div className="project-tools">');
   const projectToolsEnd = app.indexOf("</details>", projectToolsStart);
   const projectTools = app.slice(projectToolsStart, projectToolsEnd);
   assert.equal(projectTools.includes("analyzeArchitectureBranches"), false, "project tools no longer mount Architecture analysis");
-  assert.ok(app.includes("onAnalyzeArchitecture={analyzeArchitectureBranches}"), "the PlutoniX page passes Architecture analysis into its analysis workspace");
+  assert.ok(app.includes("onAnalyzeArchitecture={analyzeArchitectureBranches}"), "the PlutoMix page passes Architecture analysis into its analysis workspace");
   assert.ok(analysisWorkspace.includes("onClick={onAnalyzeArchitecture}"), "the analysis workspace owns the Architecture analysis control");
-  assert.ok(app.includes('requestedFrom: "plutonix-page"'), "analysis telemetry records the PlutoniX surface");
+  assert.ok(app.includes('requestedFrom: "plutomix-page"'), "analysis telemetry records the PlutoMix surface");
   assert.ok(analysisWorkspace.includes("disabled={!onAnalyzeArchitecture || analyzingArchitecture}"), "an already analysed selected application remains eligible for re-analysis");
   assert.equal(analysisWorkspace.includes("selectedProject.isDefault"), false, "the shared project is not blocked by the retired managed-project restriction");
 });

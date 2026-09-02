@@ -26,7 +26,7 @@ async function waitFor(predicate, timeoutMs = 1000) {
 }
 
 async function fixture(t, adapterOverrides = {}) {
-  const directory = await fs.mkdtemp(path.join(os.tmpdir(), "plutonix-ai-profiles-"));
+  const directory = await fs.mkdtemp(path.join(os.tmpdir(), "plutomix-ai-profiles-"));
   const repository = new JsonProviderProfileRepository({ filePath: path.join(directory, "profiles.json") });
   const definitions = Object.fromEntries(PROVIDER_IDS.map((providerId) => [providerId, {
     providerId,
@@ -86,7 +86,7 @@ test("canonical compatibility metadata defines all five independently detectable
 });
 
 test("installed CLI detection is independently mocked for every provider", async (t) => {
-  const directory = await fs.mkdtemp(path.join(os.tmpdir(), "plutonix-cli-detect-"));
+  const directory = await fs.mkdtemp(path.join(os.tmpdir(), "plutomix-cli-detect-"));
   t.after(() => fs.rm(directory, { recursive: true, force: true }));
   for (const providerId of PROVIDER_IDS) {
     const definition = PROVIDER_DEFINITIONS[providerId];
@@ -103,8 +103,38 @@ test("installed CLI detection is independently mocked for every provider", async
   }
 });
 
+test("Claude and Codex detection enforce their independent compatibility floors", async (t) => {
+  const directory = await fs.mkdtemp(path.join(os.tmpdir(), "plutomix-cli-versions-"));
+  t.after(() => fs.rm(directory, { recursive: true, force: true }));
+
+  const detect = async (providerId, stdout) => {
+    const definition = PROVIDER_DEFINITIONS[providerId];
+    const executable = path.join(directory, definition.executableNames[0]);
+    await fs.rm(executable, { force: true });
+    await fs.symlink(process.execPath, executable);
+    return new CliProviderAdapter(providerId, {
+      env: { PATH: directory, [definition.configuredExecutableEnv]: executable },
+      spawnFactory: () => mockChild({ stdout })
+    }).detectInstallation();
+  };
+
+  const supportedClaude = await detect("claude", "2.1.251 (Claude Code)\n");
+  assert.equal(supportedClaude.status, "installed");
+  assert.equal(supportedClaude.supportedVersion, true);
+  assert.equal(supportedClaude.version, "2.1.251 (Claude Code)");
+
+  const unsupportedClaude = await detect("claude", "2.1.247 (Claude Code)\n");
+  assert.equal(unsupportedClaude.status, "unsupported_version");
+  assert.equal(unsupportedClaude.supportedVersion, false);
+
+  const codex = await detect("codex", "codex-cli 0.151.0\n");
+  assert.equal(codex.status, "installed");
+  assert.equal(codex.supportedVersion, true);
+  assert.equal(codex.version, "codex-cli 0.151.0");
+});
+
 test("CLI detection falls back to approved aliases when a configured default is absent", async (t) => {
-  const directory = await fs.mkdtemp(path.join(os.tmpdir(), "plutonix-cli-alias-"));
+  const directory = await fs.mkdtemp(path.join(os.tmpdir(), "plutomix-cli-alias-"));
   t.after(() => fs.rm(directory, { recursive: true, force: true }));
   const alias = path.join(directory, "agent");
   await fs.symlink(process.execPath, alias);
@@ -113,6 +143,18 @@ test("CLI detection falls back to approved aliases when a configured default is 
     CURSOR_AGENT_BIN: "cursor-agent"
   });
   assert.equal(resolved, await fs.realpath(alias));
+});
+
+test("configured executable resolution rejects arbitrary basenames", async (t) => {
+  const directory = await fs.mkdtemp(path.join(os.tmpdir(), "plutomix-cli-unapproved-"));
+  t.after(() => fs.rm(directory, { recursive: true, force: true }));
+  const unapproved = path.join(directory, "arbitrary-runner");
+  await fs.symlink(process.execPath, unapproved);
+  const resolved = await resolveApprovedExecutable(PROVIDER_DEFINITIONS.claude, {
+    PATH: "",
+    CLAUDE_BIN: unapproved
+  });
+  assert.equal(resolved, "");
 });
 
 test("process cancellation terminates a mocked CLI child and command operations are allowlisted", async () => {
@@ -134,7 +176,9 @@ test("process cancellation terminates a mocked CLI child and command operations 
 
 test("capabilities and minimum versions are derived from maintained provider metadata", () => {
   assert.equal(versionAtLeast("codex-cli 0.151.0", "0.1.0"), true);
-  assert.equal(versionAtLeast("0.0.1", "1.0.0"), false);
+  assert.equal(versionAtLeast("2.1.247 (Claude Code)", PROVIDER_DEFINITIONS.claude.minimumVersion), false);
+  assert.equal(PROVIDER_DEFINITIONS.claude.minimumVersion, "2.1.248");
+  assert.equal(PROVIDER_DEFINITIONS.claude.gothamExecutionSupported, true);
   assert.ok(PROVIDER_DEFINITIONS.codex.capabilities.includes("multiple_profiles"));
   assert.ok(PROVIDER_DEFINITIONS.claude.capabilities.includes("profile_switch"));
   assert.ok(!PROVIDER_DEFINITIONS.cursor.capabilities.includes("profile_switch"));
@@ -161,10 +205,52 @@ test("containerized Codex login prefers device authorization and disables the un
 
 test("authorization URLs require HTTPS and an exact approved-domain boundary", () => {
   assert.equal(validateAuthorizationUrl("https://auth.openai.com/oauth?state=secret", ["openai.com"]).hostname, "auth.openai.com");
+  assert.equal(validateAuthorizationUrl("https://claude.com/oauth/authorize?state=secret", PROVIDER_DEFINITIONS.claude.authDomains).hostname, "claude.com");
   assert.equal(validateAuthorizationUrl("http://auth.openai.com/oauth", ["openai.com"]), null);
   assert.equal(validateAuthorizationUrl("https://openai.com.evil.example/oauth", ["openai.com"]), null);
   assert.equal(validateAuthorizationUrl("https://user:pass@openai.com/oauth", ["openai.com"]), null);
   assert.equal(extractAuthorizationChallenge("Go to https://github.com/login/device Code: ABCD-EFGH", ["github.com"]).deviceCode, "ABCD-EFGH");
+});
+
+test("Claude browser login keeps a bounded stdin pipe open for the one-time authorization code", async (t) => {
+  const runtimeRoot = await fs.mkdtemp(path.join(os.tmpdir(), "plutomix-claude-login-"));
+  t.after(() => fs.rm(runtimeRoot, { recursive: true, force: true }));
+  let spawnOptions;
+  let authorizationWriter;
+  let challenge;
+  let submitted = "";
+  const child = mockChild({ hold: true });
+  child.stdin.on("data", (chunk) => {
+    submitted += chunk.toString("utf8");
+    child.exitCode = 0;
+    child.stdout.end();
+    child.stderr.end();
+    queueMicrotask(() => child.emit("close", 0, null));
+  });
+  const adapter = new CliProviderAdapter("claude", {
+    env: { PATH: "/usr/local/bin" },
+    runtimeRoot,
+    spawnFactory: (_command, _args, options) => {
+      spawnOptions = options;
+      queueMicrotask(() => child.stdout.write("Open https://claude.com/oauth/authorize?state=test and paste the authorization code here"));
+      return child;
+    }
+  });
+  adapter.detectInstallation = async () => ({ installed: true, supportedVersion: true, executable: "/approved/claude" });
+  const login = adapter.beginLogin({
+    authMethod: "browser_oauth",
+    scope,
+    profile: { id: "claude-login", runtimeKind: "isolated" },
+    onProgress: (value) => { challenge = value; },
+    onAuthorizationInputReady: (writer) => { if (writer) authorizationWriter = writer; }
+  });
+  await waitFor(() => challenge?.authorizationUrl && authorizationWriter);
+  assert.equal(spawnOptions.shell, false);
+  assert.equal(spawnOptions.stdio[0], "pipe");
+  assert.equal(challenge.destinationDomain, "claude.com");
+  assert.equal(authorizationWriter("oauth-code#verifier"), true);
+  assert.deepEqual(await login, { connected: true, status: "connected", authMode: "browser_oauth" });
+  assert.equal(submitted, "oauth-code#verifier\n");
 });
 
 test("CLI output and audit metadata redact secrets and authorization material", () => {
@@ -178,7 +264,7 @@ test("CLI output and audit metadata redact secrets and authorization material", 
 });
 
 test("isolated runtime directories do not mutate application HOME and are profile-specific", async (t) => {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), "plutonix-provider-home-"));
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "plutomix-provider-home-"));
   t.after(() => fs.rm(root, { recursive: true, force: true }));
   const adapter = new CliProviderAdapter("codex", { env: { PATH: "/bin", HOME: "/application-home", APP_DATABASE_PASSWORD: "never-forward" }, runtimeRoot: root });
   const first = await adapter.profileEnvironment(scope, { id: "codex-profile-a", runtimeKind: "isolated" });
@@ -220,6 +306,42 @@ test("browser OAuth/device login follows explicit states and clears challenges o
   assert.equal(connected.authorizationUrl, undefined);
   assert.equal(connected.deviceCode, undefined);
   assert.equal((await service.listProfiles(scope, "codex", { discoverExisting: false }))[0].status, "connected");
+});
+
+test("Claude authorization input is submitted once to the scoped CLI and is never persisted or returned", async (t) => {
+  const authorizationCode = "oauth-code#one-time-verifier";
+  let observedCode = "";
+  let finishLogin;
+  const { service, repository } = await fixture(t, {
+    claude: {
+      beginLogin: ({ onProgress, onAuthorizationInputReady }) => new Promise((resolve) => {
+        finishLogin = resolve;
+        onAuthorizationInputReady((value) => {
+          observedCode = value;
+          queueMicrotask(() => finishLogin({ connected: true }));
+          return true;
+        });
+        onProgress({ authorizationUrl: "https://claude.com/oauth/authorize?state=redacted", destinationDomain: "claude.com" });
+      })
+    }
+  });
+  const started = await service.beginLogin(scope, "claude", { authMethod: "browser_oauth", displayName: "Claude Work" });
+  const waiting = await waitFor(() => {
+    const status = service.getLoginStatus(scope, "claude", started.id);
+    return status.authorizationInputRequired ? status : null;
+  });
+  assert.equal(waiting.destinationDomain, "claude.com");
+  const submitted = await service.submitLoginAuthorization(scope, "claude", started.id, authorizationCode);
+  assert.equal(submitted.authorizationSubmitted, true);
+  assert.equal(submitted.authorizationInputRequired, undefined);
+  assert.equal(observedCode, authorizationCode);
+  const connected = await waitFor(() => {
+    const status = service.getLoginStatus(scope, "claude", started.id);
+    return status.state === "connected" ? status : null;
+  });
+  assert.equal(JSON.stringify(connected).includes(authorizationCode), false);
+  assert.equal((await fs.readFile(repository.filePath, "utf8")).includes(authorizationCode), false);
+  assert.equal((await repository.listAudit(scope)).some((event) => JSON.stringify(event).includes(authorizationCode)), false);
 });
 
 test("token login never persists or returns the submitted token", async (t) => {
@@ -295,6 +417,122 @@ test("workspace overrides resolve ahead of global defaults and running selection
   assert.equal(globalJob.selection.profileId, "codex-global", "the previously created job remains frozen");
 });
 
+test("an active verified Claude profile resolves to a frozen Gotham runtime selection", async (t) => {
+  const claudeRuntime = {
+    providerId: "claude",
+    profileId: "claude-work",
+    workspaceId: "workspace-a",
+    command: "/approved/claude",
+    env: { PATH: "/approved", CLAUDE_CONFIG_DIR: "/profiles/claude-work" }
+  };
+  const { service, repository } = await fixture(t, {
+    claude: { runtime: async () => claudeRuntime }
+  });
+  await repository.saveProfile(scope, {
+    id: "claude-work",
+    providerId: "claude",
+    displayName: "Claude Work",
+    authMethod: "browser_oauth",
+    credentialRef: "provider-runtime://claude/claude-work",
+    runtimeKind: "isolated",
+    status: "connected",
+    lastLoginSucceeded: true
+  });
+  await repository.activateProfile(scope, "claude", "claude-work", "workspace-a");
+  const job = await service.resolveRuntimeSelection(scope, {
+    providerId: "claude",
+    requestedProfileId: "claude-work",
+    modelId: "claude-sonnet-4-6"
+  });
+  assert.equal(Object.isFrozen(job.selection), true);
+  assert.deepEqual(job.selection, {
+    providerId: "claude",
+    profileId: "claude-work",
+    modelId: "claude-sonnet-4-6",
+    workspaceId: "workspace-a",
+    selectedAt: job.selection.selectedAt
+  });
+  assert.equal(Object.isFrozen(job.runtime), true);
+  assert.equal(Object.isFrozen(job.runtime.env), true);
+  assert.deepEqual(job.runtime, claudeRuntime);
+});
+
+test("Claude runtime selection rejects disconnected, inactive, and mismatched profiles", async (t) => {
+  const { service, repository } = await fixture(t);
+  for (const [id, status] of [["claude-active", "connected"], ["claude-other", "connected"], ["claude-disconnected", "disconnected"]]) {
+    await repository.saveProfile(scope, {
+      id,
+      providerId: "claude",
+      displayName: id,
+      authMethod: "browser_oauth",
+      credentialRef: `provider-runtime://claude/${id}`,
+      runtimeKind: "isolated",
+      status,
+      lastLoginSucceeded: status === "connected"
+    });
+  }
+  await repository.activateProfile(scope, "claude", "claude-active", "workspace-a");
+  await assert.rejects(
+    service.resolveRuntimeSelection(scope, { providerId: "claude", requestedProfileId: "claude-other" }),
+    { code: "inactive_profile_requested" }
+  );
+  await repository.saveProfile(scope, {
+    id: "claude-disconnected",
+    providerId: "claude",
+    displayName: "claude-disconnected",
+    authMethod: "browser_oauth",
+    credentialRef: "provider-runtime://claude/claude-disconnected",
+    runtimeKind: "isolated",
+    status: "connected",
+    lastLoginSucceeded: true
+  });
+  await repository.activateProfile(scope, "claude", "claude-disconnected", "workspace-a");
+  await repository.saveProfile(scope, {
+    id: "claude-disconnected",
+    providerId: "claude",
+    displayName: "claude-disconnected",
+    authMethod: "browser_oauth",
+    credentialRef: "provider-runtime://claude/claude-disconnected",
+    runtimeKind: "isolated",
+    status: "disconnected",
+    lastLoginSucceeded: false
+  });
+  await assert.rejects(
+    service.resolveRuntimeSelection(scope, { providerId: "claude" }),
+    { code: "active_profile_invalid" }
+  );
+});
+
+test("provider selection remains frozen after Claude activation changes and unsupported providers fail before runtime resolution", async (t) => {
+  let unsupportedRuntimeCalls = 0;
+  const { service, repository } = await fixture(t, {
+    copilot: { runtime: async () => { unsupportedRuntimeCalls += 1; return { command: "/approved/copilot", env: {} }; } }
+  });
+  for (const providerId of ["claude", "copilot"]) {
+    for (const suffix of providerId === "claude" ? ["first", "second"] : ["active"]) {
+      const id = `${providerId}-${suffix}`;
+      await repository.saveProfile(scope, {
+        id,
+        providerId,
+        displayName: id,
+        authMethod: "browser_oauth",
+        credentialRef: `provider-runtime://${providerId}/${id}`,
+        runtimeKind: "isolated",
+        status: "connected",
+        lastLoginSucceeded: true
+      });
+    }
+  }
+  await repository.activateProfile(scope, "claude", "claude-first", "workspace-a");
+  const frozenJob = await service.resolveRuntimeSelection(scope, { providerId: "claude" });
+  await repository.activateProfile(scope, "claude", "claude-second", "workspace-a");
+  assert.equal(frozenJob.selection.profileId, "claude-first");
+
+  await repository.activateProfile(scope, "copilot", "copilot-active", "workspace-a");
+  await assert.rejects(service.resolveRuntimeSelection(scope, { providerId: "copilot" }), { code: "provider_execution_unsupported" });
+  assert.equal(unsupportedRuntimeCalls, 0);
+});
+
 test("unsupported Cursor multi-profile and Emergent auth behavior is honest", async (t) => {
   const { service, repository } = await fixture(t);
   await repository.saveProfile(scope, { id: "cursor-existing", providerId: "cursor", displayName: "Cursor", authMethod: "existing_session", credentialRef: "provider-runtime://cursor/cursor-existing", runtimeKind: "existing_session", status: "connected" });
@@ -326,4 +564,34 @@ test("provider API requires authorization before returning profile metadata", as
   const body = await response.json();
   assert.equal(body.code, "authentication_required");
   assert.equal(body.error.includes("denied"), false);
+});
+
+test("provider API forwards bounded Claude authorization input without reflecting it", async (t) => {
+  const authorizationCode = "oauth-code#api-verifier";
+  let received = null;
+  const app = express();
+  app.use(express.json());
+  registerAiProviderRoutes(app, {
+    service: {
+      submitLoginAuthorization: async (requestScope, providerId, sessionId, value) => {
+        received = { requestScope, providerId, sessionId, value };
+        return { id: sessionId, providerId, state: "waiting_for_provider", authorizationSubmitted: true };
+      }
+    },
+    readPermission: "read",
+    operatePermission: "operate",
+    authorize: async () => ({ tenantId: "tenant-a", principal: { id: "user-a" }, workspaceId: "workspace-a" })
+  });
+  const server = app.listen(0, "127.0.0.1");
+  t.after(() => new Promise((resolve) => server.close(resolve)));
+  await new Promise((resolve) => server.once("listening", resolve));
+  const response = await fetch(`http://127.0.0.1:${server.address().port}/api/ai-providers/claude/login/session-a/authorize`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ workspaceId: "workspace-a", authorizationCode })
+  });
+  assert.equal(response.status, 200);
+  const body = await response.json();
+  assert.deepEqual(received, { requestScope: scope, providerId: "claude", sessionId: "session-a", value: authorizationCode });
+  assert.equal(JSON.stringify(body).includes(authorizationCode), false);
 });

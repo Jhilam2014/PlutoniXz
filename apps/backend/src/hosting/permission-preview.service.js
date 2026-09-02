@@ -10,7 +10,7 @@ export function buildPermissionPreview(providerId, credentialMethod) {
     warnings: [
       "Do not use root, owner, billing administrator, or unrestricted credentials.",
       "Prefer OIDC/Workload Identity Federation or short-lived delegated credentials.",
-      "PlutoniX stores only encrypted references and sanitized metadata."
+      "PlutoMix stores only encrypted references and sanitized metadata."
     ],
     sensitive_actions: ["Build image", "Push image", "Create or update runtime service", "Attach deployment-time secrets", "Run health check"],
     approved: false

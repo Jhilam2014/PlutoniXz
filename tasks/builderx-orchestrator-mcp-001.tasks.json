@@ -1,5 +1,5 @@
 {
-  "workflow_id": "plutonix-orchestrator-mcp-001",
+  "workflow_id": "plutomix-orchestrator-mcp-001",
   "tasks": [
     {
       "id": "add-orchestrator-restructuring-service",

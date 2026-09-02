@@ -161,7 +161,7 @@ export function huggingFaceDownloadArgs(repoId, localDir, { revision = "", allow
 }
 
 export function createHuggingFaceModelPool({ root, emit = () => {} } = {}) {
-  if (!root) throw new Error("Hugging Face model pool requires a PlutoniX root.");
+  if (!root) throw new Error("Hugging Face model pool requires a PlutoMix root.");
   const poolRoot = modelPoolRoot(root);
   const modelsRoot = path.join(poolRoot, "models");
   const readmeRoot = path.join(poolRoot, "model-cards");

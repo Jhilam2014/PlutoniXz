@@ -1,6 +1,6 @@
-# PlutoniX Project Map
+# PlutoMix Project Map
 
-PlutoniX is a fullstack containerized webpage builder.
+PlutoMix is a fullstack containerized webpage builder.
 
 ## Runtime Services
 

@@ -28,7 +28,7 @@ function scrollToStudioSection(id) {
 export default function StudioPage({
   currentUser,
   onOpenBuilder,
-  onOpenPlutonix,
+  onOpenPlutoMix,
   onOpenAgents,
   onOpenHosting,
   onOpenProductDocument,
@@ -36,7 +36,7 @@ export default function StudioPage({
   onUseDevelopmentProfile
 }) {
   return (
-    <main className="studio-page" aria-label="PlutoniX Studio">
+    <main className="studio-page" aria-label="PlutoMix Studio">
       <section className="studio-hero" id="studio-overview">
         <div className="studio-frame">
           <nav className="studio-section-nav" aria-label="Studio navigation">
@@ -56,13 +56,13 @@ export default function StudioPage({
               <p className="studio-eyebrow"><Sparkles size={15} /> Agentic product intelligence</p>
               <h2>Build, understand, and govern <span>the right digital product.</span></h2>
               <p className="studio-lede">
-                PlutoniX turns a real brief into the right application, artifact, service, or automation, then preserves
+                PlutoMix turns a real brief into the right application, artifact, service, or automation, then preserves
                 the evidence, agent knowledge, architecture, and decisions needed to evolve it responsibly.
               </p>
               <div className="studio-hero-actions">
                 {currentUser ? <>
                   <button type="button" className="studio-primary-action" onClick={onOpenBuilder}>Open Builder <ArrowRight size={17} /></button>
-                  <button type="button" className="studio-secondary-action" onClick={onOpenPlutonix}>Open product intelligence <BrainCircuit size={17} /></button>
+                  <button type="button" className="studio-secondary-action" onClick={onOpenPlutoMix}>Open product intelligence <BrainCircuit size={17} /></button>
                 </> : <>
                   <button type="button" className="studio-primary-action" onClick={() => scrollToStudioSection("studio-access")}>Enter Studio securely <LockKeyhole size={16} /></button>
                   <button type="button" className="studio-secondary-action" onClick={() => scrollToStudioSection("studio-workflow")}>See the product flow <ArrowRight size={17} /></button>
@@ -89,24 +89,24 @@ export default function StudioPage({
                   controls
                   playsInline
                   preload="metadata"
-                  poster="/media/product-video/plutonix-product-video-poster.png"
+                  poster="/media/product-video/plutomix-product-video-poster.png"
                   aria-describedby="studio-product-film-caption"
                 >
-                  <source src="/media/product-video/plutonix-product-video.mp4" type="video/mp4" />
+                  <source src="/media/product-video/plutomix-product-video.mp4" type="video/mp4" />
                   <track
                     kind="captions"
-                    src="/media/product-video/plutonix-product-video.vtt"
+                    src="/media/product-video/plutomix-product-video.vtt"
                     srcLang="en"
                     label="English"
                     default
                   />
                   Your browser does not support the product film.
                 </video>
-                <span className="studio-video-mark" aria-hidden="true">PlutoniX <b>Product film</b></span>
+                <span className="studio-video-mark" aria-hidden="true">PlutoMix <b>Product film</b></span>
               </div>
               <figcaption id="studio-product-film-caption">
                 <span>Builder intake, evidence gates, application Analysis, a separate governed boundary, and mock-safe hosting.</span>
-                <a href="/media/product-video/plutonix-product-video.mp4" target="_blank" rel="noreferrer">
+                <a href="/media/product-video/plutomix-product-video.mp4" target="_blank" rel="noreferrer">
                   Open film <CirclePlay size={15} />
                 </a>
               </figcaption>
@@ -129,7 +129,7 @@ export default function StudioPage({
         </div>
       </section>
 
-      <section className="studio-intelligence-band" aria-label="PlutoniX product intelligence layers">
+      <section className="studio-intelligence-band" aria-label="PlutoMix product intelligence layers">
         <div className="studio-frame studio-intelligence-grid">
           <article><span>01</span><BrainCircuit size={19} /><div><h3>BrainX</h3><p>Application and enterprise knowledge grounded in recorded evidence.</p></div></article>
           <article><span>02</span><GitBranch size={19} /><div><h3>DecisionX</h3><p>Current paths, alternatives, constraints, validation, and outcomes.</p></div></article>
@@ -161,7 +161,7 @@ export default function StudioPage({
               <span className="studio-trace-index">02</span>
               <div>
                 <h3>Shape the requested outcome</h3>
-                <p>PlutoniX creates a Product Shape Contract, then coordinates bounded work around the requested application, document, workbook, media artifact, API, script, or automation.</p>
+                <p>PlutoMix creates a Product Shape Contract, then coordinates bounded work around the requested application, document, workbook, media artifact, API, script, or automation.</p>
               </div>
               <Layers3 size={21} />
             </li>
@@ -194,7 +194,7 @@ export default function StudioPage({
               Analysis makes application context visible. Enterprise BrainX is a separate, opt-in control plane: authorized
               bindings, policy snapshots, evidence references, budget reservations, and reviewable receipts live outside the portfolio view.
             </p>
-            <button type="button" className="studio-dark-action" onClick={currentUser ? onOpenPlutonix : () => scrollToStudioSection("studio-access")}>
+            <button type="button" className="studio-dark-action" onClick={currentUser ? onOpenPlutoMix : () => scrollToStudioSection("studio-access")}>
               {currentUser ? "Open product intelligence" : "Enter Studio securely"} <ArrowRight size={16} />
             </button>
           </div>
@@ -224,7 +224,7 @@ export default function StudioPage({
         <div className="studio-frame studio-documentation-layout">
           <div>
             <p className="studio-eyebrow"><BookOpen size={15} /> Read the product, not a promise</p>
-            <h2>See what PlutoniX does today—and where its boundaries are.</h2>
+            <h2>See what PlutoMix does today—and where its boundaries are.</h2>
             <p>
               The product guide and walkthrough explain Builder, artifact-aware previews, Analysis, governed Decision Continuity,
               and the current mock-safe hosting workflow.
@@ -234,7 +234,7 @@ export default function StudioPage({
             {currentUser ? <button type="button" className="studio-primary-action" onClick={onOpenProductDocument}>
               Open product document <BookOpen size={17} />
             </button> : null}
-            <a href="/docs/product-doc-plutonix.md" target="_blank" rel="noreferrer">
+            <a href="/docs/product-doc-plutomix.md" target="_blank" rel="noreferrer">
               Read as Markdown <ArrowUpRight size={15} />
             </a>
           </div>
@@ -270,7 +270,7 @@ export default function StudioPage({
           ) : <div className="studio-authorized-launcher" aria-label="Authorized Studio workspaces">
             <p><CheckCircle2 size={14} /> Authorized workspace</p>
             <button type="button" onClick={onOpenBuilder}><Sparkles size={17} /><span><b>Builder</b><small>Create and evolve products</small></span><ArrowRight size={15} /></button>
-            <button type="button" onClick={onOpenPlutonix}><BrainCircuit size={17} /><span><b>PlutoniX</b><small>Intelligence and decisions</small></span><ArrowRight size={15} /></button>
+            <button type="button" onClick={onOpenPlutoMix}><BrainCircuit size={17} /><span><b>PlutoMix</b><small>Intelligence and decisions</small></span><ArrowRight size={15} /></button>
             <button type="button" onClick={onOpenAgents}><Bot size={17} /><span><b>Agents</b><small>Global agent memory</small></span><ArrowRight size={15} /></button>
             <button type="button" onClick={onOpenHosting}><Server size={17} /><span><b>Cloud Hosting</b><small>Controlled delivery stages</small></span><ArrowRight size={15} /></button>
           </div>}
@@ -279,7 +279,7 @@ export default function StudioPage({
 
       <footer className="studio-footer">
         <div className="studio-frame">
-          <span>PlutoniX Studio</span>
+          <span>PlutoMix Studio</span>
           <p>From a real brief to a working product—with evidence to inspect, govern, and evolve it.</p>
           <CheckCircle2 size={17} aria-hidden="true" />
         </div>

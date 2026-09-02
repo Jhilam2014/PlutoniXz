@@ -46,12 +46,12 @@ test("Studio presents one Google SSO action and uses the verified Google name as
   assert.ok(appSource.includes("currentUser.picture ? <img"));
   assert.ok(appSource.includes('referrerPolicy="no-referrer"'));
   assert.ok(appSource.includes('{currentUser?.id ? <>'));
-  for (const label of ["Builder", "PlutoniX", "Agents", "Cloud Hosting"]) assert.ok(appSource.includes(label));
+  for (const label of ["Builder", "PlutoMix", "Agents", "Cloud Hosting"]) assert.ok(appSource.includes(label));
 });
 
 test("an explicitly enabled development build uses its provisioned subject for strict APIs", () => {
-  assert.ok(authClientSource.includes('VITE_PLUTONIX_DEV_AUTH_SUBJECT || "local:local-plutonix-user"'));
-  const devHeader = 'if (developmentAuthEnabled && developmentSubject) return { "x-plutonix-dev-subject": developmentSubject };';
+  assert.ok(authClientSource.includes('VITE_PLUTOMIX_DEV_AUTH_SUBJECT || "local:local-plutomix-user"'));
+  const devHeader = 'if (developmentAuthEnabled && developmentSubject) return { "x-plutomix-dev-subject": developmentSubject };';
   const bearerHeader = 'if (bearerToken) return { authorization: `Bearer ${bearerToken}` };';
   assert.ok(authClientSource.indexOf(devHeader) >= 0);
   assert.ok(authClientSource.indexOf(devHeader) < authClientSource.indexOf(bearerHeader));

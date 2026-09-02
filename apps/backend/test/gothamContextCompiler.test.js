@@ -32,17 +32,17 @@ test("compact root policy remains bounded and routes detailed policy through the
   assert.doesNotMatch(root, /CREATE CONSTRAINT|MERGE \(.*Neo4j/i);
 });
 
-test("container policy resolution uses the mounted PlutoniX project instead of filesystem root", async (context) => {
-  const mountedProjectRoot = await fs.mkdtemp(path.join(os.tmpdir(), "plutonix-mounted-policy-"));
+test("container policy resolution uses the mounted PlutoMix project instead of filesystem root", async (context) => {
+  const mountedProjectRoot = await fs.mkdtemp(path.join(os.tmpdir(), "plutomix-mounted-policy-"));
   context.after(() => fs.remove(mountedProjectRoot));
   await fs.ensureDir(path.join(mountedProjectRoot, "policies"));
   await fs.writeFile(path.join(mountedProjectRoot, "policies", "manifest.json"), "{}\n");
   assert.equal(
-    resolveGothamPolicyRoot({ env: { PLUTONIX_PROJECT_ROOT: mountedProjectRoot } }),
+    resolveGothamPolicyRoot({ env: { PLUTOMIX_PROJECT_ROOT: mountedProjectRoot } }),
     path.resolve(mountedProjectRoot, "policies")
   );
   assert.equal(
-    resolveGothamPolicyRoot({ policyRoot: "/custom/policies", env: { PLUTONIX_PROJECT_ROOT: "/workspace/project" } }),
+    resolveGothamPolicyRoot({ policyRoot: "/custom/policies", env: { PLUTOMIX_PROJECT_ROOT: "/workspace/project" } }),
     path.resolve("/custom/policies")
   );
 });
@@ -83,7 +83,7 @@ test("static policy cache is reused while every instruction reads a fresh decisi
 });
 
 test("pack version/hash changes invalidate cache and unresolved mandatory conflicts fail", async (context) => {
-  const temporaryRoot = await fs.mkdtemp(path.join(os.tmpdir(), "plutonix-policy-"));
+  const temporaryRoot = await fs.mkdtemp(path.join(os.tmpdir(), "plutomix-policy-"));
   context.after(() => fs.remove(temporaryRoot));
   await fs.copy(policyRoot, temporaryRoot);
   clearGothamStaticPolicyCache();

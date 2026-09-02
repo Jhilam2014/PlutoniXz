@@ -34,4 +34,4 @@ After completion, report:
 - validation result
 - Neo4j update status
 - vector memory provider used
-- PlutoniX Graphical Model page path
+- PlutoMix Graphical Model page path

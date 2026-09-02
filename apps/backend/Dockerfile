@@ -3,11 +3,16 @@ FROM node:22-bookworm-slim
 WORKDIR /workspace
 COPY package.json package-lock.json ./
 COPY apps/backend/package.json ./apps/backend/package.json
-RUN npm ci --omit=dev --workspace @plutonix/backend
+RUN npm ci --omit=dev --workspace @plutomix/backend
 ARG CODEX_VERSION=0.151.0
+ARG CLAUDE_VERSION=2.1.251
 RUN test -n "${CODEX_VERSION}" \
-  && npm install -g @openai/codex@${CODEX_VERSION} \
-  && /usr/local/bin/codex --version
+  && test -n "${CLAUDE_VERSION}" \
+  && npm install -g \
+    @openai/codex@${CODEX_VERSION} \
+    @anthropic-ai/claude-code@${CLAUDE_VERSION} \
+  && /usr/local/bin/codex --version \
+  && /usr/local/bin/claude --version
 # Intel validates document and spreadsheet artifacts by rendering their actual
 # output. Keep those native tools in the parent backend image; they are never
 # exposed as agent tools. Gotham also needs a glibc-based shell environment and
@@ -22,6 +27,7 @@ RUN apt-get update \
     libreoffice-writer \
     poppler-utils \
     ripgrep \
+    socat \
   && rm -rf /var/lib/apt/lists/*
 # Codex ships a Bubblewrap build with --argv0 support. Debian 12's system
 # Bubblewrap 0.8 lacks that flag and can lose Codex's inner sandbox helper,

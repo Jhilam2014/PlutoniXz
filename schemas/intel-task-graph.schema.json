@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "plutonix/intel-task-graph/1.0",
-  "title": "PlutoniX Intel Task Graph",
+  "$id": "plutomix/intel-task-graph/1.0",
+  "title": "PlutoMix Intel Task Graph",
   "type": "object",
   "required": ["schemaVersion", "workflowId", "profileId", "objective", "projectId", "projectRoot", "nodes", "edges", "limits"],
   "properties": {

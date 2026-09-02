@@ -28,7 +28,8 @@ export const DECISION_PERMISSIONS = Object.freeze({
   PROMOTION_POLICY: "promotion:policy",
   PROMOTION_APPROVE: "promotion:approve",
   PROMOTION_OPERATE: "promotion:operate",
-  PROMOTION_MONITOR: "promotion:monitor"
+  PROMOTION_MONITOR: "promotion:monitor",
+  TENANT_MANAGE: "tenant:manage"
 });
 
 export const DECISION_ROLE_PERMISSIONS = Object.freeze({
@@ -38,6 +39,7 @@ export const DECISION_ROLE_PERMISSIONS = Object.freeze({
   evaluator_reviewer: [DECISION_PERMISSIONS.READ, DECISION_PERMISSIONS.EVALUATE, DECISION_PERMISSIONS.PROMOTION_READ, DECISION_PERMISSIONS.PROMOTION_EVALUATE, DECISION_PERMISSIONS.PROMOTION_POLICY, DECISION_PERMISSIONS.SUGGESTION_READ, DECISION_PERMISSIONS.SUGGESTION_REVIEW],
   approver: [DECISION_PERMISSIONS.READ, DECISION_PERMISSIONS.APPROVE, DECISION_PERMISSIONS.PROMOTION_READ, DECISION_PERMISSIONS.PROMOTION_APPROVE],
   auditor: [DECISION_PERMISSIONS.READ, DECISION_PERMISSIONS.WORKFLOW_READ, DECISION_PERMISSIONS.PROMOTION_READ, DECISION_PERMISSIONS.BRAINX_READ, DECISION_PERMISSIONS.SUGGESTION_READ],
+  team_member: [DECISION_PERMISSIONS.READ, DECISION_PERMISSIONS.BRAINX_READ, DECISION_PERMISSIONS.SUGGESTION_READ, DECISION_PERMISSIONS.WORKFLOW_READ, DECISION_PERMISSIONS.PROMOTION_READ],
   service: []
 });
 
@@ -89,7 +91,7 @@ function validTenant(value) {
 
 function requestTenantSelector(req) {
   const sources = [
-    ["header", req.get("x-plutonix-tenant-id")],
+    ["header", req.get("x-plutomix-tenant-id")],
     ["query", req.query?.tenantId],
     ["body", req.body?.tenantId]
   ].filter(([, value]) => value !== undefined);
@@ -249,8 +251,8 @@ export class IdentityAccessStore {
   async authorizeRequest(req, { permission, principalTypes = ["human", "service"], action } = {}) {
     let principal;
     try {
-      principal = req.plutonixPrincipal || await this.authenticateRequest(req);
-      req.plutonixPrincipal = principal;
+      principal = req.plutomixPrincipal || await this.authenticateRequest(req);
+      req.plutomixPrincipal = principal;
       const tenantId = requestTenantSelector(req);
       const workspaceId = requestWorkspaceSelector(req);
       const memberships = await this.membershipsFor(principal);
@@ -275,7 +277,7 @@ export class IdentityAccessStore {
       };
     } catch (error) {
       const normalized = error instanceof AuthenticationError || error instanceof AuthorizationError ? error : new AuthorizationError("Authorization was denied.", { code: "authorization_unavailable", status: 503 });
-      await this.recordAudit({ principalId: principal?.id || req.plutonixPrincipal?.id || null, action: action || permission || "unknown", outcome: "denied", code: normalized.code, requestId: req.get("x-request-id"), metadata: { path: req.path, method: req.method } }).catch(() => {});
+      await this.recordAudit({ principalId: principal?.id || req.plutomixPrincipal?.id || null, action: action || permission || "unknown", outcome: "denied", code: normalized.code, requestId: req.get("x-request-id"), metadata: { path: req.path, method: req.method } }).catch(() => {});
       throw normalized;
     }
   }

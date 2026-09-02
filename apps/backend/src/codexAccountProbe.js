@@ -113,8 +113,8 @@ export function probeCodexAccountUsage(codexBin = "codex", timeoutMs = 15_000, {
       id: 0,
       params: {
         clientInfo: {
-          name: "plutonix_gotham_account_usage",
-          title: "PlutoniX Gotham Account & Usage",
+          name: "plutomix_gotham_account_usage",
+          title: "PlutoMix Gotham Account & Usage",
           version: "1.0.0"
         }
       }

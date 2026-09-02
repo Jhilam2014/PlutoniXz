@@ -42,7 +42,7 @@ test("treats Vite host-guard responses as a ready runtime", async (context) => {
 });
 
 test("creates and starts a missing project container on its assigned port", async (context) => {
-  const temporaryRoot = await fs.mkdtemp(path.join(os.tmpdir(), "plutonix-runtime-"));
+  const temporaryRoot = await fs.mkdtemp(path.join(os.tmpdir(), "plutomix-runtime-"));
   const socketPath = path.join(temporaryRoot, "docker.sock");
   const hostMoneyRoot = path.join(temporaryRoot, "money");
   await fs.mkdir(path.join(hostMoneyRoot, "demo"), { recursive: true });
@@ -55,18 +55,18 @@ test("creates and starts a missing project container on its assigned port", asyn
   let createConfiguration;
   const server = http.createServer((request, response) => {
     const requestPath = decodeURIComponent(request.url);
-    if (request.method === "GET" && requestPath === "/containers/plutonix-backend/json") {
+    if (request.method === "GET" && requestPath === "/containers/plutomix-backend/json") {
       response.writeHead(200, { "Content-Type": "application/json" });
       response.end(
         JSON.stringify({
-          Config: { Image: "plutonix-backend:test" },
+          Config: { Image: "plutomix-backend:test" },
           Mounts: [{ Source: hostMoneyRoot, Destination: "/workspace/money" }],
-          NetworkSettings: { Networks: { "plutonix_plutonix": {} } }
+          NetworkSettings: { Networks: { "plutomix_plutomix": {} } }
         })
       );
       return;
     }
-    if (request.method === "GET" && requestPath === "/containers/plutonix-project-demo-abc123/json") {
+    if (request.method === "GET" && requestPath === "/containers/plutomix-project-demo-abc123/json") {
       if (!containerCreated) {
         response.writeHead(404);
         response.end("not found");
@@ -88,7 +88,7 @@ test("creates and starts a missing project container on its assigned port", asyn
       );
       return;
     }
-    if (request.method === "POST" && requestPath === "/containers/create?name=plutonix-project-demo-abc123") {
+    if (request.method === "POST" && requestPath === "/containers/create?name=plutomix-project-demo-abc123") {
       let body = "";
       request.on("data", (chunk) => {
         body += chunk;
@@ -101,7 +101,7 @@ test("creates and starts a missing project container on its assigned port", asyn
       });
       return;
     }
-    if (request.method === "POST" && requestPath === "/containers/plutonix-project-demo-abc123/start") {
+    if (request.method === "POST" && requestPath === "/containers/plutomix-project-demo-abc123/start") {
       if (staleNetworkFailureOnce) {
         staleNetworkFailureOnce = false;
         response.writeHead(404);
@@ -114,7 +114,7 @@ test("creates and starts a missing project container on its assigned port", asyn
       response.end();
       return;
     }
-    if (request.method === "DELETE" && requestPath === "/containers/plutonix-project-demo-abc123?force=true") {
+    if (request.method === "DELETE" && requestPath === "/containers/plutomix-project-demo-abc123?force=true") {
       removeCount += 1;
       containerCreated = false;
       containerStarted = false;
@@ -134,7 +134,7 @@ test("creates and starts a missing project container on its assigned port", asyn
 
   process.env.DOCKER_SOCKET_PATH = socketPath;
   process.env.PROJECT_RUNTIME_MODE = "docker";
-  process.env.PLUTONIX_BACKEND_CONTAINER = "plutonix-backend";
+  process.env.PLUTOMIX_BACKEND_CONTAINER = "plutomix-backend";
   delete process.env.PROJECT_RUNTIME_IMAGE;
   delete process.env.PROJECT_RUNTIME_NETWORK;
 
@@ -146,9 +146,9 @@ test("creates and starts a missing project container on its assigned port", asyn
   });
 
   assert.equal(runtime.status, "created-and-started");
-  assert.equal(runtime.containerName, "plutonix-project-demo-abc123");
+  assert.equal(runtime.containerName, "plutomix-project-demo-abc123");
   assert.equal(containerStarted, true);
-  assert.equal(createConfiguration.Image, "plutonix-backend:test");
+  assert.equal(createConfiguration.Image, "plutomix-backend:test");
   assert.deepEqual(createConfiguration.HostConfig.PortBindings["5307/tcp"], [
     { HostIp: "0.0.0.0", HostPort: "5307" }
   ]);
@@ -158,7 +158,7 @@ test("creates and starts a missing project container on its assigned port", asyn
   assert.deepEqual(createConfiguration.HostConfig.Mounts, [
     {
       Type: "volume",
-      Source: "plutonix-project-demo-abc123-node-modules",
+      Source: "plutomix-project-demo-abc123-node-modules",
       Target: "/workspace/money/demo/node_modules"
     }
   ]);
@@ -186,7 +186,7 @@ test("creates and starts a missing project container on its assigned port", asyn
 });
 
 test("does not reassign ports when a runtime starts but preview is not ready", async (context) => {
-  const temporaryRoot = await fs.mkdtemp(path.join(os.tmpdir(), "plutonix-port-retry-"));
+  const temporaryRoot = await fs.mkdtemp(path.join(os.tmpdir(), "plutomix-port-retry-"));
   const assignedPort = await findAvailablePort();
   const workspaceDir = path.join(temporaryRoot, "apps", "GeoBussinessFinderX");
   const registryPath = path.join(temporaryRoot, "runtime", "projects.json");
@@ -267,7 +267,7 @@ test("does not reassign ports when a runtime starts but preview is not ready", a
 });
 
 test("does not walk ports when the runtime process exits", async (context) => {
-  const temporaryRoot = await fs.mkdtemp(path.join(os.tmpdir(), "plutonix-runtime-exit-"));
+  const temporaryRoot = await fs.mkdtemp(path.join(os.tmpdir(), "plutomix-runtime-exit-"));
   const assignedPort = await findAvailablePort();
   const workspaceDir = path.join(temporaryRoot, "apps", "GeoFinderX");
   const registryPath = path.join(temporaryRoot, "runtime", "projects.json");
@@ -308,7 +308,7 @@ test("does not walk ports when the runtime process exits", async (context) => {
 });
 
 test("does not reassign ports for non-port Docker startup failures", async (context) => {
-  const temporaryRoot = await fs.mkdtemp(path.join(os.tmpdir(), "plutonix-docker-non-port-"));
+  const temporaryRoot = await fs.mkdtemp(path.join(os.tmpdir(), "plutomix-docker-non-port-"));
   const socketPath = path.join(temporaryRoot, "docker.sock");
   const hostMoneyRoot = path.join(temporaryRoot, "money");
   const workspaceDir = "/workspace/money/apps/GeoFindBusX";
@@ -323,23 +323,23 @@ test("does not reassign ports for non-port Docker startup failures", async (cont
   let createAttempts = 0;
   const server = http.createServer((request, response) => {
     const requestPath = decodeURIComponent(request.url);
-    if (request.method === "GET" && requestPath === "/containers/plutonix-backend/json") {
+    if (request.method === "GET" && requestPath === "/containers/plutomix-backend/json") {
       response.writeHead(200, { "Content-Type": "application/json" });
       response.end(
         JSON.stringify({
-          Config: { Image: "plutonix-backend:test" },
+          Config: { Image: "plutomix-backend:test" },
           Mounts: [{ Source: hostMoneyRoot, Destination: "/workspace/money" }],
-          NetworkSettings: { Networks: { "plutonix_plutonix": {} } }
+          NetworkSettings: { Networks: { "plutomix_plutomix": {} } }
         })
       );
       return;
     }
-    if (request.method === "GET" && requestPath === "/containers/plutonix-project-geo-docker/json") {
+    if (request.method === "GET" && requestPath === "/containers/plutomix-project-geo-docker/json") {
       response.writeHead(404);
       response.end("not found");
       return;
     }
-    if (request.method === "POST" && requestPath === "/containers/create?name=plutonix-project-geo-docker") {
+    if (request.method === "POST" && requestPath === "/containers/create?name=plutomix-project-geo-docker") {
       createAttempts += 1;
       response.writeHead(500);
       response.end("image setup failed");
@@ -355,7 +355,7 @@ test("does not reassign ports for non-port Docker startup failures", async (cont
     PROJECTS_REGISTRY_PATH: process.env.PROJECTS_REGISTRY_PATH,
     PROJECTS_ROOT: process.env.PROJECTS_ROOT,
     PROJECT_RUNTIME_MODE: process.env.PROJECT_RUNTIME_MODE,
-    PLUTONIX_BACKEND_CONTAINER: process.env.PLUTONIX_BACKEND_CONTAINER,
+    PLUTOMIX_BACKEND_CONTAINER: process.env.PLUTOMIX_BACKEND_CONTAINER,
     PROJECT_PORT_START: process.env.PROJECT_PORT_START,
     PROJECT_PORT_END: process.env.PROJECT_PORT_END
   };
@@ -363,7 +363,7 @@ test("does not reassign ports for non-port Docker startup failures", async (cont
   process.env.PROJECTS_REGISTRY_PATH = registryPath;
   process.env.PROJECTS_ROOT = path.join(temporaryRoot, "apps");
   process.env.PROJECT_RUNTIME_MODE = "docker";
-  process.env.PLUTONIX_BACKEND_CONTAINER = "plutonix-backend";
+  process.env.PLUTOMIX_BACKEND_CONTAINER = "plutomix-backend";
   process.env.PROJECT_PORT_START = "5300";
   process.env.PROJECT_PORT_END = "5303";
   context.after(async () => {
@@ -394,7 +394,7 @@ test("does not reassign ports for non-port Docker startup failures", async (cont
 });
 
 test("allows project selection when runtime starts but backend preview probe times out", async (context) => {
-  const temporaryRoot = await fs.mkdtemp(path.join(os.tmpdir(), "plutonix-select-preview-timeout-"));
+  const temporaryRoot = await fs.mkdtemp(path.join(os.tmpdir(), "plutomix-select-preview-timeout-"));
   const workspaceDir = path.join(temporaryRoot, "apps", "GeoFinderX");
   const registryPath = path.join(temporaryRoot, "runtime", "projects.json");
   await fs.mkdir(workspaceDir, { recursive: true });

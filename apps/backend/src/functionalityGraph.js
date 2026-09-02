@@ -147,7 +147,7 @@ function uniqueFunctionalities(functionalities = [], structuredRequest = {}) {
 }
 
 function agentOwnership(activeAgents = []) {
-  const builder = activeAgents.find((agent) => agent.id === "plutonix-fullstack-agent");
+  const builder = activeAgents.find((agent) => agent.id === "plutomix-fullstack-agent");
   const reviewer = activeAgents.find((agent) => /reviewer|qagent/i.test(`${agent.id || ""} ${agent.role || ""}`));
   const executor = activeAgents.find(
     (agent) =>

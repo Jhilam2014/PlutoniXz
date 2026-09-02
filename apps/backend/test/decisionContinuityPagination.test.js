@@ -29,7 +29,7 @@ function branch(index) {
 }
 
 async function seededFileStore(context, count = 600) {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), "plutonix-decision-pagination-"));
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "plutomix-decision-pagination-"));
   context.after(() => fs.rm(root, { recursive: true, force: true }));
   const store = createDecisionContinuityStore({ root });
   await store.mutate(async (state) => {

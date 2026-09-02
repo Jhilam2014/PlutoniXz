@@ -3,21 +3,21 @@ import fs from "node:fs";
 import path from "node:path";
 import { redactOperational } from "./operationalSecurity.js";
 
-export const WORKFLOW_DECISION_CONTINUITY_SCHEMA_VERSION = "plutonix-workflow-decision-continuity/v1";
+export const WORKFLOW_DECISION_CONTINUITY_SCHEMA_VERSION = "plutomix-workflow-decision-continuity/v1";
 
 function rootPath(root) {
   if (root) return root;
-  if (process.env.PLUTONIX_PROJECT_ROOT) return process.env.PLUTONIX_PROJECT_ROOT;
+  if (process.env.PLUTOMIX_PROJECT_ROOT) return process.env.PLUTOMIX_PROJECT_ROOT;
   if (fs.existsSync(path.join(process.cwd(), "apps", "backend"))) return process.cwd();
   return path.resolve(process.cwd(), "../..");
 }
 
 function safeFileBase(value) {
-  return String(value || "plutonix-default")
+  return String(value || "plutomix-default")
     .trim()
     .replace(/[^A-Za-z0-9._-]+/g, "-")
     .replace(/^-+|-+$/g, "")
-    .slice(0, 160) || "plutonix-default";
+    .slice(0, 160) || "plutomix-default";
 }
 
 function stableDigest(value) {
@@ -68,7 +68,7 @@ export function workflowDecisionContinuityPath(projectId = "", { root } = {}) {
     rootPath(root),
     "runtime",
     "workflow-decision-continuity",
-    `${safeFileBase(projectId || "plutonix-default")}.jsonl`
+    `${safeFileBase(projectId || "plutomix-default")}.jsonl`
   );
 }
 
@@ -88,7 +88,7 @@ export function createCanonicalWorkflowDecisionRecord(input = {}) {
     childExecutionIds: Array.isArray(input.childExecutionIds) ? input.childExecutionIds.slice(0, 100).map(String) : [],
     checkpointId: String(input.checkpointId || `${workflowId || "workflow"}:${stage}`).slice(0, 240),
     projectId: String(input.projectId || "").slice(0, 240),
-    projectName: String(input.projectName || "PlutoniX default workspace").slice(0, 320),
+    projectName: String(input.projectName || "PlutoMix default workspace").slice(0, 320),
     taskType: String(input.taskType || "Medium").slice(0, 80),
     workflowMode: String(input.workflowMode || "executor").slice(0, 80),
     status: String(input.status || (stage === "prepared" ? "prepared" : "failed")).slice(0, 80),

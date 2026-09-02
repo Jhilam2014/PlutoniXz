@@ -9,6 +9,7 @@ import { productShapePrompt, validateProductShapeOutputs } from "./productShape.
 import { redactOperational } from "./operationalSecurity.js";
 import { compileGothamContext } from "./gothamContextCompiler.js";
 import { readCanonicalWorkflowDecisions } from "./workflowDecisionContinuity.js";
+import { versionAtLeast } from "./aiProviders/adapters.js";
 import {
   CODEX_RUNTIME_FAILURES,
   CodexRuntimeError,
@@ -17,6 +18,16 @@ import {
   probeCodexVersion,
   redactCodexText
 } from "./codexRuntime.js";
+import {
+  CLAUDE_EXECUTION_MODES,
+  CLAUDE_RUNTIME_FAILURES,
+  ClaudeRuntimeError,
+  executeClaude,
+  probeClaudeAuthentication,
+  probeClaudeSandboxReadiness,
+  probeClaudeVersion,
+  redactClaudeText
+} from "./claudeRuntime.js";
 
 const ignoredDirs = new Set(["node_modules", "dist", ".git"]);
 const largeArtifactExtensions = new Set([
@@ -28,7 +39,7 @@ const largeArtifactExtensions = new Set([
   ".pt",
   ".safetensors"
 ]);
-const maxHashableFileBytes = Number(process.env.PLUTONIX_MAX_HASH_FILE_BYTES || 100 * 1024 * 1024);
+const maxHashableFileBytes = Number(process.env.PLUTOMIX_MAX_HASH_FILE_BYTES || 100 * 1024 * 1024);
 const inspectableTextExtensions = new Set([
   ".js",
   ".jsx",
@@ -175,7 +186,7 @@ export async function probeCodexWorkspaceSandbox(
       };
     }
   }
-  const markerName = `.plutonix-sandbox-preflight-${process.pid}-${nanoid(8)}`;
+  const markerName = `.plutomix-sandbox-preflight-${process.pid}-${nanoid(8)}`;
   const sandboxCommand = resolvedWorkspace
     ? [
         ...gothamSandboxFeatureArgs(env),
@@ -412,9 +423,9 @@ async function buildInputConsumptionReceipt(generatedSiteDir, changedFiles, orch
 export function deterministicPublicationOwnershipPrompt() {
   return [
     "Deterministic control-plane publication ownership:",
-    "- Do not create or update PlutoniX control-plane Neo4j, D3 topology, global agent-registry, vector-memory, prompt-ledger, workflow-memory, what-next, or observability publication artifacts during this model execution.",
+    "- Do not create or update PlutoMix control-plane Neo4j, D3 topology, global agent-registry, vector-memory, prompt-ledger, workflow-memory, what-next, or observability publication artifacts during this model execution.",
     "- Implement the requested project change and return implementation, changed-file, input-consumption, and validation evidence only.",
-    "- PlutoniX's deterministic backend publisher owns mandatory graph and memory projections after model execution.",
+    "- PlutoMix's deterministic backend publisher owns mandatory graph and memory projections after model execution.",
     "- Do not report graph or memory publication as completed unless runtime context explicitly contains completed publication evidence.",
     "- This boundary does not prohibit application-owned graph or memory functionality explicitly required by the user's project task."
   ].join("\n");
@@ -423,9 +434,9 @@ export function deterministicPublicationOwnershipPrompt() {
 export function codexPrompt(instruction, orchestratedRequest, hasProjectOrchestrator) {
   const compiledContext = orchestratedRequest.compiledGothamContext;
   if (compiledContext) {
-    return `You are the bounded implementation executor for a PlutoniX-managed Gotham workflow.
+    return `You are the bounded implementation executor for a PlutoMix-managed Gotham workflow.
 
-PlutoniX has already selected the route, policy packs, agents, path, and branch dispositions. Do not scan policy directories, the full AGENTS.md operating manual, unrelated agents, graph projections, memory ledgers, or historical logs.
+PlutoMix has already selected the route, policy packs, agents, path, and branch dispositions. Do not scan policy directories, the full AGENTS.md operating manual, unrelated agents, graph projections, memory ledgers, or historical logs.
 
 Current instruction:
 ${instruction}
@@ -437,7 +448,7 @@ Fresh dynamic execution context:
 ${JSON.stringify(compiledContext.dynamicContext, null, 2)}
 
 Execution contract:
-- PlutoniX Fullstack Agent is the global planning and completion authority; this executor may not redefine the parent task or approve completion.
+- PlutoMix Fullstack Agent is the global planning and completion authority; this executor may not redefine the parent task or approve completion.
 - Preserve every unrelated existing feature and user-owned instruction.
 - If the current instruction begins with "Task type:", treat the embedded task value as the active user instruction and the surrounding fields as backend-owned execution metadata.
 - Treat the compiled policy and fresh decision snapshot as binding under the current user instruction.
@@ -445,12 +456,12 @@ Execution contract:
 - Apply the narrowest complete change and preserve unrelated behavior and user-owned instructions.
 - Validate proportionally to the resolved task type and risk.
 - Return implementation evidence only: changed files, input consumption, validation performed, unresolved risk, and any partial-change evidence.
-- Do not claim provider usage, review, recovery, graph publication, memory publication, or workflow completion; PlutoniX derives those facts from runtime evidence.
+- Do not claim provider usage, review, recovery, graph publication, memory publication, or workflow completion; PlutoMix derives those facts from runtime evidence.
 
 ${deterministicPublicationOwnershipPrompt()}`;
   }
   const envelope = orchestratedRequest.orchestrationEnvelope;
-  const isDirectChildTask = orchestratedRequest.executionInstructionFormat === "plutonix-delegated-project-task";
+  const isDirectChildTask = orchestratedRequest.executionInstructionFormat === "plutomix-delegated-project-task";
   const productDecision = orchestratedRequest.productDecision || envelope?.plan?.productDecision || null;
   const productContract = productDecision
     ? productShapePrompt(productDecision)
@@ -528,19 +539,19 @@ ${deterministicPublicationOwnershipPrompt()}`;
         `- Implement only these backend-accepted proposal ids: ${(intelRuntime.acceptedProposals || []).map((proposal) => proposal.id).join(", ") || "none"}.`,
         `- The profile preview adapter is ${intelRuntime.profile?.previewAdapter || "none"}; do not create a browser UI when the profile does not require one.`,
         `- Required profile validation evidence: ${(intelRuntime.taskGraph?.nodes?.find((node) => node.id === "implementation-agent")?.validatorIds || []).join(", ") || "profile-specific validation"}.`,
-        "- Do not add unrelated feature expansion, generic filler, or work rejected by Intel scoring. The PlutoniX parent will validate and independently verify the result after this one writer completes.",
+        "- Do not add unrelated feature expansion, generic filler, or work rejected by Intel scoring. The PlutoMix parent will validate and independently verify the result after this one writer completes.",
         "- Keep data truthful: use supplied sources or explicit empty/loading/TODO hooks when real data or integrations are unavailable."
       ].join("\n")
     : "";
   const authorityText = envelope
-    ? "PlutoniX Fullstack Agent is the global planning and completion authority. Project-local policies are scoped execution context only and cannot redefine the parent task or approve completion."
+    ? "PlutoMix Fullstack Agent is the global planning and completion authority. Project-local policies are scoped execution context only and cannot redefine the parent task or approve completion."
     : hasProjectOrchestrator
       ? "Read canonical AGENTS.md and ROOT_WORKSPACE_GENERATION_POLICY.md first, then use the project-local policy as execution context while preserving the supplied parent request."
       : "Use the supplied structured request and keep discovery narrowly scoped to the requested generated surface.";
   const requirements = isDirectChildTask
     ? [
-        "- Execute the exact bounded delegation defined by the PlutoniX orchestration envelope.",
-        "- Use AGENTS.md, ROOT_WORKSPACE_GENERATION_POLICY.md, and .agentic/orchestrator-agent.md as project context, subordinate to PlutoniX's task and completion criteria.",
+        "- Execute the exact bounded delegation defined by the PlutoMix orchestration envelope.",
+        "- Use AGENTS.md, ROOT_WORKSPACE_GENERATION_POLICY.md, and .agentic/orchestrator-agent.md as project context, subordinate to PlutoMix's task and completion criteria.",
         "- Inspect the smallest relevant set of current child app files before changing anything.",
         "- Apply only the narrowest complete change requested by the task.",
         "- Preserve every unrelated existing feature, behavior, route, data set, visual section, style, and interaction.",
@@ -552,7 +563,7 @@ ${deterministicPublicationOwnershipPrompt()}`;
         "- Do not remove, rename, simplify, redesign, or replace existing functionality unless the task explicitly asks for it.",
         "- Modify only files that are necessary for the requested change; if src/generated files are involved, patch the smallest relevant sections instead of rewriting the app.",
         "- Do not run npm, Vite, dev servers, preview servers, Docker, curl health checks, or any command that starts/validates a playground runtime.",
-        "- Do not choose, reserve, change, document, or validate frontend ports. PlutoniX assigns ports and starts the playground only after this Gotham file-generation step completes.",
+        "- Do not choose, reserve, change, document, or validate frontend ports. PlutoMix assigns ports and starts the playground only after this Gotham file-generation step completes.",
         "- Do not create or modify package.json, package-lock.json, node_modules, or dist.",
         huggingFaceRequirement,
         intelRequirement,
@@ -563,7 +574,7 @@ ${deterministicPublicationOwnershipPrompt()}`;
         "- At the end, briefly summarize the files you changed and confirm unrelated features were preserved."
       ].join("\n")
     : [
-        "- Treat the PlutoniX text-box prompt above as the active user task.",
+        "- Treat the PlutoMix text-box prompt above as the active user task.",
         "- If the user instruction begins with \"Task type:\", pass that exact task block through the project-local orchestrator command rules as the task to execute.",
         "- When project-local orchestration is available, execute the task using AGENTS.md, ROOT_WORKSPACE_GENERATION_POLICY.md, and .agentic/orchestrator-agent.md command rules.",
         "- Apply the binding Product Shape Contract before selecting stack, routes, files, components, agents, or visible UI.",
@@ -581,14 +592,14 @@ ${deterministicPublicationOwnershipPrompt()}`;
         "- Choose route boundaries only for distinct user goals or operational domains. Do not create generic Home, Features, About, and Contact routes by default.",
         "- Update src/generated/metadata.json with the product decision version, artifact type, product shape, interaction model, primary output paths, consumed input/reference identifiers or paths, unresolved placeholders, and validation evidence.",
         "- Do not run npm, Vite, dev servers, preview servers, Docker, curl health checks, or any command that starts/validates a playground runtime.",
-        "- Do not choose, reserve, change, document, or validate frontend ports. PlutoniX assigns ports and starts the playground only after this Gotham file-generation step completes.",
+        "- Do not choose, reserve, change, document, or validate frontend ports. PlutoMix assigns ports and starts the playground only after this Gotham file-generation step completes.",
         "- You may update project manifests, dependencies, Docker assets, backend files, scripts, service contracts, tests, or artifact-generation sources when the selected product shape requires them. Never edit node_modules or dist.",
         "- Use configured real integrations when requested; keep secrets in environment variables and do not add tracking or invented endpoints.",
         huggingFaceRequirement,
         agenticXKnowledgeRequirement,
         informationSharingRequirement,
         intelRequirement,
-        "- Preserve reusable PlutoniX runtime and preview compatibility, but do not let the existing React/Vite scaffold redefine the primary deliverable.",
+        "- Preserve reusable PlutoMix runtime and preview compatibility, but do not let the existing React/Vite scaffold redefine the primary deliverable.",
         "- Do not ask follow-up questions.",
         "- At the end, briefly summarize the files you changed."
       ].join("\n");
@@ -599,7 +610,7 @@ ${deterministicPublicationOwnershipPrompt()}`;
       : productDecision?.productShape === "service_or_automation"
         ? `Create the requested ${productDecision.artifactType} entrypoint or service contract as the primary deliverable. Add UI only when requested.`
         : "Implement the selected product shape in this project workspace and modify the files required for a complete result.";
-  return `You are the current Gotham CLI running the PlutoniX workflow.
+  return `You are the current Gotham CLI running the PlutoMix workflow.
 
 ${workspaceDirective}
 
@@ -608,8 +619,8 @@ ${authorityText}
 
 ${productContract}
 
-PlutoniX Fullstack Agent policy and orchestration envelope:
-${envelope ? JSON.stringify(envelope, null, 2) : "No PlutoniX envelope supplied."}
+PlutoMix Fullstack Agent policy and orchestration envelope:
+${envelope ? JSON.stringify(envelope, null, 2) : "No PlutoMix envelope supplied."}
 
 User instruction:
 ${instruction}
@@ -672,6 +683,21 @@ function emitCodexLine(line, emit, buildId, agentId) {
   }
 }
 
+export function providerNeutralRuntimeEventType(type = "") {
+  const value = String(type);
+  if (["codex-start", "codex-thread-started", "claude-started"].includes(value)) return "provider-start";
+  if (["gotham-runtime-verified", "provider-runtime-verified"].includes(value)) return "provider-runtime-verified";
+  if (["codex-command", "claude-tool", "claude-tool-result"].includes(value)) return "provider-command";
+  if (["codex-file-change", "provider-file-change"].includes(value)) return "provider-file-change";
+  if (["codex-complete", "claude-completed", "provider-complete"].includes(value)) return "provider-complete";
+  if (["codex-failed", "claude-failed", "provider-failure"].includes(value)) return "provider-failure";
+  if (
+    ["codex-running", "codex-message", "codex-progress", "codex-turn-completed", "claude-progress", "claude-retry", "claude-response", "provider-progress"].includes(value) ||
+    value.endsWith("-malformed-event")
+  ) return "provider-progress";
+  return "";
+}
+
 export function isRecoverableGothamModelsCacheError(value) {
   const line = String(value?.message || value || "");
   return (
@@ -688,6 +714,12 @@ export function isGothamCodexModelCompatibilityError(value) {
 
 export function classifyGothamWorkflowFailure(value, { workspaceDir = "" } = {}) {
   const explicit = value?.workflowFailureClass || value?.failureClass;
+  if (explicit === CLAUDE_RUNTIME_FAILURES.AUTHENTICATION_REQUIRED) return GOTHAM_FAILURE_CLASSES.AUTHENTICATION_REQUIRED;
+  if (explicit === CLAUDE_RUNTIME_FAILURES.SANDBOX_UNAVAILABLE) return GOTHAM_FAILURE_CLASSES.SANDBOX_RUNTIME_UNAVAILABLE;
+  if (explicit === CLAUDE_RUNTIME_FAILURES.TIMEOUT) return GOTHAM_FAILURE_CLASSES.WORKFLOW_TIMEOUT;
+  if (explicit === CLAUDE_RUNTIME_FAILURES.CANCELLED) return GOTHAM_FAILURE_CLASSES.USER_CANCELLED;
+  if (explicit === CLAUDE_RUNTIME_FAILURES.INVALID_RUNTIME) return GOTHAM_FAILURE_CLASSES.MISSING_CLI;
+  if (explicit === CLAUDE_RUNTIME_FAILURES.MISSING_RESULT) return GOTHAM_FAILURE_CLASSES.MALFORMED_EVENTS;
   if (explicit && Object.values(GOTHAM_FAILURE_CLASSES).includes(explicit)) return explicit;
   const message = String(value?.message || value || "");
   const lower = message.toLowerCase();
@@ -849,7 +881,7 @@ export async function prepareGothamRuntimeCaches({ runtimeHome = process.env.GOT
   if (startupCachePreparationPromises.has(resolvedRuntimeHome)) return startupCachePreparationPromises.get(resolvedRuntimeHome);
   const preparation = (async () => {
     await fs.ensureDir(resolvedRuntimeHome);
-    const lockPath = path.join(resolvedRuntimeHome, ".plutonix-model-cache-preparation.lock");
+    const lockPath = path.join(resolvedRuntimeHome, ".plutomix-model-cache-preparation.lock");
     let ownsLock = false;
     try {
       await fs.writeFile(lockPath, `${process.pid}\n`, { flag: "wx" });
@@ -903,6 +935,7 @@ export async function prepareGothamRuntimeCaches({ runtimeHome = process.env.GOT
 export async function verifyGothamInfrastructureHealth({
   workspaceDir,
   codexBin = process.env.CODEX_BIN || "codex",
+  env = process.env,
   prepareCache = true
 } = {}) {
   const result = {
@@ -922,20 +955,87 @@ export async function verifyGothamInfrastructureHealth({
     result.reason = redactOperational(error.message || String(error));
     return result;
   }
-  result.cache = prepareCache ? await prepareGothamRuntimeCaches() : { status: "not_requested" };
-  const cli = await probeCodexCli(codexBin);
+  result.cache = prepareCache ? await prepareGothamRuntimeCaches({
+    runtimeHome: env.GOTHAM_HOME || env.CODEX_HOME || path.join(os.homedir(), ".codex")
+  }) : { status: "not_requested" };
+  const cli = await probeCodexCli(codexBin, 8000, env);
   result.cli = cli;
   if (!cli.available) {
     result.failureClass = GOTHAM_FAILURE_CLASSES.CODEX_CLI_MODEL_INCOMPATIBLE;
     result.reason = redactOperational(cli.error || cli.status);
     return result;
   }
-  result.sandbox = await probeCodexWorkspaceSandbox(codexBin, undefined, { workspaceDir: result.workspace.path });
+  const authentication = await probeCodexAuthentication(cli.resolvedBin || codexBin, { env });
+  result.authentication = authentication;
+  if (!authentication.authenticated) {
+    result.failureClass = GOTHAM_FAILURE_CLASSES.AUTHENTICATION_REQUIRED;
+    result.reason = redactOperational(authentication.error || "Codex authentication is required.");
+    return result;
+  }
+  result.sandbox = await probeCodexWorkspaceSandbox(cli.resolvedBin || codexBin, undefined, { workspaceDir: result.workspace.path, env });
   if (result.sandbox.status !== "ready") {
     result.failureClass = result.sandbox.failureClass || GOTHAM_FAILURE_CLASSES.SANDBOX_RUNTIME_UNAVAILABLE;
     result.reason = result.sandbox.reason;
     return result;
   }
+  result.status = "ready";
+  result.failureClass = "";
+  result.reason = "";
+  return result;
+}
+
+export async function verifyGothamProviderInfrastructureHealth({
+  workspaceDir,
+  providerRuntimeSelection,
+  providerRuntime,
+  registeredWorkspaceDir
+} = {}) {
+  const context = frozenProviderContext({ providerRuntimeSelection, providerRuntime });
+  if (context.providerId === "codex") {
+    const result = await verifyGothamInfrastructureHealth({
+      workspaceDir,
+      codexBin: context.runtime.command,
+      env: context.runtime.env,
+      prepareCache: true
+    });
+    return { ...result, providerId: context.providerId, providerProfileId: context.profileId };
+  }
+  const result = {
+    status: "blocked",
+    providerId: context.providerId,
+    providerProfileId: context.profileId,
+    workspace: { status: "unavailable" },
+    cli: { status: "not_checked" },
+    authentication: { status: "not_checked" },
+    cache: { status: "not_applicable" },
+    sandbox: { status: "not_checked" }
+  };
+  const bounds = providerWorkspaceBounds(workspaceDir, { project: { workspaceDir } }, { registeredWorkspaceDir });
+  const cli = await probeClaudeVersion(context.runtime, { cwd: workspaceDir });
+  result.cli = cli;
+  if (!cli.available || !versionAtLeast(cli.version, "2.1.248")) {
+    result.failureClass = GOTHAM_FAILURE_CLASSES.MISSING_CLI;
+    result.reason = cli.error || (cli.available ? "Claude CLI version is unsupported." : "Claude CLI is unavailable.");
+    return result;
+  }
+  const authentication = await probeClaudeAuthentication(context.runtime, { cwd: workspaceDir });
+  result.authentication = authentication;
+  if (!authentication.authenticated) {
+    result.failureClass = GOTHAM_FAILURE_CLASSES.AUTHENTICATION_REQUIRED;
+    result.reason = authentication.error || "Claude authentication is required.";
+    return result;
+  }
+  const sandbox = await probeClaudeSandboxReadiness(context.runtime, {
+    workspaceDir,
+    ...bounds
+  });
+  result.sandbox = sandbox;
+  if (sandbox.status !== "ready") {
+    result.failureClass = GOTHAM_FAILURE_CLASSES.SANDBOX_RUNTIME_UNAVAILABLE;
+    result.reason = sandbox.reason || "Claude's restricted sandbox is unavailable.";
+    return result;
+  }
+  result.workspace = { status: "ready" };
   result.status = "ready";
   result.failureClass = "";
   result.reason = "";
@@ -951,55 +1051,118 @@ export function resolveGothamRuntime({ codexBin = process.env.CODEX_BIN || "code
   return { kind: "none", bin: "", probe: codexProbe };
 }
 
-export async function runCodexWorkflow(orchestratedRequest, options = {}) {
-  const emit = typeof options.emit === "function" ? options.emit : () => {};
+export async function runGothamProviderWorkflow(orchestratedRequest, options = {}) {
+  const providerRuntimeSelection = options.providerRuntimeSelection;
+  const providerId = String(providerRuntimeSelection?.providerId || "").trim();
+  if (!providerRuntimeSelection || !["codex", "claude"].includes(providerId)) {
+    const error = new Error("The frozen provider selection does not have an approved Gotham execution adapter.");
+    error.code = "provider_execution_unsupported";
+    error.workflowFailureClass = GOTHAM_FAILURE_CLASSES.MISSING_CLI;
+    throw error;
+  }
+  const rawEmit = typeof options.emit === "function" ? options.emit : () => {};
+  const emit = (type, message, metadata = {}) => rawEmit(type, message, { ...metadata, providerId });
+  const emitProviderFailure = (failureClass, metadata = {}) => emit(
+    "provider-failure",
+    `${providerId === "claude" ? "Claude Code" : "OpenAI Codex"} could not complete the Gotham provider task.`,
+    { stage: "execution", failureClass, ...metadata }
+  );
   const signal = options.signal;
   if (signal?.aborted) throw new Error("Gotham workflow was stopped by the user.");
   const generatedSiteDir =
     options.generatedSiteDir || process.env.GENERATED_SITE_DIR || path.resolve(process.cwd(), "../generated-site");
-  const providerRuntimeSelection = options.providerRuntimeSelection || { providerId: "codex", profileId: "legacy-process-default", selectedAt: new Date().toISOString() };
-  if (providerRuntimeSelection.providerId !== "codex") throw new CodexRuntimeError("The selected provider does not have an approved Gotham execution adapter.", { category: CODEX_RUNTIME_FAILURES.MISSING_CLI });
-  const providerProcessEnv = options.providerRuntime?.env || process.env;
-  const preferredCodexBin = options.providerRuntime?.command || providerProcessEnv.CODEX_BIN || "codex";
-  const selectedModel = options.model || "";
-  const runtimeProbeEnabled = process.env.GOTHAM_RUNTIME_PROBE !== "false";
-  const codexProbe = runtimeProbeEnabled
-    ? await probeCodexCli(preferredCodexBin, 8000, providerProcessEnv)
-    : { available: true, status: "not_checked", version: "" };
-  if (runtimeProbeEnabled && !codexProbe.available) {
-    throw new CodexRuntimeError(
-      "Codex CLI is unavailable. Install @openai/codex and configure CODEX_BIN to its executable.",
-      { category: CODEX_RUNTIME_FAILURES.MISSING_CLI }
-    );
+  const providerRuntime = options.providerRuntime || (providerId === "codex" ? {
+    command: process.env.CODEX_BIN || "codex",
+    env: process.env
+  } : null);
+  if (!providerRuntime?.command || !providerRuntime?.env) {
+    const error = new Error("The frozen provider selection has no backend-resolved executable runtime.");
+    error.code = "provider_runtime_missing";
+    error.workflowFailureClass = GOTHAM_FAILURE_CLASSES.MISSING_CLI;
+    emitProviderFailure(error.workflowFailureClass);
+    throw error;
   }
+  if (providerId === "claude" && (
+    providerRuntime.providerId !== "claude" ||
+    providerRuntime.profileId !== providerRuntimeSelection.profileId ||
+    providerRuntime.workspaceId !== providerRuntimeSelection.workspaceId
+  )) {
+    emitProviderFailure(CLAUDE_RUNTIME_FAILURES.INVALID_RUNTIME);
+    throw new ClaudeRuntimeError("The backend-resolved Claude runtime does not match the frozen job selection.", {
+      category: CLAUDE_RUNTIME_FAILURES.INVALID_RUNTIME
+    });
+  }
+  const providerProcessEnv = providerRuntime.env;
+  const preferredCommand = providerRuntime.command;
+  const selectedModel = String(providerRuntimeSelection.modelId || "").trim();
+  const runtimeProbeEnabled = process.env.GOTHAM_RUNTIME_PROBE !== "false";
+  const runtimeProbe = runtimeProbeEnabled
+    ? providerId === "codex"
+      ? await probeCodexCli(preferredCommand, 8000, providerProcessEnv)
+      : await probeClaudeVersion(providerRuntime, { cwd: generatedSiteDir })
+    : { available: true, status: "not_checked", version: "" };
+  if (runtimeProbeEnabled && !runtimeProbe.available) {
+    const ErrorType = providerId === "codex" ? CodexRuntimeError : ClaudeRuntimeError;
+    const category = providerId === "codex" ? CODEX_RUNTIME_FAILURES.MISSING_CLI : CLAUDE_RUNTIME_FAILURES.INVALID_RUNTIME;
+    emitProviderFailure(category);
+    throw new ErrorType(`${providerId === "codex" ? "Codex" : "Claude"} CLI is unavailable for the selected profile.`, { category });
+  }
+  if (runtimeProbeEnabled && providerId === "claude" && !versionAtLeast(runtimeProbe.version, "2.1.248")) {
+    emitProviderFailure(CLAUDE_RUNTIME_FAILURES.INVALID_RUNTIME);
+    throw new ClaudeRuntimeError("The selected Claude CLI version is unsupported for restricted Gotham execution.", {
+      category: CLAUDE_RUNTIME_FAILURES.INVALID_RUNTIME
+    });
+  }
+  const runtimeCommand = runtimeProbe.resolvedBin || preferredCommand;
   const authenticationProbe = runtimeProbeEnabled
-    ? await probeCodexAuthentication(codexProbe.resolvedBin || preferredCodexBin, { env: providerProcessEnv })
+    ? providerId === "codex"
+      ? await probeCodexAuthentication(runtimeCommand, { env: providerProcessEnv })
+      : await probeClaudeAuthentication(providerRuntime, { cwd: generatedSiteDir })
     : { authenticated: true, status: "not_checked", mode: "" };
   if (runtimeProbeEnabled && !authenticationProbe.authenticated) {
-    throw new CodexRuntimeError(
-      authenticationProbe.error || "Codex authentication is required. Run `codex login --device-auth` once on the host.",
-      { category: authenticationProbe.status === "authentication_required" ? CODEX_RUNTIME_FAILURES.AUTHENTICATION_REQUIRED : CODEX_RUNTIME_FAILURES.MISSING_CLI }
-    );
+    const ErrorType = providerId === "codex" ? CodexRuntimeError : ClaudeRuntimeError;
+    const category = providerId === "codex"
+      ? (authenticationProbe.status === "authentication_required" ? CODEX_RUNTIME_FAILURES.AUTHENTICATION_REQUIRED : CODEX_RUNTIME_FAILURES.MISSING_CLI)
+      : (authenticationProbe.status === "authentication_required" ? CLAUDE_RUNTIME_FAILURES.AUTHENTICATION_REQUIRED : CLAUDE_RUNTIME_FAILURES.INVALID_RUNTIME);
+    emitProviderFailure(category);
+    throw new ErrorType(authenticationProbe.error || `${providerId === "codex" ? "Codex" : "Claude"} authentication is required.`, { category });
   }
-  const effectiveRuntime = { kind: "codex", bin: codexProbe.resolvedBin || preferredCodexBin, probe: codexProbe };
-  const codexVersion = codexProbe.version;
-  const codexCliStatus = codexCliLabel(codexProbe);
-  const runtimeKind = "codex";
-  const runtimeCommand = effectiveRuntime.bin || preferredCodexBin;
+  const runtimeVersion = runtimeProbe.version;
+  const runtimeVersionLabel = providerId === "codex" ? codexCliLabel(runtimeProbe) : (runtimeVersion || runtimeProbe.status);
+  const runtimeKind = providerId;
   const sandboxPreflightEnabled = runtimeProbeEnabled && process.env.GOTHAM_SANDBOX_PREFLIGHT !== "false";
-  const sandboxPreflight = runtimeKind === "codex" && sandboxPreflightEnabled
-    ? await probeCodexWorkspaceSandbox(runtimeCommand, undefined, { workspaceDir: generatedSiteDir, env: providerProcessEnv })
+  const registeredWorkspaceDirs = [
+    generatedSiteDir,
+    orchestratedRequest.project?.workspaceDir,
+    options.registeredWorkspaceDir
+  ].filter(Boolean);
+  const managedRoots = [
+    process.env.PROJECTS_ROOT,
+    process.env.PLUTOMIX_PROJECT_ROOT,
+    path.dirname(generatedSiteDir)
+  ].filter(Boolean);
+  const sandboxPreflight = sandboxPreflightEnabled
+    ? providerId === "codex"
+      ? await probeCodexWorkspaceSandbox(runtimeCommand, undefined, { workspaceDir: generatedSiteDir, env: providerProcessEnv })
+      : await probeClaudeSandboxReadiness(providerRuntime, {
+          workspaceDir: generatedSiteDir,
+          registeredWorkspaceDirs,
+          managedRoots
+        })
     : { status: "not_applicable", component: "workspace_sandbox", failureClass: "", reason: "", diagnostic: "", remediation: "" };
-  const timeoutMs = Number(options.timeoutMs ?? process.env.CODEX_WORKFLOW_TIMEOUT_MS ?? 10 * 60 * 1000);
+  const configuredTimeout = providerId === "claude" ? process.env.CLAUDE_WORKFLOW_TIMEOUT_MS : process.env.CODEX_WORKFLOW_TIMEOUT_MS;
+  const timeoutMs = Number(options.timeoutMs ?? configuredTimeout ?? 10 * 60 * 1000);
   const inactivityTimeoutMs = Math.max(1000, timeoutMs);
   const sourceInstruction = orchestratedRequest.sourceInstruction || orchestratedRequest.objective || "";
   const executionAgentId = options.executionAgentId || orchestratedRequest.orchestrationEnvelope?.authority?.agentId || options.agentId || orchestratedRequest.orchestrator || "project-execution-agent";
-  const buildId = `codex_${nanoid(10)}`;
+  const buildId = `${providerId}_${nanoid(10)}`;
   const generatedSourceDir = path.join(generatedSiteDir, "src", "generated");
   const projectOrchestratorPath = path.join(generatedSiteDir, ".agentic", "orchestrator-agent.md");
   const hasProjectOrchestrator = await fs.pathExists(projectOrchestratorPath);
   let promptText = "";
-  const quarantinedModelCaches = options.recoverModelsCache ? await quarantineGothamModelCaches(providerProcessEnv) : [];
+  const quarantinedModelCaches = providerId === "codex" && options.recoverModelsCache
+    ? await quarantineGothamModelCaches(providerProcessEnv)
+    : [];
 
   emit("preflight.started", "Gotham is verifying the selected provider's secure workspace sandbox.", {
     stage: "preflight",
@@ -1021,6 +1184,7 @@ export async function runCodexWorkflow(orchestratedRequest, options = {}) {
       failureClass: sandboxPreflight.failureClass || GOTHAM_FAILURE_CLASSES.SANDBOX_RUNTIME_UNAVAILABLE,
       reason: sandboxPreflight.reason
     });
+    emitProviderFailure(sandboxPreflight.failureClass || GOTHAM_FAILURE_CLASSES.SANDBOX_RUNTIME_UNAVAILABLE, { buildId });
     throw createGothamWorkspaceSandboxUnavailableError(sandboxPreflight);
   }
   emit("preflight.succeeded", sandboxPreflight.status === "ready"
@@ -1077,24 +1241,28 @@ export async function runCodexWorkflow(orchestratedRequest, options = {}) {
   promptText = codexPrompt(sourceInstruction, orchestratedRequest, hasProjectOrchestrator);
   const startedAt = Date.now();
 
-  emit("codex-start", `Starting current Gotham CLI workflow ${buildId}`, {
+  const startEventMetadata = {
     stage: "5/8",
     buildId,
     generatedSiteDir,
     generatedSourceDir,
-    codexBin: runtimeCommand,
     runtimeKind,
-    codexVersion: codexCliStatus,
-    codexCliStatus: codexProbe.status,
-    codexCliError: codexProbe.error || "",
-    requestedModel: selectedModel || "Codex configuration default",
+    runtimeVersion: runtimeVersionLabel,
+    runtimeStatus: runtimeProbe.status,
+    requestedModel: selectedModel || `${providerId === "codex" ? "Codex" : "Claude"} configuration default`,
+    ...(providerId === "codex" ? {
+      codexBin: runtimeCommand,
+      codexVersion: runtimeVersionLabel,
+      codexCliStatus: runtimeProbe.status,
+      codexCliError: runtimeProbe.error || ""
+    } : {}),
     providerRuntimeSelection,
     agentId: executionAgentId,
-    orchestrationAuthority: orchestratedRequest.orchestrationEnvelope ? "plutonix-global" : hasProjectOrchestrator ? "project-local-legacy" : "plutonix-default",
+    orchestrationAuthority: orchestratedRequest.orchestrationEnvelope ? "plutomix-global" : hasProjectOrchestrator ? "project-local-legacy" : "plutomix-default",
     parentWorkflowId: orchestratedRequest.orchestrationEnvelope?.parentWorkflowId || buildId,
     childExecutionIds: orchestratedRequest.orchestrationEnvelope?.childExecutionIds || [],
     orchestratorPolicyPath: hasProjectOrchestrator ? projectOrchestratorPath : null,
-    modelsCacheRecovery: options.recoverModelsCache
+    modelsCacheRecovery: providerId === "codex" && options.recoverModelsCache
       ? { attempted: true, quarantinedFiles: quarantinedModelCaches.map((file) => path.basename(file)) }
       : null,
     sandboxPreflight,
@@ -1105,22 +1273,30 @@ export async function runCodexWorkflow(orchestratedRequest, options = {}) {
       estimatedTokens: orchestratedRequest.compiledGothamContext.provenance.estimatedTokens,
       omittedOptionalPacks: orchestratedRequest.compiledGothamContext.provenance.omittedOptionalPacks
     } : null
-  });
-  emit("gotham-runtime-verified", `Gotham runtime ${runtimeKind}; model ${selectedModel || (runtimeKind === "copilot" ? "from Copilot CLI" : "from Codex configuration") }`, {
+  };
+  emit("provider-start", `Starting ${providerId === "claude" ? "Claude Code" : "OpenAI Codex"} Gotham workflow ${buildId}`, startEventMetadata);
+  emit("codex-start", `Starting current Gotham CLI workflow ${buildId}`, startEventMetadata);
+  const verifiedEventMetadata = {
     stage: "runtime",
     buildId,
-    codexBin: runtimeCommand,
     runtimeKind,
-    codexVersion: codexCliStatus,
-    codexCliStatus: codexProbe.status,
-    codexCliError: codexProbe.error || "",
+    runtimeVersion: runtimeVersionLabel,
+    runtimeStatus: runtimeProbe.status,
+    ...(providerId === "codex" ? {
+      codexBin: runtimeCommand,
+      codexVersion: runtimeVersionLabel,
+      codexCliStatus: runtimeProbe.status,
+      codexCliError: runtimeProbe.error || ""
+    } : {}),
     authenticationStatus: authenticationProbe.status,
     providerRuntimeSelection,
     requestedModel: selectedModel || "",
-    fallbackModel: process.env.GOTHAM_FALLBACK_MODEL || ""
-  });
+    fallbackModel: providerId === "codex" ? process.env.GOTHAM_FALLBACK_MODEL || "" : ""
+  };
+  emit("provider-runtime-verified", `Gotham verified ${providerId === "claude" ? "Claude Code" : "OpenAI Codex"} and the selected profile runtime.`, verifiedEventMetadata);
+  emit("gotham-runtime-verified", `Gotham runtime ${runtimeKind}; model ${selectedModel || `from ${providerId === "codex" ? "Codex" : "Claude"} configuration`}`, verifiedEventMetadata);
 
-  const args = [
+  const codexArgs = [
     ...gothamSandboxFeatureArgs(providerProcessEnv),
     "exec",
     "--json",
@@ -1137,58 +1313,97 @@ export async function runCodexWorkflow(orchestratedRequest, options = {}) {
   const output = [];
   const errors = [];
   let finalAgentResponse = "";
-  let codexThreadId = "";
+  let providerSessionId = "";
+  let providerUsage = {};
+  let providerDurationMs = null;
+  let providerDurationApiMs = null;
+  let providerCostUsd = null;
+  let providerTurns = null;
   let malformedEventCount = 0;
+  const measuredProviderUsage = (eventStream = "") => ({
+    ...(providerId === "claude" && Object.keys(providerUsage).length
+      ? resolveWorkflowTokenUsage({ eventStream: `${JSON.stringify({ usage: providerUsage })}\n`, promptText, modelOutputText: finalAgentResponse })
+      : resolveWorkflowTokenUsage({ eventStream, promptText, modelOutputText: finalAgentResponse })),
+    providerReportedCostUsd: providerCostUsd
+  });
   try {
-    const execution = await executeCodex({
-      command: runtimeCommand,
-      args,
-      cwd: generatedSiteDir,
-      registeredWorkspaceDirs: [
-        generatedSiteDir,
-        orchestratedRequest.project?.workspaceDir,
-        options.registeredWorkspaceDir
-      ].filter(Boolean),
-      managedRoots: [
-        process.env.PROJECTS_ROOT,
-        process.env.PLUTONIX_PROJECT_ROOT,
-        path.dirname(generatedSiteDir)
-      ].filter(Boolean),
-      signal,
-      env: providerProcessEnv,
-      timeoutMs: inactivityTimeoutMs,
-      onEvent: (runtimeEvent) => {
-        const { type, message, finalResponse: _finalResponse, ...metadata } = runtimeEvent;
-        emit(type, message, {
-          stage: "5/8",
-          buildId,
-          agentId: executionAgentId,
-          ...metadata
+    const onEvent = (runtimeEvent) => {
+      const { type, message, finalResponse: _finalResponse, ...metadata } = runtimeEvent;
+      const neutralType = providerNeutralRuntimeEventType(type);
+      if (neutralType) emit(neutralType, message, {
+        stage: "5/8",
+        buildId,
+        agentId: executionAgentId,
+        ...metadata
+      });
+      emit(type, message, {
+        stage: "5/8",
+        buildId,
+        agentId: executionAgentId,
+        ...metadata
+      });
+    };
+    const onMalformed = () => {
+      malformedEventCount += 1;
+      emit("provider-progress", "Gotham ignored a malformed provider update safely.", {
+        stage: "5/8",
+        buildId,
+        agentId: executionAgentId,
+        malformedEventCount
+      });
+      emit(`${providerId}-malformed-event`, `${providerId === "codex" ? "Codex" : "Claude"} emitted a malformed runtime event; Gotham ignored it safely.`, {
+        stage: "5/8",
+        buildId,
+        agentId: executionAgentId,
+        malformedEventCount
+      });
+    };
+    const execution = providerId === "codex"
+      ? await executeCodex({
+          command: runtimeCommand,
+          args: codexArgs,
+          cwd: generatedSiteDir,
+          registeredWorkspaceDirs,
+          managedRoots,
+          signal,
+          env: providerProcessEnv,
+          timeoutMs: inactivityTimeoutMs,
+          onEvent,
+          onMalformed
+        })
+      : await executeClaude({
+          runtime: providerRuntime,
+          prompt: promptText,
+          cwd: generatedSiteDir,
+          registeredWorkspaceDirs,
+          managedRoots,
+          mode: CLAUDE_EXECUTION_MODES.WRITE,
+          selectedModel,
+          signal,
+          timeoutMs: inactivityTimeoutMs,
+          onEvent,
+          onMalformed
         });
-      },
-      onMalformed: () => {
-        malformedEventCount += 1;
-        emit("codex-malformed-event", "Codex emitted a malformed runtime event; Gotham ignored it safely.", {
-          stage: "5/8",
-          buildId,
-          agentId: executionAgentId,
-          malformedEventCount
-        });
-      }
-    });
-    output.push(execution.stdout);
-    errors.push(execution.stderr);
+    if (providerId === "codex") {
+      output.push(execution.stdout);
+      errors.push(execution.stderr);
+    }
     finalAgentResponse = execution.finalResponse || "";
-    codexThreadId = execution.threadId || "";
+    providerSessionId = execution.threadId || execution.sessionId || "";
+    providerUsage = execution.usage || {};
+    providerDurationMs = execution.durationMs ?? null;
+    providerDurationApiMs = execution.durationApiMs ?? null;
+    providerCostUsd = execution.totalCostUsd ?? null;
+    providerTurns = execution.numTurns ?? null;
     malformedEventCount = execution.malformedEvents;
   } catch (error) {
     const partialAfter = (await fs.pathExists(generatedSiteDir)) ? await collectFileHashes(generatedSiteDir).catch(() => new Map()) : new Map();
     error.partialChanges = diffHashes(before, partialAfter).map((filePath) => filePath.split(path.sep).join("/"));
     error.workflowFailureClass = classifyGothamWorkflowFailure(error, { workspaceDir: generatedSiteDir });
     error.requestedModel = error.requestedModel || selectedModel || requestedModelFromFailure(error);
-    error.codexVersion = error.codexVersion || codexVersion;
+    if (providerId === "codex") error.codexVersion = error.codexVersion || runtimeVersion;
     const eventStream = output.join("");
-    const measuredUsage = resolveWorkflowTokenUsage({ eventStream, promptText });
+    const measuredUsage = measuredProviderUsage(eventStream);
     error.tokenUsage = await recordAgentTokenUsage({
       agentId: executionAgentId,
       agentName: options.executionAgentName || "",
@@ -1200,6 +1415,7 @@ export async function runCodexWorkflow(orchestratedRequest, options = {}) {
       instructionSummary: sourceInstruction,
       taskType: options.taskType || orchestratedRequest.taskType || "",
       provider: runtimeKind,
+      providerProfileId: providerRuntimeSelection.profileId,
       executionModel: selectedModel,
       ...measuredUsage,
       durationMs: Date.now() - startedAt,
@@ -1217,6 +1433,7 @@ export async function runCodexWorkflow(orchestratedRequest, options = {}) {
       stdoutEventBytes: Buffer.byteLength(eventStream),
       stderrBytes: Buffer.byteLength(errors.join(""))
     };
+    emitProviderFailure(error.workflowFailureClass, { buildId, changedFileCount: error.partialChanges.length });
     throw error;
   }
 
@@ -1235,8 +1452,9 @@ export async function runCodexWorkflow(orchestratedRequest, options = {}) {
       instructionSummary: sourceInstruction,
       taskType: options.taskType || orchestratedRequest.taskType || "",
       provider: runtimeKind,
+      providerProfileId: providerRuntimeSelection.profileId,
       executionModel: selectedModel,
-      ...resolveWorkflowTokenUsage({ eventStream, promptText }),
+      ...measuredProviderUsage(eventStream),
       durationMs: Date.now() - startedAt,
       changedFiles: partialChanges.length,
       attemptNumber: options.attempt || 1,
@@ -1253,6 +1471,12 @@ export async function runCodexWorkflow(orchestratedRequest, options = {}) {
   const after = await collectFileHashes(generatedSiteDir);
   const changedSourceFiles = diffHashes(before, after);
   const changedFiles = changedSourceFiles.map((filePath) => filePath.split(path.sep).join("/"));
+  if (changedFiles.length) emit("provider-file-change", `Gotham recorded ${changedFiles.length} provider workspace file change${changedFiles.length === 1 ? "" : "s"}.`, {
+    stage: "6/8",
+    buildId,
+    changedFiles,
+    agentId: executionAgentId
+  });
   if (!changedFiles.length) {
     const transcript = [...errors, ...output].join("");
     const transcriptClass = classifyGothamWorkflowFailure(transcript, { workspaceDir: generatedSiteDir });
@@ -1265,12 +1489,14 @@ export async function runCodexWorkflow(orchestratedRequest, options = {}) {
       error.workflowFailureClass = transcriptClass;
       error.partialChanges = [];
       error.tokenUsage = await recordTerminalExecutionFailure(transcriptClass, []);
+      emitProviderFailure(transcriptClass, { buildId, changedFileCount: 0 });
       throw error;
     }
     const error = new Error("Gotham completed but did not change any meaningful project or requested artifact files.");
     error.workflowFailureClass = GOTHAM_FAILURE_CLASSES.PROJECT_IMPLEMENTATION_FAILURE;
     error.partialChanges = [];
     error.tokenUsage = await recordTerminalExecutionFailure(error.workflowFailureClass, []);
+    emitProviderFailure(error.workflowFailureClass, { buildId, changedFileCount: 0 });
     throw error;
   }
   const inputConsumption = await buildInputConsumptionReceipt(generatedSiteDir, changedFiles, orchestratedRequest);
@@ -1283,6 +1509,7 @@ export async function runCodexWorkflow(orchestratedRequest, options = {}) {
     error.workflowFailureClass = GOTHAM_FAILURE_CLASSES.PROJECT_VALIDATION_FAILURE;
     error.partialChanges = changedFiles;
     error.tokenUsage = await recordTerminalExecutionFailure(error.workflowFailureClass, changedFiles);
+    emitProviderFailure(error.workflowFailureClass, { buildId, changedFileCount: changedFiles.length });
     throw error;
   }
   const validationDurationMs = Date.now() - validationStartedAt;
@@ -1290,7 +1517,7 @@ export async function runCodexWorkflow(orchestratedRequest, options = {}) {
   const instructionHash = crypto.createHash("sha256").update(sourceInstruction).digest("hex");
   const outputText = output.join("");
   const durationMs = Date.now() - startedAt;
-  const measuredUsage = resolveWorkflowTokenUsage({ eventStream: outputText, promptText });
+  const measuredUsage = measuredProviderUsage(outputText);
   const tokenUsage = await recordAgentTokenUsage({
     agentId: executionAgentId,
     agentName: options.executionAgentName || orchestratedRequest.orchestrationEnvelope?.authority?.agentName || options.agentName || "",
@@ -1303,7 +1530,8 @@ export async function runCodexWorkflow(orchestratedRequest, options = {}) {
     taskType: options.taskType || orchestratedRequest.taskType || "",
     gothamUsageOwnerKey: options.gothamUsageOwnerKey || "",
     provider: runtimeKind,
-    executionModel: selectedModel || (runtimeKind === "copilot" ? "Copilot CLI configured model" : "Codex configured model"),
+    providerProfileId: providerRuntimeSelection.profileId,
+    executionModel: selectedModel || `${providerId === "codex" ? "Codex" : "Claude"} configured model`,
     ...measuredUsage,
     durationMs,
     changedFiles: changedFiles.length,
@@ -1316,17 +1544,21 @@ export async function runCodexWorkflow(orchestratedRequest, options = {}) {
     stderrBytes: Buffer.byteLength(errors.join("")),
     transportBytes: Buffer.byteLength(outputText) + Buffer.byteLength(errors.join(""))
   });
-  emit("codex-complete", `Gotham changed ${changedFiles.length} files`, {
+  const completionEventMetadata = {
     stage: "6/8",
     buildId,
     changedFiles,
     durationMs,
     tokenUsage,
     agentId: executionAgentId,
-    agentResponse: redactCodexText(finalAgentResponse, 12000),
-    threadId: codexThreadId,
+    agentResponse: providerId === "codex"
+      ? redactCodexText(finalAgentResponse, 12000)
+      : redactClaudeText(finalAgentResponse, 12000),
+    threadId: providerSessionId,
     malformedEventCount
-  });
+  };
+  emit("provider-complete", `Gotham completed the ${providerId === "claude" ? "Claude Code" : "OpenAI Codex"} workflow and changed ${changedFiles.length} files.`, completionEventMetadata);
+  emit("codex-complete", `Gotham changed ${changedFiles.length} files`, completionEventMetadata);
 
   return {
     buildId,
@@ -1335,12 +1567,15 @@ export async function runCodexWorkflow(orchestratedRequest, options = {}) {
     title: orchestratedRequest.topic || "Generated Site",
     instructionHash,
     runtime: {
-      codexBin: runtimeCommand,
       runtimeKind,
-      codexVersion,
       selectedModel: selectedModel || "",
       providerRuntimeSelection,
-      threadId: codexThreadId
+      sessionId: providerSessionId,
+      ...(providerId === "codex" ? {
+        codexBin: runtimeCommand,
+        codexVersion: runtimeVersion,
+        threadId: providerSessionId
+      } : {})
     },
     generatedAt: new Date().toISOString(),
     files: changedFiles,
@@ -1351,12 +1586,29 @@ export async function runCodexWorkflow(orchestratedRequest, options = {}) {
       path: changedFiles[index],
       reason: "Changed by current Gotham CLI workflow."
     })),
-    codex: {
-      command: runtimeCommand,
-      durationMs,
-      finalResponse: redactCodexText(finalAgentResponse, 4000),
+    providerExecution: {
+      providerId,
+      profileId: providerRuntimeSelection.profileId,
+      selectedModel: selectedModel || "",
+      durationMs: providerDurationMs ?? durationMs,
+      finalResponse: providerId === "codex"
+        ? redactCodexText(finalAgentResponse, 4000)
+        : redactClaudeText(finalAgentResponse, 4000),
+      sessionId: providerSessionId,
+      usage: providerUsage,
+      durationApiMs: providerDurationApiMs,
+      totalCostUsd: providerCostUsd,
+      numTurns: providerTurns,
       malformedEventCount
     },
+    ...(providerId === "codex" ? {
+      codex: {
+        command: runtimeCommand,
+        durationMs,
+        finalResponse: redactCodexText(finalAgentResponse, 4000),
+        malformedEventCount
+      }
+    } : {}),
     timings: {
       policySelectionDurationMs: orchestratedRequest.compiledGothamContext?.provenance.policySelectionDurationMs ?? 0,
       staticContextCompileDurationMs: orchestratedRequest.compiledGothamContext?.provenance.staticContextCompileDurationMs ?? 0,
@@ -1368,17 +1620,146 @@ export async function runCodexWorkflow(orchestratedRequest, options = {}) {
   };
 }
 
-export async function runCodexReviewWorkflow(orchestratedRequest, executionResult, options = {}) {
-  const emit = typeof options.emit === "function" ? options.emit : () => {};
+export async function runCodexWorkflow(orchestratedRequest, options = {}) {
+  const incomingSelection = options.providerRuntimeSelection || {};
+  return runGothamProviderWorkflow(orchestratedRequest, {
+    ...options,
+    providerRuntimeSelection: Object.freeze({
+      ...incomingSelection,
+      providerId: "codex",
+      profileId: incomingSelection.profileId || "legacy-process-default",
+      modelId: options.model || incomingSelection.modelId || undefined,
+      selectedAt: incomingSelection.selectedAt || new Date().toISOString()
+    })
+  });
+}
+
+function legacyCodexProviderOptions(options = {}) {
+  const incomingSelection = options.providerRuntimeSelection || {};
+  return {
+    ...options,
+    providerRuntimeSelection: Object.freeze({
+      ...incomingSelection,
+      providerId: "codex",
+      profileId: incomingSelection.profileId || "legacy-process-default",
+      modelId: options.model || incomingSelection.modelId || undefined,
+      selectedAt: incomingSelection.selectedAt || new Date().toISOString()
+    }),
+    providerRuntime: options.providerRuntime || {
+      command: process.env.CODEX_BIN || "codex",
+      env: process.env
+    }
+  };
+}
+
+function frozenProviderContext(options = {}) {
+  const selection = options.providerRuntimeSelection;
+  const runtime = options.providerRuntime;
+  const providerId = String(selection?.providerId || "");
+  if (!selection || !runtime?.command || !runtime?.env || !["codex", "claude"].includes(providerId)) {
+    const error = new Error("A frozen, backend-resolved provider runtime context is required for this model call.");
+    error.code = "provider_runtime_missing";
+    error.workflowFailureClass = GOTHAM_FAILURE_CLASSES.MISSING_CLI;
+    throw error;
+  }
+  if (providerId === "claude" && (
+    runtime.providerId !== "claude" ||
+    runtime.profileId !== selection.profileId ||
+    runtime.workspaceId !== selection.workspaceId
+  )) {
+    throw new ClaudeRuntimeError("The backend-resolved Claude runtime does not match the frozen job selection.", {
+      category: CLAUDE_RUNTIME_FAILURES.INVALID_RUNTIME
+    });
+  }
+  return {
+    providerId,
+    profileId: String(selection.profileId || ""),
+    modelId: String(selection.modelId || ""),
+    selection,
+    runtime
+  };
+}
+
+function providerWorkspaceBounds(generatedSiteDir, orchestratedRequest, options = {}) {
+  return {
+    registeredWorkspaceDirs: [generatedSiteDir, orchestratedRequest.project?.workspaceDir, options.registeredWorkspaceDir].filter(Boolean),
+    managedRoots: [process.env.PROJECTS_ROOT, process.env.PLUTOMIX_PROJECT_ROOT, path.dirname(generatedSiteDir)].filter(Boolean)
+  };
+}
+
+function providerAttemptUsage(execution, promptText, eventStream = "") {
+  const providerStream = execution?.usage && Object.keys(execution.usage).length
+    ? `${JSON.stringify({ usage: execution.usage })}\n`
+    : eventStream;
+  return {
+    ...resolveWorkflowTokenUsage({
+      eventStream: providerStream,
+      promptText,
+      modelOutputText: execution?.finalResponse || ""
+    }),
+    providerReportedCostUsd: execution?.totalCostUsd ?? null
+  };
+}
+
+async function executeFrozenProviderPrompt({
+  orchestratedRequest,
+  options,
+  promptText,
+  mode,
+  timeoutMs,
+  onEvent = () => {},
+  onMalformed = () => {}
+}) {
+  const context = frozenProviderContext(options);
   const generatedSiteDir = options.generatedSiteDir || process.env.GENERATED_SITE_DIR || path.resolve(process.cwd(), "../generated-site");
-  const codexBin = process.env.CODEX_BIN || "codex";
-  const timeoutMs = Number(options.timeoutMs ?? process.env.CODEX_REVIEW_TIMEOUT_MS ?? 5 * 60 * 1000);
-  const reviewId = `review_${nanoid(10)}`;
+  const bounds = providerWorkspaceBounds(generatedSiteDir, orchestratedRequest, options);
+  if (context.providerId === "claude") {
+    const execution = await executeClaude({
+      runtime: context.runtime,
+      prompt: promptText,
+      cwd: generatedSiteDir,
+      ...bounds,
+      mode: mode === "read-only" ? CLAUDE_EXECUTION_MODES.READ_ONLY : CLAUDE_EXECUTION_MODES.WRITE,
+      selectedModel: context.modelId,
+      signal: options.signal,
+      timeoutMs,
+      onEvent,
+      onMalformed
+    });
+    return { ...execution, stdout: "", stderr: "" };
+  }
+  const args = [
+    ...gothamSandboxFeatureArgs(context.runtime.env),
+    "exec",
+    "--json",
+    "--cd",
+    generatedSiteDir,
+    "--skip-git-repo-check",
+    "--ephemeral",
+    "--sandbox",
+    mode,
+    ...(context.modelId ? ["--model", context.modelId] : []),
+    promptText
+  ];
+  return executeCodex({
+    command: context.runtime.command,
+    args,
+    cwd: generatedSiteDir,
+    ...bounds,
+    signal: options.signal,
+    env: context.runtime.env,
+    timeoutMs,
+    onEvent,
+    onMalformed
+  });
+}
+
+function providerReviewPrompt(orchestratedRequest, executionResult) {
   const envelope = orchestratedRequest.orchestrationEnvelope || {};
   const productDecision = orchestratedRequest.productDecision || envelope.plan?.productDecision || null;
-  const promptText = `You are an independent read-only reviewer for an PlutoniX workflow.
+  return `You are an independent read-only reviewer for an PlutoMix workflow.
 
-PlutoniX remains the completion authority. Inspect the current workspace and evaluate only the implementation produced for this task.
+PlutoMix remains the completion authority. Inspect the current workspace and evaluate only the implementation produced for this task.
 
 Task:
 ${orchestratedRequest.sourceInstruction || orchestratedRequest.objective || ""}
@@ -1405,20 +1786,33 @@ Rules:
 - Reject missing requested behavior, unrelated destructive changes, unsafe credential handling, or clearly invalid code.
 - Do not reject merely for optional polish.
 - End with exactly two markers on separate lines:
-  PLUTONIX_QUALITY: shape_fit=PASS; depth_fit=PASS; data_fidelity=PASS; input_consumption=PASS; ui_reference_functionality=PASS; no_explainer_copy=PASS; generic_template_check=PASS
-  PLUTONIX_REVIEW: PASS
-- If any quality dimension fails, mark that dimension FAIL and end with PLUTONIX_REVIEW: FAIL: <concise reason>.`;
+  PLUTOMIX_QUALITY: shape_fit=PASS; depth_fit=PASS; data_fidelity=PASS; input_consumption=PASS; ui_reference_functionality=PASS; no_explainer_copy=PASS; generic_template_check=PASS
+  PLUTOMIX_REVIEW: PASS
+- If any quality dimension fails, mark that dimension FAIL and end with PLUTOMIX_REVIEW: FAIL: <concise reason>.`;
+}
 
+export async function runGothamProviderReviewWorkflow(orchestratedRequest, executionResult, options = {}) {
+  const context = frozenProviderContext(options);
+  const rawEmit = typeof options.emit === "function" ? options.emit : () => {};
+  const emit = (type, message, metadata = {}) => rawEmit(type, message, {
+    ...metadata,
+    providerId: context.providerId,
+    providerProfileId: context.profileId
+  });
+  const generatedSiteDir = options.generatedSiteDir || process.env.GENERATED_SITE_DIR || path.resolve(process.cwd(), "../generated-site");
+  const timeoutMs = Number(options.timeoutMs ?? (context.providerId === "claude" ? process.env.CLAUDE_WORKFLOW_TIMEOUT_MS : process.env.CODEX_REVIEW_TIMEOUT_MS) ?? 5 * 60 * 1000);
+  const reviewId = `review_${nanoid(10)}`;
+  const envelope = orchestratedRequest.orchestrationEnvelope || {};
+  const promptText = providerReviewPrompt(orchestratedRequest, executionResult);
   const before = await collectFileHashes(generatedSiteDir);
-  const output = [];
-  const errors = [];
+  let execution = null;
   const startedAt = Date.now();
   const recordReviewAttempt = (attemptStatus, failureClass = "") => {
-    const eventStream = output.join("");
-    const stderrText = errors.join("");
+    const eventStream = execution?.stdout || "";
+    const stderrText = execution?.stderr || "";
     return recordAgentTokenUsage({
-      agentId: options.reviewerAgentId || "plutonix-independent-reviewer",
-      agentName: "PlutoniX Independent Reviewer",
+      agentId: options.reviewerAgentId || "plutomix-independent-reviewer",
+      agentName: "PlutoMix Independent Reviewer",
       projectId: orchestratedRequest.project?.id || options.projectId || "",
       projectName: orchestratedRequest.project?.name || options.projectName || "",
       workflowId: envelope.parentWorkflowId || reviewId,
@@ -1426,7 +1820,10 @@ Rules:
       buildId: reviewId,
       instructionSummary: orchestratedRequest.sourceInstruction || orchestratedRequest.objective || "",
       taskType: options.taskType || "",
-      ...resolveWorkflowTokenUsage({ eventStream, promptText }),
+      provider: context.providerId,
+      providerProfileId: context.profileId,
+      executionModel: context.modelId,
+      ...providerAttemptUsage(execution, promptText, eventStream),
       durationMs: Date.now() - startedAt,
       changedFiles: 0,
       validationStatus: attemptStatus === "succeeded" ? "passed" : "failed",
@@ -1448,37 +1845,15 @@ Rules:
   emit("review-start", `Starting independent review ${reviewId}`, {
     parentWorkflowId: envelope.parentWorkflowId,
     reviewId,
-    reviewerAgentId: options.reviewerAgentId || "plutonix-independent-reviewer"
+    reviewerAgentId: options.reviewerAgentId || "plutomix-independent-reviewer"
   });
-
-  await new Promise((resolve, reject) => {
-    const child = spawn(codexBin, [
-      ...gothamSandboxFeatureArgs(),
-      "exec", "--json", "--cd", generatedSiteDir, "--skip-git-repo-check", "--ephemeral",
-      "--sandbox", "read-only", promptText
-    ], {
-      cwd: generatedSiteDir,
-      env: codexProcessEnvironment(),
-      stdio: ["ignore", "pipe", "pipe"]
-    });
-    let timer;
-    const resetTimer = () => {
-      clearTimeout(timer);
-      timer = setTimeout(() => {
-        child.kill("SIGTERM");
-        reject(new Error(`Independent review produced no output for ${Math.round(timeoutMs / 1000)} seconds and was stopped.`));
-      }, timeoutMs);
-    };
-    resetTimer();
-    child.stdout.setEncoding("utf8");
-    child.stderr.setEncoding("utf8");
-    child.stdout.on("data", (chunk) => { resetTimer(); output.push(chunk); });
-    child.stderr.on("data", (chunk) => { resetTimer(); errors.push(chunk); });
-    child.on("error", (error) => { clearTimeout(timer); reject(error); });
-    child.on("close", (code) => {
-      clearTimeout(timer);
-      code === 0 ? resolve() : reject(new Error(childProcessFailureMessage("Independent review", code, errors, output)));
-    });
+  execution = await executeFrozenProviderPrompt({
+    orchestratedRequest,
+    options,
+    promptText,
+    mode: "read-only",
+    timeoutMs,
+    onEvent: (runtimeEvent) => emit(runtimeEvent.type, runtimeEvent.message, { stage: "review", reviewId })
   }).catch(async (error) => { throw await reviewFailure(error); });
 
   const after = await collectFileHashes(generatedSiteDir);
@@ -1486,11 +1861,11 @@ Rules:
   if (reviewerChanges.length) {
     throw await reviewFailure(new Error(`Independent reviewer violated read-only mode and changed: ${reviewerChanges.slice(0, 8).join(", ")}`));
   }
-  const outputText = output.join("");
-  const failed = outputText.match(/PLUTONIX_REVIEW:\s*FAIL:\s*([^\n"}]*)/i);
-  const passed = /PLUTONIX_REVIEW:\s*PASS/i.test(outputText);
+  const outputText = `${execution.stdout || ""}\n${execution.finalResponse || ""}`;
+  const failed = outputText.match(/PLUTOMIX_REVIEW:\s*FAIL:\s*([^\n"}]*)/i);
+  const passed = /PLUTOMIX_REVIEW:\s*PASS/i.test(outputText);
   const quality = outputText.match(
-    /PLUTONIX_QUALITY:\s*shape_fit=(PASS|FAIL);\s*depth_fit=(PASS|FAIL);\s*data_fidelity=(PASS|FAIL);\s*input_consumption=(PASS|FAIL);\s*ui_reference_functionality=(PASS|FAIL);\s*no_explainer_copy=(PASS|FAIL);\s*generic_template_check=(PASS|FAIL)/i
+    /PLUTOMIX_QUALITY:\s*shape_fit=(PASS|FAIL);\s*depth_fit=(PASS|FAIL);\s*data_fidelity=(PASS|FAIL);\s*input_consumption=(PASS|FAIL);\s*ui_reference_functionality=(PASS|FAIL);\s*no_explainer_copy=(PASS|FAIL);\s*generic_template_check=(PASS|FAIL)/i
   );
   if (failed) throw await reviewFailure(new Error(`Independent review failed: ${failed[1].trim() || "acceptance criteria were not met"}`));
   if (!quality) throw await reviewFailure(new Error("Independent review did not return the required Product Shape quality verdicts."));
@@ -1507,83 +1882,34 @@ Rules:
     status: "passed",
     tokenUsage
   });
-  return { reviewId, status: "passed", durationMs, tokenUsage };
+  return {
+    reviewId,
+    status: "passed",
+    durationMs,
+    tokenUsage,
+    providerExecution: {
+      providerId: context.providerId,
+      profileId: context.profileId,
+      selectedModel: context.modelId,
+      mode: "read-only",
+      usage: execution.usage || {},
+      totalCostUsd: execution.totalCostUsd ?? null
+    }
+  };
 }
 
-function repairModelCommands() {
-  const configuredBin = process.env.PLUTONIX_REPAIR_BIN || "";
-  const configuredKind = process.env.PLUTONIX_REPAIR_MODEL || "";
-  const candidates = [];
-  if (configuredBin) candidates.push({ kind: configuredKind || "custom", bin: configuredBin });
-  candidates.push({ kind: "codex", bin: process.env.CODEX_BIN || "codex" });
-  if (process.env.CLAUDE_BIN) candidates.push({ kind: "claude", bin: process.env.CLAUDE_BIN });
-  candidates.push({ kind: "claude", bin: "claude" });
-  return candidates.filter((candidate, index, rows) =>
-    candidate.bin && rows.findIndex((row) => row.kind === candidate.kind && row.bin === candidate.bin) === index
-  );
+export async function runCodexReviewWorkflow(orchestratedRequest, executionResult, options = {}) {
+  return runGothamProviderReviewWorkflow(orchestratedRequest, executionResult, legacyCodexProviderOptions(options));
 }
 
-function repairArgsFor(candidate, promptText, generatedSiteDir) {
-  if (candidate.kind === "claude" || /(^|\/)claude(?:$|\.cmd$)/i.test(candidate.bin)) {
-    return [
-      "-p",
-      promptText,
-      "--permission-mode",
-      "acceptEdits"
-    ];
-  }
-  if (candidate.kind === "custom" && process.env.PLUTONIX_REPAIR_ARGS) {
-    return process.env.PLUTONIX_REPAIR_ARGS
-      .split(/\s+/)
-      .filter(Boolean)
-      .map((part) => part === "{prompt}" ? promptText : part === "{cwd}" ? generatedSiteDir : part);
-  }
-  return [
-    ...gothamSandboxFeatureArgs(),
-    "exec",
-    "--json",
-    "--cd",
-    generatedSiteDir,
-    "--skip-git-repo-check",
-    "--ephemeral",
-    "--sandbox",
-    "workspace-write",
-    promptText
-  ];
-}
-
-function completionCheckArgsFor(candidate, promptText, generatedSiteDir) {
-  if (candidate.kind === "claude" || /(^|\/)claude(?:$|\.cmd$)/i.test(candidate.bin)) {
-    return [
-      "-p",
-      promptText,
-      "--permission-mode",
-      "acceptEdits"
-    ];
-  }
-  if (candidate.kind === "custom" && process.env.PLUTONIX_REPAIR_ARGS) {
-    return process.env.PLUTONIX_REPAIR_ARGS
-      .split(/\s+/)
-      .filter(Boolean)
-      .map((part) => part === "{prompt}" ? promptText : part === "{cwd}" ? generatedSiteDir : part);
-  }
-  return [
-    ...gothamSandboxFeatureArgs(),
-    "exec",
-    "--json",
-    "--cd",
-    generatedSiteDir,
-    "--skip-git-repo-check",
-    "--ephemeral",
-    "--sandbox",
-    "read-only",
-    promptText
-  ];
+function repairModelCommands(options = {}) {
+  const context = frozenProviderContext(options);
+  return [{ kind: context.providerId, bin: context.runtime.command, profileId: context.profileId, modelId: context.modelId }];
 }
 
 export function parseCompletionCheckResult(text) {
   const normalized = String(text || "");
-  const match = normalized.match(/PLUTONIX_COMPLETION_CHECK:\s*(PASS|FAIL)(?::\s*([^\n]+))?/i);
+  const match = normalized.match(/PLUTOMIX_COMPLETION_CHECK:\s*(PASS|FAIL)(?::\s*([^\n]+))?/i);
   if (!match) {
     return { pass: false, status: "FAIL", reason: "No completion-check marker was returned." };
   }
@@ -1599,12 +1925,12 @@ export function parseCompletionCheckResult(text) {
 function repairPrompt(orchestratedRequest, failure, options = {}) {
   const originalInstruction = orchestratedRequest.sourceInstruction || orchestratedRequest.objective || "";
   const changedFiles = Array.isArray(options.changedFiles) ? options.changedFiles : [];
-  const failureMessage = String(failure?.message || failure || "");
+  const failureMessage = redactOperational(String(failure?.message || failure || ""));
   const intelProfile = options.intelProfile || null;
   const zeroChangeExecution = /completed but did not change any (?:meaningful project or requested artifact )?files/i.test(failureMessage);
-  return `You are the automatic recovery model for PlutoniX.
+  return `You are the automatic recovery model for PlutoMix.
 
-PlutoniX already ran Gotham/Codex for this project, but execution or preview validation failed. Your job is to fix the project in-place so the app can install, start, and preview successfully.
+PlutoMix already ran the frozen Gotham provider for this project, but execution or preview validation failed. Your job is to fix the project in-place so the app can install, start, and preview successfully.
 
 Original user instruction:
 ${originalInstruction}
@@ -1634,7 +1960,7 @@ ${intelProfile ? `Intel repair contract:
 - Do not add unrelated features, generic filler, or a second implementation track.` : ""}
 
 Runtime/log context:
-${String(options.runtimeLogTail || "").slice(-4000) || "No additional runtime log tail was provided."}
+${redactOperational(String(options.runtimeLogTail || "")).slice(-4000) || "No additional runtime log tail was provided."}
 
 Rules:
 - Inspect the local workspace before editing.
@@ -1652,7 +1978,7 @@ function completionCheckPrompt(orchestratedRequest, options = {}) {
   const originalInstruction = orchestratedRequest.sourceInstruction || orchestratedRequest.objective || "";
   const generatedSiteDir = options.generatedSiteDir || process.env.GENERATED_SITE_DIR || path.resolve(process.cwd(), "../generated-site");
   const changedFiles = Array.isArray(options.changedFiles) ? options.changedFiles : [];
-  return `You are the PlutoniX completion checker.
+  return `You are the PlutoMix completion checker.
 
 Your job is to decide whether a repaired project now satisfies the original task instruction. You are not allowed to change files. Inspect the workspace and answer strictly using the markers below.
 
@@ -1672,22 +1998,30 @@ Rules:
 - If the task is now satisfied, return PASS.
 - Keep the answer compact and factual.
 - End with exactly these markers on separate lines:
-PLUTONIX_COMPLETION_CHECK: PASS or FAIL: <one clause explaining the result>
-PLUTONIX_REVIEW: PASS or FAIL: <one clause explaining the result>`;
+PLUTOMIX_COMPLETION_CHECK: PASS or FAIL: <one clause explaining the result>
+PLUTOMIX_REVIEW: PASS or FAIL: <one clause explaining the result>`;
 }
 
 export async function runModelRepairWorkflow(orchestratedRequest, failure, options = {}) {
-  const emit = typeof options.emit === "function" ? options.emit : () => {};
+  const hasProviderContext = Boolean(options.providerRuntimeSelection || options.providerRuntime);
+  const effectiveOptions = hasProviderContext ? options : legacyCodexProviderOptions(options);
+  const context = frozenProviderContext(effectiveOptions);
+  const rawEmit = typeof effectiveOptions.emit === "function" ? effectiveOptions.emit : () => {};
+  const emit = (type, message, metadata = {}) => rawEmit(type, message, {
+    ...metadata,
+    providerId: context.providerId,
+    providerProfileId: context.profileId
+  });
   const generatedSiteDir = options.generatedSiteDir || process.env.GENERATED_SITE_DIR || path.resolve(process.cwd(), "../generated-site");
-  const timeoutMs = Number(options.timeoutMs ?? process.env.PLUTONIX_REPAIR_TIMEOUT_MS ?? 8 * 60 * 1000);
+  const timeoutMs = Number(options.timeoutMs ?? process.env.PLUTOMIX_REPAIR_TIMEOUT_MS ?? 8 * 60 * 1000);
   const repairId = `repair_${nanoid(10)}`;
   const promptText = repairPrompt(orchestratedRequest, failure, { ...options, generatedSiteDir });
   const before = await collectFileHashes(generatedSiteDir);
-  const candidates = repairModelCommands();
+  const candidates = repairModelCommands(effectiveOptions);
   const errors = [];
   const startedAt = Date.now();
 
-  emit("plutonix-repair-start", "Sending Gotham failure back to an available AI model for automatic repair", {
+  emit("plutomix-repair-start", "Sending Gotham failure back to an available AI model for automatic repair", {
     stage: "repair",
     repairId,
     parentWorkflowId: orchestratedRequest.orchestrationEnvelope?.parentWorkflowId || "",
@@ -1698,59 +2032,29 @@ export async function runModelRepairWorkflow(orchestratedRequest, failure, optio
   for (const candidate of candidates) {
     const output = [];
     const stderr = [];
-    const args = repairArgsFor(candidate, promptText, generatedSiteDir);
-    emit("plutonix-repair-model-selected", `Trying ${candidate.kind} repair model`, {
+    emit("plutomix-repair-model-selected", `Trying ${candidate.kind} repair model`, {
       stage: "repair",
       repairId,
       modelKind: candidate.kind,
-      modelBin: candidate.bin
+      modelId: candidate.modelId || ""
     });
+    let repairExecution = null;
+    let completionExecution = null;
     try {
-      await new Promise((resolve, reject) => {
-        const child = spawn(candidate.bin, args, {
-          cwd: generatedSiteDir,
-          env: { ...process.env, CI: "1", NO_COLOR: "1" },
-          stdio: ["ignore", "pipe", "pipe"]
-        });
-        let timer;
-        let settled = false;
-        const rejectOnce = (error) => {
-          if (settled) return;
-          settled = true;
-          clearTimeout(timer);
-          reject(error);
-        };
-        const resolveOnce = () => {
-          if (settled) return;
-          settled = true;
-          clearTimeout(timer);
-          resolve();
-        };
-        const resetTimer = () => {
-          clearTimeout(timer);
-          timer = setTimeout(() => {
-            child.kill("SIGTERM");
-            rejectOnce(new Error(`Repair model produced no output for ${Math.round(timeoutMs / 1000)} seconds and was stopped.`));
-          }, timeoutMs);
-        };
-        resetTimer();
-        child.stdout.setEncoding("utf8");
-        child.stderr.setEncoding("utf8");
-        child.stdout.on("data", (chunk) => {
-          resetTimer();
-          output.push(chunk);
-          for (const line of chunk.split(/\r?\n/)) emitCodexLine(line, emit, repairId, "plutonix-auto-repair-agent");
-        });
-        child.stderr.on("data", (chunk) => {
-          resetTimer();
-          stderr.push(chunk);
-          for (const line of chunk.split(/\r?\n/)) emitCodexLine(line, emit, repairId, "plutonix-auto-repair-agent");
-        });
-        child.on("error", rejectOnce);
-        child.on("close", (code) => {
-          code === 0 ? resolveOnce() : rejectOnce(new Error(childProcessFailureMessage(`${candidate.kind} repair`, code, stderr, output)));
-        });
+      repairExecution = await executeFrozenProviderPrompt({
+        orchestratedRequest,
+        options: { ...effectiveOptions, generatedSiteDir },
+        promptText,
+        mode: "workspace-write",
+        timeoutMs,
+        onEvent: (runtimeEvent) => emit(runtimeEvent.type, runtimeEvent.message, {
+          stage: "repair",
+          repairId,
+          agentId: "plutomix-auto-repair-agent"
+        })
       });
+      if (repairExecution.stdout) output.push(repairExecution.stdout);
+      if (repairExecution.stderr) stderr.push(repairExecution.stderr);
 
       const after = await collectFileHashes(generatedSiteDir);
       const changedFiles = diffHashes(before, after);
@@ -1765,55 +2069,32 @@ export async function runModelRepairWorkflow(orchestratedRequest, failure, optio
       });
       const completionOutput = [];
       const completionErrors = [];
+      const beforeCompletionCheck = await collectFileHashes(generatedSiteDir);
       try {
-        await new Promise((resolve, reject) => {
-          const child = spawn(candidate.bin, completionCheckArgsFor(candidate, completionCheckPromptText, generatedSiteDir), {
-            cwd: generatedSiteDir,
-            env: { ...process.env, CI: "1", NO_COLOR: "1" },
-            stdio: ["ignore", "pipe", "pipe"]
-          });
-          let timer;
-          let settled = false;
-          const rejectOnce = (error) => {
-            if (settled) return;
-            settled = true;
-            clearTimeout(timer);
-            reject(error);
-          };
-          const resolveOnce = () => {
-            if (settled) return;
-            settled = true;
-            clearTimeout(timer);
-            resolve();
-          };
-          const resetTimer = () => {
-            clearTimeout(timer);
-            timer = setTimeout(() => {
-              child.kill("SIGTERM");
-              rejectOnce(new Error(`Completion check produced no output for ${Math.round(timeoutMs / 1000)} seconds and was stopped.`));
-            }, timeoutMs);
-          };
-          resetTimer();
-          child.stdout.setEncoding("utf8");
-          child.stderr.setEncoding("utf8");
-          child.stdout.on("data", (chunk) => {
-            resetTimer();
-            completionOutput.push(chunk);
-          });
-          child.stderr.on("data", (chunk) => {
-            resetTimer();
-            completionErrors.push(chunk);
-          });
-          child.on("error", rejectOnce);
-          child.on("close", (code) => {
-            code === 0 ? resolveOnce() : rejectOnce(new Error(childProcessFailureMessage(`${candidate.kind} completion check`, code, completionErrors, completionOutput)));
-          });
+        completionExecution = await executeFrozenProviderPrompt({
+          orchestratedRequest,
+          options: { ...effectiveOptions, generatedSiteDir },
+          promptText: completionCheckPromptText,
+          mode: "read-only",
+          timeoutMs,
+          onEvent: (runtimeEvent) => emit(runtimeEvent.type, runtimeEvent.message, {
+            stage: "completion_check",
+            repairId,
+            agentId: "plutomix-completion-checker"
+          })
         });
+        if (completionExecution.stdout) completionOutput.push(completionExecution.stdout);
+        if (completionExecution.stderr) completionErrors.push(completionExecution.stderr);
+        const afterCompletionCheck = await collectFileHashes(generatedSiteDir);
+        const completionChanges = diffHashes(beforeCompletionCheck, afterCompletionCheck);
+        if (completionChanges.length) {
+          throw new Error(`Completion checker violated read-only mode and changed: ${completionChanges.slice(0, 8).join(", ")}`);
+        }
       } catch (completionError) {
-        const completionText = completionOutput.join("");
+        const completionText = `${completionOutput.join("")}\n${completionExecution?.finalResponse || ""}`;
         completionError.tokenUsage = await recordAgentTokenUsage({
-          agentId: "plutonix-completion-checker",
-          agentName: "PlutoniX Completion Checker",
+          agentId: "plutomix-completion-checker",
+          agentName: "PlutoMix Completion Checker",
           projectId: options.projectId || orchestratedRequest.project?.id || "",
           projectName: options.projectName || orchestratedRequest.project?.name || "",
           workflowId: orchestratedRequest.orchestrationEnvelope?.parentWorkflowId || repairId,
@@ -1822,8 +2103,9 @@ export async function runModelRepairWorkflow(orchestratedRequest, failure, optio
           instructionSummary: orchestratedRequest.sourceInstruction || orchestratedRequest.objective || "",
           taskType: options.taskType || orchestratedRequest.taskType || "",
           provider: candidate.kind,
-          executionModel: candidate.bin,
-          ...resolveWorkflowTokenUsage({ eventStream: completionText, promptText: completionCheckPromptText }),
+          providerProfileId: candidate.profileId,
+          executionModel: candidate.modelId,
+          ...providerAttemptUsage(completionExecution, completionCheckPromptText, completionText),
           durationMs: Date.now() - startedAt,
           changedFiles: 0,
           attemptType: "completion_check",
@@ -1834,13 +2116,16 @@ export async function runModelRepairWorkflow(orchestratedRequest, failure, optio
           stderrBytes: Buffer.byteLength(completionErrors.join("")),
           transportBytes: Buffer.byteLength(completionText) + Buffer.byteLength(completionErrors.join(""))
         }).catch(() => null);
-        throw new Error(`Repair model succeeded but the completion check failed to run: ${completionError.message}`);
+        const wrapped = new Error(`Repair model succeeded but the completion check failed to run: ${completionError.message}`);
+        wrapped.tokenUsage = completionError.tokenUsage;
+        wrapped.workflowFailureClass = completionError.workflowFailureClass || classifyGothamWorkflowFailure(completionError, { workspaceDir: generatedSiteDir });
+        throw wrapped;
       }
-      const completionText = completionOutput.join("");
+      const completionText = `${completionOutput.join("")}\n${completionExecution?.finalResponse || ""}`;
       const completionCheck = parseCompletionCheckResult(completionText);
       const completionTokenUsage = await recordAgentTokenUsage({
-        agentId: "plutonix-completion-checker",
-        agentName: "PlutoniX Completion Checker",
+        agentId: "plutomix-completion-checker",
+        agentName: "PlutoMix Completion Checker",
         projectId: options.projectId || orchestratedRequest.project?.id || "",
         projectName: options.projectName || orchestratedRequest.project?.name || "",
         workflowId: orchestratedRequest.orchestrationEnvelope?.parentWorkflowId || repairId,
@@ -1849,8 +2134,9 @@ export async function runModelRepairWorkflow(orchestratedRequest, failure, optio
         instructionSummary: orchestratedRequest.sourceInstruction || orchestratedRequest.objective || "",
         taskType: options.taskType || orchestratedRequest.taskType || "",
         provider: candidate.kind,
-        executionModel: candidate.bin,
-        ...resolveWorkflowTokenUsage({ eventStream: completionText, promptText: completionCheckPromptText }),
+        providerProfileId: candidate.profileId,
+        executionModel: candidate.modelId,
+        ...providerAttemptUsage(completionExecution, completionCheckPromptText, completionText),
         durationMs: Date.now() - startedAt,
         changedFiles: 0,
         validationStatus: completionCheck.pass ? "passed" : "failed",
@@ -1867,16 +2153,19 @@ export async function runModelRepairWorkflow(orchestratedRequest, failure, optio
       }
       const durationMs = Date.now() - startedAt;
       const outputText = output.join("");
-      const measuredUsage = resolveWorkflowTokenUsage({ eventStream: outputText, promptText });
+      const measuredUsage = providerAttemptUsage(repairExecution, promptText, outputText);
       const tokenUsage = await recordAgentTokenUsage({
-        agentId: "plutonix-auto-repair-agent",
-        agentName: "PlutoniX Auto Repair Agent",
+        agentId: "plutomix-auto-repair-agent",
+        agentName: "PlutoMix Auto Repair Agent",
         projectId: options.projectId || orchestratedRequest.project?.id || "",
         projectName: options.projectName || orchestratedRequest.project?.name || "",
         workflowId: orchestratedRequest.orchestrationEnvelope?.parentWorkflowId || repairId,
         buildId: repairId,
         instructionSummary: orchestratedRequest.sourceInstruction || orchestratedRequest.objective || "",
         taskType: options.taskType || orchestratedRequest.taskType || "",
+        provider: candidate.kind,
+        providerProfileId: candidate.profileId,
+        executionModel: candidate.modelId,
         ...measuredUsage,
         durationMs,
         changedFiles: normalizedFiles.length,
@@ -1889,7 +2178,7 @@ export async function runModelRepairWorkflow(orchestratedRequest, failure, optio
         stderrBytes: Buffer.byteLength(errors.join("")),
         transportBytes: Buffer.byteLength(outputText) + Buffer.byteLength(errors.join(""))
       });
-      emit("plutonix-repair-complete", `Automatic repair changed ${normalizedFiles.length} files`, {
+      emit("plutomix-repair-complete", `Automatic repair changed ${normalizedFiles.length} files`, {
         stage: "repair",
         repairId,
         modelKind: candidate.kind,
@@ -1901,24 +2190,30 @@ export async function runModelRepairWorkflow(orchestratedRequest, failure, optio
         repairId,
         status: "repaired",
         modelKind: candidate.kind,
-        modelBin: candidate.bin,
         durationMs,
         files: normalizedFiles,
         fileOperations: normalizedFiles.map((filePath) => ({
           action: before.has(filePath) ? "modify" : "add",
           path: filePath,
-          reason: "Changed by automatic PlutoniX repair after Gotham failure."
+          reason: "Changed by automatic PlutoMix repair after Gotham failure."
         })),
         completionCheck,
         completionTokenUsage,
-        tokenUsage
+        tokenUsage,
+        providerExecution: {
+          providerId: candidate.kind,
+          profileId: candidate.profileId,
+          selectedModel: candidate.modelId,
+          repair: { usage: repairExecution?.usage || {}, totalCostUsd: repairExecution?.totalCostUsd ?? null },
+          completionCheck: { usage: completionExecution?.usage || {}, totalCostUsd: completionExecution?.totalCostUsd ?? null }
+        }
       };
     } catch (error) {
       if (!error.tokenUsage) {
         const outputText = output.join("");
         error.tokenUsage = await recordAgentTokenUsage({
-          agentId: "plutonix-auto-repair-agent",
-          agentName: "PlutoniX Auto Repair Agent",
+          agentId: "plutomix-auto-repair-agent",
+          agentName: "PlutoMix Auto Repair Agent",
           projectId: options.projectId || orchestratedRequest.project?.id || "",
           projectName: options.projectName || orchestratedRequest.project?.name || "",
           workflowId: orchestratedRequest.orchestrationEnvelope?.parentWorkflowId || repairId,
@@ -1927,8 +2222,9 @@ export async function runModelRepairWorkflow(orchestratedRequest, failure, optio
           instructionSummary: orchestratedRequest.sourceInstruction || orchestratedRequest.objective || "",
           taskType: options.taskType || orchestratedRequest.taskType || "",
           provider: candidate.kind,
-          executionModel: candidate.bin,
-          ...resolveWorkflowTokenUsage({ eventStream: outputText, promptText }),
+          providerProfileId: candidate.profileId,
+          executionModel: candidate.modelId,
+          ...providerAttemptUsage(repairExecution, promptText, outputText),
           durationMs: Date.now() - startedAt,
           changedFiles: 0,
           attemptType: "repair",
@@ -1940,14 +2236,14 @@ export async function runModelRepairWorkflow(orchestratedRequest, failure, optio
           transportBytes: Buffer.byteLength(outputText) + Buffer.byteLength(stderr.join(""))
         }).catch(() => null);
       }
-      errors.push(`${candidate.kind}:${candidate.bin}: ${error.message}`);
-      emit("plutonix-repair-model-failed", `${candidate.kind} repair failed: ${error.message}`, {
+      errors.push(`${candidate.kind}: ${error.message}`);
+      emit("plutomix-repair-model-failed", `${candidate.kind} repair failed: ${error.message}`, {
         stage: "repair",
         repairId,
         modelKind: candidate.kind,
-        modelBin: candidate.bin
+        modelId: candidate.modelId || ""
       });
-      if (!/ENOENT|not found|spawn .*ENOENT/i.test(error.message)) break;
+      break;
     }
   }
 

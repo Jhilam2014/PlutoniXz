@@ -367,7 +367,7 @@ export async function ensureProjectHuggingFaceModelWorkspace(workspaceDir, proje
 
 This folder is the project-local Hugging Face model workspace.
 
-Use it whenever a PlutoniX or project instruction requires a Hugging Face model:
+Use it whenever a PlutoMix or project instruction requires a Hugging Face model:
 
 \`\`\`bash
 npm run hf:models:add -- namespace/model task-name
@@ -396,7 +396,7 @@ Keep Hugging Face tokens in \`HF_TOKEN\`; never write tokens into this repositor
     projectName: project.name || "",
     models: [],
     services: [],
-    source: options.source || "plutonix-project-huggingface-workspace",
+    source: options.source || "plutomix-project-huggingface-workspace",
     updatedAt: new Date().toISOString()
   });
   const manifestPath = path.join(workspaceDir, "models", "huggingface", "model-manifest.json");
@@ -406,7 +406,7 @@ Keep Hugging Face tokens in \`HF_TOKEN\`; never write tokens into this repositor
       ...manifest,
       projectId: manifest.projectId || project.id || "",
       projectName: manifest.projectName || project.name || "",
-      source: manifest.source || options.source || "plutonix-project-huggingface-workspace",
+      source: manifest.source || options.source || "plutomix-project-huggingface-workspace",
       updatedAt: manifest.updatedAt || new Date().toISOString()
     };
     if (JSON.stringify(nextManifest) !== JSON.stringify(manifest)) {
@@ -422,7 +422,7 @@ Keep Hugging Face tokens in \`HF_TOKEN\`; never write tokens into this repositor
 
 export async function ensureProjectQAgenticFramework(workspaceDir, project = {}, options = {}) {
   const created = [];
-  const source = options.source || "plutonix-qagentic-framework";
+  const source = options.source || "plutomix-qagentic-framework";
   const ensureText = async (relativePath, content) => {
     const targetPath = path.join(workspaceDir, relativePath);
     if (await fs.pathExists(targetPath)) return;
@@ -550,7 +550,7 @@ async function ensureFallbackBootstrapArtifacts(project, missingArtifacts, boots
       'role: "project-execution-agent"',
       "",
       "## Responsibility",
-      "Execute PlutoniX project generation tasks using the local AGENTS.md policy and the prompt supplied from the PlutoniX text box.",
+      "Execute PlutoMix project generation tasks using the local AGENTS.md policy and the prompt supplied from the PlutoMix text box.",
       ""
     ].join("\n")
   );
@@ -558,19 +558,19 @@ async function ensureFallbackBootstrapArtifacts(project, missingArtifacts, boots
     agent_id: "project-execution-agent",
     project_id: project.id,
     role: "project-execution-agent",
-    source: "plutonix-fallback-bootstrap",
+    source: "plutomix-fallback-bootstrap",
     created_at: new Date().toISOString()
   });
   await ensureJson("topology/d3/agentic-system-graph.json", {
     metadata: {
       project_name: project.name,
       project_id: project.id,
-      source: "plutonix-fallback-bootstrap"
+      source: "plutomix-fallback-bootstrap"
     },
     nodes: [{ id: `project:${project.id}`, label: project.name, type: "project" }],
     links: []
   });
-  const qagentic = await ensureProjectQAgenticFramework(workspaceDir, project, { source: "plutonix-fallback-qagentic-bootstrap" });
+  const qagentic = await ensureProjectQAgenticFramework(workspaceDir, project, { source: "plutomix-fallback-qagentic-bootstrap" });
   fallbackArtifacts.push(...qagentic.created);
 
   await ensureJson(bootstrapVerificationPath, {
@@ -578,8 +578,8 @@ async function ensureFallbackBootstrapArtifacts(project, missingArtifacts, boots
     workflow_id: "bootstrap-orchestrator-001",
     project_id: project.id,
     message: bootstrapError
-      ? "Bootstrap command failed, but PlutoniX created local fallback artifacts so project generation can continue."
-      : "Bootstrap command completed, but required artifacts were missing. PlutoniX created local fallback artifacts so project generation can continue.",
+      ? "Bootstrap command failed, but PlutoMix created local fallback artifacts so project generation can continue."
+      : "Bootstrap command completed, but required artifacts were missing. PlutoMix created local fallback artifacts so project generation can continue.",
     error: bootstrapError?.message || null,
     missingArtifacts,
     fallbackArtifacts,
@@ -732,7 +732,7 @@ export async function runProjectOrchestratorBootstrap(project, options = {}) {
   for (const relativePath of requiredBootstrapArtifacts) {
     if (!(await fs.pathExists(path.join(workspaceDir, relativePath)))) missing.push(relativePath);
   }
-  const qagentic = await ensureProjectQAgenticFramework(workspaceDir, project, { source: "plutonix-bootstrap-qagentic-framework" });
+  const qagentic = await ensureProjectQAgenticFramework(workspaceDir, project, { source: "plutomix-bootstrap-qagentic-framework" });
   const fallbackArtifacts = missing.length || bootstrapError ? await ensureFallbackBootstrapArtifacts(project, missing, bootstrapError) : qagentic.created;
   const verifiedArtifacts = [];
   for (const relativePath of requiredBootstrapArtifacts) {

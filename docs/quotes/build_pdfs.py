@@ -149,7 +149,7 @@ def configure_document(doc, preset="business"):
     header = section.header
     p = header.paragraphs[0]
     p.alignment = WD_ALIGN_PARAGRAPH.LEFT
-    r = p.add_run("PLUTONIX")
+    r = p.add_run("PLUTOMIX")
     set_font(r, 8.5, BLUE, True)
     r = p.add_run("  /  BUSINESS DOCUMENT")
     set_font(r, 8.5, MUTED, False)
@@ -251,7 +251,7 @@ def build_quote():
     add_title_block(
         doc,
         "Cloud hosting budget estimate",
-        "PlutoniX Production Platform",
+        "PlutoMix Production Platform",
         "A non-binding monthly operating estimate for an AWS Mumbai deployment.",
         [("Region", "AWS Mumbai"), ("Capacity", "25 concurrent builds"), ("Volume", "5,000 builds/month")],
     )
@@ -261,9 +261,9 @@ def build_quote():
     r = p.add_run("It is not a binding quotation or invoice.")
     r.bold = True
     doc.add_heading("Executive recommendation", level=1)
-    doc.add_paragraph("Deploy PlutoniX as a managed control plane with isolated, queue-driven build workers. The existing local Docker Compose topology is suitable for development, but it should not be exposed directly as a public multi-user service.")
+    doc.add_paragraph("Deploy PlutoMix as a managed control plane with isolated, queue-driven build workers. The existing local Docker Compose topology is suitable for development, but it should not be exposed directly as a public multi-user service.")
     add_bullets(doc, [
-        "Serve the PlutoniX frontend and static previews through CloudFront and S3.",
+        "Serve the PlutoMix frontend and static previews through CloudFront and S3.",
         "Run the API as stateless ECS services across at least two availability zones.",
         "Queue builds in SQS and execute each build in an isolated, time-limited worker task.",
         "Store users, projects, builds, permissions, decisions, and snapshots in managed databases.",
@@ -271,7 +271,7 @@ def build_quote():
     ])
     doc.add_heading("Estimated monthly budget", level=1)
     add_table(doc, ["Cost category", "Expected range", "What it covers"], [
-        ("API and control plane", "$90-$180", "Multi-AZ ECS services for the PlutoniX API and orchestration control plane."),
+        ("API and control plane", "$90-$180", "Multi-AZ ECS services for the PlutoMix API and orchestration control plane."),
         ("Build and preview workers", "$150-$400", "Approximately 5,000 isolated builds, queued overflow, and time-limited previews."),
         ("Aurora PostgreSQL", "$180-$350", "Project ownership, workflow state, build records, permissions, and snapshots."),
         ("Redis and queues", "$60-$140", "Live workflow state, event distribution, coordination, and SQS requests."),
@@ -326,7 +326,7 @@ def build_quote():
     add_source(doc, "Neo4j AuraDB pricing", "https://neo4j.com/pricing/")
     doc.add_heading("Budget decision", level=1)
     doc.add_paragraph("For a private beta, a single hardened virtual machine can reduce initial infrastructure cost significantly. For the selected 25-concurrent-build production target, the managed architecture above is the safer baseline because it separates users, build workers, data, and credentials.")
-    path = OUT / "PlutoniX-Cloud-Hosting-Budget-Estimate.docx"
+    path = OUT / "PlutoMix-Cloud-Hosting-Budget-Estimate.docx"
     doc.save(path)
     return path
 
@@ -337,15 +337,15 @@ def build_guide():
     add_title_block(
         doc,
         "Business guide",
-        "How PlutoniX Builds Applications",
+        "How PlutoMix Builds Applications",
         "From a user instruction to a validated application, with reusable agents, memory, and visible decisions.",
         [("Audience", "Business stakeholders"), ("Format", "10-stage workflow"), ("Outcome", "Traceable application build")],
     )
-    add_callout(doc, "In one sentence", "PlutoniX turns a business instruction into a governed build: it plans the work, assigns specialist agents, records selected and rejected decisions, validates evidence, and preserves the result for the next instruction.", PALE_GREEN, TEAL)
+    add_callout(doc, "In one sentence", "PlutoMix turns a business instruction into a governed build: it plans the work, assigns specialist agents, records selected and rejected decisions, validates evidence, and preserves the result for the next instruction.", PALE_GREEN, TEAL)
     doc.add_heading("The operating model", level=1)
-    doc.add_paragraph("PlutoniX is the parent orchestration authority. It owns the original objective, decides how much orchestration is necessary, delegates bounded work, and determines whether the completed result satisfies the request.")
+    doc.add_paragraph("PlutoMix is the parent orchestration authority. It owns the original objective, decides how much orchestration is necessary, delegates bounded work, and determines whether the completed result satisfies the request.")
     add_table(doc, ["Participant", "Purpose", "Decision authority"], [
-        ("PlutoniX Fullstack Agent", "Plans the workflow, controls scope, assigns work, validates evidence, and closes the build.", "Final authority"),
+        ("PlutoMix Fullstack Agent", "Plans the workflow, controls scope, assigns work, validates evidence, and closes the build.", "Final authority"),
         ("Project orchestrator", "Applies project-specific policies, context, architecture, and memory.", "Bounded execution"),
         ("Execution agents", "Perform focused frontend, backend, data, runtime, content, or integration work.", "Assigned task only"),
         ("QAgents", "Detect gaps, challenge weak evidence, and propose the next instruction when needed.", "Review and correction"),
@@ -355,22 +355,22 @@ def build_guide():
     doc.add_heading("End-to-end build flow", level=1)
     add_numbered(doc, [
         "The user selects or creates a project and submits an instruction.",
-        "PlutoniX reads the task type, project identity, policies, available agents, and constraints.",
+        "PlutoMix reads the task type, project identity, policies, available agents, and constraints.",
         "Adaptive orchestration selects a direct, delegated, or independently reviewed route.",
-        "PlutoniX creates a parent workflow and assigns bounded child executions to responsible agents.",
+        "PlutoMix creates a parent workflow and assigns bounded child executions to responsible agents.",
         "Agents implement selected features using project-specific context and reusable memory.",
         "Each decision point records the available options, selected branches, rejected branches, reasons, and responsible agent.",
-        "PlutoniX collects generated-file evidence, validation results, reviewer findings, and runtime readiness.",
+        "PlutoMix collects generated-file evidence, validation results, reviewer findings, and runtime readiness.",
         "Failures can be retried, simplified, redirected, or returned for human choice without falsely reporting completion.",
         "A successful build produces a preview, changed files, generated features, agent work records, and an execution snapshot.",
         "The project retains its history and memory so the next instruction begins with stronger context.",
     ])
     doc.add_heading("How adaptive orchestration chooses a route", level=1)
-    doc.add_paragraph("Not every instruction needs the same number of agents or model calls. PlutoniX evaluates complexity, risk, project ownership, validation requirements, and the available model-call budget.")
+    doc.add_paragraph("Not every instruction needs the same number of agents or model calls. PlutoMix evaluates complexity, risk, project ownership, validation requirements, and the available model-call budget.")
     add_table(doc, ["Route", "When it is selected", "Typical flow"], [
-        ("Single", "Simple, low-risk work where delegation would add overhead.", "PlutoniX plans, executes, validates, and records the result."),
-        ("Delegated", "Project-specific work benefits from a local orchestrator or specialist executor.", "PlutoniX delegates a bounded task and retains completion authority."),
-        ("Delegated + reviewed", "Hard, high-risk, or validation-sensitive work needs independent evidence.", "Executor changes the workspace; a separate reviewer inspects it; PlutoniX decides completion."),
+        ("Single", "Simple, low-risk work where delegation would add overhead.", "PlutoMix plans, executes, validates, and records the result."),
+        ("Delegated", "Project-specific work benefits from a local orchestrator or specialist executor.", "PlutoMix delegates a bounded task and retains completion authority."),
+        ("Delegated + reviewed", "Hard, high-risk, or validation-sensitive work needs independent evidence.", "Executor changes the workspace; a separate reviewer inspects it; PlutoMix decides completion."),
     ], [1900, 3650, 3810], TEAL)
     add_callout(doc, "Why this matters", "Adaptive routing avoids paying for unnecessary agents on simple work while preserving stronger review for complex or risky builds.", PALE_BLUE, BLUE)
     doc.add_heading("What a decision tree records", level=1)
@@ -404,7 +404,7 @@ def build_guide():
         "Project memory preserves local policies, architecture, prior builds, decisions, and correction history.",
         "Vector memory supports semantic retrieval of relevant knowledge rather than loading everything into every prompt.",
         "Graph memory describes relationships between agents, projects, capabilities, decisions, and outputs.",
-        "Memory remains advisory: PlutoniX still preserves the current user instruction as the parent objective.",
+        "Memory remains advisory: PlutoMix still preserves the current user instruction as the parent objective.",
     ])
     add_callout(doc, "Efficiency principle", "Reuse the smallest relevant context and the fewest agents needed for the task. Add delegation or review only when it materially improves accuracy, risk control, or validation.", PALE_GOLD, TEAL)
     doc.add_heading("The Execution Snapshot", level=1)
@@ -418,7 +418,7 @@ def build_guide():
     ])
     page_break(doc)
     doc.add_heading("Success, failure, and retry", level=1)
-    add_table(doc, ["Outcome", "What PlutoniX does", "What the user sees"], [
+    add_table(doc, ["Outcome", "What PlutoMix does", "What the user sees"], [
         ("Successful", "Confirms execution and validation evidence, records completion, and publishes the preview.", "Successful build, features, files, agent work, and full snapshot."),
         ("Execution failure", "Records partial evidence, marks completion as rejected, and applies retry policy only when safe.", "Failed snapshot with cause, completed work, and recovery choices."),
         ("Validation failure", "Prevents false completion even when files were generated.", "Rejected completion and the evidence that did not pass."),
@@ -435,7 +435,7 @@ def build_guide():
         "A project history that can be revisited build by build.",
     ])
     doc.add_heading("Production hosting model", level=1)
-    doc.add_paragraph("For cloud operation, the PlutoniX control plane should be separated from isolated build workers. User instructions enter a durable queue; workers receive temporary workspaces and bounded credentials; artifacts and snapshots are saved before workers terminate.")
+    doc.add_paragraph("For cloud operation, the PlutoMix control plane should be separated from isolated build workers. User instructions enter a durable queue; workers receive temporary workspaces and bounded credentials; artifacts and snapshots are saved before workers terminate.")
     add_table(doc, ["Boundary", "Production behavior"], [
         ("Identity", "Verified Google identity or enterprise authentication with server-enforced ownership."),
         ("Control plane", "Stateless API and orchestration services running across multiple availability zones."),
@@ -454,19 +454,19 @@ def build_guide():
         ("Evidence-based completion", "Generated files alone do not count as success; validation evidence controls approval."),
         ("Build snapshots", "Successes and failures remain explainable, auditable, and comparable over time."),
     ], [2300, 7060])
-    add_callout(doc, "Core promise", "PlutoniX is designed to make application-building decisions traceable, reusable, and governable without removing the user from important business choices.", PALE_GREEN, TEAL)
+    add_callout(doc, "Core promise", "PlutoMix is designed to make application-building decisions traceable, reusable, and governable without removing the user from important business choices.", PALE_GREEN, TEAL)
     doc.add_heading("Glossary", level=1)
     add_table(doc, ["Term", "Meaning"], [
-        ("Parent workflow", "The PlutoniX-owned record representing one complete user instruction."),
+        ("Parent workflow", "The PlutoMix-owned record representing one complete user instruction."),
         ("Child execution", "A bounded task assigned to a project or specialist agent."),
         ("Adaptive route", "The selected orchestration depth: single, delegated, or independently reviewed."),
         ("QAgent", "A quality-focused agent that detects objective gaps and proposes corrective next work."),
         ("Execution Snapshot", "The immutable record of events, decisions, agents, outputs, and validation for one build."),
-        ("Completion gate", "The final PlutoniX decision that approves or rejects workflow completion."),
+        ("Completion gate", "The final PlutoMix decision that approves or rejects workflow completion."),
     ], [2300, 7060], NAVY)
     doc.add_heading("Summary", level=1)
-    doc.add_paragraph("A PlutoniX build is a governed sequence rather than a single model response. The platform preserves the user objective, assigns accountable agents, makes branching decisions visible, validates evidence, and carries project knowledge forward into the next instruction.")
-    path = OUT / "How-PlutoniX-Builds-Applications.docx"
+    doc.add_paragraph("A PlutoMix build is a governed sequence rather than a single model response. The platform preserves the user objective, assigns accountable agents, makes branching decisions visible, validates evidence, and carries project knowledge forward into the next instruction.")
+    path = OUT / "How-PlutoMix-Builds-Applications.docx"
     doc.save(path)
     return path
 

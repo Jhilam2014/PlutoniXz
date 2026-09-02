@@ -1,6 +1,6 @@
 ---
 agent_id: "project-execution-agent"
-project_execution_id: "plutonix-hot-reload-stability-001"
+project_execution_id: "plutomix-hot-reload-stability-001"
 workflow_class: "software_engineering,devops_cicd,observability"
 domain: "backend,frontend,devops"
 deliverable_type: "runtime_stability_fix"

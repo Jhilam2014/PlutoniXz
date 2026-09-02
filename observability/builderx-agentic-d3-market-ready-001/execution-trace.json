@@ -1,5 +1,5 @@
 {
-  "workflow_id": "plutonix-agentic-d3-market-ready-001",
+  "workflow_id": "plutomix-agentic-d3-market-ready-001",
   "started_at": "2026-07-24T15:00:00Z",
   "completed_at": "2026-07-24T15:57:17Z",
   "status": "completed",
@@ -27,13 +27,13 @@
   ],
   "validation": [
     {
-      "command": "docker run --rm plutonix-frontend npm test",
+      "command": "docker run --rm plutomix-frontend npm test",
       "status": "success",
       "passed": 6,
       "failed": 0
     },
     {
-      "command": "docker run --rm plutonix-frontend npm run build",
+      "command": "docker run --rm plutomix-frontend npm run build",
       "status": "success",
       "modules_transformed": 2164,
       "duration": "1m56s"

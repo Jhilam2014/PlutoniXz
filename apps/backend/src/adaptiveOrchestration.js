@@ -42,7 +42,7 @@ export function selectAdaptiveRoute({ instruction = "", taskType = "Medium", pro
   const riskScore = highRiskMatches.length ? 2 : 0;
   const boundaryScore = boundaryMatches.length >= 2 ? 1 : 0;
   const routeScore = baseScore + riskScore + boundaryScore;
-  const callBudget = Math.max(1, Number(maxModelCalls ?? process.env.PLUTONIX_ADAPTIVE_MAX_MODEL_CALLS ?? 2));
+  const callBudget = Math.max(1, Number(maxModelCalls ?? process.env.PLUTOMIX_ADAPTIVE_MAX_MODEL_CALLS ?? 2));
   const productReviewRequired = Boolean(productDecision?.review?.semanticRequired);
   const latestCanonicalDecision = Array.isArray(canonicalDecisions) ? canonicalDecisions.at(-1) || null : null;
 
@@ -58,9 +58,9 @@ export function selectAdaptiveRoute({ instruction = "", taskType = "Medium", pro
     routeScore,
     riskLevel: highRiskMatches.length ? "high" : productReviewRequired || routeScore >= 3 ? "medium" : "low",
     managedProject,
-    executionAgent: managedProject && mode !== "single" ? "project-orchestrator" : "plutonix-fullstack-agent",
+    executionAgent: managedProject && mode !== "single" ? "project-orchestrator" : "plutomix-fullstack-agent",
     requiresIndependentReview,
-    reviewerAgentId: requiresIndependentReview ? "plutonix-independent-reviewer" : null,
+    reviewerAgentId: requiresIndependentReview ? "plutomix-independent-reviewer" : null,
     modelCallBudget: callBudget,
     plannedModelCalls: modelCalls,
     plannedExecutionCalls: 1,

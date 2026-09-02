@@ -71,7 +71,7 @@ def draw_header_footer(canvas, doc):
     canvas.line(0.78 * inch, height - 0.48 * inch, width - 0.78 * inch, height - 0.48 * inch)
     canvas.setFont("Helvetica-Bold", 7.8)
     canvas.setFillColor(BLUE)
-    canvas.drawString(0.82 * inch, height - 0.38 * inch, "PLUTONIX")
+    canvas.drawString(0.82 * inch, height - 0.38 * inch, "PLUTOMIX")
     canvas.setFont("Helvetica", 7.6)
     canvas.setFillColor(MUTED)
     canvas.drawRightString(width - 0.82 * inch, 0.38 * inch, f"Prepared 5 July 2026  |  Page {doc.page}")
@@ -116,10 +116,10 @@ def convert(source, target):
         str(target), pagesize=letter,
         leftMargin=0.82 * inch, rightMargin=0.82 * inch,
         topMargin=0.68 * inch, bottomMargin=0.62 * inch,
-        title=source.stem, author="PlutoniX",
+        title=source.stem, author="PlutoMix",
     )
     frame = Frame(pdf.leftMargin, pdf.bottomMargin, pdf.width, pdf.height, id="main")
-    pdf.addPageTemplates([PageTemplate(id="plutonix", frames=[frame], onPage=draw_header_footer)])
+    pdf.addPageTemplates([PageTemplate(id="plutomix", frames=[frame], onPage=draw_header_footer)])
     story = []
     pending_bullets = []
     pending_numbers = []
@@ -166,8 +166,8 @@ def convert(source, target):
 
 if __name__ == "__main__":
     pairs = [
-        (ROOT / "PlutoniX-Cloud-Hosting-Budget-Estimate.docx", ROOT / "PlutoniX-Cloud-Hosting-Budget-Estimate.pdf"),
-        (ROOT / "How-PlutoniX-Builds-Applications.docx", ROOT / "How-PlutoniX-Builds-Applications.pdf"),
+        (ROOT / "PlutoMix-Cloud-Hosting-Budget-Estimate.docx", ROOT / "PlutoMix-Cloud-Hosting-Budget-Estimate.pdf"),
+        (ROOT / "How-PlutoMix-Builds-Applications.docx", ROOT / "How-PlutoMix-Builds-Applications.pdf"),
     ]
     for source, target in pairs:
         convert(source, target)

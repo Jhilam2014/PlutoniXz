@@ -1,11 +1,11 @@
 {
   "workflow_id": "agentic-system-architecture-rails-20260814",
-  "agent_id": "plutonix-fullstack-agent",
+  "agent_id": "plutomix-fullstack-agent",
   "provider": "chroma_local_generated",
   "collection": "agent_prompts",
   "status": "pending_install",
   "content_references": [
-    "memory/agent-knowledge/prompts/agentic-system-architecture-rails-20260814.plutonix-fullstack-agent.task.prompt.md",
+    "memory/agent-knowledge/prompts/agentic-system-architecture-rails-20260814.plutomix-fullstack-agent.task.prompt.md",
     "memory/agent-knowledge/prompts/agentic-system-architecture-rails-20260814.design-review.validation.prompt.md",
     "memory/agent-knowledge/prompts/agentic-system-architecture-rails-20260814.architecture-review.validation.prompt.md",
     "memory/agent-knowledge/prompts/agentic-system-architecture-rails-20260814.data-review.validation.prompt.md",

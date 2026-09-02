@@ -33,7 +33,7 @@ export async function createIsolatedCandidate({ proposal, store, root, mode = "s
       "run validation commands inside candidate environment when runtime is available"
     ],
     forbiddenOperations: [
-      "modify live PlutoniX source directly",
+      "modify live PlutoMix source directly",
       "modify generated project workspaces for system target proposals",
       "modify secrets or .env",
       "delete features without non-regression proof"

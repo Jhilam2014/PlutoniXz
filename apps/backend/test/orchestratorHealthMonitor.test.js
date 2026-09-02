@@ -6,7 +6,7 @@ import fs from "fs-extra";
 import { createOrchestratorHealthMonitor } from "../src/orchestratorHealthMonitor.js";
 
 test("health audits are manual-only and persist a three-attempt daily limit", async (context) => {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), "plutonix-health-audit-"));
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "plutomix-health-audit-"));
   context.after(() => fs.remove(root));
   let currentTime = new Date("2026-08-29T08:00:00.000Z");
   const events = [];

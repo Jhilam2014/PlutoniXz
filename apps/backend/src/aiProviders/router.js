@@ -10,6 +10,10 @@ const LoginBody = z.object({
   displayName: z.string().min(2).max(80).optional(),
   secret: z.string().min(1).max(16_384).optional()
 }).strict();
+const LoginAuthorizationBody = z.object({
+  workspaceId: z.string().min(1).max(160).optional(),
+  authorizationCode: z.string().trim().min(4).max(4096).regex(/^[^\s\u0000-\u001f\u007f]+$/)
+}).strict();
 const ActivationBody = z.object({ workspaceId: z.string().min(1).max(160).optional(), scope: z.enum(["global", "workspace"]).default("global") }).strict();
 const WorkspaceBody = z.object({ workspaceId: z.string().min(1).max(160).optional() }).strict();
 const RenameBody = z.object({ workspaceId: z.string().min(1).max(160).optional(), displayName: z.string().min(2).max(80) }).strict();
@@ -55,7 +59,7 @@ function assertMutationOrigin(req, env) {
   } catch {
     throw new ProviderProfileError("The request origin is invalid.", { code: "csrf_rejected", status: 403, category: "authorization_denied" });
   }
-  const configured = new Set(String(env.PLUTONIX_CORS_ORIGINS || "").split(",").map((item) => item.trim()).filter(Boolean));
+  const configured = new Set(String(env.PLUTOMIX_CORS_ORIGINS || "").split(",").map((item) => item.trim()).filter(Boolean));
   const developmentLocal = String(env.NODE_ENV || "").toLowerCase() !== "production" && ["localhost", "127.0.0.1", "::1"].includes(parsed.hostname);
   if (!configured.has(parsed.origin) && !developmentLocal) throw new ProviderProfileError("The request origin is not authorized.", { code: "csrf_rejected", status: 403, category: "authorization_denied" });
 }
@@ -115,6 +119,16 @@ export function registerAiProviderRoutes(app, {
   app.get("/api/ai-providers/:providerId/login/:sessionId", handler("login.status", async (req, res, scope, providerId) => {
     res.json({ status: "ok", session: service.getLoginStatus(scope, providerId, req.params.sessionId) });
   }));
+
+  app.post("/api/ai-providers/:providerId/login/:sessionId/authorize", handler("login.authorize", async (req, res, scope, providerId) => {
+    const input = LoginAuthorizationBody.parse(req.body || {});
+    try {
+      res.json({ status: "ok", session: await service.submitLoginAuthorization(scope, providerId, req.params.sessionId, input.authorizationCode) });
+    } finally {
+      input.authorizationCode = undefined;
+      if (req.body && Object.hasOwn(req.body, "authorizationCode")) req.body.authorizationCode = undefined;
+    }
+  }, { mutation: true, login: true }));
 
   app.post("/api/ai-providers/:providerId/login/:sessionId/cancel", handler("login.cancel", async (req, res, scope, providerId) => {
     WorkspaceBody.parse(req.body || {});

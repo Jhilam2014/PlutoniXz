@@ -1,5 +1,5 @@
 {
-  "workflow_id": "plutonix-mcp-console-trace-001",
+  "workflow_id": "plutomix-mcp-console-trace-001",
   "tasks": [
     {
       "task_id": "backend-detailed-mcp-events",

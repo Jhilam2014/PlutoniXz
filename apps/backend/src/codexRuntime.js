@@ -211,7 +211,7 @@ export async function probeCodexRuntime({ command = process.env.CODEX_BIN || "co
       authenticated: false,
       authenticationStatus: "unavailable",
       version: version.version || "",
-      runtimeManagedBy: "plutonix-backend",
+      runtimeManagedBy: "plutomix-backend",
       requiresVsCode: false,
       error: version.error || "Codex CLI is unavailable."
     };
@@ -223,7 +223,7 @@ export async function probeCodexRuntime({ command = process.env.CODEX_BIN || "co
     authenticated: authentication.authenticated,
     authenticationStatus: authentication.status,
     version: version.version,
-    runtimeManagedBy: "plutonix-backend",
+    runtimeManagedBy: "plutomix-backend",
     requiresVsCode: false,
     error: authentication.error || ""
   };
@@ -248,7 +248,7 @@ export async function validateCodexWorkspace({ workspaceDir, registeredWorkspace
     throw runtimeError(CODEX_RUNTIME_FAILURES.WORKSPACE_INVALID, "The selected managed project workspace is unavailable.");
   }
   const forbidden = new Set([path.parse(workspace).root, path.resolve(os.homedir())]);
-  if (process.env.PLUTONIX_WORKSPACE_ROOT) forbidden.add(path.resolve(process.env.PLUTONIX_WORKSPACE_ROOT));
+  if (process.env.PLUTOMIX_WORKSPACE_ROOT) forbidden.add(path.resolve(process.env.PLUTOMIX_WORKSPACE_ROOT));
   if (forbidden.has(workspace)) {
     throw runtimeError(CODEX_RUNTIME_FAILURES.WORKSPACE_INVALID, "The selected target is not an approved project workspace.");
   }

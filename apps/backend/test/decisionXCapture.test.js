@@ -11,7 +11,7 @@ const workspaceId = "application-a";
 const actor = { type: "user", id: "operator-1" };
 
 async function fixture(context) {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), "plutonix-decisionx-capture-"));
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "plutomix-decisionx-capture-"));
   context.after(() => fs.rm(root, { recursive: true, force: true }));
   const store = createDecisionContinuityStore({ root });
   const governanceContexts = [];

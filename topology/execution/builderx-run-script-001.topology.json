@@ -1,8 +1,8 @@
 {
-  "workflow_id": "plutonix-run-script-001",
+  "workflow_id": "plutomix-run-script-001",
   "mode": "single_agent",
   "agents": [
-    "plutonix-fullstack-agent"
+    "plutomix-fullstack-agent"
   ],
   "changed_files": [
     "run.sh",

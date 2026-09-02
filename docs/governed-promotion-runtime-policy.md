@@ -2,7 +2,7 @@
 
 ## Selected production target
 
-Step 4 governs exactly one real PlutoniX runtime target: the safe subset of the self-improvement runtime policy consumed by `readSelfImprovementConfig()` in `apps/backend/src/selfImprovement/controlPlane.js`.
+Step 4 governs exactly one real PlutoMix runtime target: the safe subset of the self-improvement runtime policy consumed by `readSelfImprovementConfig()` in `apps/backend/src/selfImprovement/controlPlane.js`.
 
 The target is intentionally narrow. A promoted document may tune bounded observation/sandbox values, but can never introduce autonomous promotion, network research, tool building, a secret, a credential field, or a broader execution mode. The existing environment-derived policy remains active unless the governed selector is explicitly enabled.
 

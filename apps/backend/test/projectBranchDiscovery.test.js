@@ -18,7 +18,7 @@ import {
 } from "../src/projectBranchDiscovery.js";
 
 test("source-evidenced architecture discovery emits real UI, routes, and database records without generic signals", async (context) => {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), "plutonix-architecture-discovery-"));
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "plutomix-architecture-discovery-"));
   const workspaceDir = path.join(root, "workspace");
   await fs.mkdir(path.join(workspaceDir, "src"), { recursive: true });
   await fs.mkdir(path.join(workspaceDir, "src", "pages"), { recursive: true });
@@ -43,7 +43,7 @@ test("source-evidenced architecture discovery emits real UI, routes, and databas
     workspaceDir,
     port: 5300,
     status: "running",
-    provenance: { origin: "imported", recordedAt: "2026-08-20T00:00:00.000Z", source: "plutonix_project_import" }
+    provenance: { origin: "imported", recordedAt: "2026-08-20T00:00:00.000Z", source: "plutomix_project_import" }
   };
   context.after(() => fs.rm(root, { recursive: true, force: true }));
 
@@ -150,7 +150,7 @@ test("source-evidenced architecture discovery emits real UI, routes, and databas
 });
 
 test("architecture discovery excludes virtual environments and preserves only literal application topology", async (context) => {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), "plutonix-architecture-chains-"));
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "plutomix-architecture-chains-"));
   const workspaceDir = path.join(root, "workspace");
   await fs.mkdir(path.join(workspaceDir, "src"), { recursive: true });
   await fs.mkdir(path.join(workspaceDir, ".venv-local", "lib", "python3.12", "site-packages", "fastapi"), { recursive: true });

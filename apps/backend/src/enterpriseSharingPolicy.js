@@ -76,7 +76,7 @@ function projectId(project = {}) {
   return String(project.id || project.projectId || "").trim();
 }
 
-export function sharingAgreementRegistryPath({ root = process.env.PLUTONIX_PROJECT_ROOT || process.cwd(), env = process.env } = {}) {
+export function sharingAgreementRegistryPath({ root = process.env.PLUTOMIX_PROJECT_ROOT || process.cwd(), env = process.env } = {}) {
   return env.ENTERPRISE_SHARING_AGREEMENTS_PATH || path.join(root, "runtime", "enterprise-sharing", "agreements.json");
 }
 

@@ -1,7 +1,7 @@
 {
   "workflow_id": "agentic-system-architecture-rails-20260814",
   "status": "completed",
-  "agent_id": "plutonix-fullstack-agent",
+  "agent_id": "plutomix-fullstack-agent",
   "reuse_decision": {
     "decisionType": "exact_reuse",
     "reuseConfidenceScore": 96,

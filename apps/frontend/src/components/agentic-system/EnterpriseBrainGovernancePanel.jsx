@@ -54,7 +54,7 @@ export default function EnterpriseBrainGovernancePanel({ workspaceId = "" }) {
     <section className="enterprise-brain-governance" aria-labelledby="enterprise-brain-governance-heading">
       <header className="enterprise-brain-governance-heading">
         <div>
-          <span className="plutonix-analysis-eyebrow">Governed BrainX</span>
+          <span className="plutomix-analysis-eyebrow">Governed BrainX</span>
           <h3 id="enterprise-brain-governance-heading">Enterprise policy and decision receipts</h3>
           <p>{overview.notice || "Policies, costs, research, and reusable agent knowledge are recorded as reviewable evidence. This panel cannot invoke models, change policy, or promote a decision."}</p>
         </div>

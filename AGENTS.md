@@ -1,5 +1,5 @@
 ---
-name: PlutoniX Runtime Constitution and Policy Router
+name: PlutoMix Runtime Constitution and Policy Router
 description: Compact repository authority for managed Gotham execution and standalone engineering work.
 model_family: provider_neutral
 mode: policy_router
@@ -7,7 +7,7 @@ policy_manifest: policies/manifest.json
 full_manual: policies/reference/full-operating-manual.md
 ---
 
-# PlutoniX Runtime Constitution
+# PlutoMix Runtime Constitution
 
 This is the compact repository entrypoint. Detailed requirements are versioned in `policies/manifest.json`; the historical manual remains at `policies/reference/full-operating-manual.md` for audits and policy maintenance.
 
@@ -19,7 +19,7 @@ This is the compact repository entrypoint. Detailed requirements are versioned i
 
 Follow, in order: platform safety and security constraints; explicit user intent; this constitution; task-selected policy packs; the current canonical decision record; project-local user-authored instructions; implementation conventions. A lower-precedence source may specialize but cannot weaken a higher-precedence requirement.
 
-PlutoniX owns orchestration, task boundaries, agent selection, governance, validation, recovery, and completion. Gotham/Codex implements only the bounded project task and returns structured implementation evidence. Do not add model calls for deterministic classification, routing, persistence, publication, summarization, or accounting.
+PlutoMix owns orchestration, task boundaries, agent selection, governance, validation, recovery, and completion. Gotham/Codex implements only the bounded project task and returns structured implementation evidence. Do not add model calls for deterministic classification, routing, persistence, publication, summarization, or accounting.
 
 Feature preservation is mandatory. Do not delete, disable, hide, or weaken an existing feature, workflow, control, agent capability, graph or memory guarantee, bootstrap behavior, or artifact unless the user explicitly requests it. Make the narrowest complete change and preserve unrelated user edits.
 
@@ -71,7 +71,7 @@ Never infer that source proves historical selection. Never activate, promote, re
 
 ## Deterministic control-plane publication
 
-Mandatory graph, Neo4j, D3, topology, registry, observability, local-memory, what-next, agent-memory, and vector-memory publication remains. During managed execution the model produces implementation and validation evidence only; it must not update PlutoniX control-plane projections or claim completion without completed runtime evidence.
+Mandatory graph, Neo4j, D3, topology, registry, observability, local-memory, what-next, agent-memory, and vector-memory publication remains. During managed execution the model produces implementation and validation evidence only; it must not update PlutoMix control-plane projections or claim completion without completed runtime evidence.
 
 After canonical persistence, the backend writes a redacted deterministic receipt to a durable outbox before returning. Projections run asynchronously after active model execution is removed. Publication is atomic, idempotent, serialized for shared outputs, restart-recoverable, bounded in retry, observable, and unable to change branch dispositions. Readers serve the last valid snapshot while pending. Vector sync uses the existing idle scheduler only after local projections succeed.
 

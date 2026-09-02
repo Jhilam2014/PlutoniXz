@@ -1,35 +1,36 @@
-name: plutonix
+name: plutomix
 
 services:
   frontend:
-    image: plutonix-frontend:latest
+    image: plutomix-frontend:latest
     build:
       context: .
       dockerfile: apps/frontend/Dockerfile
-    container_name: plutonix-frontend
+    container_name: plutomix-frontend
     ports:
       - "${FRONTEND_PORT:-5173}:5173"
     environment:
       - VITE_BACKEND_URL=${VITE_BACKEND_URL:-http://localhost:8080}
       - VITE_GENERATED_SITE_URL=${VITE_GENERATED_SITE_URL:-http://localhost:5174}
       - VITE_GOOGLE_CLIENT_ID=${VITE_GOOGLE_CLIENT_ID:-}
-      - VITE_PLUTONIX_DEV_AUTH_ENABLED=${VITE_PLUTONIX_DEV_AUTH_ENABLED:-false}
-      - VITE_PLUTONIX_DEV_AUTH_SUBJECT=${VITE_PLUTONIX_DEV_AUTH_SUBJECT:-local:local-plutonix-user}
+      - VITE_PLUTOMIX_DEV_AUTH_ENABLED=${VITE_PLUTOMIX_DEV_AUTH_ENABLED:-false}
+      - VITE_PLUTOMIX_DEV_AUTH_SUBJECT=${VITE_PLUTOMIX_DEV_AUTH_SUBJECT:-local:local-plutomix-user}
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID:-}
     depends_on:
       - backend
       - generated-site
     networks:
-      - plutonix
+      - plutomix
 
   backend:
-    image: plutonix-backend:latest
+    image: plutomix-backend:latest
     build:
       context: .
       dockerfile: apps/backend/Dockerfile
       args:
         CODEX_VERSION: ${CODEX_VERSION:-0.151.0}
-    container_name: plutonix-backend
+        CLAUDE_VERSION: ${CLAUDE_VERSION:-2.1.251}
+    container_name: plutomix-backend
     init: true
     stop_grace_period: 15s
     ports:
@@ -47,11 +48,11 @@ services:
       - GENERATED_SITE_DIR=/workspace/generated-site
       - GENERATED_SITE_URL=${VITE_GENERATED_SITE_URL:-http://localhost:5174}
       - GENERATED_SITE_INTERNAL_URL=http://generated-site:5174
-      - GENERATED_SITE_CONTAINER=plutonix-generated-site
+      - GENERATED_SITE_CONTAINER=plutomix-generated-site
       - RESTART_GENERATED_CONTAINER=${RESTART_GENERATED_CONTAINER:-false}
       - DOCKER_SOCKET_PATH=/var/run/docker.sock
       - WORKFLOW_RUNTIME_LOG_PATH=/workspace/runtime/workflow-runtime-log.jsonl
-      # PlutoniXz is mounted at /workspace/project. Generated projects live in
+      # PlutoMix is mounted at /workspace/project. Generated projects live in
       # the sibling host apps/ directory, mounted narrowly at /workspace/apps.
       - PROJECTS_ROOT=${PROJECTS_ROOT:-/workspace/apps}
       - PROJECTS_REGISTRY_PATH=${PROJECTS_REGISTRY_PATH:-/workspace/project/runtime/projects.json}
@@ -66,12 +67,12 @@ services:
       - PROJECT_RUNTIME_MODE=${PROJECT_RUNTIME_MODE:-docker}
       - PROJECT_RUNTIME_IMAGE=${PROJECT_RUNTIME_IMAGE:-}
       - PROJECT_RUNTIME_NETWORK=${PROJECT_RUNTIME_NETWORK:-}
-      - PLUTONIX_PROJECT_ROOT=/workspace/project
-      - PLUTONIX_WORKSPACE_ROOT=/workspace
-      - PLUTONIX_BACKEND_CONTAINER=plutonix-backend
+      - PLUTOMIX_PROJECT_ROOT=/workspace/project
+      - PLUTOMIX_WORKSPACE_ROOT=/workspace
+      - PLUTOMIX_BACKEND_CONTAINER=plutomix-backend
       - CODEX_HOME=/workspace/codex-home
       - CODEX_BIN=${CODEX_BIN:-/usr/local/bin/codex}
-      - CLAUDE_BIN=${CLAUDE_BIN:-claude}
+      - CLAUDE_BIN=${CLAUDE_BIN:-/usr/local/bin/claude}
       - COPILOT_BIN=${COPILOT_BIN:-copilot}
       - CURSOR_AGENT_BIN=${CURSOR_AGENT_BIN:-cursor-agent}
       - EMERGENT_BIN=${EMERGENT_BIN:-emergent}
@@ -83,6 +84,8 @@ services:
       # safe default unless an operator explicitly provides callback routing.
       - AI_PROVIDER_CODEX_BROWSER_CALLBACK_AVAILABLE=${AI_PROVIDER_CODEX_BROWSER_CALLBACK_AVAILABLE:-false}
       - CODEX_WORKFLOW_TIMEOUT_MS=${CODEX_WORKFLOW_TIMEOUT_MS:-600000}
+      - CLAUDE_WORKFLOW_TIMEOUT_MS=${CLAUDE_WORKFLOW_TIMEOUT_MS:-600000}
+      - CLAUDE_WORKFLOW_MAX_TURNS=${CLAUDE_WORKFLOW_MAX_TURNS:-40}
       - GOTHAM_RUNTIME_PROBE=${GOTHAM_RUNTIME_PROBE:-true}
       - GOTHAM_ACCOUNT_USAGE_CACHE_MS=${GOTHAM_ACCOUNT_USAGE_CACHE_MS:-30000}
       - GOTHAM_ACCOUNT_USAGE_PROBE_TIMEOUT_MS=${GOTHAM_ACCOUNT_USAGE_PROBE_TIMEOUT_MS:-3000}
@@ -92,9 +95,9 @@ services:
       - GOTHAM_UNIFIED_EXEC_ENABLED=${GOTHAM_UNIFIED_EXEC_ENABLED:-false}
       - GOTHAM_USE_LEGACY_LANDLOCK_FALLBACK=${GOTHAM_USE_LEGACY_LANDLOCK_FALLBACK:-false}
       - GOTHAM_FALLBACK_MODEL=${GOTHAM_FALLBACK_MODEL:-}
-      - PLUTONIX_ORCHESTRATOR_HEALTH_MONITOR=${PLUTONIX_ORCHESTRATOR_HEALTH_MONITOR:-1}
-      - PLUTONIX_ORCHESTRATOR_HEALTH_MAX_DAILY_AUDITS=${PLUTONIX_ORCHESTRATOR_HEALTH_MAX_DAILY_AUDITS:-3}
-      - PLUTONIX_ORCHESTRATOR_HEALTH_TIME_ZONE=${PLUTONIX_ORCHESTRATOR_HEALTH_TIME_ZONE:-Asia/Kolkata}
+      - PLUTOMIX_ORCHESTRATOR_HEALTH_MONITOR=${PLUTOMIX_ORCHESTRATOR_HEALTH_MONITOR:-1}
+      - PLUTOMIX_ORCHESTRATOR_HEALTH_MAX_DAILY_AUDITS=${PLUTOMIX_ORCHESTRATOR_HEALTH_MAX_DAILY_AUDITS:-3}
+      - PLUTOMIX_ORCHESTRATOR_HEALTH_TIME_ZONE=${PLUTOMIX_ORCHESTRATOR_HEALTH_TIME_ZONE:-Asia/Kolkata}
       - ORCHESTRATOR_ARCHIVE_PATH=${ORCHESTRATOR_ARCHIVE_PATH:-/workspace/project/orchestrator-temp/orchestrator-agent-001-main.zip}
       - ORCHESTRATOR_INSTALL_ENABLED=${ORCHESTRATOR_INSTALL_ENABLED:-true}
       - ORCHESTRATOR_BOOTSTRAP_ENABLED=${ORCHESTRATOR_BOOTSTRAP_ENABLED:-true}
@@ -109,8 +112,8 @@ services:
       - AGENT_MEMORY_SYNC_MAX_RUNS_PER_DAY=${AGENT_MEMORY_SYNC_MAX_RUNS_PER_DAY:-3}
       - AGENT_MEMORY_SYNC_INTERVAL_MS=${AGENT_MEMORY_SYNC_INTERVAL_MS:-28800000}
       - AGENT_MEMORY_SYNC_TIME_ZONE=${AGENT_MEMORY_SYNC_TIME_ZONE:-Asia/Kolkata}
-      - PLUTONIX_AUTH_MODE=${PLUTONIX_AUTH_MODE:-oidc}
-      - PLUTONIX_CORS_ORIGINS=${PLUTONIX_CORS_ORIGINS:-}
+      - PLUTOMIX_AUTH_MODE=${PLUTOMIX_AUTH_MODE:-oidc}
+      - PLUTOMIX_CORS_ORIGINS=${PLUTOMIX_CORS_ORIGINS:-}
       - OIDC_ISSUER=${OIDC_ISSUER:-}
       - OIDC_AUDIENCE=${OIDC_AUDIENCE:-}
       - OIDC_JWKS_URL=${OIDC_JWKS_URL:-}
@@ -119,12 +122,12 @@ services:
       - OIDC_JWKS_CACHE_MS=${OIDC_JWKS_CACHE_MS:-300000}
       - OIDC_JWKS_STALE_GRACE_MS=${OIDC_JWKS_STALE_GRACE_MS:-300000}
       - OIDC_CLOCK_SKEW_SECONDS=${OIDC_CLOCK_SKEW_SECONDS:-60}
-      - PLUTONIX_DEV_AUTH_ENABLED=${PLUTONIX_DEV_AUTH_ENABLED:-false}
-      - PLUTONIX_DEV_AUTH_SUBJECT=${PLUTONIX_DEV_AUTH_SUBJECT:-local:local-plutonix-user}
-      - PLUTONIX_API_BODY_LIMIT=${PLUTONIX_API_BODY_LIMIT:-256kb}
-      - PLUTONIX_SECRETS_PROVIDER=${PLUTONIX_SECRETS_PROVIDER:-}
-      - PLUTONIX_ENCRYPTION_KEY_REF=${PLUTONIX_ENCRYPTION_KEY_REF:-}
-      - PLUTONIX_EGRESS_ALLOWLIST=${PLUTONIX_EGRESS_ALLOWLIST:-}
+      - PLUTOMIX_DEV_AUTH_ENABLED=${PLUTOMIX_DEV_AUTH_ENABLED:-false}
+      - PLUTOMIX_DEV_AUTH_SUBJECT=${PLUTOMIX_DEV_AUTH_SUBJECT:-local:local-plutomix-user}
+      - PLUTOMIX_API_BODY_LIMIT=${PLUTOMIX_API_BODY_LIMIT:-256kb}
+      - PLUTOMIX_SECRETS_PROVIDER=${PLUTOMIX_SECRETS_PROVIDER:-}
+      - PLUTOMIX_ENCRYPTION_KEY_REF=${PLUTOMIX_ENCRYPTION_KEY_REF:-}
+      - PLUTOMIX_EGRESS_ALLOWLIST=${PLUTOMIX_EGRESS_ALLOWLIST:-}
       - APIFY_USER_ID=${APIFY_USER_ID:-}
       - APIFY_API_KEY=${APIFY_API_KEY:-}
       - APIFY_API_BASE_URL=${APIFY_API_BASE_URL:-https://api.apify.com}
@@ -181,7 +184,7 @@ services:
       - BRAINX_LIVE_PROVIDER_MAX_COST_USD=${BRAINX_LIVE_PROVIDER_MAX_COST_USD:-0}
       # The current implementation only evaluates and records governed routes.
       # It never auto-downloads a Hugging Face artifact or invokes its inference.
-      - PLUTONIX_HF_AUTO_DOWNLOAD=${PLUTONIX_HF_AUTO_DOWNLOAD:-false}
+      - PLUTOMIX_HF_AUTO_DOWNLOAD=${PLUTOMIX_HF_AUTO_DOWNLOAD:-false}
       - AIX_GOVERNED_ROUTING_ENABLED=${AIX_GOVERNED_ROUTING_ENABLED:-false}
       - AIX_MAX_ROUTE_COST_USD=${AIX_MAX_ROUTE_COST_USD:-1}
       - AIX_MAX_LATENCY_MS=${AIX_MAX_LATENCY_MS:-60000}
@@ -241,7 +244,7 @@ services:
       - gotham_codex_runtime:/workspace/codex-home/tmp
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
-      - plutonix
+      - plutomix
     healthcheck:
       # Backend liveness remains healthy even when Codex authentication still
       # needs one-time operator setup; /api/status reports that readiness apart.
@@ -252,21 +255,21 @@ services:
       start_period: 20s
 
   generated-site:
-    image: plutonix-generated-site:latest
+    image: plutomix-generated-site:latest
     build:
       context: .
       dockerfile: apps/generated-site/Dockerfile
-    container_name: plutonix-generated-site
+    container_name: plutomix-generated-site
     ports:
       - "${GENERATED_SITE_PORT:-5174}:5174"
     volumes:
       - ./apps/generated-site:/workspace/generated-site
       - generated_site_node_modules:/workspace/generated-site/node_modules
     networks:
-      - plutonix
+      - plutomix
 
   decision-continuity-worker:
-    image: plutonix-backend:latest
+    image: plutomix-backend:latest
     profiles: ["decision-continuity-worker", "decision-continuity-production"]
     command: ["node", "scripts/decision-continuity-worker.mjs"]
     user: "node"
@@ -279,8 +282,8 @@ services:
     stop_grace_period: ${DECISION_CONTINUITY_WORKER_STOP_GRACE_PERIOD:-30s}
     environment:
       - NODE_ENV=${NODE_ENV:-development}
-      - PLUTONIX_AUTH_MODE=${PLUTONIX_AUTH_MODE:-oidc}
-      - PLUTONIX_CORS_ORIGINS=${PLUTONIX_CORS_ORIGINS:-}
+      - PLUTOMIX_AUTH_MODE=${PLUTOMIX_AUTH_MODE:-oidc}
+      - PLUTOMIX_CORS_ORIGINS=${PLUTOMIX_CORS_ORIGINS:-}
       - OIDC_ISSUER=${OIDC_ISSUER:-}
       - OIDC_AUDIENCE=${OIDC_AUDIENCE:-}
       - OIDC_JWKS_URL=${OIDC_JWKS_URL:-}
@@ -289,10 +292,10 @@ services:
       - OIDC_JWKS_CACHE_MS=${OIDC_JWKS_CACHE_MS:-300000}
       - OIDC_JWKS_STALE_GRACE_MS=${OIDC_JWKS_STALE_GRACE_MS:-300000}
       - OIDC_CLOCK_SKEW_SECONDS=${OIDC_CLOCK_SKEW_SECONDS:-60}
-      - PLUTONIX_DEV_AUTH_ENABLED=${PLUTONIX_DEV_AUTH_ENABLED:-false}
-      - PLUTONIX_SECRETS_PROVIDER=${PLUTONIX_SECRETS_PROVIDER:-}
-      - PLUTONIX_ENCRYPTION_KEY_REF=${PLUTONIX_ENCRYPTION_KEY_REF:-}
-      - PLUTONIX_EGRESS_ALLOWLIST=${PLUTONIX_EGRESS_ALLOWLIST:-}
+      - PLUTOMIX_DEV_AUTH_ENABLED=${PLUTOMIX_DEV_AUTH_ENABLED:-false}
+      - PLUTOMIX_SECRETS_PROVIDER=${PLUTOMIX_SECRETS_PROVIDER:-}
+      - PLUTOMIX_ENCRYPTION_KEY_REF=${PLUTOMIX_ENCRYPTION_KEY_REF:-}
+      - PLUTOMIX_EGRESS_ALLOWLIST=${PLUTOMIX_EGRESS_ALLOWLIST:-}
       - DECISION_CONTINUITY_ADAPTER=postgres
       # Compose interpolates inactive profiles too. The worker entry point
       # validates this value before startup, so a normal development `up` does
@@ -313,7 +316,7 @@ services:
     volumes:
       - .:/workspace/project:ro
     networks:
-      - plutonix
+      - plutomix
     healthcheck:
       test: ["CMD-SHELL", "node -e \"fetch('http://127.0.0.1:8081/readyz').then((r) => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))\""]
       interval: 10s
@@ -330,7 +333,7 @@ services:
   # This low-privilege process reads only registered sources and can publish
   # reviewable observations; it cannot write code, alter policy, or deploy.
   researchx-worker:
-    image: plutonix-backend:latest
+    image: plutomix-backend:latest
     profiles: ["researchx"]
     command: ["node", "scripts/researchx-worker.mjs"]
     user: "node"
@@ -343,8 +346,8 @@ services:
     stop_grace_period: ${RESEARCHX_WORKER_STOP_GRACE_PERIOD:-30s}
     environment:
       - NODE_ENV=${NODE_ENV:-development}
-      - PLUTONIX_AUTH_MODE=${PLUTONIX_AUTH_MODE:-oidc}
-      - PLUTONIX_CORS_ORIGINS=${PLUTONIX_CORS_ORIGINS:-}
+      - PLUTOMIX_AUTH_MODE=${PLUTOMIX_AUTH_MODE:-oidc}
+      - PLUTOMIX_CORS_ORIGINS=${PLUTOMIX_CORS_ORIGINS:-}
       - OIDC_ISSUER=${OIDC_ISSUER:-}
       - OIDC_AUDIENCE=${OIDC_AUDIENCE:-}
       - OIDC_JWKS_URL=${OIDC_JWKS_URL:-}
@@ -353,12 +356,12 @@ services:
       - OIDC_JWKS_CACHE_MS=${OIDC_JWKS_CACHE_MS:-300000}
       - OIDC_JWKS_STALE_GRACE_MS=${OIDC_JWKS_STALE_GRACE_MS:-300000}
       - OIDC_CLOCK_SKEW_SECONDS=${OIDC_CLOCK_SKEW_SECONDS:-60}
-      - PLUTONIX_DEV_AUTH_ENABLED=${PLUTONIX_DEV_AUTH_ENABLED:-false}
-      - PLUTONIX_SECRETS_PROVIDER=${PLUTONIX_SECRETS_PROVIDER:-}
-      - PLUTONIX_ENCRYPTION_KEY_REF=${PLUTONIX_ENCRYPTION_KEY_REF:-}
+      - PLUTOMIX_DEV_AUTH_ENABLED=${PLUTOMIX_DEV_AUTH_ENABLED:-false}
+      - PLUTOMIX_SECRETS_PROVIDER=${PLUTOMIX_SECRETS_PROVIDER:-}
+      - PLUTOMIX_ENCRYPTION_KEY_REF=${PLUTOMIX_ENCRYPTION_KEY_REF:-}
       # Network policy must be enforced by the deployment egress layer as well
       # as ResearchX's source/domain/redirect validation.
-      - PLUTONIX_EGRESS_ALLOWLIST=${PLUTONIX_EGRESS_ALLOWLIST:-}
+      - PLUTOMIX_EGRESS_ALLOWLIST=${PLUTOMIX_EGRESS_ALLOWLIST:-}
       - DECISION_CONTINUITY_ADAPTER=postgres
       - DECISION_CONTINUITY_DATABASE_URL=${DECISION_CONTINUITY_DATABASE_URL:-}
       - RESEARCHX_ENABLED=${RESEARCHX_ENABLED:-false}
@@ -382,7 +385,7 @@ services:
     volumes:
       - .:/workspace/project:ro
     networks:
-      - plutonix
+      - plutomix
     healthcheck:
       test: ["CMD-SHELL", "node -e \"fetch('http://127.0.0.1:8082/readyz').then((r) => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))\""]
       interval: 10s
@@ -398,7 +401,7 @@ services:
   # Run explicitly before the API/worker rollout. It takes a PostgreSQL
   # advisory lock, records checksums, and exits; normal replicas never migrate.
   decision-continuity-migrate:
-    image: plutonix-backend:latest
+    image: plutomix-backend:latest
     profiles: ["decision-continuity-production"]
     command: ["node", "scripts/migrate-decision-continuity-postgres.mjs"]
     user: "node"
@@ -410,7 +413,7 @@ services:
     restart: "no"
     environment:
       - NODE_ENV=production
-      - PLUTONIX_PROJECT_ROOT=/workspace/project
+      - PLUTOMIX_PROJECT_ROOT=/workspace/project
       - DECISION_CONTINUITY_ADAPTER=postgres
       # The migration script independently refuses an empty database URL.
       - DECISION_CONTINUITY_DATABASE_URL=${DECISION_CONTINUITY_DATABASE_URL:-}
@@ -418,7 +421,7 @@ services:
     volumes:
       - .:/workspace/project:ro
     networks:
-      - plutonix
+      - plutomix
 
   # Local-only helper. Production must supply its managed PostgreSQL endpoint
   # through DECISION_CONTINUITY_DATABASE_URL and run the migration explicitly.
@@ -426,24 +429,24 @@ services:
     image: postgres:16-alpine
     profiles: ["decision-continuity-postgres"]
     environment:
-      POSTGRES_DB: plutonix_decision_continuity
-      POSTGRES_USER: plutonix
+      POSTGRES_DB: plutomix_decision_continuity
+      POSTGRES_USER: plutomix
       POSTGRES_HOST_AUTH_METHOD: trust
     ports:
       - "${DECISION_CONTINUITY_POSTGRES_PORT:-5433}:5432"
     volumes:
       - decision_continuity_postgres:/var/lib/postgresql/data
     networks:
-      - plutonix
+      - plutomix
 
 networks:
-  plutonix:
+  plutomix:
     driver: bridge
 
 volumes:
   generated_site_node_modules:
-    name: plutonix-generated-site-node-modules-v2
+    name: plutomix-generated-site-node-modules-v2
   decision_continuity_postgres:
-    name: plutonixz-decision-continuity-postgres
+    name: plutomix-decision-continuity-postgres
   gotham_codex_runtime:
-    name: plutonix-gotham-codex-runtime-v1
+    name: plutomix-gotham-codex-runtime-v1

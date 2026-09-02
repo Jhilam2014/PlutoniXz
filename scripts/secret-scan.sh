@@ -134,11 +134,17 @@ run_scan() {
 }
 
 prepare_worktree_staging() {
-  WORKTREE_STAGING_DIR=$(mktemp -d "${TMPDIR:-/tmp}/plutonix-secret-worktree.XXXXXX")
-  tracked_and_untracked=$(mktemp "${TMPDIR:-/tmp}/plutonix-secret-paths.XXXXXX")
+  WORKTREE_STAGING_DIR=$(mktemp -d "${TMPDIR:-/tmp}/plutomix-secret-worktree.XXXXXX")
+  tracked_and_untracked=$(mktemp "${TMPDIR:-/tmp}/plutomix-secret-paths.XXXXXX")
   git -C "$ROOT_DIR" ls-files --cached --others --exclude-standard \
     | awk '!/^(runtime|memory|observability|deliverables|apps\/frontend\/dist|apps\/generated-site\/dist|apps\/desktop\/resources)(\/|$)/' \
-    > "$tracked_and_untracked"
+    | while IFS= read -r relative_path; do
+        # A dirty worktree can contain tracked deletions during a rename. Keep
+        # those paths out of rsync's input instead of aborting the whole scan.
+        if [ -f "$ROOT_DIR/$relative_path" ]; then
+          printf '%s\n' "$relative_path"
+        fi
+      done > "$tracked_and_untracked"
   find "$ROOT_DIR" \
     -path "$ROOT_DIR/.git" -prune -o \
     -type f \( -name '.env' -o -name '.env.*' \) -print \
@@ -150,7 +156,7 @@ prepare_worktree_staging() {
 }
 
 prepare_runtime_staging() {
-  RUNTIME_STAGING_DIR=$(mktemp -d "${TMPDIR:-/tmp}/plutonix-secret-runtime.XXXXXX")
+  RUNTIME_STAGING_DIR=$(mktemp -d "${TMPDIR:-/tmp}/plutomix-secret-runtime.XXXXXX")
   # Do not scan prior scanner reports as runtime application input. Their
   # schema is covered by verify_report_sanitation immediately after creation.
   rsync -a --exclude 'secret-scan/' "$ROOT_DIR/runtime/" "$RUNTIME_STAGING_DIR/"
@@ -211,9 +217,9 @@ scan_repository() {
 
 verify_fixture() {
   require_docker
-  fixture_dir=$(mktemp -d "${TMPDIR:-/tmp}/plutonix-secret-fixture.XXXXXX")
+  fixture_dir=$(mktemp -d "${TMPDIR:-/tmp}/plutomix-secret-fixture.XXXXXX")
   trap 'rm -rf "$fixture_dir"' EXIT HUP INT TERM
-  fake_prefix='plutonix_fake_secret_'
+  fake_prefix='plutomix_fake_secret_'
   fake_suffix='0123456789abcdef01234567'
   fake_token="${fake_prefix}${fake_suffix}"
   printf '%s\n' "$fake_token" > "$fixture_dir/fake-token.txt"
@@ -234,7 +240,7 @@ verify_fixture() {
   detected_exit=$?
   set -e
 
-  if [ "$detected_exit" -ne 1 ] || ! grep -q 'plutonix-fake-secret' "$fixture_dir/finding.json" 2>/dev/null; then
+  if [ "$detected_exit" -ne 1 ] || ! grep -q 'plutomix-fake-secret' "$fixture_dir/finding.json" 2>/dev/null; then
     printf '%s\n' "Fake-token fixture was not detected by the pinned scanner." >&2
     exit 1
   fi

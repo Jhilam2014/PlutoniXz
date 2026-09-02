@@ -4,14 +4,14 @@ export function createLocalGothamMcpServer({ executeWorkflow, emit } = {}) {
   }
 
   const server = {
-    id: process.env.GOTHAM_LOCAL_MCP_ID || "plutonix-local-gotham-mcp",
-    name: "PlutoniX Local Gotham MCP",
+    id: process.env.GOTHAM_LOCAL_MCP_ID || "plutomix-local-gotham-mcp",
+    name: "PlutoMix Local Gotham MCP",
     version: "1.0.0",
     transport: "in-process",
     tools: {
       "gotham.generate": {
         name: "gotham.generate",
-        description: "Run a PlutoniX-owned Gotham workflow through the local MCP execution boundary.",
+        description: "Run a PlutoMix-owned Gotham workflow through the local MCP execution boundary.",
         inputSchema: {
           type: "object",
           required: ["orchestratedRequest", "options", "orchestrationEnvelope", "adaptiveRoute"],

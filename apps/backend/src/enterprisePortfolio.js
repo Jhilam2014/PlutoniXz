@@ -1,6 +1,6 @@
 /**
  * A deliberately read-only portfolio projection. It does not infer that two
- * applications are related merely because PlutoniX created them, an agent
+ * applications are related merely because PlutoMix created them, an agent
  * implemented them, or they have the same enterprise tag.
  */
 
@@ -89,7 +89,7 @@ function provenanceFor(project) {
   const value = record(project);
   const provenance = record(value.provenance);
   const requestedOrigin = text(provenance.origin || value.origin, { lower: true, maxLength: 80 });
-  const origin = ["plutonix_created", "imported", "unknown_legacy"].includes(requestedOrigin)
+  const origin = ["plutomix_created", "imported", "unknown_legacy"].includes(requestedOrigin)
     ? requestedOrigin
     : "unknown_legacy";
   return {
@@ -414,7 +414,7 @@ export function buildEnterprisePortfolioAnalysis({ projects = [], graph = {}, ag
   const originCounts = applications.reduce((counts, application) => {
     counts[application.origin] = (counts[application.origin] || 0) + 1;
     return counts;
-  }, { plutonix_created: 0, imported: 0, unknown_legacy: 0 });
+  }, { plutomix_created: 0, imported: 0, unknown_legacy: 0 });
   return {
     applications: applications.sort((left, right) => left.projectName.localeCompare(right.projectName) || left.projectId.localeCompare(right.projectId)),
     causalRelationships,

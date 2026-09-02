@@ -4,7 +4,7 @@
   "provider": "openai",
   "collection": "agent_prompts",
   "status": "completed",
-  "sync_workflow_id": "plutonix-vector-sync-1787853058082",
+  "sync_workflow_id": "plutomix-vector-sync-1787853058082",
   "files_uploaded": 2,
   "files_failed": 0,
   "verification_status": "success",
@@ -16,7 +16,7 @@
   "created_at": "2026-08-27T17:40:51Z",
   "completed_at": "2026-08-27T17:54:47.530Z",
   "latest_refresh": {
-    "sync_workflow_id": "plutonix-vector-sync-1787867130303",
+    "sync_workflow_id": "plutomix-vector-sync-1787867130303",
     "files_uploaded": 1,
     "files_failed": 0,
     "verification_status": "success",

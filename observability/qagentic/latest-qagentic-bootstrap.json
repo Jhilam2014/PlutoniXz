@@ -1,6 +1,6 @@
 {
   "status": "generated",
-  "source": "plutonix-additive-qagentic-support",
+  "source": "plutomix-additive-qagentic-support",
   "base_framework": true,
   "runtime_qagents": "generate_only_when_objective_gap_detected",
   "project_generation": "new_projects_auto_include_qagentic_framework",

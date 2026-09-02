@@ -1,10 +1,10 @@
-# QAgentic Support for PlutoniX
+# QAgentic Support for PlutoMix
 
 QAgentic support adds a controlled Query Force Agent layer to every generated project.
 
 The system creates the **base QAgent framework at project generation/bootstrap time** and creates **task-specific runtime QAgents only when objective gaps are detected**.
 
-This preserves existing PlutoniX behavior while adding a repeatable gap-to-next-instruction loop.
+This preserves existing PlutoMix behavior while adding a repeatable gap-to-next-instruction loop.
 
 ## What is generated at project onset
 

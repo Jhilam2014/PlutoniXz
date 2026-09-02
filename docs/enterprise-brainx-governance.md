@@ -1,6 +1,6 @@
 # BrainX Enterprise Core — Governed Rollout
 
-BrainX Enterprise Core is the additive, tenant-scoped decision control plane for PlutoniX. It helps teams preserve the evidence and constraints behind application-development and integration choices. It is decision support and an audit trail, not a claim of legal certification, autonomous deployment, or guaranteed architectural correctness.
+BrainX Enterprise Core is the additive, tenant-scoped decision control plane for PlutoMix. It helps teams preserve the evidence and constraints behind application-development and integration choices. It is decision support and an audit trail, not a claim of legal certification, autonomous deployment, or guaranteed architectural correctness.
 
 The existing Decision Continuity ledger remains the authority for lifecycle facts. The existing portfolio view remains a backwards-compatible projection; project tags, JSON agreements, prompts, model output, graph/vector data, and browser input do not authorize an enterprise action.
 
@@ -119,7 +119,7 @@ The existing `/api/brainx/*` model registry APIs remain in place. The legacy `/a
 2. Provision OIDC principals/memberships and separate high-impact human approvers from service workers.
 3. Bind each application to the correct tenant/workspace enterprise scope.
 4. Create an immutable policy snapshot, fresh evidence, budget envelope, and required approval records.
-5. Register reviewed model candidates; keep `BRAINX_ENABLED=false`, `AIX_GOVERNED_ROUTING_ENABLED=false`, and `PLUTONIX_HF_AUTO_DOWNLOAD=false` until the tenant rollout is approved.
+5. Register reviewed model candidates; keep `BRAINX_ENABLED=false`, `AIX_GOVERNED_ROUTING_ENABLED=false`, and `PLUTOMIX_HF_AUTO_DOWNLOAD=false` until the tenant rollout is approved.
 6. Enable only named tenants, then verify denied, no-eligible-model, budget-exhaustion, stale-evidence, cross-tenant, and retry/idempotency paths.
 7. If ResearchX is needed, separately enable its three flags, source allowlist, worker profile, budget, and network egress policy.
 

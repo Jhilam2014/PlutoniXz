@@ -12,19 +12,19 @@ test("structured operational redaction removes credentials, database URLs, sensi
   assert.equal(event.tenantId.length, 16);
   assert.match(event.traceId, /^[a-f0-9]{32}$/);
   assert.match(event.spanId, /^[a-f0-9]{16}$/);
-  assert.equal(event.resource["service.name"], "plutonix-backend");
+  assert.equal(event.resource["service.name"], "plutomix-backend");
 });
 
 test("production operational configuration refuses insecure authority, missing encryption/secrets, and unrestricted egress", () => {
   assert.throws(() => assertProductionOperationalConfiguration({ NODE_ENV: "production", DECISION_CONTINUITY_ADAPTER: "file" }), /secure operational configuration/i);
-  assert.throws(() => assertProductionOperationalConfiguration({ NODE_ENV: "production", DECISION_CONTINUITY_DATABASE_URL: "postgres://db", PLUTONIX_SECRETS_PROVIDER: "provider", PLUTONIX_ENCRYPTION_KEY_REF: "key", PLUTONIX_EGRESS_ALLOWLIST: "https://allowed", DECISION_CONTINUITY_ADAPTER: "file", DECISION_CONTINUITY_DURABLE_WORKFLOWS: "true", PLUTONIX_DEV_AUTH_ENABLED: "false" }), /non-PostgreSQL/i);
-  assert.throws(() => assertProductionOperationalConfiguration({ NODE_ENV: "production", DECISION_CONTINUITY_DATABASE_URL: "postgres://db", PLUTONIX_SECRETS_PROVIDER: "env", PLUTONIX_ENCRYPTION_KEY_REF: "key", PLUTONIX_EGRESS_ALLOWLIST: "https://allowed", DECISION_CONTINUITY_ADAPTER: "postgres", DECISION_CONTINUITY_DURABLE_WORKFLOWS: "true", PLUTONIX_DEV_AUTH_ENABLED: "false" }), /managed secrets provider/i);
-  assert.throws(() => assertProductionOperationalConfiguration({ NODE_ENV: "production", DECISION_CONTINUITY_DATABASE_URL: "postgres://db", PLUTONIX_SECRETS_PROVIDER: "provider", PLUTONIX_ENCRYPTION_KEY_REF: "key", PLUTONIX_EGRESS_ALLOWLIST: "*", DECISION_CONTINUITY_ADAPTER: "postgres", DECISION_CONTINUITY_DURABLE_WORKFLOWS: "true", PLUTONIX_DEV_AUTH_ENABLED: "false" }), /non-wildcard egress/i);
-  assert.doesNotThrow(() => assertProductionOperationalConfiguration({ NODE_ENV: "production", DECISION_CONTINUITY_DATABASE_URL: "postgres://db", PLUTONIX_SECRETS_PROVIDER: "provider", PLUTONIX_ENCRYPTION_KEY_REF: "key-ref", PLUTONIX_EGRESS_ALLOWLIST: "https://allowed", DECISION_CONTINUITY_ADAPTER: "postgres", DECISION_CONTINUITY_DURABLE_WORKFLOWS: "true", PLUTONIX_DEV_AUTH_ENABLED: "false" }));
+  assert.throws(() => assertProductionOperationalConfiguration({ NODE_ENV: "production", DECISION_CONTINUITY_DATABASE_URL: "postgres://db", PLUTOMIX_SECRETS_PROVIDER: "provider", PLUTOMIX_ENCRYPTION_KEY_REF: "key", PLUTOMIX_EGRESS_ALLOWLIST: "https://allowed", DECISION_CONTINUITY_ADAPTER: "file", DECISION_CONTINUITY_DURABLE_WORKFLOWS: "true", PLUTOMIX_DEV_AUTH_ENABLED: "false" }), /non-PostgreSQL/i);
+  assert.throws(() => assertProductionOperationalConfiguration({ NODE_ENV: "production", DECISION_CONTINUITY_DATABASE_URL: "postgres://db", PLUTOMIX_SECRETS_PROVIDER: "env", PLUTOMIX_ENCRYPTION_KEY_REF: "key", PLUTOMIX_EGRESS_ALLOWLIST: "https://allowed", DECISION_CONTINUITY_ADAPTER: "postgres", DECISION_CONTINUITY_DURABLE_WORKFLOWS: "true", PLUTOMIX_DEV_AUTH_ENABLED: "false" }), /managed secrets provider/i);
+  assert.throws(() => assertProductionOperationalConfiguration({ NODE_ENV: "production", DECISION_CONTINUITY_DATABASE_URL: "postgres://db", PLUTOMIX_SECRETS_PROVIDER: "provider", PLUTOMIX_ENCRYPTION_KEY_REF: "key", PLUTOMIX_EGRESS_ALLOWLIST: "*", DECISION_CONTINUITY_ADAPTER: "postgres", DECISION_CONTINUITY_DURABLE_WORKFLOWS: "true", PLUTOMIX_DEV_AUTH_ENABLED: "false" }), /non-wildcard egress/i);
+  assert.doesNotThrow(() => assertProductionOperationalConfiguration({ NODE_ENV: "production", DECISION_CONTINUITY_DATABASE_URL: "postgres://db", PLUTOMIX_SECRETS_PROVIDER: "provider", PLUTOMIX_ENCRYPTION_KEY_REF: "key-ref", PLUTOMIX_EGRESS_ALLOWLIST: "https://allowed", DECISION_CONTINUITY_ADAPTER: "postgres", DECISION_CONTINUITY_DURABLE_WORKFLOWS: "true", PLUTOMIX_DEV_AUTH_ENABLED: "false" }));
 });
 
 test("fake scanner fixture is redacted from structured log, error, trace, and report-shaped records", () => {
-  const fakeToken = ["plutonix", "fake", "secret", "0123456789abcdef01234567"].join("_");
+  const fakeToken = ["plutomix", "fake", "secret", "0123456789abcdef01234567"].join("_");
   const records = [
     redactOperational({ authorization: `Bearer ${fakeToken}` }),
     redactOperational({ error: { providerToken: fakeToken } }),

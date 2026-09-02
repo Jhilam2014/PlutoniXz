@@ -1235,7 +1235,7 @@
     },
     {
       "artifact_id": "ART-20F7A711AC5EFEEC3835",
-      "artifact_path": "apps/frontend/dist/downloads/PlutoniX-macOS-arm64.dmg",
+      "artifact_path": "apps/frontend/dist/downloads/PlutoMix-macOS-arm64.dmg",
       "source_artifact_state": "CLEAN",
       "source_observation_count": 0,
       "report_observation_count": 0,
@@ -1247,7 +1247,7 @@
     },
     {
       "artifact_id": "ART-9B9DF01D2B3C47E55F4D",
-      "artifact_path": "apps/frontend/public/downloads/PlutoniX-macOS-arm64.dmg",
+      "artifact_path": "apps/frontend/public/downloads/PlutoMix-macOS-arm64.dmg",
       "source_artifact_state": "CLEAN",
       "source_observation_count": 0,
       "report_observation_count": 0,
@@ -1259,7 +1259,7 @@
     },
     {
       "artifact_id": "ART-5203408D10B2EA9155E6",
-      "artifact_path": "deliverables/macos/mac-arm64/PlutoniX.app/Contents/Frameworks/Electron Framework.framework/Versions/A/Electron Framework",
+      "artifact_path": "deliverables/macos/mac-arm64/PlutoMix.app/Contents/Frameworks/Electron Framework.framework/Versions/A/Electron Framework",
       "source_artifact_state": "CLEAN",
       "source_observation_count": 0,
       "report_observation_count": 0,
@@ -1271,7 +1271,7 @@
     },
     {
       "artifact_id": "ART-3675D5614C8EA75661B0",
-      "artifact_path": "deliverables/macos/PlutoniX-1.0.0-macOS-arm64.dmg",
+      "artifact_path": "deliverables/macos/PlutoMix-1.0.0-macOS-arm64.dmg",
       "source_artifact_state": "CLEAN",
       "source_observation_count": 0,
       "report_observation_count": 0,

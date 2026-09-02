@@ -5,8 +5,8 @@ import { stableHashIdentifierSchema } from "./contracts.js";
 import { fingerprintText, neutralizeLogInstruction } from "./redaction.js";
 import { createId, nowIso, stableHash } from "./store.js";
 
-const TOOL_CAPABILITY_AGENT_ID = "plutonix-tool-capability-agent";
-const TOOL_BUILDER_AGENT_ID = "plutonix-autonomous-tool-builder-agent";
+const TOOL_CAPABILITY_AGENT_ID = "plutomix-tool-capability-agent";
+const TOOL_BUILDER_AGENT_ID = "plutomix-autonomous-tool-builder-agent";
 
 function textFor({ event = {}, investigation = {} } = {}) {
   return [
@@ -18,12 +18,12 @@ function textFor({ event = {}, investigation = {} } = {}) {
   ].filter(Boolean).join(" ").toLowerCase();
 }
 
-function slug(value = "plutonix-tool") {
-  return String(value || "plutonix-tool")
+function slug(value = "plutomix-tool") {
+  return String(value || "plutomix-tool")
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "")
-    .slice(0, 72) || "plutonix-tool";
+    .slice(0, 72) || "plutomix-tool";
 }
 
 function dailyCount(rows = []) {
@@ -58,12 +58,12 @@ function chooseSolutionKind(need = {}) {
   return "none";
 }
 
-function toolNameFor(solutionKind, component = "plutonix-runtime") {
-  if (solutionKind === "internal_tool") return "PlutoniX Capability Gap Tool";
-  if (solutionKind === "platform_optimization") return "PlutoniX Sluggishness Profiler";
-  if (solutionKind === "agent_or_ui_simplification") return "PlutoniX Workflow Simplifier";
-  if (solutionKind === "external_paid_tool") return "PlutoniX Paid Tool Evaluation Adapter";
-  return `PlutoniX ${component} Helper`;
+function toolNameFor(solutionKind, component = "plutomix-runtime") {
+  if (solutionKind === "internal_tool") return "PlutoMix Capability Gap Tool";
+  if (solutionKind === "platform_optimization") return "PlutoMix Sluggishness Profiler";
+  if (solutionKind === "agent_or_ui_simplification") return "PlutoMix Workflow Simplifier";
+  if (solutionKind === "external_paid_tool") return "PlutoMix Paid Tool Evaluation Adapter";
+  return `PlutoMix ${component} Helper`;
 }
 
 function estimatedCostFor(solutionKind, need = {}, config = DEFAULT_SELF_IMPROVEMENT_CONFIG) {
@@ -108,7 +108,7 @@ export function assessToolAndOptimizationNeed({
       investigationId: investigation.id || ""
     };
   }
-  const component = investigation.component || event.component || "plutonix-runtime";
+  const component = investigation.component || event.component || "plutomix-runtime";
   const normalizedKey = stableHashIdentifierSchema.parse(stableHash(fingerprintText(`${solutionKind}:${component}:${event.type || ""}:${event.message || ""}`)).slice(0, 24));
   const duplicate = recentlyPlanned(recentToolPlans, normalizedKey, config.toolPlanCooldownMs);
   const buildLimitReached = dailyCount(recentToolPlans) >= Number(config.maxToolBuildsPerDay || DEFAULT_SELF_IMPROVEMENT_CONFIG.maxToolBuildsPerDay);
@@ -155,7 +155,7 @@ export function assessToolAndOptimizationNeed({
       slug: slug(title),
       capability: solutionKind === "external_paid_tool"
         ? "Evaluate the paid external capability only after user approval."
-        : "Analyze bounded PlutoniX evidence and return a deterministic improvement recommendation.",
+        : "Analyze bounded PlutoMix evidence and return a deterministic improvement recommendation.",
       interface: "runtime/self-improvement generated-tool manifest",
       inputs: ["bounded runtime event", "investigation summary", "feature inventory references"],
       outputs: ["problem statement", "recommended solution target", "validation plan", "cost posture"]
@@ -174,11 +174,11 @@ export function assessToolAndOptimizationNeed({
     costEstimate,
     monetaryApprovalRequired: costEstimate.approvalRequired && costEstimate.estimatedUsd > Number(config.monetaryApprovalThresholdUsd || 0),
     approvalPrompt: costEstimate.approvalRequired && costEstimate.estimatedUsd > Number(config.monetaryApprovalThresholdUsd || 0)
-      ? `Approve estimated ${costEstimate.billingPeriod} spend of about $${costEstimate.estimatedUsd.toFixed(2)}, or ask PlutoniX to pursue a cheaper internal solution.`
+      ? `Approve estimated ${costEstimate.billingPeriod} spend of about $${costEstimate.estimatedUsd.toFixed(2)}, or ask PlutoMix to pursue a cheaper internal solution.`
       : "",
     cheaperAlternatives: [
       "Build a local deterministic analysis tool from existing logs and metrics.",
-      "Reuse existing PlutoniX agents or route to a smaller model profile.",
+      "Reuse existing PlutoMix agents or route to a smaller model profile.",
       "Add instrumentation and caching before paying for an external service.",
       "Simplify the UI/workflow or split the agent task into smaller bounded steps."
     ],
@@ -202,7 +202,7 @@ export function createMonetaryApprovalRequest(toolPlan = {}) {
     actor: "self-improvement-orchestrator",
     toolPlanId: toolPlan.id || "",
     eventId: toolPlan.eventId || "",
-    component: toolPlan.component || "plutonix-runtime",
+    component: toolPlan.component || "plutomix-runtime",
     solutionKind: toolPlan.solutionKind || "external_paid_tool",
     problemStatement: toolPlan.problemStatement || "",
     approvalPrompt: toolPlan.approvalPrompt || "Approve paid capability or request cheaper alternative.",
@@ -224,7 +224,7 @@ export function applyMonetaryDecision({ approval = {}, decision = "cheaper_solut
     status: normalizedDecision === "approve" ? "approved" : normalizedDecision === "reject" ? "rejected" : "cheaper_solution_requested",
     decision: normalizedDecision,
     decidedAt: nowIso(),
-    decidedBy: user.email || user.id || "plutonix-admin",
+    decidedBy: user.email || user.id || "plutomix-admin",
     note: neutralizeLogInstruction(note || "", { maxLength: 280 })
   };
 }
@@ -240,7 +240,7 @@ export async function buildGeneratedTool({ toolPlan = {}, store } = {}) {
     source: "self-improvement-autonomous-tool-builder",
     agentId: TOOL_BUILDER_AGENT_ID,
     toolPlanId: toolPlan.id,
-    name: toolPlan.proposedTool?.name || "PlutoniX Generated Tool",
+    name: toolPlan.proposedTool?.name || "PlutoMix Generated Tool",
     slug: toolPlan.proposedTool?.slug || slug(toolPlan.proposedTool?.name || toolPlan.id),
     solutionKind: toolPlan.solutionKind,
     component: toolPlan.component,
@@ -288,7 +288,7 @@ export function runGeneratedTool({ generatedTool = {}, event = {}, investigation
     generatedToolId: generatedTool.id || "",
     toolPlanId: toolPlan.id || generatedTool.toolPlanId || "",
     eventId: event.id || "",
-    component: toolPlan.component || investigation.component || "plutonix-runtime",
+    component: toolPlan.component || investigation.component || "plutomix-runtime",
     output: {
       solutionTarget: toolPlan.solutionKind === "agent_or_ui_simplification" ? "app_or_agent" : toolPlan.solutionKind === "platform_optimization" ? "platform" : "tooling",
       recommendation: toolPlan.monetaryApprovalRequired

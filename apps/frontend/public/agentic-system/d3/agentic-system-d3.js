@@ -60,7 +60,7 @@ function applyTheme(theme) {
 }
 applyTheme(params.get("theme"));
 window.addEventListener("message", (event) => {
-  if (event.origin !== window.location.origin || event.data?.type !== "plutonix:set-theme") return;
+  if (event.origin !== window.location.origin || event.data?.type !== "plutomix:set-theme") return;
   applyTheme(event.data.theme);
 });
 lucide?.createIcons();
@@ -695,7 +695,7 @@ const svg = d3
   .append("svg")
   .attr("viewBox", [0, 0, width, height])
   .attr("role", "group")
-  .attr("aria-label", "Clustered PlutoniX topology");
+  .attr("aria-label", "Clustered PlutoMix topology");
 const viewport = svg.append("g").attr("class", "graph-viewport");
 const lensLayer = viewport.append("g").attr("class", "lens-scaffold").attr("aria-hidden", "true");
 const perimeterLayer = viewport.append("g").attr("class", "architecture-perimeter").attr("aria-hidden", "true");
@@ -2023,7 +2023,7 @@ function render() {
     graphStateEl.className = "graph-state";
     graphStateEl.innerHTML =
       !state.filters.project
-        ? `<strong>Select a project</strong><span>Choose one managed project from the Project menu to open its PlutoniX topology.</span>`
+        ? `<strong>Select a project</strong><span>Choose one managed project from the Project menu to open its PlutoMix topology.</span>`
         : `<strong>No matching entities</strong><span>Adjust the active filters or clear them to restore this project's topology.</span><button type="button" id="graph-state-action">Clear filters</button>`;
     graphStateEl.hidden = false;
     graphStateEl.querySelector("#graph-state-action")?.addEventListener("click", () => {

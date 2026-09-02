@@ -1,6 +1,6 @@
 # QAgentic Support
 
-PlutoniX now generates QAgentic support for every new project.
+PlutoMix now generates QAgentic support for every new project.
 
 ## Best Practice
 
@@ -8,7 +8,7 @@ Keep the mandate in `AGENTS.md`, keep the detailed behavior in `qagentic-support
 
 ## Project Generation
 
-During new project generation, PlutoniX installs the orchestrator seed and creates project-local QAgentic files under `.agentic/qagentic-support/`.
+During new project generation, PlutoMix installs the orchestrator seed and creates project-local QAgentic files under `.agentic/qagentic-support/`.
 
 New projects also receive the root-level QAgentic framework files, `schemas/qagent-next-instruction.schema.json`, `.codex/prompts/task-qagentic.md`, and the optional `.codex/prompts/bootstrap-orchestrator-qagentic.md` bootstrap prompt.
 

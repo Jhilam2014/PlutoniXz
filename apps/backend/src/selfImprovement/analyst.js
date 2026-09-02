@@ -23,7 +23,7 @@ function affectedFilesFor(category, evidence = {}) {
     if (deps.some((item) => /projects|runtime|preview/i.test(item))) return ["apps/backend/src/projectManager.js", "apps/backend/src/server.js"];
     return ["apps/backend/src/server.js", "apps/backend/src/codexWorkflow.js"];
   }
-  if (category === "agent_quality") return ["apps/backend/src/plutonixAuthority.js", "apps/backend/src/projectAgents.js"];
+  if (category === "agent_quality") return ["apps/backend/src/plutomixAuthority.js", "apps/backend/src/projectAgents.js"];
   if (category === "ui_ux") return ["apps/frontend/src/App.jsx", "apps/frontend/src/App.css"];
   if (category === "security") return ["apps/backend/src/auth.js", "apps/backend/src/hosting/secret-vault.service.js"];
   return ["apps/backend/src/server.js"];
@@ -39,14 +39,14 @@ export async function analyzeEvidencePackage(evidencePackage, { modelProfile = "
   });
   const shouldProceed = evidencePackage.boundedLogExcerpts.length > 0 || evidencePackage.evidenceRefs.length > 0;
   const proposedTitle = {
-    reliability: "Improve PlutoniX workflow reliability from repeated failure evidence",
+    reliability: "Improve PlutoMix workflow reliability from repeated failure evidence",
     token_efficiency: "Reduce low-yield agent token usage",
     cost_efficiency: "Reduce model-call cost for low-yield workflows",
     agent_quality: "Improve agent quality from repeated outcome evidence",
-    ui_ux: "Reduce UI friction in the affected PlutoniX workflow",
-    security: "Investigate security-sensitive PlutoniX issue with manual gates",
-    observability: "Improve observability for repeated PlutoniX issue"
-  }[category] || "Improve PlutoniX from evidence-backed signal pattern";
+    ui_ux: "Reduce UI friction in the affected PlutoMix workflow",
+    security: "Investigate security-sensitive PlutoMix issue with manual gates",
+    observability: "Improve observability for repeated PlutoMix issue"
+  }[category] || "Improve PlutoMix from evidence-backed signal pattern";
   return ImprovementAnalysisSchema.parse({
     id: createId("si_analysis"),
     schemaVersion: SELF_IMPROVEMENT_SCHEMA_VERSION,
@@ -78,7 +78,7 @@ export async function analyzeEvidencePackage(evidencePackage, { modelProfile = "
       }
     ] : [],
     riskLevel,
-    expectedBenefit: "Improve success rate, reliability, and/or efficiency while preserving existing PlutoniX contracts.",
+    expectedBenefit: "Improve success rate, reliability, and/or efficiency while preserving existing PlutoMix contracts.",
     validationPlan: [
       "Run existing backend tests for affected workflow when Node is available.",
       "Run feature inventory preservation check.",

@@ -1,8 +1,8 @@
 {
   "recordedAt": "2026-08-15T17:54:48Z",
-  "source": "plutonix-orchestrator",
-  "projectId": "plutonix",
-  "projectName": "PlutoniX",
+  "source": "plutomix-orchestrator",
+  "projectId": "plutomix",
+  "projectName": "PlutoMix",
   "instructionSummary": "Correct Architecture Branches so the complete source-backed feature hierarchy is shown chronologically in a force-directed D3 Canvas without hop filtering, using directed relationships and complexity-scaled circular icon nodes.",
   "candidateDevelopmentPaths": [
     "retain API-only route projection",

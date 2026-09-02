@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "plutonix/intel-agent-result/1.0",
-  "title": "PlutoniX Intel Agent Result",
+  "$id": "plutomix/intel-agent-result/1.0",
+  "title": "PlutoMix Intel Agent Result",
   "type": "object",
   "required": ["schemaVersion", "workflowId", "runId", "nodeId", "profileId", "role", "status", "findings", "proposals", "evidence", "artifacts", "changedFiles", "validationResults", "startedAt", "completedAt"],
   "properties": {

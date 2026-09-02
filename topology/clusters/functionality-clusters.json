@@ -24,7 +24,7 @@
       "reuse_potential_score": 8,
       "maintenance_cost_score": 5,
       "token_context_cost_score": 4,
-      "recommended_agent_owner": "plutonix-fullstack-agent",
+      "recommended_agent_owner": "plutomix-fullstack-agent",
       "review_agent_required": false,
       "human_approval_required": false
     },
@@ -52,7 +52,7 @@
       "reuse_potential_score": 9,
       "maintenance_cost_score": 6,
       "token_context_cost_score": 5,
-      "recommended_agent_owner": "plutonix-fullstack-agent",
+      "recommended_agent_owner": "plutomix-fullstack-agent",
       "review_agent_required": true,
       "human_approval_required": false
     },
@@ -76,7 +76,7 @@
       "reuse_potential_score": 8,
       "maintenance_cost_score": 5,
       "token_context_cost_score": 4,
-      "recommended_agent_owner": "plutonix-fullstack-agent",
+      "recommended_agent_owner": "plutomix-fullstack-agent",
       "review_agent_required": true,
       "human_approval_required": false
     },
@@ -103,7 +103,7 @@
       "reuse_potential_score": 8,
       "maintenance_cost_score": 4,
       "token_context_cost_score": 4,
-      "recommended_agent_owner": "plutonix-fullstack-agent",
+      "recommended_agent_owner": "plutomix-fullstack-agent",
       "review_agent_required": false,
       "human_approval_required": false
     },
@@ -132,7 +132,7 @@
       "reuse_potential_score": 7,
       "maintenance_cost_score": 5,
       "token_context_cost_score": 4,
-      "recommended_agent_owner": "plutonix-fullstack-agent",
+      "recommended_agent_owner": "plutomix-fullstack-agent",
       "review_agent_required": true,
       "human_approval_required": false
     }

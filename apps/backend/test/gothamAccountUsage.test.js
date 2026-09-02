@@ -12,13 +12,15 @@ function service(rows, { now = () => Date.UTC(2026, 0, 1), probes = {}, env = {}
     probeCodex: async () => probes.codex || { available: true, version: "codex 1.2.3" },
     probeCodexAccount: async () => probes.codexAccount || { available: false, error: "Codex app-server does not expose account data in this fixture." },
     probeCopilot: async () => probes.copilot || { available: false, error: "not installed" },
+    probeClaudeVersionRuntime: async () => probes.claudeVersion || { available: false, version: "", error: "not selected" },
+    probeClaudeAuthenticationRuntime: async () => probes.claudeAuthentication || { authenticated: false, status: "authentication_required", error: "not selected" },
     env,
     now,
     cacheMs: 30_000
   });
 }
 
-test("Gotham usage is owner-scoped and keeps a PlutoniX profile distinct from provider identity", async () => {
+test("Gotham usage is owner-scoped and keeps a PlutoMix profile distinct from provider identity", async () => {
   const snapshot = await service([{
     gothamUsageOwnerKey: ownerKey,
     provider: "codex",
@@ -30,7 +32,7 @@ test("Gotham usage is owner-scoped and keeps a PlutoniX profile distinct from pr
     totalTokens: 44,
     estimatedUsd: 0,
     createdAt: "2026-01-01T00:00:00.000Z",
-    source: "plutonix-codex-workflow",
+    source: "plutomix-codex-workflow",
     estimationMethod: "chars_div_4_local_estimate"
   }]).read({ owner, projectId: "project-a" });
 
@@ -63,6 +65,47 @@ test("Gotham usage does not leak another owner or project rows", async () => {
 
   assert.equal(snapshot.providers[0].conversation.availability, "unavailable");
   assert.equal(snapshot.providers[0].conversation.totalTokens, null);
+});
+
+test("the frozen Gotham provider selection controls Account & Usage independently of older Codex rows and cache entries", async () => {
+  const usage = service([{
+    gothamUsageOwnerKey: ownerKey,
+    provider: "codex",
+    projectId: "project-a",
+    buildId: "older-codex-build",
+    inputTokens: 12,
+    outputTokens: 8,
+    totalTokens: 20,
+    createdAt: "2026-01-01T00:00:00.000Z"
+  }], {
+    probes: {
+      claudeVersion: { available: true, status: "available", version: "2.1.251 (Claude Code)" },
+      claudeAuthentication: { authenticated: true, status: "ready", authMethod: "claude.ai", apiProvider: "firstParty" }
+    }
+  });
+  const claudeSnapshot = await usage.read({
+    owner,
+    projectId: "project-a",
+    selectedProvider: {
+      id: "claude",
+      profileId: "claude-work",
+      modelId: "claude-sonnet-4-6",
+      runtime: { providerId: "claude", profileId: "claude-work", workspaceId: "project-a", command: "/approved/claude", env: {} }
+    }
+  });
+  assert.equal(claudeSnapshot.activeProvider, "claude");
+  const claude = claudeSnapshot.providers.find((provider) => provider.id === "claude");
+  assert.equal(claude.label, "Anthropic Claude Code");
+  assert.equal(claude.active, true);
+  assert.equal(claude.connection.status, "connected");
+  assert.equal(claude.runtime.version, "2.1.251 (Claude Code)");
+  assert.equal(claude.runtime.configuredModel, "claude-sonnet-4-6");
+  assert.equal(claude.account.authenticationMode, "claude.ai");
+  assert.equal(claude.conversation.availability, "unavailable");
+  assert.equal(claudeSnapshot.providers.find((provider) => provider.id === "codex").conversation.buildId, "older-codex-build");
+
+  const codexSnapshot = await usage.read({ owner, projectId: "project-a", selectedProvider: { id: "codex", profileId: "codex-work", runtime: {} } });
+  assert.equal(codexSnapshot.activeProvider, "codex", "provider-specific cache keys must not return the prior Claude selection");
 });
 
 test("the latest cumulative run replaces older snapshots and manual refresh is throttled", async () => {
@@ -135,14 +178,14 @@ test("the exact configured local development principal may read the local Codex 
   };
   const snapshot = await service([], {
     probes: { codexAccount },
-    env: { NODE_ENV: "development", PLUTONIX_DEV_AUTH_ENABLED: "true", PLUTONIX_DEV_AUTH_SUBJECT: developmentOwner.subject }
+    env: { NODE_ENV: "development", PLUTOMIX_DEV_AUTH_ENABLED: "true", PLUTOMIX_DEV_AUTH_SUBJECT: developmentOwner.subject }
   }).read({ owner: developmentOwner, projectId: "project-a" });
   assert.equal(snapshot.providers[0].account.email, "codex-owner@example.test");
   assert.equal(snapshot.providers[0].account.plan, "plus");
 
   const denied = await service([], {
     probes: { codexAccount },
-    env: { NODE_ENV: "development", PLUTONIX_DEV_AUTH_ENABLED: "true", PLUTONIX_DEV_AUTH_SUBJECT: "local:someone-else" }
+    env: { NODE_ENV: "development", PLUTOMIX_DEV_AUTH_ENABLED: "true", PLUTOMIX_DEV_AUTH_SUBJECT: "local:someone-else" }
   }).read({ owner: developmentOwner, projectId: "project-a" });
   assert.equal(denied.providers[0].account.email, null);
 });

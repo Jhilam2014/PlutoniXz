@@ -13,7 +13,7 @@ test("Codex CLI probe reports an executable version", async () => {
 });
 
 test("Codex CLI probe reports a missing executable without treating it as configured", async () => {
-  const probe = await probeCodexCli("plutonix-codex-bin-that-does-not-exist");
+  const probe = await probeCodexCli("plutomix-codex-bin-that-does-not-exist");
   assert.equal(probe.available, false);
   assert.equal(probe.status, "unavailable");
 });
@@ -44,7 +44,7 @@ test("runtime resolver prefers Copilot when Codex is unavailable", () => {
 });
 
 test("Copilot CLI probing supports a direct copilot binary and uses the correct invocation contract", async () => {
-  const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "plutonix-copilot-probe-"));
+  const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "plutomix-copilot-probe-"));
   const fakeBin = path.join(tempDir, "copilot");
   await fs.writeFile(fakeBin, [
     "#!/bin/sh",
@@ -76,13 +76,13 @@ test("Copilot CLI probing supports a direct copilot binary and uses the correct 
 });
 
 test("repair completion checks parse pass and fail verdicts", () => {
-  assert.deepEqual(parseCompletionCheckResult("PLUTONIX_COMPLETION_CHECK: PASS\nPLUTONIX_REVIEW: PASS"), {
+  assert.deepEqual(parseCompletionCheckResult("PLUTOMIX_COMPLETION_CHECK: PASS\nPLUTOMIX_REVIEW: PASS"), {
     pass: true,
     status: "PASS",
     reason: ""
   });
 
-  assert.deepEqual(parseCompletionCheckResult("PLUTONIX_COMPLETION_CHECK: FAIL: still missing expected route\nPLUTONIX_REVIEW: FAIL: route missing"), {
+  assert.deepEqual(parseCompletionCheckResult("PLUTOMIX_COMPLETION_CHECK: FAIL: still missing expected route\nPLUTOMIX_REVIEW: FAIL: route missing"), {
     pass: false,
     status: "FAIL",
     reason: "still missing expected route"

@@ -1,9 +1,9 @@
 {
-  "workflow_id": "plutonix-mcp-console-trace-001",
+  "workflow_id": "plutomix-mcp-console-trace-001",
   "name": "MCP console-style process trace",
   "workflow_class": ["software_engineering", "dashboard_ui", "observability"],
   "task_size": "medium",
-  "objective": "Publish detailed MCP server process information in the PlutoniX runtime log after Generate is clicked.",
+  "objective": "Publish detailed MCP server process information in the PlutoMix runtime log after Generate is clicked.",
   "status": "completed",
   "created_at": "2026-06-25T10:08:26Z",
   "updated_at": "2026-06-25T10:08:26Z",

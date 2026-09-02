@@ -1,9 +1,0 @@
-{
-  "workflow_id": "plutonix-mcp-chat-001",
-  "registered_at": "2026-06-25T10:20:59Z",
-  "status": "completed",
-  "owner_agent": "project-execution-agent",
-  "reuse_decision": "exact_reuse",
-  "memory_sync_required": false,
-  "notes": "Reused existing execution agent for a focused chat UI and timestamp formatting update."
-}
