@@ -1,0 +1,15 @@
+services:
+  frontend:
+    ports: !override
+      - "127.0.0.1:5173:5173"
+    restart: unless-stopped
+
+  backend:
+    ports: !override
+      - "127.0.0.1:8080:8080"
+    restart: unless-stopped
+
+  generated-site:
+    ports: !override
+      - "127.0.0.1:5174:5174"
+    restart: unless-stopped
