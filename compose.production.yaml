@@ -9,8 +9,15 @@ services:
   backend:
     ports: !override
       - "127.0.0.1:8080:8080"
+
     environment:
       DECISION_CONTINUITY_DURABLE_WORKFLOWS: "true"
+      DECISION_CONTINUITY_DATABASE_URL: "${DECISION_CONTINUITY_DATABASE_URL:?Missing DECISION_CONTINUITY_DATABASE_URL}"
+      GOTHAM_STUDIO_REPOSITORY: "postgres"
+
+    volumes:
+      - /home/linuxuser/certs/vultr-postgres-ca.crt:/workspace/project/.runtime-secrets/vultr-postgres-ca.crt:ro
+
     restart: unless-stopped
 
   generated-site:
