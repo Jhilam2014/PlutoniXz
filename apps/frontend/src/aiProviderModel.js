@@ -26,7 +26,7 @@ export const providerStatusLabel = (status) => ({
 
 export const authMethodLabel = (method) => ({
   browser_oauth: "Browser sign-in",
-  device_code: "Device authorization",
+  device_code: "Device login",
   api_token: "API token",
   existing_session: "Existing CLI session",
   enterprise_login: "Organization / SSO",
@@ -66,6 +66,14 @@ export function defaultProviderAuthMethod(provider) {
   if (selectable.includes(provider?.preferredAuthMethod)) return provider.preferredAuthMethod;
   if (provider?.providerId === "codex" && selectable.includes("device_code")) return "device_code";
   return selectable[0] || "";
+}
+
+export function supportsCodexDeviceLogin(provider) {
+  return provider?.providerId === "codex"
+    && provider?.installation?.installed === true
+    && provider?.installation?.supportedVersion === true
+    && (provider?.capabilities || []).includes("login")
+    && (provider?.authMethods || []).includes("device_code");
 }
 
 export function activeProviderSummary(providers, preferredProviderId = "codex") {

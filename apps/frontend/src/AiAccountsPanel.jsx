@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Check, Copy, ExternalLink, KeyRound, Loader2, LogOut, Pencil, Plus, RefreshCw, ShieldAlert, ShieldCheck, Trash2, X } from "lucide-react";
 import { authFetch } from "./authClient.js";
-import { activeProviderSummary, authMethodLabel, consumeEphemeralSecret, defaultProviderAuthMethod, providerActions, providerLogoSource, providerStatusLabel, safeAccountLabel, safeLoginBody, safeProviderErrorMessage, TERMINAL_PROVIDER_LOGIN_STATES } from "./aiProviderModel.js";
+import { activeProviderSummary, authMethodLabel, consumeEphemeralSecret, defaultProviderAuthMethod, providerActions, providerLogoSource, providerStatusLabel, safeAccountLabel, safeLoginBody, safeProviderErrorMessage, supportsCodexDeviceLogin, TERMINAL_PROVIDER_LOGIN_STATES } from "./aiProviderModel.js";
 
 function initials(name) {
   return String(name || "AI").split(/\s+/).map((part) => part[0]).join("").slice(0, 2).toUpperCase();
@@ -75,8 +75,9 @@ export default function AiAccountsPanel({ backendUrl, workspaceId, currentUserId
   }, [backendUrl, workspaceId, loginSession, load]);
 
   const connectProvider = useMemo(() => providers.find((provider) => provider.providerId === connectProviderId) || null, [providers, connectProviderId]);
-  const startConnect = (provider) => {
-    const method = defaultProviderAuthMethod(provider);
+  const startConnect = (provider, requestedMethod = "") => {
+    const selectableMethods = (provider?.authMethods || []).filter((method) => !["existing_session", "unsupported"].includes(method));
+    const method = selectableMethods.includes(requestedMethod) ? requestedMethod : defaultProviderAuthMethod(provider);
     if (!method) return;
     setConnectProviderId(provider.providerId);
     setAuthMethod(method);
@@ -188,6 +189,7 @@ export default function AiAccountsPanel({ backendUrl, workspaceId, currentUserId
             const actions = providerActions(provider, { loginSession: loginSession?.providerId === provider.providerId ? loginSession : null });
             const active = provider.activeProfile;
             const selected = selectedProviderId === provider.providerId;
+            const deviceLoginAvailable = supportsCodexDeviceLogin(provider);
             return (
               <article key={provider.providerId} className={`ai-provider-card ${selected ? "selected" : ""}`}>
                 <div className="ai-provider-card-heading">
@@ -226,7 +228,12 @@ export default function AiAccountsPanel({ backendUrl, workspaceId, currentUserId
                 ) : null}
                 <p className="ai-provider-note">{provider.notes}</p>
                 <footer>
-                  {actions.some((action) => ["connect", "add_profile", "reconnect"].includes(action)) ? <button type="button" className="primary" onClick={() => startConnect(provider)}><Plus size={14} />{provider.profiles.length ? "Add profile" : "Connect"}</button> : null}
+                  {actions.some((action) => ["connect", "add_profile", "reconnect"].includes(action)) ? (
+                    <button type="button" className="primary" onClick={() => startConnect(provider, deviceLoginAvailable ? "device_code" : "")}>
+                      {deviceLoginAvailable ? <KeyRound size={14} /> : <Plus size={14} />}
+                      {deviceLoginAvailable ? (provider.profiles.length ? "Add with device login" : "Device login") : (provider.profiles.length ? "Add profile" : "Connect")}
+                    </button>
+                  ) : null}
                   {active?.status === "connected" && provider.gothamExecutionSupported ? <button type="button" className={selected ? "selected-provider" : ""} onClick={() => { onSelectedProviderChange?.(provider.providerId); onSummaryChange?.(activeProviderSummary(providers, provider.providerId)); }}>{selected ? "Selected for Gotham" : "Use for Gotham"}</button> : null}
                   {loginSession?.providerId === provider.providerId && !TERMINAL_PROVIDER_LOGIN_STATES.has(loginSession.state) ? <button type="button" onClick={cancelLogin}>Cancel login</button> : null}
                 </footer>
@@ -242,7 +249,7 @@ export default function AiAccountsPanel({ backendUrl, workspaceId, currentUserId
               {connectProvider.authMethods.filter((method) => !["existing_session", "unsupported"].includes(method)).map((method) => <option key={method} value={method}>{authMethodLabel(method)}{method === connectProvider.preferredAuthMethod ? " (recommended)" : ""}</option>)}
             </select></label>
             {connectProvider.authMethodNotice ? <small className="ai-auth-method-notice">{connectProvider.authMethodNotice}</small> : null}
-            {authMethod === "device_code" ? <small className="ai-auth-method-notice">Open the verification page and enter the one-time code shown here. No localhost callback is required.</small> : null}
+            {authMethod === "device_code" ? <small className="ai-auth-method-notice">Recommended for Vultr, Docker, and other hosted runtimes. Open the verification page and enter the one-time code shown here; no localhost callback is required.</small> : null}
             {authMethod === "api_token" ? <label>Provider token<input type="password" autoComplete="off" value={secret} onChange={(event) => setSecret(event.target.value)} required /><small>Sent once to the CLI over stdin. Never saved in browser storage, PlutoMix metadata, or audit events.</small></label> : null}
             {loginSession ? (
               <div className="ai-login-challenge">

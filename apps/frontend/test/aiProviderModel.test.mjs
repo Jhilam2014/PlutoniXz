@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import test from "node:test";
-import { activeProviderSummary, consumeEphemeralSecret, defaultProviderAuthMethod, freezeProviderSelection, PROVIDER_LOGO_SOURCES, providerActions, providerExecutionFromResult, providerLogoSource, providerStatusLabel, safeAccountLabel, safeLoginBody, safeProviderErrorMessage } from "../src/aiProviderModel.js";
+import { activeProviderSummary, consumeEphemeralSecret, defaultProviderAuthMethod, freezeProviderSelection, PROVIDER_LOGO_SOURCES, providerActions, providerExecutionFromResult, providerLogoSource, providerStatusLabel, safeAccountLabel, safeLoginBody, safeProviderErrorMessage, supportsCodexDeviceLogin } from "../src/aiProviderModel.js";
 
 const accountsPanelSource = fs.readFileSync(new URL("../src/AiAccountsPanel.jsx", import.meta.url), "utf8");
 const appSource = fs.readFileSync(new URL("../src/App.jsx", import.meta.url), "utf8");
@@ -82,6 +82,20 @@ test("Codex account setup defaults to device authorization in a headless runtime
     preferredAuthMethod: "device_code"
   }), "device_code");
   assert.equal(defaultProviderAuthMethod({ providerId: "claude", authMethods: ["browser_oauth"] }), "browser_oauth");
+});
+
+test("AI Accounts keeps an explicit Codex device-login action for a hosted runtime", () => {
+  const codex = {
+    providerId: "codex",
+    installation: { installed: true, supportedVersion: true },
+    capabilities: ["login", "multiple_profiles"],
+    authMethods: ["device_code", "api_token"]
+  };
+  assert.equal(supportsCodexDeviceLogin(codex), true);
+  assert.equal(supportsCodexDeviceLogin({ ...codex, providerId: "claude" }), false);
+  assert.equal(supportsCodexDeviceLogin({ ...codex, authMethods: ["api_token"] }), false);
+  assert.match(accountsPanelSource, /Add with device login/);
+  assert.match(accountsPanelSource, /Recommended for Vultr, Docker/);
 });
 
 test("Claude browser authorization opens the approved page and submits the one-time code separately", () => {
