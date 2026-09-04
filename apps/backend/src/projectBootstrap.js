@@ -614,7 +614,9 @@ export async function installProjectOrchestratorSeed(workspaceDir, options = {})
   }
   const emit = typeof options.emit === "function" ? options.emit : () => {};
   const sourceArchive = archivePath();
-  if (!(await fs.pathExists(sourceArchive))) throw new Error(`Project orchestrator archive was not found at ${sourceArchive}.`);
+  const sourceArchiveStat = await fs.stat(sourceArchive).catch(() => null);
+  if (!sourceArchiveStat) throw new Error(`Project orchestrator archive was not found at ${sourceArchive}.`);
+  if (!sourceArchiveStat.isFile()) throw new Error(`Project orchestrator archive must be a regular ZIP file: ${sourceArchive}.`);
   emit("orchestrator-archive-start", `Extracting project orchestrator from ${sourceArchive}`, {
     archivePath: sourceArchive,
     workspaceDir

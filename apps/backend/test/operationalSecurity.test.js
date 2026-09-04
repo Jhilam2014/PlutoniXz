@@ -1,4 +1,7 @@
 import assert from "node:assert/strict";
+import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
 import test from "node:test";
 import { assertProductionOperationalConfiguration, operationalTelemetry, redactOperational } from "../src/operationalSecurity.js";
 
@@ -21,6 +24,30 @@ test("production operational configuration refuses insecure authority, missing e
   assert.throws(() => assertProductionOperationalConfiguration({ NODE_ENV: "production", DECISION_CONTINUITY_DATABASE_URL: "postgres://db", PLUTOMIX_SECRETS_PROVIDER: "env", PLUTOMIX_ENCRYPTION_KEY_REF: "key", PLUTOMIX_EGRESS_ALLOWLIST: "https://allowed", DECISION_CONTINUITY_ADAPTER: "postgres", DECISION_CONTINUITY_DURABLE_WORKFLOWS: "true", PLUTOMIX_DEV_AUTH_ENABLED: "false" }), /managed secrets provider/i);
   assert.throws(() => assertProductionOperationalConfiguration({ NODE_ENV: "production", DECISION_CONTINUITY_DATABASE_URL: "postgres://db", PLUTOMIX_SECRETS_PROVIDER: "provider", PLUTOMIX_ENCRYPTION_KEY_REF: "key", PLUTOMIX_EGRESS_ALLOWLIST: "*", DECISION_CONTINUITY_ADAPTER: "postgres", DECISION_CONTINUITY_DURABLE_WORKFLOWS: "true", PLUTOMIX_DEV_AUTH_ENABLED: "false" }), /non-wildcard egress/i);
   assert.doesNotThrow(() => assertProductionOperationalConfiguration({ NODE_ENV: "production", DECISION_CONTINUITY_DATABASE_URL: "postgres://db", PLUTOMIX_SECRETS_PROVIDER: "provider", PLUTOMIX_ENCRYPTION_KEY_REF: "key-ref", PLUTOMIX_EGRESS_ALLOWLIST: "https://allowed", DECISION_CONTINUITY_ADAPTER: "postgres", DECISION_CONTINUITY_DURABLE_WORKFLOWS: "true", PLUTOMIX_DEV_AUTH_ENABLED: "false" }));
+});
+
+test("production operational configuration requires sslrootcert to be a regular file", () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "plutomix-postgres-ca-"));
+  const certificatePath = path.join(root, "vultr-postgres-ca.crt");
+  const environment = {
+    NODE_ENV: "production",
+    DECISION_CONTINUITY_DATABASE_URL: `postgres://db/defaultdb?sslmode=verify-full&sslrootcert=${encodeURIComponent(root)}`,
+    PLUTOMIX_SECRETS_PROVIDER: "provider",
+    PLUTOMIX_ENCRYPTION_KEY_REF: "key-ref",
+    PLUTOMIX_EGRESS_ALLOWLIST: "https://allowed",
+    DECISION_CONTINUITY_ADAPTER: "postgres",
+    DECISION_CONTINUITY_DURABLE_WORKFLOWS: "true",
+    PLUTOMIX_DEV_AUTH_ENABLED: "false"
+  };
+  try {
+    assert.throws(() => assertProductionOperationalConfiguration(environment), /must be a regular file/i);
+    environment.DECISION_CONTINUITY_DATABASE_URL = `postgres://db/defaultdb?sslmode=verify-full&sslrootcert=${encodeURIComponent(certificatePath)}`;
+    assert.throws(() => assertProductionOperationalConfiguration(environment), /was not found/i);
+    fs.writeFileSync(certificatePath, "test-ca-certificate\n");
+    assert.doesNotThrow(() => assertProductionOperationalConfiguration(environment));
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
 });
 
 test("fake scanner fixture is redacted from structured log, error, trace, and report-shaped records", () => {

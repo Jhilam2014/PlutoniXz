@@ -16,7 +16,15 @@ services:
       GOTHAM_STUDIO_REPOSITORY: "postgres"
 
     volumes:
-      - /home/linuxuser/certs/vultr-postgres-ca.crt:/workspace/project/.runtime-secrets/vultr-postgres-ca.crt:ro
+      - type: bind
+        source: ./.runtime-secrets/vultr-postgres-ca.crt
+        target: /workspace/project/.runtime-secrets/vultr-postgres-ca.crt
+        read_only: true
+        bind:
+          # A missing short-syntax bind source is silently created as a
+          # directory, which later makes node-postgres fail with EISDIR while
+          # opening the CA certificate. Fail during container creation instead.
+          create_host_path: false
 
     restart: unless-stopped
 

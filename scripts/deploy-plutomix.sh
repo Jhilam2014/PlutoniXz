@@ -41,6 +41,17 @@ done
 [[ -f "$PLUTOMIX_OVERRIDE_FILE" ]] || fail "Production override not found: $PLUTOMIX_OVERRIDE_FILE"
 [[ -f .env ]] || fail ".env not found in $PLUTOMIX_REPO_DIR"
 
+PLUTOMIX_POSTGRES_CA_PATH="$PLUTOMIX_REPO_DIR/.runtime-secrets/vultr-postgres-ca.crt"
+PLUTOMIX_ORCHESTRATOR_ARCHIVE_PATH="$PLUTOMIX_REPO_DIR/orchestrator-temp/orchestrator-agent-001-main.zip"
+[[ -f "$PLUTOMIX_POSTGRES_CA_PATH" ]] || \
+  fail "PostgreSQL CA certificate must be a regular file: $PLUTOMIX_POSTGRES_CA_PATH"
+[[ -r "$PLUTOMIX_POSTGRES_CA_PATH" ]] || \
+  fail "PostgreSQL CA certificate is not readable: $PLUTOMIX_POSTGRES_CA_PATH"
+[[ -f "$PLUTOMIX_ORCHESTRATOR_ARCHIVE_PATH" ]] || \
+  fail "Project orchestrator archive must be a regular file: $PLUTOMIX_ORCHESTRATOR_ARCHIVE_PATH"
+[[ -r "$PLUTOMIX_ORCHESTRATOR_ARCHIVE_PATH" ]] || \
+  fail "Project orchestrator archive is not readable: $PLUTOMIX_ORCHESTRATOR_ARCHIVE_PATH"
+
 PLUTOMIX_CURRENT_BRANCH="$(git branch --show-current)"
 [[ "$PLUTOMIX_CURRENT_BRANCH" == "$PLUTOMIX_BRANCH" ]] || \
   fail "Expected branch '$PLUTOMIX_BRANCH', but found '$PLUTOMIX_CURRENT_BRANCH'."

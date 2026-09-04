@@ -1,4 +1,5 @@
 import crypto from "node:crypto";
+import fs from "node:fs";
 
 const SECRET_KEY = /(?:authorization|cookie|password|secret|token|api[_-]?key|database[_-]?url|connection[_-]?string|private[_-]?key)/i;
 const SECRET_VALUE = /(?:bearer\s+[a-z0-9._~-]+|(?:sk|pk|apify_api)_[a-z0-9_-]+|postgres(?:ql)?:\/\/[^\s]+|AIza[\w-]{20,})/gi;
@@ -40,4 +41,22 @@ export function assertProductionOperationalConfiguration(env = process.env) {
   if (String(env.DECISION_CONTINUITY_ADAPTER || "postgres").toLowerCase() !== "postgres") throw new Error("Production refuses non-PostgreSQL authoritative storage.");
   if (String(env.DECISION_CONTINUITY_DURABLE_WORKFLOWS || "true").toLowerCase() !== "true") throw new Error("Production requires durable workflows.");
   if (String(env.PLUTOMIX_DEV_AUTH_ENABLED || "false").toLowerCase() === "true") throw new Error("Production refuses development authentication.");
+  let databaseUrl;
+  try {
+    databaseUrl = new URL(String(env.DECISION_CONTINUITY_DATABASE_URL || ""));
+  } catch {
+    throw new Error("Production DECISION_CONTINUITY_DATABASE_URL is invalid.");
+  }
+  const sslRootCertificate = databaseUrl.searchParams.get("sslrootcert");
+  if (sslRootCertificate) {
+    let certificateStat;
+    try {
+      certificateStat = fs.statSync(sslRootCertificate);
+    } catch {
+      throw new Error(`Production PostgreSQL CA certificate was not found at ${sslRootCertificate}.`);
+    }
+    if (!certificateStat.isFile()) {
+      throw new Error(`Production PostgreSQL CA certificate must be a regular file: ${sslRootCertificate}.`);
+    }
+  }
 }
