@@ -254,6 +254,86 @@ export class TenantGovernanceService {
     return tenant;
   }
 
+  async reconcileGooglePrincipalAliases(client, principals, candidate) {
+    if (principals.length !== 2) {
+      throw new TenantGovernanceError("Conflicting Google issuer aliases exist for this identity.", { code: "principal_alias_conflict", status: 403 });
+    }
+    if (principals.some((principal) => principal.principal_type !== "human")) {
+      throw new TenantGovernanceError("Conflicting Google issuer aliases exist for this identity.", { code: "principal_alias_conflict", status: 403 });
+    }
+    if (principals.some((principal) => principal.status !== "active")) {
+      throw new TenantGovernanceError("The Google identity is disabled and cannot be automatically onboarded.", { code: "principal_disabled", status: 403 });
+    }
+    const storedEmails = principals
+      .map((principal) => String(principal.email || "").trim().toLowerCase())
+      .filter(Boolean);
+    if (storedEmails.some((email) => email !== candidate.email)) {
+      throw new TenantGovernanceError("Conflicting Google issuer aliases exist for this identity.", { code: "principal_alias_conflict", status: 403 });
+    }
+
+    const keeper = principals.find((principal) => principal.issuer === candidate.issuer);
+    const duplicate = principals.find((principal) => principal.principal_id !== keeper?.principal_id);
+    if (!keeper || !duplicate) {
+      throw new TenantGovernanceError("Conflicting Google issuer aliases exist for this identity.", { code: "principal_alias_conflict", status: 403 });
+    }
+
+    const duplicateMemberships = await client.query(
+      `SELECT tenant_id, workspace_id, roles, service_scopes, status, created_at
+         FROM identity_tenant_memberships
+        WHERE principal_id = $1
+        FOR UPDATE`,
+      [duplicate.principal_id]
+    );
+    for (const membership of duplicateMemberships.rows) {
+      await client.query(
+        `INSERT INTO identity_tenant_memberships
+           (principal_id, tenant_id, workspace_id, roles, service_scopes, status, created_at, updated_at)
+         VALUES ($1,$2,$3,$4::text[],$5::text[],$6,$7,clock_timestamp())
+         ON CONFLICT (principal_id, tenant_id, workspace_id) DO UPDATE
+           SET roles = ARRAY(
+                 SELECT DISTINCT value
+                   FROM unnest(identity_tenant_memberships.roles || EXCLUDED.roles) AS values(value)
+                  ORDER BY value
+               ),
+               service_scopes = ARRAY(
+                 SELECT DISTINCT value
+                   FROM unnest(identity_tenant_memberships.service_scopes || EXCLUDED.service_scopes) AS values(value)
+                  ORDER BY value
+               ),
+               status = CASE
+                 WHEN identity_tenant_memberships.status = 'revoked' OR EXCLUDED.status = 'revoked' THEN 'revoked'
+                 ELSE 'active'
+               END,
+               created_at = LEAST(identity_tenant_memberships.created_at, EXCLUDED.created_at),
+               updated_at = clock_timestamp()`,
+        [
+          keeper.principal_id,
+          membership.tenant_id,
+          membership.workspace_id,
+          membership.roles || [],
+          membership.service_scopes || [],
+          membership.status,
+          membership.created_at
+        ]
+      );
+    }
+
+    await client.query("DELETE FROM identity_tenant_memberships WHERE principal_id = $1", [duplicate.principal_id]);
+    await client.query("UPDATE identity_access_audit SET principal_id = $1 WHERE principal_id = $2", [keeper.principal_id, duplicate.principal_id]);
+    await client.query("UPDATE tenant_enterprises SET created_by_principal_id = $1 WHERE created_by_principal_id = $2", [keeper.principal_id, duplicate.principal_id]);
+    await client.query("UPDATE tenant_applications SET owner_principal_id = $1 WHERE owner_principal_id = $2", [keeper.principal_id, duplicate.principal_id]);
+    await client.query("UPDATE tenant_team_invitations SET invited_by_principal_id = $1 WHERE invited_by_principal_id = $2", [keeper.principal_id, duplicate.principal_id]);
+    await client.query("UPDATE tenant_team_invitations SET accepted_by_principal_id = $1 WHERE accepted_by_principal_id = $2", [keeper.principal_id, duplicate.principal_id]);
+    await client.query("DELETE FROM identity_principals WHERE principal_id = $1", [duplicate.principal_id]);
+    await client.query(
+      `INSERT INTO identity_access_audit
+         (principal_id, tenant_id, workspace_id, action, outcome, code, metadata)
+       VALUES ($1,NULL,NULL,'identity.google_alias_reconcile','allowed','aliases_merged',$2::jsonb)`,
+      [keeper.principal_id, JSON.stringify({ retainedIssuer: candidate.issuer, removedIssuer: duplicate.issuer })]
+    );
+    return keeper;
+  }
+
   async onboardGoogleIdentity(identity = {}) {
     const policy = resolveGoogleJitOnboardingPolicy(this.env);
     if (!policy.enabled) {
@@ -265,15 +345,18 @@ export class TenantGovernanceService {
       return await this.transaction(async (client) => {
         const tenant = await this.resolveConfiguredTenant(client, policy);
         await client.query("SELECT pg_advisory_xact_lock(hashtextextended($1, $2))", [`${candidate.issuer}:${candidate.subject}`, 1604]);
-        const existingPrincipal = await client.query(
-          `SELECT principal_id, principal_type, status
+        let existingPrincipal = await client.query(
+          `SELECT principal_id, issuer, principal_type, status, email
              FROM identity_principals
             WHERE issuer = ANY($1::text[]) AND subject = $2
             FOR UPDATE`,
           [googleIssuerAliases(candidate.issuer), candidate.subject]
         );
+        let aliasesReconciled = false;
         if (existingPrincipal.rowCount > 1) {
-          throw new TenantGovernanceError("Conflicting Google issuer aliases exist for this identity.", { code: "principal_alias_conflict", status: 403 });
+          const retained = await this.reconcileGooglePrincipalAliases(client, existingPrincipal.rows, candidate);
+          existingPrincipal = { rowCount: 1, rows: [retained] };
+          aliasesReconciled = true;
         }
         if (existingPrincipal.rowCount && (existingPrincipal.rows[0].principal_type !== "human" || existingPrincipal.rows[0].status !== "active")) {
           throw new TenantGovernanceError("The Google identity is disabled and cannot be automatically onboarded.", { code: "principal_disabled", status: 403 });
@@ -358,7 +441,7 @@ export class TenantGovernanceService {
           }
         }
 
-        const provisioned = principalCreated || membershipCreated || roleAdded || platformAdminCreated;
+        const provisioned = principalCreated || aliasesReconciled || membershipCreated || roleAdded || platformAdminCreated;
         if (provisioned) {
           await client.query(
             `INSERT INTO identity_access_audit

@@ -109,6 +109,7 @@ test("Google JIT onboarding provisions least privilege and binds platform admini
   const revokedSubject = `${Date.now()}04`;
   const disabledSubject = `${Date.now()}05`;
   const legacyIssuerSubject = `${Date.now()}06`;
+  const aliasMergeSubject = `${Date.now()}07`;
   const environment = {
     PLUTOMIX_GOOGLE_JIT_ONBOARDING_ENABLED: "true",
     PLUTOMIX_GOOGLE_JIT_TENANT_ID: tenantId,
@@ -189,6 +190,60 @@ test("Google JIT onboarding provisions least privilege and binds platform admini
   assert.equal(migratedLegacyIssuer.principalId, legacyIssuerPrincipalId);
   assert.equal((await pool.query("SELECT issuer FROM identity_principals WHERE principal_id = $1", [legacyIssuerPrincipalId])).rows[0].issuer, "https://accounts.google.com");
 
+  const canonicalAliasPrincipalId = `principal-canonical-alias-${runId}`;
+  const legacyAliasPrincipalId = `principal-legacy-alias-${runId}`;
+  const aliasEmail = `alias-${runId}@example.test`;
+  principalIds.push(canonicalAliasPrincipalId, legacyAliasPrincipalId);
+  await identities.provisionPrincipal({
+    id: canonicalAliasPrincipalId,
+    issuer: "https://accounts.google.com",
+    subject: aliasMergeSubject,
+    displayName: "Canonical alias member",
+    email: aliasEmail
+  });
+  await identities.provisionPrincipal({
+    id: legacyAliasPrincipalId,
+    issuer: "accounts.google.com",
+    subject: aliasMergeSubject,
+    displayName: "Legacy alias member",
+    email: aliasEmail
+  });
+  await identities.provisionMembership({
+    principalId: canonicalAliasPrincipalId,
+    tenantId,
+    roles: ["team_member"]
+  });
+  await identities.provisionMembership({
+    principalId: legacyAliasPrincipalId,
+    tenantId,
+    roles: ["auditor"]
+  });
+  await identities.recordAudit({
+    principalId: legacyAliasPrincipalId,
+    tenantId,
+    action: "fixture.legacy_alias",
+    outcome: "allowed",
+    code: "fixture"
+  });
+  const reconciledAliases = await service.onboardGoogleIdentity({
+    issuer: "https://accounts.google.com",
+    subject: aliasMergeSubject,
+    email: aliasEmail,
+    emailVerified: true,
+    displayName: "Reconciled alias member"
+  });
+  assert.equal(reconciledAliases.principalId, canonicalAliasPrincipalId);
+  assert.equal(reconciledAliases.provisioned, true);
+  assert.deepEqual(new Set(reconciledAliases.roles), new Set(["auditor", "team_member"]));
+  assert.equal((await pool.query(
+    "SELECT count(*)::int AS count FROM identity_principals WHERE issuer = ANY($1::text[]) AND subject = $2",
+    [["https://accounts.google.com", "accounts.google.com"], aliasMergeSubject]
+  )).rows[0].count, 1);
+  assert.equal((await pool.query(
+    "SELECT principal_id FROM identity_access_audit WHERE action = 'fixture.legacy_alias' AND tenant_id = $1",
+    [tenantId]
+  )).rows[0].principal_id, canonicalAliasPrincipalId);
+
   const revokedPrincipalId = `principal-revoked-${runId}`;
   principalIds.push(revokedPrincipalId);
   await identities.provisionPrincipal({
@@ -220,7 +275,8 @@ test("Google JIT onboarding provisions least privilege and binds platform admini
   )).rowCount, 0);
 
   const disabledPrincipalId = `principal-disabled-${runId}`;
-  principalIds.push(disabledPrincipalId);
+  const activeDisabledAliasPrincipalId = `principal-active-disabled-alias-${runId}`;
+  principalIds.push(disabledPrincipalId, activeDisabledAliasPrincipalId);
   await identities.provisionPrincipal({
     id: disabledPrincipalId,
     issuer: "accounts.google.com",
@@ -228,6 +284,13 @@ test("Google JIT onboarding provisions least privilege and binds platform admini
     displayName: "Disabled JIT member",
     email: `disabled-${runId}@example.test`,
     status: "disabled"
+  });
+  await identities.provisionPrincipal({
+    id: activeDisabledAliasPrincipalId,
+    issuer: "https://accounts.google.com",
+    subject: disabledSubject,
+    displayName: "Active disabled-alias member",
+    email: `disabled-${runId}@example.test`
   });
   await assert.rejects(
     service.onboardGoogleIdentity({

@@ -28,6 +28,8 @@ PLUTOMIX_GOOGLE_JIT_ADMIN_EMAIL=admin@example.com
 
 `PLUTOMIX_GOOGLE_JIT_TENANT_ID` may resolve an existing logical tenant ID or instance key. Prefer the logical ID and set the expected instance key as a deployment guard. Enabling open JIT onboarding grants every verified Google account membership in the configured tenant; deployments that need restricted admission should leave it disabled and use the invitation flow. Login is bounded per verified subject, provisioning is idempotent, and only actual grants create onboarding audit rows.
 
+Google may represent the same verified subject with either `https://accounts.google.com` or `accounts.google.com`. During JIT onboarding, two active human principal rows for those aliases are transactionally reconciled into the configured issuer. Memberships and foreign-key references are retained, roles are combined, and a revoked membership remains revoked. Reconciliation fails closed when an alias is disabled, belongs to a non-human principal, or carries a different stored email.
+
 The application limit runs after signature verification so its key is a trusted Google subject. The public reverse proxy must additionally rate-limit `POST /api/auth/google` by source before it reaches Node, which bounds invalid-token signature work without trusting caller-supplied forwarding headers.
 
 Changing the configured administrator prevents the former identity from using the platform-admin endpoint, but does not silently remove an existing tenant role. Rotate administrators as an explicit deprovisioning operation: revoke the former principal's wildcard membership or remove `tenant_admin` according to your tenant ownership policy, disable its platform-admin record, then deploy the new exact identity triple.
