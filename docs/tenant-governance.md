@@ -30,6 +30,8 @@ PLUTOMIX_GOOGLE_JIT_ADMIN_EMAIL=admin@example.com
 
 Google may represent the same verified subject with either `https://accounts.google.com` or `accounts.google.com`. During JIT onboarding, two active human principal rows for those aliases are transactionally reconciled into the configured issuer. Memberships and foreign-key references are retained, roles are combined, and a revoked membership remains revoked. Reconciliation fails closed when an alias is disabled, belongs to a non-human principal, or carries a different stored email.
 
+The frontend retains the signed credential and onboarding result in memory only. When onboarding resolves exactly one tenant, authenticated API requests include that server-issued tenant as `X-PlutoMix-Tenant-ID`; missing or ambiguous tenant results do not produce a tenant header.
+
 The application limit runs after signature verification so its key is a trusted Google subject. The public reverse proxy must additionally rate-limit `POST /api/auth/google` by source before it reaches Node, which bounds invalid-token signature work without trusting caller-supplied forwarding headers.
 
 Changing the configured administrator prevents the former identity from using the platform-admin endpoint, but does not silently remove an existing tenant role. Rotate administrators as an explicit deprovisioning operation: revoke the former principal's wildcard membership or remove `tenant_admin` according to your tenant ownership policy, disable its platform-admin record, then deploy the new exact identity triple.

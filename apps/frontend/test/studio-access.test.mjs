@@ -51,8 +51,7 @@ test("Studio presents one Google SSO action and uses the verified Google name as
 
 test("an explicitly enabled development build uses its provisioned subject for strict APIs", () => {
   assert.ok(authClientSource.includes('VITE_PLUTOMIX_DEV_AUTH_SUBJECT || "local:local-plutomix-user"'));
-  const devHeader = 'if (developmentAuthEnabled && developmentSubject) return { "x-plutomix-dev-subject": developmentSubject };';
-  const bearerHeader = 'if (bearerToken) return { authorization: `Bearer ${bearerToken}` };';
-  assert.ok(authClientSource.indexOf(devHeader) >= 0);
-  assert.ok(authClientSource.indexOf(devHeader) < authClientSource.indexOf(bearerHeader));
+  assert.match(authClientSource, /developmentAuthEnabled && developmentSubject[\s\S]*"x-plutomix-dev-subject": developmentSubject/);
+  assert.match(authClientSource, /bearerToken[\s\S]*authorization: `Bearer \${bearerToken}`/);
+  assert.match(authClientSource, /tenantContextHeaders\(currentUser\)/);
 });

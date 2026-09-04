@@ -8,6 +8,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const appSource = fs.readFileSync(path.join(root, "src", "App.jsx"), "utf8");
 const panelSource = fs.readFileSync(path.join(root, "src", "TenantGovernancePanel.jsx"), "utf8");
 const platformPanelSource = fs.readFileSync(path.join(root, "src", "PlatformAdminPanel.jsx"), "utf8");
+const authClientSource = fs.readFileSync(path.join(root, "src", "authClient.js"), "utf8");
 
 test("new project creation requires an enterprise label and explicit agent catalog", () => {
   assert.match(appSource, /enterpriseLabel\.trim\(\)\.length > 1/);
@@ -27,6 +28,7 @@ test("tenant administration uses governed APIs and shows the two-enterprise limi
 
 test("Google sign-in consumes server-controlled onboarding and exposes an authorized platform tenant table", () => {
   assert.match(appSource, /onboarding:\s*data\.onboarding/);
+  assert.match(authClientSource, /tenantContextHeaders\(currentUser\)/);
   assert.match(appSource, /new URL\(`\$\{BACKEND_URL\}\/api\/platform-admin\/overview`\)/);
   assert.match(appSource, /url\.searchParams\.set\("limit", "25"\)/);
   assert.match(appSource, /verifiedIdentityFetch\(url, \{ signal: controller\.signal \}\)/);

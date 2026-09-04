@@ -1,3 +1,5 @@
+import { tenantContextHeaders } from "./authContext.js";
+
 // Deliberately memory-only: a bearer credential must not be persisted in
 // localStorage, sessionStorage, indexedDB, or a client-readable cookie.
 const hotAuthState = import.meta.hot?.data?.authState;
@@ -82,9 +84,12 @@ export function clearUser() {
 }
 
 export function authHeaders() {
-  if (developmentAuthEnabled && developmentSubject) return { "x-plutomix-dev-subject": developmentSubject };
-  if (bearerToken) return { authorization: `Bearer ${bearerToken}` };
-  return {};
+  const identityHeaders = developmentAuthEnabled && developmentSubject
+    ? { "x-plutomix-dev-subject": developmentSubject }
+    : bearerToken
+      ? { authorization: `Bearer ${bearerToken}` }
+      : {};
+  return { ...identityHeaders, ...tenantContextHeaders(currentUser) };
 }
 
 export function authFetch(pathOrUrl, options = {}) {
@@ -100,7 +105,7 @@ export function authFetch(pathOrUrl, options = {}) {
 // inherit the local development membership compatibility subject.
 export function verifiedIdentityFetch(pathOrUrl, options = {}) {
   const headers = {
-    ...(bearerToken ? { authorization: `Bearer ${bearerToken}` } : authHeaders()),
+    ...(bearerToken ? { authorization: `Bearer ${bearerToken}`, ...tenantContextHeaders(currentUser) } : authHeaders()),
     ...(options.headers || {})
   };
   return fetch(pathOrUrl, { ...options, credentials: "omit", headers });
