@@ -10,7 +10,7 @@ import { createPlutoMixOrchestrationEnvelope } from "../src/plutomixAuthority.js
 import { formatProjectOrchestratorInstruction, inferGothamRequestIntent } from "../src/orchestratorAgent.js";
 import { runProjectOrchestratorBootstrap } from "../src/projectBootstrap.js";
 import { buildProjectAgentTopology, syncProjectAgentTopology } from "../src/projectAgents.js";
-import { createProject, deleteProject, getProject, projectProvenance, shouldSkipProjectArtifact, updateProjectIdentity } from "../src/projectManager.js";
+import { createProject, deleteProject, getProject, projectPreviewUrl, projectProvenance, shouldSkipProjectArtifact, updateProjectIdentity } from "../src/projectManager.js";
 
 test("provider runtime event aliases cover the complete neutral activity contract", () => {
   assert.equal(providerNeutralRuntimeEventType("claude-started"), "provider-start");
@@ -63,6 +63,25 @@ test("project provenance survives runtime status and topology refreshes", () => 
     topology
   );
   assert.equal(refreshedTopology.project.origin, "imported");
+});
+
+test("renders an externally routable project preview URL from the production template", (context) => {
+  const previousTemplate = process.env.PROJECT_PREVIEW_URL_TEMPLATE;
+  const previousHost = process.env.PROJECT_HOST_URL;
+  context.after(() => {
+    if (previousTemplate === undefined) delete process.env.PROJECT_PREVIEW_URL_TEMPLATE;
+    else process.env.PROJECT_PREVIEW_URL_TEMPLATE = previousTemplate;
+    if (previousHost === undefined) delete process.env.PROJECT_HOST_URL;
+    else process.env.PROJECT_HOST_URL = previousHost;
+  });
+
+  process.env.PROJECT_PREVIEW_URL_TEMPLATE = "https://p{port}.preview.plutomix.in";
+  assert.equal(projectPreviewUrl(5300), "https://p5300.preview.plutomix.in");
+  process.env.PROJECT_PREVIEW_URL_TEMPLATE = "https://preview.plutomix.in";
+  assert.throws(() => projectPreviewUrl(5300), /must contain the \{port\} placeholder/);
+  delete process.env.PROJECT_PREVIEW_URL_TEMPLATE;
+  process.env.PROJECT_HOST_URL = "http://localhost/";
+  assert.equal(projectPreviewUrl(5300), "http://localhost:5300");
 });
 
 test("rejects a directory used as the project ignore registry with an actionable error", async (context) => {

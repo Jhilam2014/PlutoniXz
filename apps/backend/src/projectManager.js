@@ -111,6 +111,31 @@ function projectHostUrl() {
   return process.env.PROJECT_HOST_URL || "http://localhost";
 }
 
+export function projectPreviewUrl(port) {
+  const numericPort = Number(port);
+  if (!Number.isInteger(numericPort) || numericPort < 1 || numericPort > 65535) {
+    throw new Error(`Invalid project preview port: ${port}.`);
+  }
+  const template = String(process.env.PROJECT_PREVIEW_URL_TEMPLATE || "").trim();
+  if (template) {
+    if (!template.includes("{port}")) {
+      throw new Error("PROJECT_PREVIEW_URL_TEMPLATE must contain the {port} placeholder.");
+    }
+    const rendered = template.replaceAll("{port}", String(numericPort));
+    let parsed;
+    try {
+      parsed = new URL(rendered);
+    } catch {
+      throw new Error("PROJECT_PREVIEW_URL_TEMPLATE must produce an absolute HTTP or HTTPS URL.");
+    }
+    if (!["http:", "https:"].includes(parsed.protocol)) {
+      throw new Error("PROJECT_PREVIEW_URL_TEMPLATE must produce an absolute HTTP or HTTPS URL.");
+    }
+    return rendered;
+  }
+  return `${projectHostUrl().replace(/\/$/, "")}:${numericPort}`;
+}
+
 function registryPath() {
   return process.env.PROJECTS_REGISTRY_PATH || "/workspace/project/runtime/projects.json";
 }
@@ -124,7 +149,7 @@ function parentGitignorePath() {
 }
 
 function projectUrl(port) {
-  return `${projectHostUrl()}:${port}`;
+  return projectPreviewUrl(port);
 }
 
 function projectRuntimeMode() {
@@ -1244,6 +1269,12 @@ async function resolveDockerProjectConfiguration(project) {
   const hostWorkspace = path.join(workspaceMount.Source, relativeWorkspace);
   const networkName = process.env.PROJECT_RUNTIME_NETWORK || Object.keys(backend.NetworkSettings?.Networks || {})[0];
   if (!networkName) throw new Error("PlutoMix backend is not attached to a Docker network.");
+  const runtimeHostIp = String(process.env.PROJECT_RUNTIME_HOST_IP || "0.0.0.0").trim();
+  if (!net.isIP(runtimeHostIp)) throw new Error("PROJECT_RUNTIME_HOST_IP must be a valid IPv4 or IPv6 address.");
+  const previewAllowedHost = String(process.env.PROJECT_PREVIEW_ALLOWED_HOST || "").trim();
+  if (/[\r\n=]/.test(previewAllowedHost)) throw new Error("PROJECT_PREVIEW_ALLOWED_HOST is invalid.");
+  const runtimeEnvironment = ["CI=1", "NO_COLOR=1"];
+  if (previewAllowedHost) runtimeEnvironment.push(`__VITE_ADDITIONAL_SERVER_ALLOWED_HOSTS=${previewAllowedHost}`);
 
   return {
     Image: process.env.PROJECT_RUNTIME_IMAGE || backend.Config?.Image,
@@ -1254,7 +1285,7 @@ async function resolveDockerProjectConfiguration(project) {
       "npm install --include=optional --prefer-offline --no-audit --no-fund && " +
         `npm run dev -- --host 0.0.0.0 --port ${project.port}`
     ],
-    Env: ["CI=1", "NO_COLOR=1"],
+    Env: runtimeEnvironment,
     ExposedPorts: { [`${project.port}/tcp`]: {} },
     Labels: {
       "com.plutomix.runtime": "project",
@@ -1271,7 +1302,7 @@ async function resolveDockerProjectConfiguration(project) {
       ],
       NetworkMode: networkName,
       PortBindings: {
-        [`${project.port}/tcp`]: [{ HostIp: "0.0.0.0", HostPort: String(project.port) }]
+        [`${project.port}/tcp`]: [{ HostIp: runtimeHostIp, HostPort: String(project.port) }]
       },
       RestartPolicy: { Name: "unless-stopped", MaximumRetryCount: 0 }
     }
@@ -1280,12 +1311,14 @@ async function resolveDockerProjectConfiguration(project) {
 
 function hasExpectedDockerConfiguration(container, project) {
   const portBinding = container.HostConfig?.PortBindings?.[`${project.port}/tcp`]?.[0];
+  const expectedHostIp = String(process.env.PROJECT_RUNTIME_HOST_IP || "0.0.0.0").trim();
   const dependencyMount = (container.Mounts || []).find(
     (mount) => mount.Destination === path.join(project.workspaceDir, "node_modules") && mount.Type === "volume"
   );
   return (
     container.Config?.WorkingDir === project.workspaceDir &&
     portBinding?.HostPort === String(project.port) &&
+    (portBinding?.HostIp || "0.0.0.0") === expectedHostIp &&
     Boolean(dependencyMount)
   );
 }

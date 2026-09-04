@@ -77,7 +77,7 @@ test("creates and starts a missing project container on its assigned port", asyn
         JSON.stringify({
           State: { Running: containerStarted },
           Config: { WorkingDir: "/workspace/money/demo" },
-          HostConfig: { PortBindings: { "5307/tcp": [{ HostIp: "0.0.0.0", HostPort: "5307" }] } },
+          HostConfig: { PortBindings: { "5307/tcp": [{ HostIp: "127.0.0.1", HostPort: "5307" }] } },
           Mounts: [
             {
               Type: "volume",
@@ -127,8 +127,14 @@ test("creates and starts a missing project container on its assigned port", asyn
   });
 
   await new Promise((resolve) => server.listen(socketPath, resolve));
+  const previousRuntimeHostIp = process.env.PROJECT_RUNTIME_HOST_IP;
+  const previousPreviewAllowedHost = process.env.PROJECT_PREVIEW_ALLOWED_HOST;
   context.after(async () => {
     await new Promise((resolve) => server.close(resolve));
+    if (previousRuntimeHostIp === undefined) delete process.env.PROJECT_RUNTIME_HOST_IP;
+    else process.env.PROJECT_RUNTIME_HOST_IP = previousRuntimeHostIp;
+    if (previousPreviewAllowedHost === undefined) delete process.env.PROJECT_PREVIEW_ALLOWED_HOST;
+    else process.env.PROJECT_PREVIEW_ALLOWED_HOST = previousPreviewAllowedHost;
     await fs.rm(temporaryRoot, { recursive: true, force: true });
   });
 
@@ -137,6 +143,8 @@ test("creates and starts a missing project container on its assigned port", asyn
   process.env.PLUTOMIX_BACKEND_CONTAINER = "plutomix-backend";
   delete process.env.PROJECT_RUNTIME_IMAGE;
   delete process.env.PROJECT_RUNTIME_NETWORK;
+  process.env.PROJECT_RUNTIME_HOST_IP = "127.0.0.1";
+  process.env.PROJECT_PREVIEW_ALLOWED_HOST = ".preview.plutomix.in";
 
   const runtime = await startProject({
     id: "demo-ABC123",
@@ -150,8 +158,9 @@ test("creates and starts a missing project container on its assigned port", asyn
   assert.equal(containerStarted, true);
   assert.equal(createConfiguration.Image, "plutomix-backend:test");
   assert.deepEqual(createConfiguration.HostConfig.PortBindings["5307/tcp"], [
-    { HostIp: "0.0.0.0", HostPort: "5307" }
+    { HostIp: "127.0.0.1", HostPort: "5307" }
   ]);
+  assert.ok(createConfiguration.Env.includes("__VITE_ADDITIONAL_SERVER_ALLOWED_HOSTS=.preview.plutomix.in"));
   assert.deepEqual(createConfiguration.HostConfig.Binds, [
     `${path.join(hostMoneyRoot, "demo")}:/workspace/money/demo`
   ]);

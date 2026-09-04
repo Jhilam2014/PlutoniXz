@@ -15,6 +15,10 @@ services:
       DECISION_CONTINUITY_DATABASE_URL: "${DECISION_CONTINUITY_DATABASE_URL:?Missing DECISION_CONTINUITY_DATABASE_URL}"
       GOTHAM_STUDIO_REPOSITORY: "postgres"
       PLUTOMIX_RUNTIME_ROOT: /workspace/runtime
+      PROJECT_PREVIEW_URL_TEMPLATE: "${PROJECT_PREVIEW_URL_TEMPLATE:-https://p{port}.preview.plutomix.in}"
+      PROJECT_PREVIEW_ALLOWED_HOST: "${PROJECT_PREVIEW_ALLOWED_HOST:-.preview.plutomix.in}"
+      # Managed Vite ports are reachable only through the host Nginx proxy.
+      PROJECT_RUNTIME_HOST_IP: "127.0.0.1"
       # Generated projects live outside the read-only source tree in production.
       # Keep the compatibility ignore registry in runtime as well; the base
       # /workspace/.gitignore bind may resolve to a directory on a fresh host.
