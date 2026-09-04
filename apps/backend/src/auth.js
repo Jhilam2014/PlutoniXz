@@ -8,7 +8,14 @@ const ALGORITHMS = Object.freeze({
   ES384: { digest: "sha384", kty: "EC" },
   ES512: { digest: "sha512", kty: "EC" }
 });
+const GOOGLE_IDENTITY_ISSUERS = new Set(["https://accounts.google.com", "accounts.google.com"]);
 const jwksCache = new Map();
+
+export function identityIssuerAliases(value) {
+  const issuer = String(value || "").trim().replace(/\/$/, "");
+  if (!GOOGLE_IDENTITY_ISSUERS.has(issuer)) return issuer ? [issuer] : [];
+  return [issuer, ...[...GOOGLE_IDENTITY_ISSUERS].filter((candidate) => candidate !== issuer)];
+}
 
 export class AuthenticationError extends Error {
   constructor(message = "Authentication failed.", { code = "authentication_failed", status = 401 } = {}) {
@@ -70,8 +77,14 @@ export function assertProductionIdentityConfiguration(env = process.env) {
   if (String(env.PLUTOMIX_AUTH_MODE || "oidc").toLowerCase() !== "oidc") {
     throw new Error("Production requires PLUTOMIX_AUTH_MODE=oidc.");
   }
-  required(env, "OIDC_ISSUER");
-  required(env, "OIDC_AUDIENCE");
+  const issuer = required(env, "OIDC_ISSUER").replace(/\/$/, "");
+  const audiences = required(env, "OIDC_AUDIENCE").split(",").map((value) => value.trim()).filter(Boolean);
+  if (GOOGLE_IDENTITY_ISSUERS.has(issuer)) {
+    const googleClientId = String(env.GOOGLE_CLIENT_ID || env.VITE_GOOGLE_CLIENT_ID || "").trim();
+    if (!googleClientId || !audiences.includes(googleClientId)) {
+      throw new Error("Google OIDC requires GOOGLE_CLIENT_ID to be included in OIDC_AUDIENCE.");
+    }
+  }
   if (!String(env.PLUTOMIX_CORS_ORIGINS || "").split(",").map((value) => value.trim()).filter(Boolean).length) {
     throw new Error("Production requires an explicit PLUTOMIX_CORS_ORIGINS allowlist for browser bearer requests.");
   }
@@ -235,8 +248,12 @@ function googleIdentityEnvironment(credential, env = process.env) {
   // Google's two documented issuer spellings. Signature and claim validation
   // still happen below against Google's fixed JWKS endpoint and this client ID.
   const issuer = String(parseJwt(credential).claims.iss || "");
-  if (!["https://accounts.google.com", "accounts.google.com"].includes(issuer)) {
+  if (!GOOGLE_IDENTITY_ISSUERS.has(issuer)) {
     throw new AuthenticationError("The Google identity token issuer is not accepted.", { code: "invalid_issuer" });
+  }
+  const configuredIssuer = String(env.OIDC_ISSUER || "").trim().replace(/\/$/, "");
+  if (GOOGLE_IDENTITY_ISSUERS.has(configuredIssuer) && configuredIssuer !== issuer) {
+    throw new AuthenticationError("The Google identity token issuer does not match the configured OIDC issuer.", { code: "invalid_issuer" });
   }
 
   return {
@@ -272,6 +289,10 @@ export async function externalIdentityFromRequest(req, { env = process.env } = {
   if (match) {
     const hasEnterpriseOidc = Boolean(String(env.OIDC_ISSUER || "").trim() && String(env.OIDC_AUDIENCE || "").trim());
     const hasGoogleIdentity = Boolean(String(env.GOOGLE_CLIENT_ID || env.VITE_GOOGLE_CLIENT_ID || "").trim());
+    const configuredIssuer = String(env.OIDC_ISSUER || "").trim().replace(/\/$/, "");
+    if (hasGoogleIdentity && GOOGLE_IDENTITY_ISSUERS.has(configuredIssuer)) {
+      return verifyGoogleIdentityToken(match[1], { env });
+    }
     if (!isProduction(env) && !hasEnterpriseOidc && hasGoogleIdentity) {
       return verifyGoogleIdentityToken(match[1], { env });
     }
@@ -313,6 +334,10 @@ export function userFromRequest(req) {
 
 export async function authenticateGooglePayload(body = {}, { env = process.env } = {}) {
   const identity = await verifyGoogleIdentityToken(body.credential, { env });
+  return googleUserFromIdentity(identity);
+}
+
+export function googleUserFromIdentity(identity = {}) {
   return { id: `${identity.issuer}:${identity.subject}`, name: identity.displayName || "Verified user", email: identity.email, picture: identity.picture, authProvider: "oidc" };
 }
 

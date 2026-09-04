@@ -2,6 +2,8 @@ import crypto from "node:crypto";
 
 const AGENT_SOURCES = new Set(["global_community", "enterprise"]);
 const INVITABLE_ROLES = new Set(["team_member", "operator", "proposer", "auditor"]);
+const GOOGLE_IDENTITY_ISSUERS = new Set(["https://accounts.google.com", "accounts.google.com"]);
+const TENANT_INSTANCE_KEY_PATTERN = /^tenant-[a-f0-9]{16}$/;
 
 export class TenantGovernanceError extends Error {
   constructor(message, { code = "tenant_governance_error", status = 400, details } = {}) {
@@ -23,6 +25,94 @@ function emailKey(value) {
     throw new TenantGovernanceError("A valid team member email address is required.", { code: "invalid_email" });
   }
   return email;
+}
+
+function configurationError(message) {
+  return new TenantGovernanceError(message, { code: "google_jit_configuration_invalid", status: 503 });
+}
+
+function googleIssuerAliases(value) {
+  const issuer = String(value || "").trim();
+  if (!GOOGLE_IDENTITY_ISSUERS.has(issuer)) return issuer ? [issuer] : [];
+  return [issuer, ...[...GOOGLE_IDENTITY_ISSUERS].filter((candidate) => candidate !== issuer)];
+}
+
+function pageInteger(value, fallback, { name, min, max }) {
+  const normalized = value === undefined || value === null || value === "" ? fallback : Number(value);
+  if (!Number.isInteger(normalized) || normalized < min || normalized > max) {
+    throw new TenantGovernanceError(`${name} must be an integer between ${min} and ${max}.`, { code: "invalid_pagination", status: 400 });
+  }
+  return normalized;
+}
+
+export function resolveGoogleJitOnboardingPolicy(env = process.env) {
+  const rawEnabled = String(env.PLUTOMIX_GOOGLE_JIT_ONBOARDING_ENABLED || "false").trim().toLowerCase();
+  if (!new Set(["true", "false"]).has(rawEnabled)) {
+    throw configurationError("PLUTOMIX_GOOGLE_JIT_ONBOARDING_ENABLED must be true or false.");
+  }
+  const enabled = rawEnabled === "true";
+  if (!enabled) return { enabled: false };
+
+  const tenantSelector = String(env.PLUTOMIX_GOOGLE_JIT_TENANT_ID || "").trim();
+  const expectedInstanceKey = String(env.PLUTOMIX_GOOGLE_JIT_TENANT_INSTANCE_KEY || "").trim();
+  const configuredAdminIssuer = String(env.PLUTOMIX_GOOGLE_JIT_ADMIN_ISSUER || "").trim();
+  const adminSubject = String(env.PLUTOMIX_GOOGLE_JIT_ADMIN_SUBJECT || "").trim();
+  let adminEmail;
+  try {
+    adminEmail = emailKey(env.PLUTOMIX_GOOGLE_JIT_ADMIN_EMAIL);
+  } catch {
+    throw configurationError("PLUTOMIX_GOOGLE_JIT_ADMIN_EMAIL must be a valid email address.");
+  }
+  if (!tenantSelector || tenantSelector.length > 160) {
+    throw configurationError("PLUTOMIX_GOOGLE_JIT_TENANT_ID must identify one tenant or tenant instance.");
+  }
+  if (expectedInstanceKey && !TENANT_INSTANCE_KEY_PATTERN.test(expectedInstanceKey)) {
+    throw configurationError("PLUTOMIX_GOOGLE_JIT_TENANT_INSTANCE_KEY must be a valid tenant instance key.");
+  }
+  if (!GOOGLE_IDENTITY_ISSUERS.has(configuredAdminIssuer)) {
+    throw configurationError("PLUTOMIX_GOOGLE_JIT_ADMIN_ISSUER must be a Google identity issuer.");
+  }
+  if (!/^\d{1,200}$/.test(adminSubject)) {
+    throw configurationError("PLUTOMIX_GOOGLE_JIT_ADMIN_SUBJECT must be the numeric Google subject, not an OAuth client ID.");
+  }
+  const configuredOidcIssuer = String(env.OIDC_ISSUER || "").trim().replace(/\/$/, "");
+  if (GOOGLE_IDENTITY_ISSUERS.has(configuredOidcIssuer) && configuredOidcIssuer !== configuredAdminIssuer) {
+    throw configurationError("PLUTOMIX_GOOGLE_JIT_ADMIN_ISSUER must match OIDC_ISSUER.");
+  }
+  return { enabled, tenantSelector, expectedInstanceKey, adminIssuer: configuredAdminIssuer, adminSubject, adminEmail };
+}
+
+export function assertGoogleJitOnboardingConfiguration(env = process.env) {
+  resolveGoogleJitOnboardingPolicy(env);
+}
+
+function verifiedGoogleIdentity(identity = {}) {
+  if (!identity.emailVerified) {
+    throw new TenantGovernanceError("A verified Google email identity is required for onboarding.", { code: "verified_email_required", status: 403 });
+  }
+  const sourceIssuer = String(identity.issuer || "").trim();
+  const subject = String(identity.subject || "").trim();
+  if (!GOOGLE_IDENTITY_ISSUERS.has(sourceIssuer) || !subject || subject.length > 200) {
+    throw new TenantGovernanceError("A verified Google identity is required for onboarding.", { code: "google_identity_required", status: 401 });
+  }
+  return {
+    issuer: sourceIssuer,
+    subject,
+    email: emailKey(identity.email),
+    displayName: clean(identity.displayName, 160)
+  };
+}
+
+export function googleJitRoleForIdentity(identity, policy) {
+  if (!policy?.enabled) return null;
+  const normalized = verifiedGoogleIdentity(identity);
+  if (normalized.issuer !== policy.adminIssuer) {
+    throw new TenantGovernanceError("The Google identity issuer does not match the configured onboarding issuer.", { code: "google_identity_required", status: 401 });
+  }
+  const platformAdmin = normalized.issuer === policy.adminIssuer
+    && normalized.subject === policy.adminSubject
+    && normalized.email === policy.adminEmail;
+  return { ...normalized, role: platformAdmin ? "tenant_admin" : "team_member", platformAdmin };
 }
 
 function labelKey(value) {
@@ -74,9 +164,10 @@ function invitationRow(row) {
 }
 
 export class TenantGovernanceService {
-  constructor({ databaseUrl = process.env.DECISION_CONTINUITY_DATABASE_URL || process.env.DATABASE_URL, pool = null } = {}) {
+  constructor({ databaseUrl = process.env.DECISION_CONTINUITY_DATABASE_URL || process.env.DATABASE_URL, pool = null, env = process.env } = {}) {
     this.databaseUrl = databaseUrl || "";
     this.pool = pool;
+    this.env = env;
   }
 
   async database() {
@@ -132,6 +223,177 @@ export class TenantGovernanceService {
       throw new TenantGovernanceError("The tenant instance boundary is inconsistent.", { code: "tenant_instance_conflict", status: 409 });
     }
     return { tenantId: result.rows[0].tenant_id, instanceKey: result.rows[0].instance_key, createdAt: result.rows[0].created_at };
+  }
+
+  async resolveConfiguredTenant(client, policy) {
+    const selected = await client.query(
+      `SELECT tenant_id, instance_key, created_at
+         FROM tenant_instances
+        WHERE tenant_id = $1 OR instance_key = $1
+        ORDER BY CASE WHEN tenant_id = $1 THEN 0 ELSE 1 END`,
+      [policy.tenantSelector]
+    );
+    if (selected.rowCount > 1) {
+      throw configurationError("The configured Google onboarding tenant selector is ambiguous.");
+    }
+    let tenant;
+    if (selected.rowCount) {
+      tenant = {
+        tenantId: selected.rows[0].tenant_id,
+        instanceKey: selected.rows[0].instance_key,
+        createdAt: selected.rows[0].created_at
+      };
+    } else if (TENANT_INSTANCE_KEY_PATTERN.test(policy.tenantSelector)) {
+      throw configurationError("The configured Google onboarding tenant instance does not exist.");
+    } else {
+      tenant = await this.ensureInstance(client, policy.tenantSelector);
+    }
+    if (policy.expectedInstanceKey && tenant.instanceKey !== policy.expectedInstanceKey) {
+      throw configurationError("The configured Google onboarding tenant does not match its expected instance key.");
+    }
+    return tenant;
+  }
+
+  async onboardGoogleIdentity(identity = {}) {
+    const policy = resolveGoogleJitOnboardingPolicy(this.env);
+    if (!policy.enabled) {
+      return { principalId: null, tenantIds: [], roles: [], platformAdmin: false, provisioned: false };
+    }
+    let candidate;
+    try {
+      candidate = googleJitRoleForIdentity(identity, policy);
+      return await this.transaction(async (client) => {
+        const tenant = await this.resolveConfiguredTenant(client, policy);
+        await client.query("SELECT pg_advisory_xact_lock(hashtextextended($1, $2))", [`${candidate.issuer}:${candidate.subject}`, 1604]);
+        const existingPrincipal = await client.query(
+          `SELECT principal_id, principal_type, status
+             FROM identity_principals
+            WHERE issuer = ANY($1::text[]) AND subject = $2
+            FOR UPDATE`,
+          [googleIssuerAliases(candidate.issuer), candidate.subject]
+        );
+        if (existingPrincipal.rowCount > 1) {
+          throw new TenantGovernanceError("Conflicting Google issuer aliases exist for this identity.", { code: "principal_alias_conflict", status: 403 });
+        }
+        if (existingPrincipal.rowCount && (existingPrincipal.rows[0].principal_type !== "human" || existingPrincipal.rows[0].status !== "active")) {
+          throw new TenantGovernanceError("The Google identity is disabled and cannot be automatically onboarded.", { code: "principal_disabled", status: 403 });
+        }
+
+        const principalId = existingPrincipal.rows[0]?.principal_id || `principal-${digest(`${candidate.issuer}:${candidate.subject}`, 24)}`;
+        const principalCreated = !existingPrincipal.rowCount;
+        if (principalCreated) {
+          await client.query(
+            `INSERT INTO identity_principals
+               (principal_id, issuer, subject, principal_type, display_name, email, status)
+             VALUES ($1,$2,$3,'human',$4,$5,'active')`,
+            [principalId, candidate.issuer, candidate.subject, candidate.displayName, candidate.email]
+          );
+        } else {
+          await client.query(
+            `UPDATE identity_principals
+                SET issuer = $2, display_name = $3, email = $4, updated_at = clock_timestamp()
+              WHERE principal_id = $1 AND status = 'active'`,
+            [principalId, candidate.issuer, candidate.displayName, candidate.email]
+          );
+        }
+
+        const existingMemberships = await client.query(
+          `SELECT workspace_id, roles, status
+             FROM identity_tenant_memberships
+            WHERE principal_id = $1 AND tenant_id = $2
+            FOR UPDATE`,
+          [principalId, tenant.tenantId]
+        );
+        if (existingMemberships.rows.some((membership) => membership.status !== "active")) {
+          throw new TenantGovernanceError("The Google identity's tenant membership is revoked.", { code: "membership_revoked", status: 403 });
+        }
+        const existingMembership = existingMemberships.rows.find((membership) => membership.workspace_id === "*");
+
+        const membershipCreated = !existingMembership;
+        let roleAdded = false;
+        let roles;
+        if (membershipCreated) {
+          roles = [candidate.role];
+          await client.query(
+            `INSERT INTO identity_tenant_memberships
+               (principal_id, tenant_id, workspace_id, roles, status)
+             VALUES ($1,$2,'*',$3::text[],'active')`,
+            [principalId, tenant.tenantId, roles]
+          );
+        } else {
+          roles = existingMembership.roles || [];
+          if (!roles.includes(candidate.role)) {
+            roleAdded = true;
+            const updated = await client.query(
+              `UPDATE identity_tenant_memberships
+                  SET roles = array_append(roles, $3::text), updated_at = clock_timestamp()
+                WHERE principal_id = $1 AND tenant_id = $2 AND workspace_id = '*' AND status = 'active'
+                RETURNING roles`,
+              [principalId, tenant.tenantId, candidate.role]
+            );
+            roles = updated.rows[0].roles;
+          }
+        }
+
+        let platformAdminCreated = false;
+        if (candidate.platformAdmin) {
+          const platformIdentity = await client.query(
+            "SELECT status FROM platform_admin_identities WHERE email_key = $1 FOR UPDATE",
+            [candidate.email]
+          );
+          if (platformIdentity.rowCount && platformIdentity.rows[0].status !== "active") {
+            throw new TenantGovernanceError("The platform administrator identity is disabled.", { code: "platform_admin_disabled", status: 403 });
+          }
+          if (platformIdentity.rowCount) {
+            await client.query(
+              "UPDATE platform_admin_identities SET display_name = $2, updated_at = clock_timestamp() WHERE email_key = $1 AND status = 'active'",
+              [candidate.email, candidate.displayName]
+            );
+          } else {
+            platformAdminCreated = true;
+            await client.query(
+              "INSERT INTO platform_admin_identities (email_key, display_name, status) VALUES ($1,$2,'active')",
+              [candidate.email, candidate.displayName]
+            );
+          }
+        }
+
+        const provisioned = principalCreated || membershipCreated || roleAdded || platformAdminCreated;
+        if (provisioned) {
+          await client.query(
+            `INSERT INTO identity_access_audit
+               (principal_id, tenant_id, workspace_id, action, outcome, code, metadata)
+             VALUES ($1,$2,'*','identity.google_jit_onboard','allowed','provisioned',$3::jsonb)`,
+            [principalId, tenant.tenantId, JSON.stringify({ role: candidate.role, platformAdmin: candidate.platformAdmin })]
+          );
+        }
+        return {
+          principalId,
+          tenantIds: [tenant.tenantId],
+          roles,
+          platformAdmin: candidate.platformAdmin,
+          provisioned
+        };
+      });
+    } catch (error) {
+      await this.recordGoogleJitDenial(candidate || identity, policy, error).catch(() => {});
+      throw error;
+    }
+  }
+
+  async recordGoogleJitDenial(identity, policy, error) {
+    const issuers = googleIssuerAliases(identity?.issuer);
+    const subject = clean(identity?.subject, 200);
+    const pool = await this.database();
+    const principal = issuers.length && subject
+      ? await pool.query("SELECT principal_id FROM identity_principals WHERE issuer = ANY($1::text[]) AND subject = $2 ORDER BY principal_id LIMIT 2", [issuers, subject])
+      : { rows: [] };
+    await pool.query(
+      `INSERT INTO identity_access_audit
+         (principal_id, tenant_id, workspace_id, action, outcome, code, metadata)
+       VALUES ($1,$2,'*','identity.google_jit_onboard','denied',$3,'{}'::jsonb)`,
+      [principal.rowCount === 1 ? principal.rows[0].principal_id : null, policy.tenantSelector || null, clean(error?.code || "onboarding_denied", 120)]
+    );
   }
 
   async ensureMembershipInstances(client) {
@@ -264,16 +526,26 @@ export class TenantGovernanceService {
         [normalizedEmail]
       );
       if (!invitations.rowCount) throw new TenantGovernanceError("No pending tenant invitation matches this verified email.", { code: "invitation_not_found", status: 404 });
-      const generatedPrincipalId = `principal-${digest(`${issuer}:${subject}`, 24)}`;
-      const principal = await client.query(
-        `INSERT INTO identity_principals (principal_id, issuer, subject, principal_type, display_name, email, status)
-         VALUES ($1,$2,$3,'human',$4,$5,'active')
-         ON CONFLICT (issuer, subject) DO UPDATE
-           SET display_name = EXCLUDED.display_name, email = EXCLUDED.email, status = 'active', updated_at = clock_timestamp()
-         RETURNING principal_id`,
-        [generatedPrincipalId, issuer, subject, clean(identity.displayName, 160), normalizedEmail]
+      const existingPrincipal = await client.query(
+        "SELECT principal_id, principal_type, status FROM identity_principals WHERE issuer = $1 AND subject = $2 FOR UPDATE",
+        [issuer, subject]
       );
-      const principalId = principal.rows[0].principal_id;
+      if (existingPrincipal.rowCount && (existingPrincipal.rows[0].principal_type !== "human" || existingPrincipal.rows[0].status !== "active")) {
+        throw new TenantGovernanceError("The identity is disabled and cannot accept an invitation.", { code: "principal_disabled", status: 403 });
+      }
+      const principalId = existingPrincipal.rows[0]?.principal_id || `principal-${digest(`${issuer}:${subject}`, 24)}`;
+      if (existingPrincipal.rowCount) {
+        await client.query(
+          "UPDATE identity_principals SET display_name = $2, email = $3, updated_at = clock_timestamp() WHERE principal_id = $1 AND status = 'active'",
+          [principalId, clean(identity.displayName, 160), normalizedEmail]
+        );
+      } else {
+        await client.query(
+          `INSERT INTO identity_principals (principal_id, issuer, subject, principal_type, display_name, email, status)
+           VALUES ($1,$2,$3,'human',$4,$5,'active')`,
+          [principalId, issuer, subject, clean(identity.displayName, 160), normalizedEmail]
+        );
+      }
       const accepted = [];
       for (const invitation of invitations.rows) {
         await client.query(
@@ -319,31 +591,120 @@ export class TenantGovernanceService {
     }
   }
 
-  async isPlatformAdmin(identity = {}) {
-    if (!identity.emailVerified || !identity.email) return false;
-    const pool = await this.database();
-    const result = await pool.query("SELECT 1 FROM platform_admin_identities WHERE email_key = $1 AND status = 'active'", [emailKey(identity.email)]).catch((error) => { throw this.normalizeError(error); });
-    return Boolean(result.rowCount);
+  async platformAdminAuthorization(client, identity = {}) {
+    const issuer = clean(identity.issuer, 300);
+    const issuers = googleIssuerAliases(issuer);
+    const subject = clean(identity.subject, 200);
+    const principal = issuers.length && subject
+      ? await client.query("SELECT principal_id FROM identity_principals WHERE issuer = ANY($1::text[]) AND subject = $2 ORDER BY principal_id LIMIT 2", [issuers, subject])
+      : { rows: [] };
+    const principalId = principal.rowCount === 1 ? principal.rows[0].principal_id : null;
+    if (principal.rowCount > 1) return { authorized: false, principalId: null, tenantId: null };
+    if (!identity.emailVerified || !identity.email) return { authorized: false, principalId, tenantId: null };
+
+    const policy = resolveGoogleJitOnboardingPolicy(this.env);
+    if (policy.enabled) {
+      let candidate;
+      try {
+        candidate = googleJitRoleForIdentity(identity, policy);
+      } catch {
+        return { authorized: false, principalId, tenantId: policy.tenantSelector };
+      }
+      if (!candidate.platformAdmin) return { authorized: false, principalId, tenantId: policy.tenantSelector };
+      const tenant = await this.resolveConfiguredTenant(client, policy);
+      const result = await client.query(
+        `SELECT p.principal_id
+           FROM platform_admin_identities a
+           JOIN identity_principals p
+             ON p.issuer = ANY($2::text[]) AND p.subject = $3 AND lower(trim(p.email)) = a.email_key
+           JOIN identity_tenant_memberships m
+             ON m.principal_id = p.principal_id AND m.tenant_id = $4 AND m.workspace_id = '*'
+          WHERE a.email_key = $1 AND a.status = 'active' AND p.status = 'active'
+            AND p.principal_type = 'human' AND m.status = 'active'
+            AND 'tenant_admin' = ANY(m.roles)`,
+        [candidate.email, googleIssuerAliases(candidate.issuer), candidate.subject, tenant.tenantId]
+      );
+      return { authorized: Boolean(result.rowCount), principalId: result.rows[0]?.principal_id || principalId, tenantId: tenant.tenantId };
+    }
+
+    let normalizedEmail;
+    try {
+      normalizedEmail = emailKey(identity.email);
+    } catch {
+      return { authorized: false, principalId, tenantId: null };
+    }
+    const result = await client.query("SELECT 1 FROM platform_admin_identities WHERE email_key = $1 AND status = 'active'", [normalizedEmail]);
+    return { authorized: Boolean(result.rowCount), principalId, tenantId: null };
   }
 
-  async platformOverview(identity = {}) {
-    if (!(await this.isPlatformAdmin(identity))) throw new TenantGovernanceError("Platform administration requires the configured verified identity.", { code: "platform_admin_required", status: 403 });
-    await this.transaction((client) => this.ensureMembershipInstances(client));
-    const pool = await this.database();
-    try {
-      const result = await pool.query(`
-        SELECT i.tenant_id, i.instance_key, i.created_at,
-               COALESCE((SELECT jsonb_agg(jsonb_build_object('id', e.enterprise_id, 'label', e.label, 'createdAt', e.created_at) ORDER BY e.created_at) FROM tenant_enterprises e WHERE e.tenant_id = i.tenant_id), '[]'::jsonb) AS enterprises,
-               COALESCE((SELECT jsonb_agg(jsonb_build_object('id', a.application_id, 'name', a.application_name, 'enterpriseId', a.enterprise_id, 'agentSource', a.agent_source, 'ownerPrincipalId', a.owner_principal_id, 'createdAt', a.created_at) ORDER BY a.created_at DESC) FROM tenant_applications a WHERE a.tenant_id = i.tenant_id), '[]'::jsonb) AS applications,
-               COALESCE((SELECT jsonb_agg(jsonb_build_object('id', p.principal_id, 'name', p.display_name, 'email', p.email, 'roles', m.roles, 'status', m.status) ORDER BY m.created_at) FROM identity_tenant_memberships m JOIN identity_principals p ON p.principal_id = m.principal_id WHERE m.tenant_id = i.tenant_id AND m.workspace_id = '*'), '[]'::jsonb) AS members
-          FROM tenant_instances i ORDER BY i.created_at`);
+  async recordPlatformAdminAudit(client, authorization, { outcome, code, metadata = {} }) {
+    await client.query(
+      `INSERT INTO identity_access_audit
+         (principal_id, tenant_id, workspace_id, action, outcome, code, metadata)
+       VALUES ($1,$2,NULL,'platform_admin.overview',$3,$4,$5::jsonb)`,
+      [authorization.principalId, authorization.tenantId, outcome, code, JSON.stringify(metadata)]
+    );
+  }
+
+  async isPlatformAdmin(identity = {}) {
+    return this.transaction(async (client) => (await this.platformAdminAuthorization(client, identity)).authorized);
+  }
+
+  async platformOverview(identity = {}, pagination = {}) {
+    const limit = pageInteger(pagination.limit, 25, { name: "limit", min: 1, max: 100 });
+    const offset = pageInteger(pagination.offset, 0, { name: "offset", min: 0, max: 1_000_000 });
+    const result = await this.transaction(async (client) => {
+      const authorization = await this.platformAdminAuthorization(client, identity);
+      if (!authorization.authorized) {
+        await this.recordPlatformAdminAudit(client, authorization, { outcome: "denied", code: "platform_admin_required" });
+        return { authorized: false };
+      }
+
+      const [countResult, tenantsResult] = await Promise.all([
+        client.query("SELECT count(*)::int AS total FROM tenant_instances"),
+        client.query(
+          `SELECT i.tenant_id, i.instance_key, i.created_at,
+                  (SELECT count(*)::int FROM identity_tenant_memberships m WHERE m.tenant_id = i.tenant_id AND m.workspace_id = '*' AND m.status = 'active') AS member_count,
+                  (SELECT count(*)::int FROM tenant_enterprises e WHERE e.tenant_id = i.tenant_id) AS enterprise_count,
+                  (SELECT count(*)::int FROM tenant_applications a WHERE a.tenant_id = i.tenant_id) AS application_count
+             FROM tenant_instances i
+            ORDER BY i.created_at DESC, i.tenant_id
+            LIMIT $1 OFFSET $2`,
+          [limit, offset]
+        )
+      ]);
+      const total = Number(countResult.rows[0]?.total || 0);
+      const returned = tenantsResult.rowCount;
+      await this.recordPlatformAdminAudit(client, authorization, {
+        outcome: "allowed",
+        code: "authorized",
+        metadata: { limit, offset, returned, total }
+      });
       return {
-        administrator: { email: emailKey(identity.email), displayName: clean(identity.displayName, 160) },
-        tenants: result.rows.map((row) => ({ id: row.tenant_id, instanceKey: row.instance_key, createdAt: row.created_at, enterprises: row.enterprises || [], applications: row.applications || [], members: row.members || [] }))
+        authorized: true,
+        tenants: tenantsResult.rows.map((row) => ({
+          id: row.tenant_id,
+          instanceKey: row.instance_key,
+          createdAt: row.created_at,
+          memberCount: Number(row.member_count || 0),
+          enterpriseCount: Number(row.enterprise_count || 0),
+          applicationCount: Number(row.application_count || 0)
+        })),
+        pagination: {
+          offset,
+          limit,
+          returned,
+          total,
+          hasMore: offset + returned < total,
+          nextOffset: offset + returned
+        }
       };
-    } catch (error) {
-      throw this.normalizeError(error);
+    });
+    if (!result.authorized) {
+      throw new TenantGovernanceError("Platform administration requires the configured verified identity.", { code: "platform_admin_required", status: 403 });
     }
+    const { authorized: _authorized, ...overview } = result;
+    return overview;
   }
 }
 

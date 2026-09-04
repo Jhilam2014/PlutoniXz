@@ -70,8 +70,9 @@ import GovernedPromotionPanel from "./GovernedPromotionPanel.jsx";
 import PlutoMixAnalysisWorkspace from "./PlutoMixAnalysisWorkspace.jsx";
 import GothamStudio from "./gotham-studio/GothamStudio.jsx";
 import AiAccountsPanel from "./AiAccountsPanel.jsx";
+import PlatformAdminPanel from "./PlatformAdminPanel.jsx";
 import TenantGovernancePanel from "./TenantGovernancePanel.jsx";
-import { authFetch, clearUser, getStoredUser, storeDevelopmentUser, storeUser } from "./authClient.js";
+import { authFetch, clearUser, getStoredUser, storeDevelopmentUser, storeUser, verifiedIdentityFetch } from "./authClient.js";
 import { freezeProviderSelection, providerExecutionFromResult, safeProviderErrorMessage } from "./aiProviderModel.js";
 import {
   agentGlyphMarkup,
@@ -6390,6 +6391,16 @@ export default function App() {
   const [gothamAccountUsageError, setGothamAccountUsageError] = useState("");
   const [aiAccountsOpen, setAiAccountsOpen] = useState(false);
   const [tenantAdminOpen, setTenantAdminOpen] = useState(false);
+  const [platformAdminOpen, setPlatformAdminOpen] = useState(false);
+  const [platformAdminOverview, setPlatformAdminOverview] = useState(null);
+  const [platformAdminLoading, setPlatformAdminLoading] = useState(false);
+  const [platformAdminError, setPlatformAdminError] = useState("");
+  const platformAdminRequestRef = useRef({ generation: 0, controller: null });
+  const cancelPlatformAdminRequest = useCallback(() => {
+    const active = platformAdminRequestRef.current;
+    active.controller?.abort();
+    platformAdminRequestRef.current = { generation: active.generation + 1, controller: null };
+  }, []);
   const [tenantGovernance, setTenantGovernance] = useState(null);
   const [tenantGovernanceError, setTenantGovernanceError] = useState("");
   const [enterpriseSelection, setEnterpriseSelection] = useState("new");
@@ -6666,13 +6677,18 @@ export default function App() {
   useEffect(() => {
     function syncUser(event) {
       const nextUser = event.detail || getStoredUser();
+      cancelPlatformAdminRequest();
+      setPlatformAdminOverview(null);
+      setPlatformAdminOpen(false);
+      setPlatformAdminError("");
+      setPlatformAdminLoading(false);
       setCurrentUser(nextUser);
       setSelectedProjectId(localStorage.getItem(selectedProjectStorageKey(nextUser)) || "");
       setProjects([]);
     }
     window.addEventListener("plutomix-user-updated", syncUser);
     return () => window.removeEventListener("plutomix-user-updated", syncUser);
-  }, []);
+  }, [cancelPlatformAdminRequest]);
 
   useEffect(() => {
     if (!currentUser?.id && activeWorkspaceTab !== "studio") setActiveWorkspaceTab("studio");
@@ -6706,7 +6722,19 @@ export default function App() {
             const data = await res.json();
             if (!res.ok) throw new Error(data.error || "Google sign in failed");
             setGoogleSignInMessage("");
-            storeUser(data.user, { token: credentialResponse.credential });
+            storeUser(data.user, {
+              token: credentialResponse.credential,
+              onboarding: data.onboarding
+            });
+            if (data.onboarding?.provisioned) {
+              setRuntimeLogs((current) => mergeRuntimeRows([{
+                id: `onboarding-${Date.now()}`,
+                type: "connected",
+                message: "Your verified Google identity was onboarded to PlutoMix.",
+                createdAt: new Date().toISOString(),
+                time: formatIstTime()
+              }], current));
+            }
           } catch (error) {
             setGoogleSignInMessage(error.message || "Google sign in failed");
             setRuntimeLogs((current) =>
@@ -7050,6 +7078,50 @@ export default function App() {
     }
   }
 
+  const loadPlatformAdminOverview = useCallback(async ({ offset = 0 } = {}) => {
+    cancelPlatformAdminRequest();
+    if (!currentUser?.id) {
+      setPlatformAdminOverview(null);
+      setPlatformAdminOpen(false);
+      setPlatformAdminError("");
+      setPlatformAdminLoading(false);
+      return null;
+    }
+
+    const requestGeneration = platformAdminRequestRef.current.generation + 1;
+    const controller = new AbortController();
+    platformAdminRequestRef.current = { generation: requestGeneration, controller };
+    const requestedOffset = Number.isSafeInteger(Number(offset)) && Number(offset) >= 0 ? Number(offset) : 0;
+    setPlatformAdminLoading(true);
+    try {
+      const url = new URL(`${BACKEND_URL}/api/platform-admin/overview`);
+      url.searchParams.set("limit", "25");
+      url.searchParams.set("offset", String(requestedOffset));
+      const res = await verifiedIdentityFetch(url, { signal: controller.signal });
+      const data = await res.json().catch(() => ({}));
+      if (controller.signal.aborted || platformAdminRequestRef.current.generation !== requestGeneration) return null;
+      if (res.status === 401 || res.status === 403) {
+        setPlatformAdminOverview(null);
+        setPlatformAdminOpen(false);
+        setPlatformAdminError("");
+        return null;
+      }
+      if (!res.ok) throw new Error(data.error || "Platform administration could not be loaded.");
+      setPlatformAdminOverview(data);
+      setPlatformAdminError("");
+      return data;
+    } catch (error) {
+      if (controller.signal.aborted || error?.name === "AbortError" || platformAdminRequestRef.current.generation !== requestGeneration) return null;
+      setPlatformAdminError(error.message || "Platform administration could not be loaded.");
+      return null;
+    } finally {
+      if (platformAdminRequestRef.current.generation === requestGeneration) {
+        platformAdminRequestRef.current = { generation: requestGeneration, controller: null };
+        setPlatformAdminLoading(false);
+      }
+    }
+  }, [cancelPlatformAdminRequest, currentUser]);
+
   async function loadGothamChangeHistory(projectId = selectedProjectId) {
     if (!projectId || projectId === SYSTEM_TARGET_VALUE) {
       setGothamChangeHistory(null);
@@ -7151,6 +7223,17 @@ export default function App() {
     loadProjects().catch(() => setProjects([]));
     loadTenantGovernance();
   }, [currentUser?.id]);
+
+  useEffect(() => {
+    // Do not retain one account's platform inventory while another account is
+    // being authorized. The request generation also prevents a late response
+    // from restoring data after logout or an account switch.
+    setPlatformAdminOverview(null);
+    setPlatformAdminOpen(false);
+    setPlatformAdminError("");
+    loadPlatformAdminOverview({ offset: 0 });
+    return cancelPlatformAdminRequest;
+  }, [cancelPlatformAdminRequest, currentUser, loadPlatformAdminOverview]);
 
   useEffect(() => {
     const key = selectedProjectStorageKey();
@@ -8908,6 +8991,18 @@ export default function App() {
           <Server size={15} />
           Cloud Hosting
         </button>
+        {platformAdminOverview ? <button
+          type="button"
+          className="platform-admin-nav-button"
+          onClick={() => setPlatformAdminOpen(true)}
+          aria-haspopup="dialog"
+          aria-expanded={platformAdminOpen}
+          title="View all registered PlutoMix tenants"
+        >
+          <ShieldCheck size={15} />
+          Admin
+          <small>{Number(platformAdminOverview.pagination?.total) || 0}</small>
+        </button> : null}
         </> : <span className="workspace-public-context"><LockKeyhole size={13} /> Product overview</span>}
         <div className="theme-switch" role="radiogroup" aria-label="Theme">
           {themeOptions.map((option) => {
@@ -10178,6 +10273,15 @@ export default function App() {
         open={tenantAdminOpen}
         onClose={() => setTenantAdminOpen(false)}
         onChanged={() => loadTenantGovernance()}
+      />
+      <PlatformAdminPanel
+        open={platformAdminOpen}
+        overview={platformAdminOverview}
+        loading={platformAdminLoading}
+        error={platformAdminError}
+        onClose={() => setPlatformAdminOpen(false)}
+        onRefresh={() => loadPlatformAdminOverview({ offset: platformAdminOverview?.pagination?.offset || 0 })}
+        onPageChange={(offset) => loadPlatformAdminOverview({ offset })}
       />
     </div>
   );

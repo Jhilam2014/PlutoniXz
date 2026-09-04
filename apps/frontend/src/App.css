@@ -93,6 +93,17 @@ body {
   background: #eff6ff;
 }
 
+.workspace-tabs .platform-admin-nav-button small {
+  min-width: 18px;
+  padding: 2px 5px;
+  border-radius: 999px;
+  color: #1d4ed8;
+  background: #dbeafe;
+  font-size: 9px;
+  line-height: 1.2;
+  text-align: center;
+}
+
 .workspace-public-context {
   min-height: 30px;
   padding: 0 10px;

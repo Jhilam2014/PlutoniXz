@@ -60,7 +60,8 @@ import { runProjectOrchestratorBootstrap } from "./projectBootstrap.js";
 import { deleteGlobalAgent, listGlobalAgents } from "./globalAgentKnowledge.js";
 import { scheduleAgentMemorySync, syncKnownAgentKnowledgeRoots } from "./vectorMemorySync.js";
 import { registerHostingRoutes } from "./hosting/hosting-conversation.controller.js";
-import { AuthenticationError, assertProductionIdentityConfiguration, authenticateGooglePayload, externalIdentityFromRequest, restrictedIntent, userFromRequest } from "./auth.js";
+import { AuthenticationError, assertProductionIdentityConfiguration, externalIdentityFromRequest, googleUserFromIdentity, restrictedIntent, userFromRequest, verifyGoogleIdentityToken } from "./auth.js";
+import { createIdentityLoginRateLimiter } from "./identityLoginRateLimit.js";
 import { readAgentEfficiencySummary, summarizeAgentTokenEconomy, summarizeWorkflowTokenUsage } from "./tokenEconomy.js";
 import { createGothamAccountUsageService } from "./gothamAccountUsage.js";
 import { createDecisionContinuityStore, DecisionContinuityError } from "./decisionContinuity.js";
@@ -87,7 +88,7 @@ import {
 import { createGothamStudio, detectMlExecutionIntent, registerGothamStudioRoutes } from "./gothamStudio/index.js";
 import { GothamStudioError } from "./gothamStudio/domain.js";
 import { AiProviderProfileService, createProviderAdapters, createProviderProfileRepository, registerAiProviderRoutes } from "./aiProviders/index.js";
-import { TenantGovernanceError, TenantGovernanceService } from "./tenantGovernance.js";
+import { assertGoogleJitOnboardingConfiguration, TenantGovernanceError, TenantGovernanceService } from "./tenantGovernance.js";
 import {
   buildWorkflowPublicationReceipt,
   configureWorkflowProjectionPublisher,
@@ -126,6 +127,7 @@ let gothamAccountUsageService = null;
 let gothamStudioService = null;
 let aiProviderProfileService = null;
 let tenantGovernanceService = null;
+const googleLoginRateLimiter = createIdentityLoginRateLimiter();
 let gothamSandboxReadiness = {
   status: "not_checked",
   component: "workspace_sandbox",
@@ -3071,13 +3073,15 @@ function assertProductionDecisionContinuityConfiguration() {
 
 assertProductionDecisionContinuityConfiguration();
 assertProductionIdentityConfiguration();
+assertGoogleJitOnboardingConfiguration();
 assertProductionOperationalConfiguration();
 
 identityAccessStore = new IdentityAccessStore({
   databaseUrl: process.env.DECISION_CONTINUITY_DATABASE_URL || process.env.DATABASE_URL
 });
 tenantGovernanceService = new TenantGovernanceService({
-  databaseUrl: process.env.DECISION_CONTINUITY_DATABASE_URL || process.env.DATABASE_URL
+  databaseUrl: process.env.DECISION_CONTINUITY_DATABASE_URL || process.env.DATABASE_URL,
+  env: process.env
 });
 
 decisionContinuityStore = createDecisionContinuityStore({
@@ -4223,9 +4227,20 @@ app.get("/api/events", (req, res) => {
 
 app.post("/api/auth/google", async (req, res) => {
   try {
-    res.json({ status: "ok", user: await authenticateGooglePayload(req.body || {}) });
+    const identity = await verifyGoogleIdentityToken(req.body?.credential);
+    const rateLimit = googleLoginRateLimiter.consume(identity);
+    if (!rateLimit.allowed) {
+      res.set("Retry-After", String(rateLimit.retryAfterSeconds));
+      return res.status(429).json({
+        status: "failed",
+        code: "google_login_rate_limited",
+        error: "Too many Google sign-in attempts. Try again shortly."
+      });
+    }
+    const onboarding = await tenantGovernanceService.onboardGoogleIdentity(identity);
+    res.json({ status: "ok", user: googleUserFromIdentity(identity), onboarding });
   } catch (error) {
-    const knownError = error instanceof AuthenticationError;
+    const knownError = error instanceof AuthenticationError || error instanceof TenantGovernanceError;
     res.status(knownError ? error.status : 500).json({
       status: "failed",
       code: knownError ? error.code : "google_authentication_failed",
@@ -4278,7 +4293,10 @@ app.post("/api/tenant-governance/invitations/accept", async (req, res) => {
 app.get("/api/platform-admin/overview", async (req, res) => {
   try {
     const identity = await externalIdentityFromRequest(req);
-    const overview = await tenantGovernanceService.platformOverview(identity);
+    const overview = await tenantGovernanceService.platformOverview(identity, {
+      limit: req.query?.limit,
+      offset: req.query?.offset
+    });
     res.json({ status: "ok", ...overview });
   } catch (error) {
     respondTenantGovernanceError(res, error);

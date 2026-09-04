@@ -11,6 +11,27 @@ Migration `014_tenant_governance.sql` adds the authoritative tenant portfolio us
 - Team invitations are email-keyed. Acceptance requires a signed bearer identity whose `email_verified` claim is `true` and whose normalized email matches the invitation. The resulting workspace-`*` membership is inherited across all current and future enterprises in that tenant.
 - `platform_admin_identities` seeds `jhilam.astro@gmail.com`. The cross-tenant portfolio endpoint re-verifies the bearer identity and never trusts browser user headers or an unverified email claim.
 
+## Google just-in-time onboarding
+
+Google JIT onboarding is opt-in. When enabled, `POST /api/auth/google` verifies Google's signed ID token, extracts the trusted issuer, subject, and verified email, and atomically provisions an active human principal plus a workspace-`*` membership in one server-configured tenant. The browser cannot choose the tenant or its role.
+
+Every verified Google identity receives the least-privilege `team_member` role. One configured administrator is matched by the complete issuer + subject + email triple and receives `tenant_admin`; matching the email alone is insufficient. Disabled principals and any revoked membership in the configured tenant stay blocked and are never bypassed or reactivated by JIT login. Google issuer aliases are resolved as one principal identity, while new and active records use the configured issuer.
+
+```env
+PLUTOMIX_GOOGLE_JIT_ONBOARDING_ENABLED=true
+PLUTOMIX_GOOGLE_JIT_TENANT_ID=your-logical-tenant-id
+PLUTOMIX_GOOGLE_JIT_TENANT_INSTANCE_KEY=tenant-0123456789abcdef
+PLUTOMIX_GOOGLE_JIT_ADMIN_ISSUER=https://accounts.google.com
+PLUTOMIX_GOOGLE_JIT_ADMIN_SUBJECT=your-numeric-google-sub
+PLUTOMIX_GOOGLE_JIT_ADMIN_EMAIL=admin@example.com
+```
+
+`PLUTOMIX_GOOGLE_JIT_TENANT_ID` may resolve an existing logical tenant ID or instance key. Prefer the logical ID and set the expected instance key as a deployment guard. Enabling open JIT onboarding grants every verified Google account membership in the configured tenant; deployments that need restricted admission should leave it disabled and use the invitation flow. Login is bounded per verified subject, provisioning is idempotent, and only actual grants create onboarding audit rows.
+
+The application limit runs after signature verification so its key is a trusted Google subject. The public reverse proxy must additionally rate-limit `POST /api/auth/google` by source before it reaches Node, which bounds invalid-token signature work without trusting caller-supplied forwarding headers.
+
+Changing the configured administrator prevents the former identity from using the platform-admin endpoint, but does not silently remove an existing tenant role. Rotate administrators as an explicit deprovisioning operation: revoke the former principal's wildcard membership or remove `tenant_admin` according to your tenant ownership policy, disable its platform-admin record, then deploy the new exact identity triple.
+
 ## API surface
 
 - `GET /api/tenant-governance/overview` — tenant instance, enterprise limit, applications, members, and invitations.
@@ -18,7 +39,7 @@ Migration `014_tenant_governance.sql` adds the authoritative tenant portfolio us
 - `DELETE /api/tenant-governance/enterprises/:enterpriseId` — delete an empty enterprise.
 - `POST /api/tenant-governance/team-invitations` — invite a tenant-wide team member.
 - `POST /api/tenant-governance/invitations/accept` — accept invitations using a verified matching identity.
-- `GET /api/platform-admin/overview` — configured platform administrator portfolio across tenant instances.
+- `GET /api/platform-admin/overview?limit=25&offset=0` — configured platform administrator's audited, paginated tenant summary. It returns counts rather than cross-tenant member identities or application records and is consumed by the admin-only tenant table.
 
 Project listing, creation, import, selection, mutation, media, and deletion now pass through tenant membership resolution. Project creation accepts `enterpriseId` when selecting an existing enterprise, always requires `enterpriseLabel`, and requires `agentSource`.
 

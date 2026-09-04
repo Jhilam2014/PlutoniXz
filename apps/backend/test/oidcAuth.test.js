@@ -77,12 +77,29 @@ test("Google sign-in uses its client ID instead of unrelated enterprise OIDC set
 
   const identity = await verifyGoogleIdentityToken(credential, { env });
   assert.equal(identity.displayName, "Ada Lovelace");
+  assert.equal(identity.issuer, "https://accounts.google.com");
   const user = await authenticateGooglePayload({ credential }, { env });
   assert.equal(user.name, "Ada Lovelace");
   assert.equal(user.email, "ada@example.test");
   assert.equal(user.picture, "https://lh3.googleusercontent.com/a/profile-photo");
   await rejectsCode(verifyGoogleIdentityToken(credential, { env: { ...env, GOOGLE_CLIENT_ID: "wrong-client" } }), "invalid_audience");
   await rejectsCode(verifyGoogleIdentityToken(credential, { env: { NODE_ENV: "test" } }), "google_identity_configuration_invalid");
+
+  const alternateIssuerCredential = signedToken({ claims: {
+    iss: "accounts.google.com",
+    aud: "google-studio-client",
+    email: "ada@example.test",
+    email_verified: true
+  } });
+  await rejectsCode(externalIdentityFromRequest({
+    get: (name) => name === "authorization" ? `Bearer ${alternateIssuerCredential}` : ""
+  }, {
+    env: {
+      ...env,
+      OIDC_ISSUER: "https://accounts.google.com",
+      OIDC_AUDIENCE: "google-studio-client"
+    }
+  }), "invalid_issuer");
 });
 
 test("development header identities require the explicit non-production flag and production guards fail closed", async () => {
@@ -103,6 +120,13 @@ test("development header identities require the explicit non-production flag and
   );
   assert.doesNotThrow(
     () => assertProductionIdentityConfiguration({ NODE_ENV: "production", PLUTOMIX_AUTH_MODE: "oidc", OIDC_ISSUER: issuer, OIDC_AUDIENCE: audience, PLUTOMIX_CORS_ORIGINS: "https://app.example" })
+  );
+  assert.throws(
+    () => assertProductionIdentityConfiguration({ NODE_ENV: "production", PLUTOMIX_AUTH_MODE: "oidc", OIDC_ISSUER: "https://accounts.google.com", OIDC_AUDIENCE: "google-client", PLUTOMIX_CORS_ORIGINS: "https://app.example" }),
+    /GOOGLE_CLIENT_ID/
+  );
+  assert.doesNotThrow(
+    () => assertProductionIdentityConfiguration({ NODE_ENV: "production", PLUTOMIX_AUTH_MODE: "oidc", OIDC_ISSUER: "https://accounts.google.com", OIDC_AUDIENCE: "google-client", GOOGLE_CLIENT_ID: "google-client", PLUTOMIX_CORS_ORIGINS: "https://app.example" })
   );
 });
 

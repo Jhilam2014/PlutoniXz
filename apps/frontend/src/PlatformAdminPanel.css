@@ -1,0 +1,194 @@
+.platform-admin-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1210;
+  padding: 18px;
+  display: flex;
+  justify-content: flex-end;
+  background: rgba(8, 13, 24, 0.62);
+}
+
+.platform-admin-panel {
+  width: min(1040px, 100%);
+  height: 100%;
+  overflow: auto;
+  border: 1px solid var(--border-color, #d7dce5);
+  border-radius: 18px;
+  color: var(--text-primary, #182033);
+  background: var(--panel-bg, #fff);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
+}
+
+.platform-admin-titlebar,
+.platform-admin-toolbar,
+.platform-admin-titlebar > div,
+.platform-admin-titlebar span {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.platform-admin-titlebar {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  justify-content: space-between;
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--border-color, #d7dce5);
+  background: inherit;
+}
+
+.platform-admin-titlebar span {
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.platform-admin-titlebar small,
+.platform-admin-table small {
+  color: var(--text-secondary, #606a7c);
+}
+
+.platform-admin-titlebar button {
+  padding: 7px;
+  border: 0;
+  border-radius: 8px;
+  color: inherit;
+  background: transparent;
+}
+
+.platform-admin-toolbar {
+  justify-content: space-between;
+  padding: 10px 20px;
+  border-bottom: 1px solid var(--border-color, #d7dce5);
+}
+
+.platform-admin-actions,
+.platform-admin-pagination {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.platform-admin-page-status {
+  color: var(--text-secondary, #606a7c);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.platform-admin-toolbar button {
+  padding: 9px 11px;
+  border: 1px solid var(--border-color, #cfd5df);
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: inherit;
+  background: var(--button-bg, #f5f7fa);
+}
+
+.platform-admin-toolbar button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.platform-admin-error {
+  margin: 12px 20px;
+  padding: 10px;
+  border-radius: 8px;
+  color: #a61b1b;
+  background: #fff0f0;
+}
+
+.platform-admin-loading,
+.platform-admin-empty {
+  margin: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-secondary, #606a7c);
+}
+
+.platform-admin-table-wrap {
+  padding: 20px;
+  overflow-x: auto;
+}
+
+.platform-admin-table {
+  width: 100%;
+  min-width: 780px;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid var(--border-color, #d7dce5);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.platform-admin-table caption {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.platform-admin-table th,
+.platform-admin-table td {
+  padding: 12px;
+  border-bottom: 1px solid var(--border-color, #e2e8f0);
+  text-align: left;
+  vertical-align: top;
+  font-size: 13px;
+}
+
+.platform-admin-table thead th {
+  color: var(--text-secondary, #5b6474);
+  background: var(--button-bg, #f5f7fa);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.platform-admin-table tbody tr:last-child > * {
+  border-bottom: 0;
+}
+
+.platform-admin-table tbody th {
+  max-width: 230px;
+  word-break: break-word;
+}
+
+.platform-admin-table code {
+  white-space: nowrap;
+  font-size: 12px;
+}
+
+.platform-admin-table td strong,
+.platform-admin-table td small {
+  display: block;
+}
+
+.platform-admin-table td small {
+  max-width: 230px;
+  margin-top: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .platform-admin-backdrop {
+    padding: 0;
+  }
+
+  .platform-admin-panel {
+    border-radius: 0;
+  }
+
+  .platform-admin-toolbar,
+  .platform-admin-actions {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

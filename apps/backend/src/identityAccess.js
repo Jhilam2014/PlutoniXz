@@ -1,4 +1,4 @@
-import { AuthenticationError, externalIdentityFromRequest } from "./auth.js";
+import { AuthenticationError, externalIdentityFromRequest, identityIssuerAliases } from "./auth.js";
 
 export const DECISION_PERMISSIONS = Object.freeze({
   READ: "decision:read",
@@ -210,12 +210,19 @@ export class IdentityAccessStore {
       throw normalized;
     }
     const pool = await this.database();
+    const acceptedIssuers = identityIssuerAliases(external.issuer);
     const result = await pool.query(
       `SELECT principal_id, issuer, subject, principal_type, status, display_name, email
          FROM identity_principals
-        WHERE issuer = $1 AND subject = $2`,
-      [external.issuer, external.subject]
+        WHERE issuer = ANY($1::text[]) AND subject = $2
+        ORDER BY principal_id
+        LIMIT 2`,
+      [acceptedIssuers, external.subject]
     ).catch(() => { throw new AuthorizationError("The identity authority is unavailable.", { code: "identity_authority_unavailable", status: 503 }); });
+    if (result.rowCount > 1) {
+      await this.recordAudit({ action: "authentication", outcome: "denied", code: "principal_alias_conflict", metadata: { path: req.path, method: req.method } });
+      throw new AuthenticationError("The authenticated principal has conflicting issuer aliases.", { code: "principal_alias_conflict" });
+    }
     const principal = asPrincipal(result.rows[0] || {});
     if (!result.rowCount || principal.status !== "active") {
       await this.recordAudit({ principalId: result.rows[0]?.principal_id || null, action: "authentication", outcome: "denied", code: result.rowCount ? "principal_disabled" : "principal_unmapped", metadata: { path: req.path, method: req.method } });

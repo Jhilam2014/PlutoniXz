@@ -20,12 +20,26 @@ const developmentAuthSubject = String(import.meta.env.VITE_PLUTOMIX_DEV_AUTH_SUB
 
 function publicUser(user = {}) {
   if (!user || typeof user !== "object") return null;
+  const onboarding = user.onboarding && typeof user.onboarding === "object"
+    ? {
+        principalId: String(user.onboarding.principalId || "").slice(0, 240),
+        tenantIds: [...new Set((Array.isArray(user.onboarding.tenantIds) ? user.onboarding.tenantIds : [])
+          .map((tenantId) => String(tenantId || "").slice(0, 160))
+          .filter(Boolean))],
+        roles: [...new Set((Array.isArray(user.onboarding.roles) ? user.onboarding.roles : [])
+          .map((role) => String(role || "").slice(0, 80))
+          .filter(Boolean))],
+        platformAdmin: user.onboarding.platformAdmin === true,
+        provisioned: user.onboarding.provisioned === true
+      }
+    : null;
   return {
     id: String(user.id || "").slice(0, 240),
     name: String(user.name || "Verified user").slice(0, 160),
     email: String(user.email || "").slice(0, 254),
     picture: String(user.picture || "").slice(0, 2048),
-    authProvider: String(user.authProvider || "oidc").slice(0, 48)
+    authProvider: String(user.authProvider || "oidc").slice(0, 48),
+    onboarding
   };
 }
 
@@ -37,8 +51,8 @@ export function getStoredUser() {
   return currentUser;
 }
 
-export function storeUser(user, { token } = {}) {
-  const next = publicUser(user);
+export function storeUser(user, { token, onboarding } = {}) {
+  const next = publicUser({ ...user, onboarding: onboarding || user?.onboarding });
   if (!next?.id || !token) throw new Error("A verified identity profile and bearer token are required.");
   currentUser = next;
   bearerToken = String(token);

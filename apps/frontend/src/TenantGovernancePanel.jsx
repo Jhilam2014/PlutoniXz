@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { Building2, Loader2, Plus, RefreshCcw, Trash2, UserPlus, X } from "lucide-react";
-import { authFetch, verifiedIdentityFetch } from "./authClient.js";
+import { authFetch } from "./authClient.js";
 import "./TenantGovernancePanel.css";
 
 async function responseJson(response) {
@@ -23,7 +23,6 @@ function EnterpriseRows({ enterprises = [], applications = [], onDelete, busy })
 
 export default function TenantGovernancePanel({ backendUrl, open, onClose, onChanged }) {
   const [overview, setOverview] = useState(null);
-  const [platform, setPlatform] = useState(null);
   const [state, setState] = useState("idle");
   const [error, setError] = useState("");
   const [label, setLabel] = useState("");
@@ -33,13 +32,7 @@ export default function TenantGovernancePanel({ backendUrl, open, onClose, onCha
     setState("loading");
     setError("");
     try {
-      const [tenantResult, platformResult] = await Promise.allSettled([
-        authFetch(`${backendUrl}/api/tenant-governance/overview`).then(responseJson),
-        verifiedIdentityFetch(`${backendUrl}/api/platform-admin/overview`).then(responseJson)
-      ]);
-      if (tenantResult.status === "rejected") throw tenantResult.reason;
-      setOverview(tenantResult.value);
-      setPlatform(platformResult.status === "fulfilled" ? platformResult.value : null);
+      setOverview(await authFetch(`${backendUrl}/api/tenant-governance/overview`).then(responseJson));
       setState("ready");
     } catch (loadError) {
       setError(loadError.message);
@@ -85,7 +78,6 @@ export default function TenantGovernancePanel({ backendUrl, open, onClose, onCha
           </> : <p>Tenant administration controls require the tenant administrator role.</p>}
           <div className="tenant-member-list"><strong>Accounts in this tenant</strong>{overview.members.length ? <ul>{overview.members.map((member) => <li key={member.id}><span>{member.name || member.email || member.id}</span><small>{member.roles.join(", ")}</small></li>)}</ul> : <p>No tenant-wide account records.</p>}{overview.invitations.filter((item) => item.status === "pending").map((item) => <p key={item.id}>Pending: {item.email}</p>)}</div>
         </section>
-        {platform ? <section className="platform-admin-portfolio"><h3>Platform administrator portfolio</h3><p>Signed in as {platform.administrator.email}. This read-only view spans all tenant instances.</p>{platform.tenants.length ? platform.tenants.map((tenant) => <article key={tenant.id}><header><strong>{tenant.id}</strong><small>{tenant.instanceKey}</small></header><p>{tenant.members.length} accounts · {tenant.enterprises.length} enterprises · {tenant.applications.length} apps</p><EnterpriseRows enterprises={tenant.enterprises} applications={tenant.applications} /></article>) : <p className="tenant-governance-empty">No tenant instances have been registered.</p>}</section> : null}
       </div> : null}
     </section>
   </div>, document.body);
