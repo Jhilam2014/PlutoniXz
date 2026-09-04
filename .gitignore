@@ -2,6 +2,7 @@ node_modules/
 dist/
 .env
 .env_prod
+.env_prod_stable
 .env.*
 !.env.example
 .secrets/
@@ -24,3 +25,5 @@ observability/agent-efficiency/latest-agent-efficiency.json
 observability/self-improvement/latest-cycle.json
 observability/self-improvement/*
 observability/self-improvement/latest-cycle.json
+observability/agent-memory/*
+observability/vector-memory/*
