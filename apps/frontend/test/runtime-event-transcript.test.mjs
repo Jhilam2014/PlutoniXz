@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { runtimeEventPresentation, runtimeEventTranscript } from "../src/runtimeEventTranscript.js";
+import { runtimeEventPresentation, runtimeEventStatusLabel, runtimeEventTranscript } from "../src/runtimeEventTranscript.js";
 
 test("renders a failure event as status instead of duplicating it as request and response", () => {
   const failure = "Gotham completed but did not change any meaningful project or requested artifact files.";
@@ -9,6 +9,14 @@ test("renders a failure event as status instead of duplicating it as request and
     responseLog: "",
     statusLog: failure
   });
+});
+
+test("labels successful publication updates as status rather than failure", () => {
+  const event = { type: "publication.queued", status: "published", message: "Workflow projections were durably queued." };
+  const transcript = runtimeEventTranscript(event);
+  assert.equal(runtimeEventStatusLabel(event, transcript), "Status");
+  assert.equal(runtimeEventStatusLabel({ type: "project create failed" }, { statusLog: "EISDIR" }), "Failure");
+  assert.equal(runtimeEventStatusLabel({ type: "provider-progress" }, { inputLog: "prompt" }), "Execution status");
 });
 
 test("keeps agent input, output, and distinct execution status separate", () => {

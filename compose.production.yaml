@@ -15,6 +15,10 @@ services:
       DECISION_CONTINUITY_DATABASE_URL: "${DECISION_CONTINUITY_DATABASE_URL:?Missing DECISION_CONTINUITY_DATABASE_URL}"
       GOTHAM_STUDIO_REPOSITORY: "postgres"
       PLUTOMIX_RUNTIME_ROOT: /workspace/runtime
+      # Generated projects live outside the read-only source tree in production.
+      # Keep the compatibility ignore registry in runtime as well; the base
+      # /workspace/.gitignore bind may resolve to a directory on a fresh host.
+      PROJECTS_GITIGNORE_PATH: /workspace/runtime/projects.gitignore
       WORKFLOW_PUBLICATION_ROOT: /workspace/runtime
       GOTHAM_PUBLICATION_OUTBOX_PATH: /workspace/runtime/workflow-publication-outbox
       AGENT_MEMORY_SYNC_STATE_ROOT: /workspace/runtime/agent-memory

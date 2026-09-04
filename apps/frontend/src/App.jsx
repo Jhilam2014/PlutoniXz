@@ -97,7 +97,7 @@ import {
   isDisabledDecisionBranch
 } from "./decisionBranchTreeModel.js";
 import { applicationDecisionSummary } from "./plutomixAnalysisModel.js";
-import { isProviderRuntimeEvent, runtimeEventPresentation, runtimeEventTranscript } from "./runtimeEventTranscript.js";
+import { isProviderRuntimeEvent, runtimeEventPresentation, runtimeEventStatusLabel, runtimeEventTranscript } from "./runtimeEventTranscript.js";
 import { authorizedStudioWorkspace, normalizedStudioWorkspace } from "./studioAccessModel.js";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:8080";
@@ -1021,6 +1021,7 @@ function EventRow({ event, sessionStartedAt, selectedProject, onOpenStudio }) {
   const sandboxDiagnostic = event.sandboxPreflight?.diagnostic || event.diagnostic || "";
   const sandboxRemediation = event.sandboxPreflight?.remediation || event.remediation || "";
   const { inputLog, responseLog, statusLog } = runtimeEventTranscript(event);
+  const statusLabel = runtimeEventStatusLabel(event, { inputLog, responseLog });
   const eventMetadata = Object.fromEntries(Object.entries({
     agentId: event.agentId,
     providerId: event.providerId,
@@ -1093,7 +1094,7 @@ function EventRow({ event, sessionStartedAt, selectedProject, onOpenStudio }) {
               <pre>{gothamText(responseLog)}</pre>
             </div> : null}
             {statusLog ? <div>
-              <span>{inputLog || responseLog ? "Execution status" : "Failure"}</span>
+              <span>{statusLabel}</span>
               <pre>{gothamText(statusLog)}</pre>
             </div> : null}
             {event.activityThread?.length ? (

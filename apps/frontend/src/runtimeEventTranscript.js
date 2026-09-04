@@ -45,6 +45,12 @@ export function runtimeEventPresentation(event = {}) {
 
 export const isProviderRuntimeEvent = (event) => runtimeEventPresentation(event).isProviderRuntime;
 
+export function runtimeEventStatusLabel(event = {}, transcript = {}) {
+  if (transcript.inputLog || transcript.responseLog) return "Execution status";
+  const state = `${event.type || ""} ${event.status || ""}`.toLowerCase();
+  return /(?:failed?|failure|error|rejected|cancelled)/.test(state) ? "Failure" : "Status";
+}
+
 // Runtime status events are not model turns. Keeping their message separate
 // prevents a failure reason from being displayed as both a request and reply.
 export function runtimeEventTranscript(event = {}) {

@@ -65,6 +65,51 @@ test("project provenance survives runtime status and topology refreshes", () => 
   assert.equal(refreshedTopology.project.origin, "imported");
 });
 
+test("rejects a directory used as the project ignore registry with an actionable error", async (context) => {
+  const temporaryRoot = await fs.mkdtemp(path.join(os.tmpdir(), "plutomix-ignore-registry-"));
+  const previousEnv = Object.fromEntries([
+    "PROJECTS_ROOT",
+    "GENERATED_SITE_DIR",
+    "PROJECTS_REGISTRY_PATH",
+    "PROJECT_EXPORTS_ROOT",
+    "PROJECTS_GITIGNORE_PATH",
+    "PROJECT_RUNTIME_MODE",
+    "PROJECT_PORT_START",
+    "PROJECT_PORT_END",
+    "ORCHESTRATOR_INSTALL_ENABLED"
+  ].map((key) => [key, process.env[key]]));
+  context.after(async () => {
+    for (const [key, value] of Object.entries(previousEnv)) {
+      if (value === undefined) delete process.env[key];
+      else process.env[key] = value;
+    }
+    await fs.rm(temporaryRoot, { recursive: true, force: true });
+  });
+
+  const projectsRoot = path.join(temporaryRoot, "projects");
+  const templateRoot = path.join(temporaryRoot, "template");
+  const ignoreDirectory = path.join(temporaryRoot, "project-ignore");
+  await fs.mkdir(path.join(templateRoot, "src", "generated"), { recursive: true });
+  await fs.mkdir(ignoreDirectory, { recursive: true });
+  await fs.writeFile(path.join(templateRoot, "package.json"), JSON.stringify({ name: "template", scripts: { dev: "vite" } }));
+
+  process.env.PROJECTS_ROOT = projectsRoot;
+  process.env.GENERATED_SITE_DIR = templateRoot;
+  process.env.PROJECTS_REGISTRY_PATH = path.join(temporaryRoot, "runtime", "projects.json");
+  process.env.PROJECT_EXPORTS_ROOT = path.join(temporaryRoot, "runtime", "exports");
+  process.env.PROJECTS_GITIGNORE_PATH = ignoreDirectory;
+  process.env.PROJECT_RUNTIME_MODE = "process";
+  process.env.PROJECT_PORT_START = "5360";
+  process.env.PROJECT_PORT_END = "5369";
+  process.env.ORCHESTRATOR_INSTALL_ENABLED = "false";
+
+  await assert.rejects(
+    createProject("Ignore Registry Check"),
+    /Project ignore registry must be a regular file.*Set PROJECTS_GITIGNORE_PATH to a writable file path/
+  );
+  await assert.rejects(fs.access(path.join(projectsRoot, "ignore-registry-check")));
+});
+
 test("creates a project-local orchestrator and deletes the complete managed project", async (context) => {
   const temporaryRoot = await fs.mkdtemp(path.join(os.tmpdir(), "plutomix-lifecycle-"));
   const moneyRoot = path.join(temporaryRoot, "money");

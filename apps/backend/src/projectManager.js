@@ -208,10 +208,22 @@ function projectWorkspaceFromIgnoreInput(folderNameOrWorkspace) {
   return path.isAbsolute(value) ? value : path.join(projectsRoot(), value);
 }
 
+async function readProjectIgnoreFile(gitignorePath) {
+  if (!(await fs.pathExists(gitignorePath))) return "";
+  const stat = await fs.stat(gitignorePath);
+  if (!stat.isFile()) {
+    throw new Error(
+      `Project ignore registry must be a regular file: ${gitignorePath}. ` +
+      "Set PROJECTS_GITIGNORE_PATH to a writable file path."
+    );
+  }
+  return fs.readFile(gitignorePath, "utf8");
+}
+
 async function ensureProjectIgnored(folderNameOrWorkspace) {
   const gitignorePath = parentGitignorePath();
   await fs.ensureDir(path.dirname(gitignorePath));
-  const existing = (await fs.pathExists(gitignorePath)) ? await fs.readFile(gitignorePath, "utf8") : "";
+  const existing = await readProjectIgnoreFile(gitignorePath);
   const projectPath = projectWorkspaceFromIgnoreInput(folderNameOrWorkspace);
   const relativeEntry = path.relative(path.dirname(gitignorePath), projectPath).split(path.sep).join("/");
   const requiredEntries = [`${relativeEntry}/`];
@@ -227,7 +239,7 @@ async function removeProjectIgnoreEntry(folderNameOrWorkspace) {
   const projectPath = projectWorkspaceFromIgnoreInput(folderNameOrWorkspace);
   const target = `${path.relative(path.dirname(gitignorePath), projectPath).split(path.sep).join("/")}/`;
   const legacyTarget = `${path.basename(projectPath)}/`;
-  const entries = (await fs.readFile(gitignorePath, "utf8")).split(/\r?\n/);
+  const entries = (await readProjectIgnoreFile(gitignorePath)).split(/\r?\n/);
   await fs.writeFile(gitignorePath, `${entries.filter((entry) => entry !== target && entry !== legacyTarget).join("\n").replace(/\n+$/, "")}\n`);
 }
 
