@@ -85,6 +85,10 @@ function frontendGraphPath() {
   return process.env.FRONTEND_AGENTIC_SYSTEM_GRAPH_PATH || path.join(projectRoot(), "apps", "frontend", "public", "topology", "d3", "agentic-system-graph.json");
 }
 
+function projectionReadRoot() {
+  return process.env.PLUTOMIX_RUNTIME_ROOT || projectRoot();
+}
+
 async function atomicWriteFile(filePath, content) {
   await fs.ensureDir(path.dirname(filePath));
   const temporaryPath = path.join(path.dirname(filePath), `.${path.basename(filePath)}.${process.pid}.${crypto.randomBytes(6).toString("hex")}.tmp`);
@@ -1667,8 +1671,8 @@ function mergeNodesById(nodes) {
 async function selfImprovementGraphRows() {
   const runtimeRoot = selfImprovementRuntimeRoot();
   const [status, proposals, patterns, validations, promotions, rollbacks, investigations, researchLogs, toolPlans, monetaryApprovals, marketVision, hfModelPoolStatus] = await Promise.all([
-    fs.pathExists(path.join(projectRoot(), "observability", "self-improvement", "latest-status.json"))
-      .then((exists) => exists ? fs.readJson(path.join(projectRoot(), "observability", "self-improvement", "latest-status.json")) : null)
+    fs.pathExists(path.join(projectionReadRoot(), "observability", "self-improvement", "latest-status.json"))
+      .then((exists) => exists ? fs.readJson(path.join(projectionReadRoot(), "observability", "self-improvement", "latest-status.json")) : null)
       .catch(() => null),
     readJsonLineRecords(path.join(runtimeRoot, "proposals", "proposals.jsonl"), 12),
     readJsonLineRecords(path.join(runtimeRoot, "patterns", "patterns.jsonl"), 12),
@@ -1682,8 +1686,8 @@ async function selfImprovementGraphRows() {
     fs.pathExists(path.join(runtimeRoot, "market-vision", "plutomix-market-differentiation.json"))
       .then((exists) => exists ? fs.readJson(path.join(runtimeRoot, "market-vision", "plutomix-market-differentiation.json")) : null)
       .catch(() => null),
-    fs.pathExists(path.join(projectRoot(), "observability", "model-pool", "huggingface-latest.json"))
-      .then((exists) => exists ? fs.readJson(path.join(projectRoot(), "observability", "model-pool", "huggingface-latest.json")) : null)
+    fs.pathExists(path.join(projectionReadRoot(), "observability", "model-pool", "huggingface-latest.json"))
+      .then((exists) => exists ? fs.readJson(path.join(projectionReadRoot(), "observability", "model-pool", "huggingface-latest.json")) : null)
       .catch(() => null)
   ]);
   const metadata = { dynamicSelfImprovementGraph: true };

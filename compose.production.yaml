@@ -14,8 +14,30 @@ services:
       DECISION_CONTINUITY_DURABLE_WORKFLOWS: "true"
       DECISION_CONTINUITY_DATABASE_URL: "${DECISION_CONTINUITY_DATABASE_URL:?Missing DECISION_CONTINUITY_DATABASE_URL}"
       GOTHAM_STUDIO_REPOSITORY: "postgres"
+      PLUTOMIX_RUNTIME_ROOT: /workspace/runtime
+      WORKFLOW_PUBLICATION_ROOT: /workspace/runtime
+      GOTHAM_PUBLICATION_OUTBOX_PATH: /workspace/runtime/workflow-publication-outbox
+      AGENT_MEMORY_SYNC_STATE_ROOT: /workspace/runtime/agent-memory
+      HOSTING_OBSERVABILITY_DIR: /workspace/runtime/observability/hosting
+      # Project and agent projections are live runtime state. Keep production
+      # writes in the persisted, gitignored runtime mount instead of modifying
+      # tracked source files and blocking the next deployment.
+      PROJECT_AGENT_MARKDOWN_ROOT: /workspace/runtime/agents/generated
+      PROJECT_AGENT_ARCHIVE_ROOT: /workspace/runtime/agents/archived/legacy-project-scoped
+      PROJECT_AGENT_REUSE_DECISION_ROOT: /workspace/runtime/registry/agent-reuse-decisions
+      PROJECT_AGENT_REGISTRY_ROOT: /workspace/runtime/registry/agents
+      PROJECT_AGENT_NEO4J_PATH: /workspace/runtime/graph/neo4j/generated-project-agents.cypher
+      AGENTIC_SYSTEM_GRAPH_PATH: /workspace/runtime/topology/d3/agentic-system-graph.json
+      FRONTEND_AGENTIC_SYSTEM_GRAPH_PATH: /workspace/runtime/frontend/topology/d3/agentic-system-graph.json
 
     volumes:
+      - type: bind
+        source: .
+        target: /workspace/project
+        read_only: true
+      - type: bind
+        source: ./runtime
+        target: /workspace/project/runtime
       - type: bind
         source: ./.runtime-secrets/vultr-postgres-ca.crt
         target: /workspace/project/.runtime-secrets/vultr-postgres-ca.crt

@@ -28,3 +28,11 @@ observability/self-improvement/*
 observability/self-improvement/latest-cycle.json
 observability/agent-memory/*
 observability/vector-memory/*
+
+# Production control-plane projections belong in the persisted runtime mount.
+# These patterns prevent legacy/new publication IDs from entering source
+# control while committed historical snapshots remain available as fixtures.
+memory/agent-knowledge/agents/*.executions.jsonl
+memory/agent-knowledge/projects/publication_*.summary.md
+memory/project-intelligence/projects/*/
+observability/workflow-publications/publication_*.json

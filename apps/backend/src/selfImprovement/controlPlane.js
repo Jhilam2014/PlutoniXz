@@ -118,8 +118,9 @@ export function readSelfImprovementConfig({ promotionScope } = {}) {
 }
 
 async function readRuntimeMetrics(root) {
-  const latestEfficiencyPath = path.join(root, "observability", "agent-efficiency", "latest-agent-efficiency.json");
-  const latestHealthPath = path.join(root, "observability", "orchestrator-health", "latest-health-report.json");
+  const metricsRoot = process.env.PLUTOMIX_RUNTIME_ROOT || root;
+  const latestEfficiencyPath = path.join(metricsRoot, "observability", "agent-efficiency", "latest-agent-efficiency.json");
+  const latestHealthPath = path.join(metricsRoot, "observability", "orchestrator-health", "latest-health-report.json");
   const [efficiency, health] = await Promise.all([
     fs.pathExists(latestEfficiencyPath).then((exists) => exists ? fs.readJson(latestEfficiencyPath).catch(() => null) : null),
     fs.pathExists(latestHealthPath).then((exists) => exists ? fs.readJson(latestHealthPath).catch(() => null) : null)

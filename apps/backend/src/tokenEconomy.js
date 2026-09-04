@@ -6,16 +6,20 @@ function projectRoot() {
   return process.env.PLUTOMIX_PROJECT_ROOT || "/workspace/project";
 }
 
+function writableRoot() {
+  return process.env.PLUTOMIX_RUNTIME_ROOT || projectRoot();
+}
+
 function tablePath() {
-  return path.join(projectRoot(), "database", "agent-token-usage.table.jsonl");
+  return path.join(writableRoot(), "database", "agent-token-usage.table.jsonl");
 }
 
 function efficiencyTimelinePath() {
-  return path.join(projectRoot(), "observability", "agent-efficiency", "agent-efficiency.timeline.jsonl");
+  return path.join(writableRoot(), "observability", "agent-efficiency", "agent-efficiency.timeline.jsonl");
 }
 
 function latestEfficiencyPath() {
-  return path.join(projectRoot(), "observability", "agent-efficiency", "latest-agent-efficiency.json");
+  return path.join(writableRoot(), "observability", "agent-efficiency", "latest-agent-efficiency.json");
 }
 
 const CREDIT_USD_RATE = Number(process.env.CODEX_CREDIT_USD_RATE || 0.04);

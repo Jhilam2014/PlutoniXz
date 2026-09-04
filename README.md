@@ -45,6 +45,8 @@ Every created or imported app keeps project-scoped execution guidance inside `.a
 
 For a newly created project, PlutoMix safely extracts `orchestrator-temp/orchestrator-agent-001-main.zip` into the new app folder, strips the archive's wrapper directory, ignores `.DS_Store`, and preserves the generated app's runtime `.env`. The archive's canonical `AGENTS.md`, `CLAUDE.md`, `ROOT_WORKSPACE_GENERATION_POLICY.md`, `.codex/prompts`, PDF, docs, and supporting configuration are installed, and the ZIP SHA-256 is recorded in `.agentic/orchestrator-source.json`. PlutoMix then runs a separate ephemeral Codex command with `Use .codex/prompts/bootstrap-orchestrator.md and execute the bootstrap.`, verifies the required agent, registry, graph, D3, and observability artifacts, and only then reads and executes the UI application instruction. A failed extraction, bootstrap, verification, or first generation rolls the incomplete project back.
 
+Production mounts the PlutoMix Git checkout read-only. Mutable topology, agent registry, workflow publication, memory, observability, model-pool, and self-improvement state is written under the persisted `/workspace/runtime` mount; generated applications remain under `/workspace/apps`. The deployment script still rejects genuine tracked source edits on the server, and production runtime state must never be committed or pushed from the deployment host.
+
 Use `Delete` on a non-default selected project to permanently remove its workspace, managed runtime containers, project/Compose database containers, volumes and networks, dependency volume, exports, registry record, generated agent records, and D3/Neo4j topology artifacts. The shared default generated site cannot be deleted.
 
 ## Governed Enterprise BrainX

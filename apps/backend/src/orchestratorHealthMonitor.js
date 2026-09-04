@@ -299,10 +299,13 @@ export function createOrchestratorHealthMonitor({
   timeZone = process.env.PLUTOMIX_ORCHESTRATOR_HEALTH_TIME_ZONE || DEFAULT_AUDIT_TIME_ZONE
 } = {}) {
   const root = configuredRoot;
-  const auditRoot = path.join(root, "observability", "orchestrator-health");
+  const writableRoot = process.env.PLUTOMIX_RUNTIME_ROOT || root;
+  const auditRoot = path.join(writableRoot, "observability", "orchestrator-health");
   const latestReportPath = path.join(auditRoot, "latest-health-report.json");
   const dailyBudgetPath = path.join(auditRoot, "daily-audit-budget.json");
-  const overlayPath = path.join(root, "runtime", "agents", "health", "agent-health-overrides.json");
+  const overlayPath = process.env.PLUTOMIX_RUNTIME_ROOT
+    ? path.join(writableRoot, "agents", "health", "agent-health-overrides.json")
+    : path.join(root, "runtime", "agents", "health", "agent-health-overrides.json");
   let running = false;
   let lastSelfHealSignature = "";
   const dailyLimit = Math.max(1, Math.min(3, Number.isFinite(maxDailyAudits) ? Math.floor(maxDailyAudits) : DEFAULT_MAX_DAILY_AUDITS));

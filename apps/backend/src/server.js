@@ -170,7 +170,7 @@ function scheduleIdleVectorSync(reason) {
 }
 
 configureWorkflowProjectionPublisher({
-  root: process.env.PLUTOMIX_PROJECT_ROOT,
+  root: process.env.WORKFLOW_PUBLICATION_ROOT || process.env.PLUTOMIX_RUNTIME_ROOT || process.env.PLUTOMIX_PROJECT_ROOT,
   emit: event,
   isSystemIdle: isSystemIdleForVectorSync,
   scheduleVectorSync: scheduleIdleVectorSync
@@ -2152,8 +2152,12 @@ function plutomixProjectRoot() {
   return path.resolve(process.cwd(), "../..");
 }
 
+function plutomixWritableRoot() {
+  return process.env.PLUTOMIX_RUNTIME_ROOT || plutomixProjectRoot();
+}
+
 function projectHistoryRoot(projectId = "") {
-  return path.join(plutomixProjectRoot(), "memory", "project-intelligence", "projects", safeFileBase(projectId || "plutomix-default"));
+  return path.join(plutomixWritableRoot(), "memory", "project-intelligence", "projects", safeFileBase(projectId || "plutomix-default"));
 }
 
 function projectInstructionLedgerPath(projectId = "") {
@@ -2161,9 +2165,9 @@ function projectInstructionLedgerPath(projectId = "") {
 }
 
 function projectHistoryFiles(fileName, projectId = "") {
-  const legacyPath = path.join(plutomixProjectRoot(), "memory", "project-intelligence", fileName);
+  const legacyPath = path.join(plutomixWritableRoot(), "memory", "project-intelligence", fileName);
   if (projectId) return [path.join(projectHistoryRoot(projectId), fileName), legacyPath];
-  const projectsRoot = path.join(plutomixProjectRoot(), "memory", "project-intelligence", "projects");
+  const projectsRoot = path.join(plutomixWritableRoot(), "memory", "project-intelligence", "projects");
   const scopedPaths = fs.existsSync(projectsRoot)
     ? fs.readdirSync(projectsRoot, { withFileTypes: true })
         .filter((entry) => entry.isDirectory())

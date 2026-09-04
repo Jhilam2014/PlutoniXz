@@ -15,6 +15,24 @@ function uniquePaths(rows) {
   return [...new Set(rows.filter(Boolean).map((row) => path.resolve(row)))];
 }
 
+function vectorSyncStateRoot() {
+  const explicit = String(process.env.AGENT_MEMORY_SYNC_STATE_ROOT || "").trim();
+  if (explicit) return explicit;
+  const runtimeRoot = String(process.env.PLUTOMIX_RUNTIME_ROOT || "").trim();
+  return runtimeRoot ? path.join(runtimeRoot, "agent-memory") : "";
+}
+
+function syncIndexPathFor(projectRoot) {
+  const stateRoot = vectorSyncStateRoot();
+  if (!stateRoot) return path.join(projectRoot, "registry", "agents", "vector-sync-index.json");
+  const sourceId = crypto.createHash("sha256").update(path.resolve(projectRoot)).digest("hex").slice(0, 16);
+  return path.join(stateRoot, "sync-indexes", `${sourceId}.json`);
+}
+
+function writableProjectionRoot() {
+  return process.env.PLUTOMIX_RUNTIME_ROOT || plutomixRoot();
+}
+
 function redact(content = "") {
   return String(content)
     .replace(/\b(?:sk|sess)-[A-Za-z0-9_-]{16,}\b/g, "[REDACTED_OPENAI_KEY]")
@@ -152,7 +170,10 @@ export function vectorSyncDailyDecision({
 }
 
 function vectorSyncScheduleStatePath() {
-  return path.join(plutomixRoot(), "observability", "agent-memory", "vector-sync-schedule.json");
+  const stateRoot = vectorSyncStateRoot();
+  return stateRoot
+    ? path.join(stateRoot, "vector-sync-schedule.json")
+    : path.join(plutomixRoot(), "observability", "agent-memory", "vector-sync-schedule.json");
 }
 
 async function claimDailyVectorSyncSlot({ now = new Date(), maxRunsPerDay, timeZone, statePath = vectorSyncScheduleStatePath() } = {}) {
@@ -265,7 +286,7 @@ async function pendingSyncWork() {
   for (const projectRoot of syncCandidateRoots()) {
     if (!(await fs.pathExists(path.join(projectRoot, "memory", "agent-knowledge")))) continue;
     const files = await knowledgeFilesForRoot(projectRoot);
-    const syncIndexPath = path.join(projectRoot, "registry", "agents", "vector-sync-index.json");
+    const syncIndexPath = syncIndexPathFor(projectRoot);
     const index = await readJson(syncIndexPath, { files: {} });
     index.files ||= {};
     let pending = 0;
@@ -293,7 +314,7 @@ async function pendingSyncWork() {
 
 async function syncRoot({ config, projectRoot, remoteByHash, shouldContinue = () => true }) {
   const files = await knowledgeFilesForRoot(projectRoot);
-  const syncIndexPath = path.join(projectRoot, "registry", "agents", "vector-sync-index.json");
+  const syncIndexPath = syncIndexPathFor(projectRoot);
   const index = await readJson(syncIndexPath, { provider: "openai", vector_store_id: config.vectorStoreId, files: {} });
   index.provider = "openai";
   index.vector_store_id = config.vectorStoreId;
@@ -350,7 +371,7 @@ async function syncRoot({ config, projectRoot, remoteByHash, shouldContinue = ()
 }
 
 async function writeSyncLogs(summary) {
-  const builder = plutomixRoot();
+  const builder = writableProjectionRoot();
   await writeJson(path.join(builder, "observability", "agent-memory", "latest-sync.json"), summary);
   await writeJson(path.join(builder, "observability", "vector-memory", "latest-vector-write.json"), summary);
   if (summary.status === "failed" || summary.files_failed > 0) {

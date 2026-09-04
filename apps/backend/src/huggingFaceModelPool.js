@@ -65,6 +65,7 @@ export function estimateHuggingFaceModelSize(model = {}) {
 }
 
 function modelPoolRoot(root) {
+  if (process.env.PLUTOMIX_RUNTIME_ROOT) return path.join(process.env.PLUTOMIX_RUNTIME_ROOT, "model-pool", "huggingface");
   return path.join(root, "runtime", "model-pool", "huggingface");
 }
 
@@ -77,7 +78,7 @@ function serviceRegistryPath(root) {
 }
 
 function latestStatusPath(root) {
-  return path.join(root, "observability", "model-pool", "huggingface-latest.json");
+  return path.join(process.env.PLUTOMIX_RUNTIME_ROOT || root, "observability", "model-pool", "huggingface-latest.json");
 }
 
 async function appendJsonLine(filePath, value) {

@@ -79,15 +79,16 @@ export function projectRoot() {
 }
 
 export function selfImprovementRoot(root = projectRoot()) {
+  if (process.env.PLUTOMIX_RUNTIME_ROOT) return path.join(process.env.PLUTOMIX_RUNTIME_ROOT, "self-improvement");
   return path.join(root, "runtime", "self-improvement");
 }
 
 export function observabilityRoot(root = projectRoot()) {
-  return path.join(root, "observability", "self-improvement");
+  return path.join(process.env.PLUTOMIX_RUNTIME_ROOT || root, "observability", "self-improvement");
 }
 
 export function baselineRoot(root = projectRoot()) {
-  return path.join(root, "runtime", "self-improvement", "baselines");
+  return path.join(selfImprovementRoot(root), "baselines");
 }
 
 export function severityRank(value = "") {
