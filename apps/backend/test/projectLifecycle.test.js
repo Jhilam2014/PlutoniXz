@@ -129,6 +129,96 @@ test("rejects a directory used as the project ignore registry with an actionable
   await assert.rejects(fs.access(path.join(projectsRoot, "ignore-registry-check")));
 });
 
+test("refuses to delete a registry workspace outside the managed legacy and tenant layouts", async (context) => {
+  const temporaryRoot = await fs.mkdtemp(path.join(os.tmpdir(), "plutomix-delete-boundary-"));
+  const previousEnv = Object.fromEntries([
+    "PROJECTS_ROOT",
+    "PROJECTS_REGISTRY_PATH",
+    "PROJECT_RUNTIME_MODE"
+  ].map((key) => [key, process.env[key]]));
+  context.after(async () => {
+    for (const [key, value] of Object.entries(previousEnv)) {
+      if (value === undefined) delete process.env[key];
+      else process.env[key] = value;
+    }
+    await fs.rm(temporaryRoot, { recursive: true, force: true });
+  });
+
+  const projectsRoot = path.join(temporaryRoot, "projects");
+  const outsideWorkspace = path.join(temporaryRoot, "outside", "unsafe-project");
+  const registry = path.join(temporaryRoot, "runtime", "projects.json");
+  await fs.mkdir(outsideWorkspace, { recursive: true });
+  await fs.mkdir(path.dirname(registry), { recursive: true });
+  await fs.writeFile(path.join(outsideWorkspace, "must-remain.txt"), "protected\n");
+  await fs.writeFile(registry, JSON.stringify([{
+    id: "unsafe-project-id",
+    name: "Unsafe project",
+    folderName: "unsafe-project",
+    workspaceDir: outsideWorkspace,
+    ownerUserId: "anonymous"
+  }]));
+
+  process.env.PROJECTS_ROOT = projectsRoot;
+  process.env.PROJECTS_REGISTRY_PATH = registry;
+  process.env.PROJECT_RUNTIME_MODE = "process";
+
+  await assert.rejects(deleteProject("unsafe-project-id"), /Refusing to delete project workspace outside/);
+  assert.equal(await fs.readFile(path.join(outsideWorkspace, "must-remain.txt"), "utf8"), "protected\n");
+  assert.equal(JSON.parse(await fs.readFile(registry, "utf8")).length, 1);
+});
+
+test("deletes an older tenant-scoped project from the managed projects tree", async (context) => {
+  const temporaryRoot = await fs.mkdtemp(path.join(os.tmpdir(), "plutomix-tenant-delete-"));
+  const previousEnv = Object.fromEntries([
+    "PROJECTS_ROOT",
+    "PROJECTS_REGISTRY_PATH",
+    "PROJECT_EXPORTS_ROOT",
+    "PROJECTS_GITIGNORE_PATH",
+    "PROJECT_RUNTIME_MODE",
+    "PLUTOMIX_PROJECT_ROOT"
+  ].map((key) => [key, process.env[key]]));
+  context.after(async () => {
+    for (const [key, value] of Object.entries(previousEnv)) {
+      if (value === undefined) delete process.env[key];
+      else process.env[key] = value;
+    }
+    await fs.rm(temporaryRoot, { recursive: true, force: true });
+  });
+
+  const projectsRoot = path.join(temporaryRoot, "projects");
+  const tenantInstanceKey = "tenant-0123456789abcdef";
+  const workspaceDir = path.join(projectsRoot, "tenants", tenantInstanceKey, "j2");
+  const registry = path.join(temporaryRoot, "runtime", "projects.json");
+  const ignorePath = path.join(temporaryRoot, "runtime", "projects.gitignore");
+  const ignoreEntry = `${path.relative(path.dirname(ignorePath), workspaceDir).split(path.sep).join("/")}/`;
+  await fs.mkdir(workspaceDir, { recursive: true });
+  await fs.mkdir(path.dirname(registry), { recursive: true });
+  await fs.writeFile(path.join(workspaceDir, "package.json"), "{}\n");
+  await fs.writeFile(ignorePath, `${ignoreEntry}\n`);
+  await fs.writeFile(registry, JSON.stringify([{
+    id: "j2-lFU4KM",
+    name: "J2",
+    folderName: "j2",
+    workspaceDir,
+    tenantId: "tenant-test",
+    tenantInstanceKey,
+    ownerUserId: "tenant-user"
+  }]));
+
+  process.env.PROJECTS_ROOT = projectsRoot;
+  process.env.PROJECTS_REGISTRY_PATH = registry;
+  process.env.PROJECT_EXPORTS_ROOT = path.join(temporaryRoot, "runtime", "exports");
+  process.env.PROJECTS_GITIGNORE_PATH = ignorePath;
+  process.env.PROJECT_RUNTIME_MODE = "process";
+  process.env.PLUTOMIX_PROJECT_ROOT = path.join(temporaryRoot, "plutomix-runtime");
+
+  const deleted = await deleteProject("j2-lFU4KM", { user: { id: "tenant-user", tenantId: "tenant-test" } });
+  assert.equal(deleted.deleted, true);
+  await assert.rejects(fs.access(workspaceDir));
+  assert.deepEqual(JSON.parse(await fs.readFile(registry, "utf8")), []);
+  assert.doesNotMatch(await fs.readFile(ignorePath, "utf8"), new RegExp(tenantInstanceKey));
+});
+
 test("creates a project-local orchestrator and deletes the complete managed project", async (context) => {
   const temporaryRoot = await fs.mkdtemp(path.join(os.tmpdir(), "plutomix-lifecycle-"));
   const moneyRoot = path.join(temporaryRoot, "money");

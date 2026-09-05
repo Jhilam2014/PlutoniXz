@@ -49,7 +49,7 @@ Production mounts the PlutoMix Git checkout read-only. Mutable topology, agent r
 
 Managed production previews use HTTPS hosts such as `https://p5300.preview.plutomix.in` rather than browser-local `localhost` URLs. Add a wildcard DNS record and certificate for `*.preview.plutomix.in`, then install `configs/nginx/plutomix-project-previews.conf.example` on the host. Project ports remain bound to `127.0.0.1` and are reachable publicly only through Nginx.
 
-Use `Delete` on a non-default selected project to permanently remove its workspace, managed runtime containers, project/Compose database containers, volumes and networks, dependency volume, exports, registry record, generated agent records, and D3/Neo4j topology artifacts. The shared default generated site cannot be deleted.
+Use `Delete` on a non-default selected project to permanently remove its workspace, managed runtime containers, project/Compose database containers, volumes and networks, dependency volume, exports, registry record, generated agent records, and D3/Neo4j topology artifacts. Deletion accepts both legacy `apps/<project>` and tenant-scoped `apps/tenants/<tenant-instance-key>/<project>` layouts, while refusing every path outside those exact managed shapes. The shared default generated site cannot be deleted.
 
 ## Governed Enterprise BrainX
 

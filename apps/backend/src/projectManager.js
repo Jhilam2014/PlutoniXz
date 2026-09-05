@@ -93,6 +93,41 @@ function tenantProjectsRoot({ tenantId = "", tenantInstanceKey = "" } = {}) {
   return path.join(projectsRoot(), "tenants", key);
 }
 
+async function managedProjectWorkspace(project) {
+  const workspaceRoot = path.resolve(projectsRoot());
+  const workspaceDir = path.resolve(String(project?.workspaceDir || ""));
+  const folderName = String(project?.folderName || "").trim();
+  const relativePath = path.relative(workspaceRoot, workspaceDir);
+  const segments = relativePath.split(path.sep).filter(Boolean);
+  const recordedTenantKey = String(project?.tenantInstanceKey || "").trim();
+  const validFolder = Boolean(folderName) && folderName === path.basename(folderName) && ![".", ".."].includes(folderName);
+  const legacyLayout = validFolder && segments.length === 1 && segments[0] === folderName;
+  const tenantLayout = validFolder &&
+    segments.length === 3 &&
+    segments[0] === "tenants" &&
+    /^tenant-[a-f0-9]{16}$/.test(segments[1]) &&
+    segments[2] === folderName &&
+    (!recordedTenantKey || recordedTenantKey === segments[1]);
+
+  if (!relativePath || relativePath.startsWith(`..${path.sep}`) || path.isAbsolute(relativePath) || (!legacyLayout && !tenantLayout)) {
+    throw new Error(`Refusing to delete project workspace outside ${workspaceRoot}.`);
+  }
+
+  // Reject a managed-looking path whose parent is a symlink escaping the
+  // project root. Missing workspaces remain deletable from the registry.
+  const [realRoot, realParent] = await Promise.all([
+    fs.realpath(workspaceRoot).catch(() => workspaceRoot),
+    fs.realpath(path.dirname(workspaceDir)).catch(() => "")
+  ]);
+  if (realParent) {
+    const realRelativeParent = path.relative(realRoot, realParent);
+    if (realRelativeParent.startsWith(`..${path.sep}`) || path.isAbsolute(realRelativeParent)) {
+      throw new Error(`Refusing to delete project workspace outside ${workspaceRoot}.`);
+    }
+  }
+  return workspaceDir;
+}
+
 function migrateLegacyWorkspaceDir(project) {
   const workspaceDir = String(project?.workspaceDir || "");
   // Older registry records used the removed /workspace/money mount. Keep the
@@ -1897,11 +1932,7 @@ export async function deleteProject(projectId, options = {}) {
   if (!project) throw new Error("Project not found.");
   if (!canAccessProject(project, options.user || { id: "anonymous" })) throw new Error("Project not found.");
 
-  const workspaceRoot = path.resolve(projectsRoot());
-  const workspaceDir = path.resolve(project.workspaceDir);
-  if (path.dirname(workspaceDir) !== workspaceRoot) {
-    throw new Error(`Refusing to delete project workspace outside ${workspaceRoot}.`);
-  }
+  const workspaceDir = await managedProjectWorkspace(project);
 
   let runtimeResources = { containers: [], volumes: [], networks: [] };
   if (projectRuntimeMode() === "docker") {
@@ -1915,7 +1946,7 @@ export async function deleteProject(projectId, options = {}) {
   await removeProjectAgentTopology(project);
   await fs.remove(workspaceDir);
   await fs.remove(path.join(exportsRoot(), `${slugify(project.name)}-app.zip`));
-  await removeProjectIgnoreEntry(project.folderName);
+  await removeProjectIgnoreEntry(workspaceDir);
   await writeRegistry(projects.filter((row) => row.id !== project.id));
   return {
     id: project.id,
