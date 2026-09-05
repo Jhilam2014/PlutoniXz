@@ -4254,6 +4254,34 @@ p {
 .agent-log-detail pre { max-height: 170px; margin: 0; overflow: auto; color: #172033; font: 10px/1.45 ui-monospace, SFMono-Regular, Menlo, monospace; white-space: pre-wrap; overflow-wrap: anywhere; }
 .agent-log-detail ol { margin: 0; padding-left: 16px; color: #334155; font-size: 10px; line-height: 1.4; }
 
+.agent-log-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 8px;
+  border-top: 1px solid rgba(148, 163, 184, 0.16);
+}
+
+.agent-log-actions button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 28px;
+  padding: 5px 8px;
+  border: 1px solid rgba(87, 108, 188, 0.32);
+  border-radius: 6px;
+  color: #293681;
+  background: #fff;
+  font-size: 10px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.agent-log-actions button:disabled { cursor: wait; opacity: 0.7; }
+.instruction-log-export-status { display: block; padding: 0 8px 8px; color: #475569; font-size: 10px; overflow-wrap: anywhere; }
+.instruction-log-export-status.failed { color: #b91c1c; }
+.instruction-log-export-status.complete { color: #166534; }
+
 .functionality-detail-modal .functionality-graph-node.draggable {
   cursor: grab;
 }
@@ -9507,6 +9535,25 @@ iframe {
   text-transform: capitalize;
   font-size: 11px;
 }
+
+.event-log-export-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 6px;
+  padding: 4px 7px;
+  border: 1px solid rgba(66, 116, 217, 0.35);
+  border-radius: 5px;
+  color: #293681;
+  background: #edf5ff;
+  font-size: 9px;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+.event-log-export-button:hover,
+.event-log-export-button:focus-visible { border-color: #4274d9; background: #dde7f8; }
+.event-log-export-button:disabled { cursor: wait; opacity: 0.7; }
 
 .event-row p,
 .event-row pre,

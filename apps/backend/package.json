@@ -13,6 +13,7 @@
     "gotham-studio:migrate": "node scripts/migrate-decision-continuity-postgres.mjs --to 012_gotham_studio.sql",
     "ai-providers:migrate": "node scripts/migrate-decision-continuity-postgres.mjs --to 013_ai_provider_profiles.sql",
     "tenant-governance:migrate": "node scripts/migrate-decision-continuity-postgres.mjs --to 015_tenant_governance_instance_backfill.sql",
+    "instruction-log-exports:migrate": "node scripts/migrate-decision-continuity-postgres.mjs --to 016_gotham_instruction_log_exports.sql",
     "ai-providers:docs": "node scripts/generate-ai-provider-docs.mjs",
     "decision-continuity:smoke": "node scripts/decision-continuity-smoke.mjs",
     "decision-continuity:import": "node scripts/import-decision-continuity-jsonl.mjs",

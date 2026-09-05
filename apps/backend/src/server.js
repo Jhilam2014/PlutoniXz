@@ -90,6 +90,12 @@ import { GothamStudioError } from "./gothamStudio/domain.js";
 import { AiProviderProfileService, createProviderAdapters, createProviderProfileRepository, registerAiProviderRoutes } from "./aiProviders/index.js";
 import { assertGoogleJitOnboardingConfiguration, TenantGovernanceError, TenantGovernanceService } from "./tenantGovernance.js";
 import {
+  buildInstructionLogExport,
+  createInstructionLogExportRepository,
+  instructionSequenceId,
+  InstructionLogExportError
+} from "./instructionLogExports.js";
+import {
   buildWorkflowPublicationReceipt,
   configureWorkflowProjectionPublisher,
   drainWorkflowPublications,
@@ -127,6 +133,7 @@ let gothamAccountUsageService = null;
 let gothamStudioService = null;
 let aiProviderProfileService = null;
 let tenantGovernanceService = null;
+let instructionLogExportRepository = null;
 const googleLoginRateLimiter = createIdentityLoginRateLimiter();
 let gothamSandboxReadiness = {
   status: "not_checked",
@@ -714,6 +721,8 @@ function createOrchestrationBuildSnapshot({
     elapsedMs: Math.max(0, new Date(row.createdAt || startedAt).getTime() - new Date(startedAt).getTime()),
     stage: row.stage || "",
     agentId: responsibleAgentForType(row.type, row.agentId || row.reviewerAgentId),
+    providerId: row.providerId || row.provider || row.providerRuntimeSelection?.providerId || "",
+    providerProfileId: row.providerProfileId || row.profileId || row.providerRuntimeSelection?.profileId || "",
     childExecutionId: row.childExecutionId || "",
     status: row.status || (row.type?.includes("failed") || row.type === "error" ? "failed" : "recorded"),
     decision: row.adaptiveRoute ? {
@@ -2999,7 +3008,7 @@ function readProjectInstructionTimeline({ projectId = "" } = {}) {
     instruction: row.instruction || row.instructionSummary || "",
     status: row.status || "received",
     buildId: normalizeInstructionBuild(row.buildId),
-    parentWorkflowId: row.parentWorkflowId || row.flowPath?.decisionTree?.id || "",
+    parentWorkflowId: row.parentWorkflowId || row.workflowId || row.flowPath?.decisionTree?.id || "",
     childExecutionIds: row.childExecutionIds || [],
     adaptiveRoute: row.adaptiveRoute || row.flowPath?.adaptiveRoute || null,
     review: row.review || null,
@@ -3056,6 +3065,7 @@ function readProjectInstructionTimeline({ projectId = "" } = {}) {
       seen.add(key);
       return true;
     })
+    .map((row) => ({ ...row, instructionSequenceId: instructionSequenceId(row) }))
     .sort((a, b) => new Date(b.recordedAt || 0).getTime() - new Date(a.recordedAt || 0).getTime());
 }
 
@@ -3153,6 +3163,7 @@ decisionXBuildCapture = new DecisionXBuildCapture({
 });
 gothamAccountUsageService = createGothamAccountUsageService();
 gothamStudioService = createGothamStudio({ root: plutomixProjectRoot(), env: process.env, emit: event });
+instructionLogExportRepository = createInstructionLogExportRepository({ root: plutomixWritableRoot(), env: process.env });
 aiProviderProfileService = new AiProviderProfileService({
   repository: createProviderProfileRepository({ env: process.env }),
   adapters: createProviderAdapters({ env: process.env }),
@@ -4544,6 +4555,115 @@ app.get("/api/project-instructions", async (req, res) => {
     ? readProjectInstructionTimeline({ projectId: requestedProjectId })
     : visibleProjects.flatMap((project) => readProjectInstructionTimeline({ projectId: project.id }));
   res.json({ status: "ok", instructions: instructions.sort((a, b) => new Date(b.recordedAt || 0) - new Date(a.recordedAt || 0)) });
+});
+
+function workflowReferences(record = {}) {
+  return new Set([
+    record.instructionSequenceId,
+    record.parentWorkflowId,
+    record.workflowId,
+    record.buildId,
+    record.replayParentId,
+    record.providerRuntimeSelection?.workflowId,
+    record.orchestrationEnvelope?.parentWorkflowId
+  ].map((value) => String(value || "").trim()).filter(Boolean));
+}
+
+function runtimeEventsForInstruction(instruction = {}) {
+  const references = workflowReferences(instruction);
+  const matches = readRuntimeLogRows().filter((row) => {
+    const rowReferences = workflowReferences(row);
+    return [...rowReferences].some((value) => references.has(value));
+  });
+  const snapshotRows = Array.isArray(instruction.orchestrationSnapshot?.timeline)
+    ? instruction.orchestrationSnapshot.timeline
+    : [];
+  const seen = new Set();
+  return [...matches, ...snapshotRows]
+    .filter((row) => {
+      const key = row.id || `${row.createdAt || ""}:${row.type || ""}:${row.message || ""}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+}
+
+function respondInstructionLogExportError(res, error) {
+  const known = error instanceof InstructionLogExportError;
+  return res.status(known ? error.status : 500).json({
+    status: "failed",
+    code: known ? error.code : "instruction_log_export_failed",
+    error: known ? error.message : "The instruction execution log could not be exported."
+  });
+}
+
+app.post("/api/projects/:projectId/instruction-log-exports", async (req, res) => {
+  try {
+    const scope = req.plutomixProjectScope;
+    const user = userFromRequest(req);
+    const project = await getProject(req.params.projectId, { user });
+    if (!project || project.isDefault) {
+      throw new InstructionLogExportError("The selected project is unavailable.", { code: "instruction_log_export_project_not_found", status: 404 });
+    }
+    const requestedSequenceId = String(req.body?.instructionSequenceId || "").trim();
+    if (!requestedSequenceId || requestedSequenceId.length > 240) {
+      throw new InstructionLogExportError("A valid instruction sequence ID is required.", { code: "instruction_sequence_id_required", status: 400 });
+    }
+    const instruction = readProjectInstructionTimeline({ projectId: project.id })
+      .find((record) => instructionSequenceId(record) === requestedSequenceId);
+    if (!instruction) {
+      throw new InstructionLogExportError("The requested instruction execution is unavailable.", { code: "instruction_execution_not_found", status: 404 });
+    }
+    const repositoryScope = { tenantId: scope.tenantId, workspaceId: project.id, projectId: project.id };
+    const exportRecord = buildInstructionLogExport({
+      scope: repositoryScope,
+      project,
+      instruction,
+      events: runtimeEventsForInstruction(instruction),
+      actor: { principalId: scope.principal.id }
+    });
+    const saved = await instructionLogExportRepository.create(exportRecord, repositoryScope);
+    event("instruction-log-exported", "A redacted Gotham instruction execution log was saved and prepared for download.", {
+      projectId: project.id,
+      projectName: project.name,
+      parentWorkflowId: instruction.parentWorkflowId || "",
+      instructionSequenceId: exportRecord.instructionSequenceId,
+      exportId: exportRecord.id,
+      providerId: exportRecord.providerId,
+      providerProfileId: exportRecord.providerProfileId
+    });
+    return res.status(201).json({
+      status: "created",
+      export: {
+        ...saved,
+        downloadUrl: `/api/projects/${encodeURIComponent(project.id)}/instruction-log-exports/${encodeURIComponent(saved.id)}/download`
+      }
+    });
+  } catch (error) {
+    return respondInstructionLogExportError(res, error);
+  }
+});
+
+app.get("/api/projects/:projectId/instruction-log-exports/:exportId/download", async (req, res) => {
+  try {
+    const scope = req.plutomixProjectScope;
+    const user = userFromRequest(req);
+    const project = await getProject(req.params.projectId, { user });
+    if (!project || project.isDefault) {
+      throw new InstructionLogExportError("The selected project is unavailable.", { code: "instruction_log_export_project_not_found", status: 404 });
+    }
+    const repositoryScope = { tenantId: scope.tenantId, workspaceId: project.id, projectId: project.id };
+    const exportRecord = await instructionLogExportRepository.get(String(req.params.exportId || ""), repositoryScope);
+    res.set({
+      "Content-Type": "text/plain; charset=utf-8",
+      "Content-Disposition": `attachment; filename="${exportRecord.filename}"`,
+      "Cache-Control": "private, no-store",
+      "X-Content-Type-Options": "nosniff"
+    });
+    return res.send(exportRecord.content);
+  } catch (error) {
+    return respondInstructionLogExportError(res, error);
+  }
 });
 
 app.get("/api/orchestrator-health", async (_req, res) => {
@@ -7619,7 +7739,10 @@ async function handleGenerateRequest(req, res, { executionMode = "direct" } = {}
     taskType,
     workflowMode,
     promptTarget: "plutomix-fullstack-agent",
-    instructionFormat: "Task Type / Gotham Mode / Task"
+    instructionFormat: "Task Type / Gotham Mode / Task",
+    parentWorkflowId: orchestrationEnvelope.parentWorkflowId,
+    providerId: providerRuntimeContext.selection.providerId,
+    providerProfileId: providerRuntimeContext.selection.profileId
   });
   if (orchestrationEnvelope.delegations.length) {
     event("delegation-start", `PlutoMix delegated bounded project execution to ${orchestrationEnvelope.delegations[0].agentId}`, {
@@ -7633,7 +7756,13 @@ async function handleGenerateRequest(req, res, { executionMode = "direct" } = {}
       agentId: orchestrationEnvelope.delegations[0].agentId
     });
   }
-  event("request-received", "Gotham MCP workflow request received", { stage: "1/8" });
+  event("request-received", "Gotham workflow request received", {
+    stage: "1/8",
+    projectId: selectedProject?.id || null,
+    parentWorkflowId: orchestrationEnvelope.parentWorkflowId,
+    providerId: providerRuntimeContext.selection.providerId,
+    providerProfileId: providerRuntimeContext.selection.profileId
+  });
   if (useProjectOrchestrator) {
     event("plutomix-delegation", `${selectedProject.name} is executing a PlutoMix-owned task`, {
       stage: "3/8",
@@ -7644,17 +7773,23 @@ async function handleGenerateRequest(req, res, { executionMode = "direct" } = {}
   } else {
     event("orchestrated", `Instruction restructured for ${orchestrated.structuredRequest.pageType}`, {
       stage: "3/8",
+      projectId: selectedProject?.id || null,
+      parentWorkflowId: orchestrationEnvelope.parentWorkflowId,
       objective: orchestrated.structuredRequest.objective,
       topic: orchestrated.structuredRequest.topic,
       sections: orchestrated.structuredRequest.sections
     });
     event("file-plan", `Orchestrator planned ${orchestrated.structuredRequest.fileOperations.length} file operations`, {
       stage: "4/8",
+      projectId: selectedProject?.id || null,
+      parentWorkflowId: orchestrationEnvelope.parentWorkflowId,
       fileOperations: orchestrated.structuredRequest.fileOperations
     });
     for (const [index, operation] of orchestrated.structuredRequest.fileOperations.entries()) {
       event("file-plan-item", `${index + 1}. ${operation.action.toUpperCase()} ${operation.path}`, {
         stage: "4/8",
+        projectId: selectedProject?.id || null,
+        parentWorkflowId: orchestrationEnvelope.parentWorkflowId,
         action: operation.action,
         path: operation.path,
         reason: operation.reason

@@ -117,6 +117,11 @@ PLUTOMIX_WAS_STOPPED=1
 log "Building PlutoMix images."
 "${PLUTOMIX_COMPOSE[@]}" build --pull
 
+log "Applying locked PostgreSQL migrations."
+"${PLUTOMIX_COMPOSE[@]}" \
+  --profile decision-continuity-production \
+  run --rm decision-continuity-migrate
+
 log "Starting PlutoMix."
 "${PLUTOMIX_COMPOSE[@]}" up -d --remove-orphans
 PLUTOMIX_WAS_STOPPED=0

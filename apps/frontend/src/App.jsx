@@ -1004,8 +1004,9 @@ function AgentAvatar({ visual, size = "medium", className = "" }) {
   );
 }
 
-function EventRow({ event, sessionStartedAt, selectedProject, onOpenStudio }) {
+function EventRow({ event, sessionStartedAt, selectedProject, onOpenStudio, onExportInstructionLog }) {
   const [expanded, setExpanded] = useState(false);
+  const [exportState, setExportState] = useState({ status: "idle", message: "" });
   const isCurrentSession = sessionStartedAt && new Date(event.createdAt || 0).getTime() >= sessionStartedAt;
   const isPromptEvent = ["instruction", "orchestrator-prompt"].includes(event.type);
   const visual = agentVisualFromEvent(event, selectedProject);
@@ -1040,6 +1041,19 @@ function EventRow({ event, sessionStartedAt, selectedProject, onOpenStudio }) {
     studioJobId: event.studioJobId,
     studioPipelineId: event.studioPipelineId
   }).filter(([, value]) => value !== undefined && value !== null && value !== ""));
+  const canExportInstructionLog = Boolean(event.exportableInstruction && event.projectId && event.instructionSequenceId);
+
+  async function exportInstructionLog(clickEvent) {
+    clickEvent.stopPropagation();
+    if (!canExportInstructionLog || exportState.status === "working") return;
+    setExportState({ status: "working", message: "Preparing export…" });
+    try {
+      const result = await onExportInstructionLog(event);
+      setExportState({ status: "complete", message: result?.filename ? `Downloaded ${result.filename}` : "Log downloaded." });
+    } catch (error) {
+      setExportState({ status: "failed", message: error.message || "Log export failed." });
+    }
+  }
   return (
     <li
       className={`event-row ${isCurrentSession ? "current-session" : ""} ${event.progressGroup ? "codex-progress-row" : ""} ${expanded ? "expanded" : ""}`}
@@ -1070,6 +1084,12 @@ function EventRow({ event, sessionStartedAt, selectedProject, onOpenStudio }) {
           </small>
         ) : null}
         {runtimeDetail ? <small className="event-detail">{runtimeDetail}</small> : null}
+        {canExportInstructionLog ? (
+          <button type="button" className="event-log-export-button" onClick={exportInstructionLog} disabled={exportState.status === "working"}>
+            {exportState.status === "working" ? <Loader2 className="spin" size={12} /> : <Download size={12} />}
+            <span>{exportState.status === "working" ? "Preparing…" : "Export log"}</span>
+          </button>
+        ) : null}
         {sandboxFailure ? (
           <aside className="sandbox-unavailable-notice" aria-label="Sandbox unavailable">
             <strong>Sandbox unavailable</strong>
@@ -1109,7 +1129,12 @@ function EventRow({ event, sessionStartedAt, selectedProject, onOpenStudio }) {
                 <pre>{JSON.stringify(eventMetadata, null, 2)}</pre>
               </div>
             ) : null}
-            {event.studioJobId ? <button type="button" onClick={() => onOpenStudio?.(event.studioJobId)}>Open in Gotham Studio</button> : null}
+            {event.studioJobId ? (
+              <footer className="agent-log-actions">
+                <button type="button" onClick={() => onOpenStudio?.(event.studioJobId)}>Open in Gotham Studio</button>
+              </footer>
+            ) : null}
+            {exportState.message ? <small className={`instruction-log-export-status ${exportState.status}`} role={exportState.status === "failed" ? "alert" : "status"}>{exportState.message}</small> : null}
           </section>
         ) : null}
       </div>
@@ -6872,12 +6897,34 @@ export default function App() {
     [backendStatus, codexRuntime, lastBuild, mcpId, mcpStatus, projectRuntimeLabel]
   );
   const activityEvents = useMemo(() => {
+    const baseRows = normalizeRuntimeRows([...runtimeLogs, ...chatPrompts]).slice(0, MAX_RUNTIME_LOG_ROWS);
+    const instructionBySequence = new Map(selectedProjectInstructions.map((entry) => [entry.instructionSequenceId || entry.parentWorkflowId || entry.workflowId || entry.buildId, entry]).filter(([id]) => id));
+    const enrichedRows = baseRows.map((row) => {
+      const sequenceId = row.instructionSequenceId || row.parentWorkflowId || row.workflowId || row.buildId || "";
+      const instructionRecord = instructionBySequence.get(sequenceId);
+      const exportableType = ["instruction", "orchestrator-prompt", "project-instruction-start"].includes(row.type);
+      return instructionRecord && exportableType
+        ? { ...row, ...instructionRecord, id: row.id, message: row.message, createdAt: row.createdAt, type: row.type, instructionSequenceId: sequenceId, exportableInstruction: true }
+        : row;
+    });
+    const representedSequences = new Set(enrichedRows.filter((row) => row.exportableInstruction).map((row) => row.instructionSequenceId));
+    const persistedInstructionRows = selectedProjectInstructions
+      .filter((entry) => !representedSequences.has(entry.instructionSequenceId))
+      .map((entry) => ({
+        ...entry,
+        id: `persisted-instruction-${entry.instructionSequenceId}`,
+        role: "user",
+        type: "instruction",
+        message: [`Task Type: ${entry.taskType || "Auto"}`, entry.workflowMode ? `Gotham Mode: ${displayEventType(entry.workflowMode)}` : "", `Task: ${entry.instruction}`].filter(Boolean).join("\n"),
+        createdAt: entry.recordedAt,
+        exportableInstruction: true
+      }));
     const rows = collapseProviderProgressRows(
-      markCurrentSession(normalizeRuntimeRows([...runtimeLogs, ...chatPrompts]).slice(0, MAX_RUNTIME_LOG_ROWS), sessionStartedAt)
+      markCurrentSession(normalizeRuntimeRows([...enrichedRows, ...persistedInstructionRows]), sessionStartedAt)
     );
     const categoryRows = activityFilter === "all" ? rows : rows.filter((event) => activityCategory(event) === activityFilter);
     return activityTarget ? categoryRows.filter((event) => activityMatchesTarget(event, activityTarget)) : categoryRows;
-  }, [activityFilter, activityTarget, chatPrompts, runtimeLogs, sessionStartedAt]);
+  }, [activityFilter, activityTarget, chatPrompts, runtimeLogs, selectedProjectInstructions, sessionStartedAt]);
   const playgroundNotifications = useMemo(() => {
     const cutoff = Date.now() - NOTIFICATION_RETENTION_MS;
     const selectedId = selectedProject?.id || "";
@@ -8172,6 +8219,36 @@ export default function App() {
     const url = new URL(window.location.href);
     url.searchParams.delete("logs");
     window.history.replaceState({}, "", url);
+  }
+
+  async function exportInstructionExecutionLog(event) {
+    const projectId = String(event?.projectId || "").trim();
+    const instructionSequenceId = String(event?.instructionSequenceId || event?.parentWorkflowId || event?.workflowId || event?.buildId || "").trim();
+    if (!projectId || !instructionSequenceId) throw new Error("This instruction does not have a persisted execution sequence yet.");
+    const createResponse = await authFetch(`${BACKEND_URL}/api/projects/${encodeURIComponent(projectId)}/instruction-log-exports`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ instructionSequenceId })
+    });
+    const created = await createResponse.json().catch(() => ({}));
+    if (!createResponse.ok) throw new Error(created.error || "The instruction execution log could not be prepared.");
+    const downloadUrl = String(created.export?.downloadUrl || "");
+    const filename = String(created.export?.filename || "gotham-instruction-log.txt");
+    if (!downloadUrl.startsWith("/api/projects/")) throw new Error("The saved instruction log download is unavailable.");
+    const downloadResponse = await authFetch(`${BACKEND_URL}${downloadUrl}`);
+    if (!downloadResponse.ok) {
+      const failure = await downloadResponse.json().catch(() => ({}));
+      throw new Error(failure.error || "The saved instruction execution log could not be downloaded.");
+    }
+    const objectUrl = URL.createObjectURL(await downloadResponse.blob());
+    const anchor = document.createElement("a");
+    anchor.href = objectUrl;
+    anchor.download = filename;
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+    window.setTimeout(() => URL.revokeObjectURL(objectUrl), 1_000);
+    return { filename, exportId: created.export?.id || "" };
   }
 
   useEffect(() => {
@@ -9518,7 +9595,7 @@ export default function App() {
 			              ) : null}
 			              <ol>
 			                {activityEvents.length ? (
-			                  activityEvents.map((event) => <EventRow key={`activity-${event.id || event.createdAt}`} event={event} sessionStartedAt={sessionStartedAt} selectedProject={selectedProject} onOpenStudio={openStudioJob} />)
+			                  activityEvents.map((event) => <EventRow key={`activity-${event.id || event.createdAt}`} event={event} sessionStartedAt={sessionStartedAt} selectedProject={selectedProject} onOpenStudio={openStudioJob} onExportInstructionLog={exportInstructionExecutionLog} />)
 			                ) : (
 			                  <li className="empty-state">
 			                    {activityTarget ? `No activity events matched ${activityTarget}.` : "Activity events will appear here."}
