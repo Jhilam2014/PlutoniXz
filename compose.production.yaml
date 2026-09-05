@@ -10,6 +10,17 @@ services:
     ports: !override
       - "127.0.0.1:8080:8080"
 
+    # Codex creates a nested Bubblewrap mount namespace for workspace-write
+    # execution. Ubuntu's Docker/AppArmor boundary otherwise rejects the
+    # mount-propagation setup with `Failed to make / slave: Permission denied`.
+    # Scope the exception to this production container: it remains non-
+    # privileged, keeps its private PID/network namespaces, no-new-privileges,
+    # and the checked-in seccomp allowlist from the base Compose service.
+    cap_add:
+      - SYS_ADMIN
+    security_opt:
+      - apparmor=unconfined
+
     environment:
       DECISION_CONTINUITY_DURABLE_WORKFLOWS: "true"
       DECISION_CONTINUITY_DATABASE_URL: "${DECISION_CONTINUITY_DATABASE_URL:?Missing DECISION_CONTINUITY_DATABASE_URL}"

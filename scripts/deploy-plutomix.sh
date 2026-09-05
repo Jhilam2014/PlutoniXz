@@ -124,6 +124,28 @@ log "Applying locked PostgreSQL migrations."
 
 log "Starting PlutoMix."
 "${PLUTOMIX_COMPOSE[@]}" up -d --remove-orphans
+
+log "Verifying the Codex workspace-write sandbox."
+"${PLUTOMIX_COMPOSE[@]}" exec -T backend node --input-type=module -e '
+import { probeCodexWorkspaceSandbox } from "./src/codexWorkflow.js";
+
+const workspaceDir = String(process.env.PROJECTS_ROOT || "").trim();
+const result = await probeCodexWorkspaceSandbox(
+  process.env.CODEX_BIN || "codex",
+  Number(process.env.GOTHAM_SANDBOX_PREFLIGHT_TIMEOUT_MS || 8000),
+  { workspaceDir, env: process.env }
+);
+if (result.status !== "ready") {
+  console.error(JSON.stringify({
+    status: result.status,
+    reason: result.reason,
+    diagnostic: result.diagnostic,
+    remediation: result.remediation
+  }));
+  process.exit(1);
+}
+console.log(`Codex workspace-write sandbox ready for ${result.workspace}.`);
+'
 PLUTOMIX_WAS_STOPPED=0
 
 log "Deployment completed at commit $(git rev-parse --short HEAD)."

@@ -8,10 +8,19 @@ workspace sandbox:
 `unshare`, `clone`, `clone3`, `mount`, `umount`, `umount2`, `pivot_root`,
 `sethostname`, `setdomainname`, and `setns`.
 
-The backend container still runs without `privileged`, `CAP_SYS_ADMIN`, host PID
-mode, or an unconfined seccomp profile. Kernel capability checks therefore
+The base development container runs without `privileged`, `CAP_SYS_ADMIN`, host
+PID mode, or an unconfined seccomp profile. Kernel capability checks therefore
 continue to deny these operations in the initial container namespace, while
 Bubblewrap can use them only after it creates its isolated user namespace.
+
+Ubuntu production hosts add `CAP_SYS_ADMIN` and `apparmor=unconfined` to the
+backend container only. Ubuntu 24.04 and later can deny the capabilities that
+Bubblewrap needs inside an unprivileged user namespace; Docker's default
+AppArmor policy can also deny the mount-propagation setup. Without the scoped
+production exception, Codex exits before a model call with
+`bwrap: Failed to make / slave: Permission denied`. The container is not
+privileged and retains its private PID/network namespaces,
+`no-new-privileges=true`, and this checked-in seccomp allowlist.
 
 The backend image selects the Bubblewrap helper bundled with the pinned Codex
 CLI and verifies that it supports `--argv0`. Debian 12's Bubblewrap 0.8 does not
@@ -31,13 +40,15 @@ nested Bubblewrap from mounting the private procfs required by Codex and
 produces `bwrap: Can't mount proc on /proc: Operation not permitted`, even when
 the required syscalls are present in seccomp. The Compose backend therefore
 adds `systempaths=unconfined` for this container and compensates with
-`no-new-privileges=true`. This changes only Docker's masked/read-only system-path
-policy: the backend retains its container PID namespace, normal capability set,
-and the checked-in seccomp allowlist.
+`no-new-privileges=true`. The backend retains its container PID namespace and
+the checked-in seccomp allowlist; production adds only the compatibility
+controls described above.
 
-Do not replace these controls with `privileged: true`, `CAP_SYS_ADMIN`, host PID
-mode, or `seccomp=unconfined`. Revalidate the complete boundary after upgrading
-Docker or Codex against an actual mounted project workspace with:
+Do not replace these controls with `privileged: true`, host PID mode, or
+`seccomp=unconfined`. Do not add `CAP_SYS_ADMIN` to the development service; its
+production-only use is the bounded compatibility exception described above.
+Revalidate the complete boundary after upgrading Docker or Codex against an
+actual mounted project workspace with:
 
 ```sh
 docker exec -w /workspace/apps/<project> plutomix-backend \
@@ -48,6 +59,8 @@ docker exec -w /workspace/apps/<project> plutomix-backend \
 The expected result is exit code `0`, no Bubblewrap diagnostic, and no leftover
 probe file. This verifies command startup plus read/write access inside the
 selected mount; `/bin/true` alone is not a sufficient workspace health check.
+`scripts/deploy-plutomix.sh` runs the equivalent no-model probe after starting
+the production backend and fails the deployment if the sandbox is unavailable.
 Confirm the effective runtime controls separately:
 
 ```sh
