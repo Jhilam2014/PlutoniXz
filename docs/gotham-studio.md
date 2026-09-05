@@ -36,6 +36,8 @@ Gotham Builder instruction rows expose an **Export complete log (.txt)** action 
 
 Export names use the portable form `enterprise_project_instruction-sequence_export-id_date-time.txt`. Characters such as `*`, `/`, and `\\` are normalized because they are invalid or path-significant on common operating systems.
 
+The Activity log header exports the latest terminal execution for the selected project; individual persisted instruction rows retain their own export action. The instruction read model includes durable workflow outbox receipts before asynchronous projections drain, so new successful and failed executions appear immediately under Project instructions. New managed projects reuse only the stable generated-site shell: their mutable `src/generated` surface is replaced with a project-specific neutral seed, preventing a failed initial build from displaying an earlier project's application. Projects without any successful build expose their failed instruction history while withholding the misleading playground iframe.
+
 Local development and tests may set `GOTHAM_STUDIO_REPOSITORY=file` to use the atomic JSON repository at `database/gotham-studio/state.json`; `GOTHAM_STUDIO_STATE_PATH` relocates that development state. Set `GOTHAM_STUDIO_REPOSITORY=postgres` and `GOTHAM_STUDIO_DATABASE_URL` (or the shared `DECISION_CONTINUITY_DATABASE_URL` / `DATABASE_URL`) for PostgreSQL. Records carry tenant, workspace, and project scope internally; public API responses remove the tenant and idempotency fields. Every API route uses the existing strict identity/RBAC layer and validates that the requested workspace matches the managed project.
 
 Logical job states are:

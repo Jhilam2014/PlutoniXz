@@ -6449,6 +6449,7 @@ export default function App() {
   const [lastBuild, setLastBuild] = useState(null);
   const [projectInstructions, setProjectInstructions] = useState([]);
   const [runningInstruction, setRunningInstruction] = useState(null);
+  const [latestExecutionExportState, setLatestExecutionExportState] = useState({ status: "idle", message: "" });
   const [instructionTimerNow, setInstructionTimerNow] = useState(Date.now());
   const [instructionsError, setInstructionsError] = useState("");
   const [techStackSnapshots, setTechStackSnapshots] = useState(() => {
@@ -6582,6 +6583,21 @@ export default function App() {
   const selectedProjectInstructions = isSystemTarget
     ? []
     : projectInstructions.filter((entry) => (!selectedProjectId || entry.projectId === selectedProjectId) && entry?.instruction);
+  const latestCompletedProjectInstruction = selectedProjectInstructions.find((entry) =>
+    entry.instructionSequenceId && ["succeeded", "completed", "passed", "failed", "stopped", "persistence_failed"].includes(String(entry.status || "").toLowerCase())
+  ) || null;
+  const selectedProjectHasSuccessfulBuild = selectedProjectInstructions.some((entry) =>
+    ["succeeded", "completed", "passed"].includes(String(entry.status || "").toLowerCase())
+  );
+  const selectedProjectHasFailedBuild = selectedProjectInstructions.some((entry) =>
+    ["failed", "stopped", "persistence_failed"].includes(String(entry.status || "").toLowerCase())
+  );
+  const selectedProjectPreviewBlocked = Boolean(
+    selectedProject && (
+      selectedProject.initialBuildStatus === "failed" ||
+      (selectedProject.origin === "plutomix_created" && selectedProjectHasFailedBuild && !selectedProjectHasSuccessfulBuild)
+    )
+  );
   const latestProjectInstruction = selectedProjectInstructions.find((entry) => entry?.flowPath) || null;
   const initialProjectInstruction =
     selectedProjectInstructions
@@ -7374,6 +7390,7 @@ export default function App() {
 
   useEffect(() => {
     loadProjectInstructions(selectedProjectId).catch(() => {});
+    setLatestExecutionExportState({ status: "idle", message: "" });
   }, [selectedProjectId, currentUser?.id]);
 
   useEffect(() => {
@@ -8251,6 +8268,21 @@ export default function App() {
     return { filename, exportId: created.export?.id || "" };
   }
 
+  async function exportLatestInstructionExecutionLog() {
+    if (!selectedProject || !latestCompletedProjectInstruction || latestExecutionExportState.status === "working") return;
+    setLatestExecutionExportState({ status: "working", message: "Preparing latest execution log…" });
+    try {
+      const result = await exportInstructionExecutionLog({
+        ...latestCompletedProjectInstruction,
+        projectId: selectedProject.id,
+        exportableInstruction: true
+      });
+      setLatestExecutionExportState({ status: "complete", message: `Downloaded ${result.filename}` });
+    } catch (error) {
+      setLatestExecutionExportState({ status: "failed", message: error.message || "Latest execution log export failed." });
+    }
+  }
+
   useEffect(() => {
     let cancelled = false;
     let source;
@@ -8693,6 +8725,7 @@ export default function App() {
     });
     setProjectResult({ status: "running", projectName: projectName.trim(), previewUrl: selectedPreviewUrl });
     if (submittedInstruction.length > 12) setInstructionImmediately("");
+    let createdProject = null;
     try {
       const res = await authFetch(`${BACKEND_URL}/api/projects/new`, {
         method: "POST",
@@ -8713,6 +8746,7 @@ export default function App() {
         })
       });
       const data = await res.json();
+      createdProject = data.project || null;
       setProjectResult(data);
       if (data.flowPath) setProjectFlowPath(data.flowPath);
       if (!res.ok) throw new Error(data.error || "Project creation failed");
@@ -8728,7 +8762,13 @@ export default function App() {
         error: error.message,
         flowPath: current?.flowPath || projectFlowPath
       }));
-      await loadProjectInstructions(selectedProjectId);
+      if (createdProject?.id) {
+        await Promise.all([loadProjects().catch(() => {}), loadTenantGovernance().catch(() => {})]);
+        applyReadyProject(createdProject);
+        await loadProjectInstructions(createdProject.id);
+      } else {
+        await loadProjectInstructions(selectedProjectId);
+      }
     } finally {
       setCreatingProject(false);
       setFlowExpanded(false);
@@ -9305,7 +9345,7 @@ export default function App() {
                 {artifactsLoading ? <Loader2 className="spin" size={18} /> : <RefreshCcw size={18} />}
               </button>
             )}
-            {selectedProject && (browserPreview ? selectedPreviewUrl : selectedArtifactUrl) ? (
+	            {selectedProject && !selectedProjectPreviewBlocked && (browserPreview ? selectedPreviewUrl : selectedArtifactUrl) ? (
               <a className="icon-button" href={browserPreview ? selectedPreviewUrl : selectedArtifactUrl} target="_blank" rel="noreferrer" title="Open preview">
                 <ExternalLink size={18} />
               </a>
@@ -9398,6 +9438,12 @@ export default function App() {
                   <span>No generated artifact is available yet.</span>
                 </div>
               )
+            ) : selectedProject && selectedProjectPreviewBlocked ? (
+              <div className="empty-playground failed-project-playground">
+                <XCircle size={28} />
+                <strong>Initial project build failed</strong>
+                <span>The playground is withheld because this project has no successful build. Its failed instruction remains available in Project instructions and the Activity log.</span>
+              </div>
             ) : selectedProject && selectedRuntimeStopped ? (
               <div className="empty-playground stopped-playground">
                 <Pause size={28} />
@@ -9566,9 +9612,19 @@ export default function App() {
 	          {aiProviderWarning ? <div className="gotham-provider-warning" role="alert"><ShieldCheck size={15} /><span>{aiProviderWarning}</span></div> : null}
 	          <section className="instruction-workshop" aria-label="Instruction workshop">
 			            <section id="activity-log" className="activity-card workshop-activity-log">
-			              <div className="section-heading">
+			              <div className="section-heading activity-log-heading">
 			                <Activity size={18} />
 			                <h2>Activity log</h2>
+			                <button
+			                  type="button"
+			                  className="activity-log-export-latest"
+			                  onClick={exportLatestInstructionExecutionLog}
+			                  disabled={!latestCompletedProjectInstruction || latestExecutionExportState.status === "working"}
+			                  title={latestExecutionExportState.message || (latestCompletedProjectInstruction ? "Export the complete latest execution build log" : "No completed project execution is available")}
+			                >
+			                  {latestExecutionExportState.status === "working" ? <Loader2 className="spin" size={13} /> : <Download size={13} />}
+			                  <span>{latestExecutionExportState.status === "working" ? "Preparing…" : latestExecutionExportState.status === "failed" ? "Retry export" : "Export latest log"}</span>
+			                </button>
 			              </div>
 			              <div className="activity-filters" role="tablist" aria-label="Activity log filters">
 			                {activityFilters.map((filter) => (
@@ -10076,7 +10132,7 @@ export default function App() {
         </details>
 
         <ProjectInstructionTimeline
-          instructions={projectInstructions}
+          instructions={selectedProjectInstructions}
           error={instructionsError}
           runningInstruction={runningInstruction}
           now={instructionTimerNow}

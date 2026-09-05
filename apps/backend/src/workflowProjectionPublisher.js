@@ -147,6 +147,35 @@ export async function buildWorkflowPublicationReceipt(input = {}) {
   };
 }
 
+export function readDurableWorkflowPublicationReceipts({ root, outboxRoot, projectId = "" } = {}) {
+  const directory = outboxRoot || process.env.GOTHAM_PUBLICATION_OUTBOX_PATH || path.join(publisherRoot(root), "runtime", "workflow-publication-outbox");
+  const records = [];
+  const seen = new Set();
+  for (const state of ["pending", "processing", "published", "failed"]) {
+    const stateDirectory = path.join(directory, state);
+    if (!fs.existsSync(stateDirectory)) continue;
+    for (const file of fs.readdirSync(stateDirectory).filter((name) => name.endsWith(".json"))) {
+      try {
+        const job = fs.readJsonSync(path.join(stateDirectory, file));
+        const receipt = job?.receipt;
+        if (!receipt?.publicationId || seen.has(receipt.publicationId)) continue;
+        if (projectId && receipt.projectId !== projectId) continue;
+        seen.add(receipt.publicationId);
+        records.push({
+          ...receipt,
+          publicationState: state,
+          queuedAt: job.queuedAt || "",
+          publicationFailure: job.lastFailure || null
+        });
+      } catch {
+        // A partial or corrupt outbox entry is handled by the publisher's
+        // recovery path and must not break the instruction read model.
+      }
+    }
+  }
+  return records.sort((left, right) => new Date(right.completedAt || right.queuedAt || 0) - new Date(left.completedAt || left.queuedAt || 0));
+}
+
 async function atomicWriteFile(filePath, content) {
   await fs.ensureDir(path.dirname(filePath));
   const temporaryPath = path.join(path.dirname(filePath), `.${path.basename(filePath)}.${process.pid}.${crypto.randomBytes(6).toString("hex")}.tmp`);

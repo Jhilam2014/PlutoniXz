@@ -6862,6 +6862,31 @@ button.tool-action {
   font-size: 12px;
 }
 
+.workshop-activity-log .activity-log-heading {
+  display: flex;
+  align-items: center;
+}
+
+.activity-log-export-latest {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 27px;
+  margin-left: auto;
+  padding: 4px 8px;
+  border: 1px solid rgba(66, 116, 217, 0.38);
+  border-radius: 7px;
+  color: #293681;
+  background: #edf5ff;
+  font-size: 9.5px;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+.activity-log-export-latest:hover,
+.activity-log-export-latest:focus-visible { border-color: #4274d9; background: #dde7f8; }
+.activity-log-export-latest:disabled { cursor: not-allowed; opacity: 0.52; }
+
 .workshop-activity-log .activity-filters {
   margin: 0;
   gap: 4px;
@@ -9429,6 +9454,19 @@ iframe {
     linear-gradient(150deg, rgba(15, 23, 42, 0.05), transparent 48%),
     #fff7f8;
 }
+
+.failed-project-playground {
+  padding: 32px;
+  color: #991b1b;
+  text-align: center;
+  background:
+    linear-gradient(135deg, rgba(220, 38, 38, 0.08), transparent 34%),
+    linear-gradient(150deg, rgba(41, 54, 129, 0.05), transparent 48%),
+    #fff7f7;
+}
+
+.failed-project-playground strong { font-size: 16px; }
+.failed-project-playground span { max-width: 560px; line-height: 1.5; }
 
 .activity-card ol {
   max-height: 176px;

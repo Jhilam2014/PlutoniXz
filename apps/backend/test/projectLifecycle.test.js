@@ -10,7 +10,7 @@ import { createPlutoMixOrchestrationEnvelope } from "../src/plutomixAuthority.js
 import { formatProjectOrchestratorInstruction, inferGothamRequestIntent } from "../src/orchestratorAgent.js";
 import { runProjectOrchestratorBootstrap } from "../src/projectBootstrap.js";
 import { buildProjectAgentTopology, syncProjectAgentTopology } from "../src/projectAgents.js";
-import { createProject, deleteProject, getProject, projectPreviewUrl, projectProvenance, shouldSkipProjectArtifact, updateProjectIdentity } from "../src/projectManager.js";
+import { createProject, deleteProject, getProject, projectPreviewUrl, projectProvenance, shouldSkipProjectArtifact, updateProjectIdentity, updateProjectInitialBuildStatus } from "../src/projectManager.js";
 
 test("provider runtime event aliases cover the complete neutral activity contract", () => {
   assert.equal(providerNeutralRuntimeEventType("claude-started"), "provider-start");
@@ -138,6 +138,7 @@ test("creates a project-local orchestrator and deletes the complete managed proj
   const socketPath = path.join(temporaryRoot, "docker.sock");
   await fs.mkdir(path.join(templateRoot, "src", "generated"), { recursive: true });
   await fs.writeFile(path.join(templateRoot, "package.json"), JSON.stringify({ name: "template", scripts: { dev: "vite" } }));
+  await fs.writeFile(path.join(templateRoot, "src", "generated", "generatedPage.jsx"), "export default function Page() { return <main>VEVogue Elegance</main>; }\n");
   const seedFiles = {
     ".claude/settings.example.json": "{}\n",
     ".codex/prompts/bootstrap-orchestrator.md": "Read AGENTS.md fully and bootstrap the project.\n",
@@ -180,6 +181,12 @@ test("creates a project-local orchestrator and deletes the complete managed proj
     sections: ["hero", "metrics"],
     media: []
   });
+  assert.equal(project.initialBuildStatus, "pending");
+  const cleanGeneratedSeed = await fs.readFile(path.join(project.workspaceDir, "src", "generated", "generatedPage.jsx"), "utf8");
+  assert.match(cleanGeneratedSeed, /Accuracy Lab/);
+  assert.doesNotMatch(cleanGeneratedSeed, /VEVogue Elegance/);
+  const readyProject = await updateProjectInitialBuildStatus(project.id, "ready");
+  assert.equal(readyProject.initialBuildStatus, "ready");
   const policyPath = path.join(project.workspaceDir, ".agentic", "orchestrator-agent.md");
   const policy = await fs.readFile(policyPath, "utf8");
   assert.match(policy, /policy_handoff_version: 2/i);

@@ -45,6 +45,7 @@ import {
   stopProjectInstance,
   bindProjectDecisionContinuity,
   getProjectDecisionContinuity,
+  updateProjectInitialBuildStatus,
   updateProjectIdentity
 } from "./projectManager.js";
 import { restartGeneratedRuntime } from "./runtimeRestart.js";
@@ -100,6 +101,7 @@ import {
   configureWorkflowProjectionPublisher,
   drainWorkflowPublications,
   enqueueWorkflowPublication,
+  readDurableWorkflowPublicationReceipts,
   recoverPendingWorkflowPublications
 } from "./workflowProjectionPublisher.js";
 import {
@@ -3047,14 +3049,61 @@ function readProjectInstructionTimeline({ projectId = "" } = {}) {
     changedFiles: row.changedFiles || [],
     error: row.error || ""
   }));
-  const unmatchedKnowledgeRows = knowledgeRows.filter((knowledge) => !ledgerRows.some((ledger) =>
-    ledger.projectId === knowledge.projectId &&
-    ledger.instruction === knowledge.instruction &&
-    ledger.status === knowledge.status &&
-    Math.abs(new Date(ledger.recordedAt || 0).getTime() - new Date(knowledge.recordedAt || 0).getTime()) < 10_000
-  ));
+  const durablePublicationRows = readDurableWorkflowPublicationReceipts({
+    root: process.env.WORKFLOW_PUBLICATION_ROOT || plutomixWritableRoot(),
+    outboxRoot: process.env.GOTHAM_PUBLICATION_OUTBOX_PATH,
+    projectId
+  }).map((receipt) => hydratePersistedWorkflowRoute({
+    recordedAt: receipt.completedAt || receipt.queuedAt,
+    source: "plutomix-workflow-outbox",
+    projectId: receipt.projectId || "",
+    projectName: receipt.projectName || "PlutoMix default workspace",
+    taskType: receipt.taskType || "Medium",
+    workflowMode: receipt.workflowMode || "executor",
+    instruction: receipt.instructionSummary || "",
+    status: receipt.status || "received",
+    buildId: normalizeInstructionBuild(receipt.executionOutcome?.buildId || ""),
+    parentWorkflowId: receipt.parentWorkflowId || receipt.workflowId || "",
+    childExecutionIds: receipt.childExecutionIds || [],
+    adaptiveRoute: receipt.adaptiveRoute || null,
+    review: receipt.review || null,
+    startedAt: receipt.startedAt || "",
+    completedAt: receipt.completedAt || "",
+    durationMs: Number.isFinite(receipt.durationMs) ? receipt.durationMs : null,
+    orchestrationSnapshot: receipt.orchestrationSnapshot || null,
+    flowPath: receipt.flowPath || null,
+    changedFiles: receipt.changedFiles || [],
+    error: receipt.error || "",
+    selectedModel: receipt.selectedModel || "",
+    publication: { id: receipt.publicationId, status: receipt.publicationState }
+  }));
+  const sameExecution = (left, right) => {
+    if (left.parentWorkflowId && right.parentWorkflowId) return left.projectId === right.projectId && left.parentWorkflowId === right.parentWorkflowId;
+    return left.projectId === right.projectId &&
+      left.instruction === right.instruction &&
+      left.status === right.status &&
+      Math.abs(new Date(left.recordedAt || 0).getTime() - new Date(right.recordedAt || 0).getTime()) < 10_000;
+  };
+  const enrichedLedgerRows = ledgerRows.map((ledger) =>
+    [...knowledgeRows, ...durablePublicationRows]
+      .filter((candidate) => sameExecution(ledger, candidate))
+      .reduce((combined, candidate) => ({
+        ...candidate,
+        ...combined,
+        parentWorkflowId: combined.parentWorkflowId || candidate.parentWorkflowId,
+        flowPath: combined.flowPath || candidate.flowPath,
+        orchestrationSnapshot: combined.orchestrationSnapshot || candidate.orchestrationSnapshot,
+        adaptiveRoute: combined.adaptiveRoute || candidate.adaptiveRoute,
+        review: combined.review || candidate.review,
+        publication: combined.publication || candidate.publication,
+        startedAt: combined.startedAt || candidate.startedAt,
+        completedAt: combined.completedAt || candidate.completedAt,
+        durationMs: Number.isFinite(combined.durationMs) ? combined.durationMs : candidate.durationMs
+      }), ledger)
+  );
+  const unmatchedKnowledgeRows = knowledgeRows.filter((knowledge) => !enrichedLedgerRows.some((ledger) => sameExecution(ledger, knowledge)));
   const seen = new Set();
-  return [...ledgerRows, ...unmatchedKnowledgeRows]
+  return [...enrichedLedgerRows, ...unmatchedKnowledgeRows, ...durablePublicationRows]
     .filter((row) => row.instruction)
     .filter((row) => !projectId || row.projectId === projectId)
     .filter((row) => {
@@ -5949,6 +5998,8 @@ app.post("/api/projects/new", async (req, res) => {
         previewDurationMs
       }
     });
+    await updateProjectInitialBuildStatus(readyProject.id, "ready");
+    project = { ...readyProject, initialBuildStatus: "ready", initialBuildCompletedAt: new Date().toISOString() };
     event("plutomix-complete", `PlutoMix approved completion for ${project.name}`, {
       stage: "8/8",
       parentWorkflowId: orchestrationEnvelope.parentWorkflowId,
@@ -5957,10 +6008,10 @@ app.post("/api/projects/new", async (req, res) => {
     });
     return res.json({
       status: "succeeded",
-      project: readyProject,
+      project,
       projectName: parsed.data.name,
       container: `plutomix-project-${project.id}`,
-      previewUrl: readyProject.previewUrl,
+      previewUrl: project.previewUrl,
       buildId: result.buildId,
       parentWorkflowId: result.parentWorkflowId,
       childExecutionIds: result.childExecutionIds,
@@ -5975,6 +6026,7 @@ app.post("/api/projects/new", async (req, res) => {
       restart: { status: "project-server", reason: `Project Vite server assigned to port ${project.port}` }
     });
   } catch (error) {
+    if (!project?.id && error.project?.id) project = error.project;
     if (!error.workflowPersistenceFailure) {
     try {
       const repairOutcome = await attemptAutomaticRepairAfterFailure({
@@ -6040,6 +6092,8 @@ app.post("/api/projects/new", async (req, res) => {
             previewDurationMs: repairOutcome.restart?.durationMs ?? null
           }
         });
+        await updateProjectInitialBuildStatus(readyProject.id, "ready");
+        const completedProject = { ...readyProject, initialBuildStatus: "ready", initialBuildCompletedAt: new Date().toISOString() };
         event("plutomix-complete", `PlutoMix approved completion for ${project.name} after automatic repair`, {
           stage: "8/8",
           parentWorkflowId: repairedResult.parentWorkflowId,
@@ -6050,10 +6104,10 @@ app.post("/api/projects/new", async (req, res) => {
         return res.json({
           status: "succeeded",
           repaired: true,
-          project: readyProject,
+          project: completedProject,
           projectName: parsed.data.name,
           container: `plutomix-project-${project.id}`,
-          previewUrl: readyProject?.previewUrl || project?.previewUrl,
+          previewUrl: completedProject?.previewUrl || project?.previewUrl,
           buildId: repairedResult.buildId,
           parentWorkflowId: repairedResult.parentWorkflowId,
           childExecutionIds: repairedResult.childExecutionIds,
@@ -6075,6 +6129,7 @@ app.post("/api/projects/new", async (req, res) => {
       });
     }
     }
+    const failedParentWorkflowId = orchestrationEnvelope?.parentWorkflowId || `project-create-${crypto.randomUUID()}`;
     if (orchestrationEnvelope) {
       event("plutomix-validation", "PlutoMix rejected completion because execution or validation failed", {
         parentWorkflowId: orchestrationEnvelope.parentWorkflowId,
@@ -6084,10 +6139,15 @@ app.post("/api/projects/new", async (req, res) => {
       });
     }
     if (project?.id) {
+      const failedProject = await updateProjectInitialBuildStatus(project.id, "failed").catch(() => null);
+      if (failedProject) project = { ...project, ...failedProject, initialBuildStatus: "failed" };
+      const stoppedProject = await stopProjectInstance(project).catch(() => null);
+      if (stoppedProject) project = { ...project, ...stoppedProject, initialBuildStatus: "failed" };
       event("project-create-preserved", `Preserved incomplete project ${project.name} after generation failure`, {
         projectId: project.id,
         workspaceDir: project.workspaceDir,
-        port: project.port
+        port: project.port,
+        previewWithheld: true
       });
     }
     event("project-create-failed", error.message, { projectName: parsed.data.name });
@@ -6098,7 +6158,7 @@ app.post("/api/projects/new", async (req, res) => {
       instruction: projectInstruction,
       taskType: projectTaskType,
       status: "failed",
-      parentWorkflowId: orchestrationEnvelope?.parentWorkflowId || "",
+      parentWorkflowId: failedParentWorkflowId,
       childExecutionIds: orchestrationEnvelope?.childExecutionIds || [],
       flowPath,
       error: error.message
@@ -6114,7 +6174,7 @@ app.post("/api/projects/new", async (req, res) => {
       workflowMode: "executor",
       instruction: projectInstruction,
       status: "failed",
-      parentWorkflowId: orchestrationEnvelope?.parentWorkflowId || "",
+      parentWorkflowId: failedParentWorkflowId,
       childExecutionIds: orchestrationEnvelope?.childExecutionIds || [],
       requiredData: parsed.data.requiredData || [],
       flowPath,
@@ -6143,7 +6203,7 @@ app.post("/api/projects/new", async (req, res) => {
         projectName: parsed.data.name,
         project,
         error: persistenceError.message,
-        parentWorkflowId: orchestrationEnvelope?.parentWorkflowId || null,
+        parentWorkflowId: failedParentWorkflowId,
         childExecutionIds: orchestrationEnvelope?.childExecutionIds || [],
         flowPath
       });
@@ -6154,7 +6214,7 @@ app.post("/api/projects/new", async (req, res) => {
       project,
       previewUrl: project?.previewUrl || previewUrl,
       error: error.message,
-      parentWorkflowId: orchestrationEnvelope?.parentWorkflowId || null,
+      parentWorkflowId: failedParentWorkflowId,
       childExecutionIds: orchestrationEnvelope?.childExecutionIds || [],
       flowPath,
       taskClassification: projectTaskClassification,
@@ -7939,7 +7999,7 @@ async function handleGenerateRequest(req, res, { executionMode = "direct" } = {}
     });
     event("runtime-refresh-requested", "Refreshing generated-site runtime after file operations", { stage: "7/8" });
     const previewStartedAt = Date.now();
-    const restart = selectedProject && !selectedProject.isDefault
+    let restart = selectedProject && !selectedProject.isDefault
       ? (event("project-runtime-handoff", "Gotham file generation complete; PlutoMix is assigning the playground port", {
           stage: "7/8",
           projectId: selectedProject.id,
@@ -8038,6 +8098,21 @@ async function handleGenerateRequest(req, res, { executionMode = "direct" } = {}
         previewDurationMs
       }
     });
+    if (selectedProject && !selectedProject.isDefault && selectedProject.initialBuildStatus !== "ready") {
+      const updatedProject = await updateProjectInitialBuildStatus(selectedProject.id, "ready");
+      if (restart.project && updatedProject) {
+        restart = {
+          ...restart,
+          project: {
+            ...restart.project,
+            ...updatedProject,
+            runtime: restart.project.runtime,
+            status: restart.project.status,
+            initialBuildStatus: "ready"
+          }
+        };
+      }
+    }
     event("plutomix-complete", "PlutoMix approved workflow completion", {
       stage: "8/8",
       parentWorkflowId: orchestrationEnvelope.parentWorkflowId,
@@ -8151,6 +8226,22 @@ async function handleGenerateRequest(req, res, { executionMode = "direct" } = {}
             previewDurationMs: repairOutcome.restart?.durationMs ?? null
           }
         });
+        let repairedRestart = repairOutcome.restart;
+        if (selectedProject && !selectedProject.isDefault && selectedProject.initialBuildStatus !== "ready") {
+          const updatedProject = await updateProjectInitialBuildStatus(selectedProject.id, "ready");
+          if (repairedRestart?.project && updatedProject) {
+            repairedRestart = {
+              ...repairedRestart,
+              project: {
+                ...repairedRestart.project,
+                ...updatedProject,
+                runtime: repairedRestart.project.runtime,
+                status: repairedRestart.project.status,
+                initialBuildStatus: "ready"
+              }
+            };
+          }
+        }
         event("plutomix-complete", "PlutoMix approved workflow completion after automatic repair", {
           stage: "8/8",
           parentWorkflowId: repairedResult.parentWorkflowId,
@@ -8167,7 +8258,7 @@ async function handleGenerateRequest(req, res, { executionMode = "direct" } = {}
         return res.json({
           ...repairedResult,
           repaired: true,
-          restart: repairOutcome.restart,
+          restart: repairedRestart,
           orchestrated: orchestrated.structuredRequest,
           taskClassification,
           flowPath,

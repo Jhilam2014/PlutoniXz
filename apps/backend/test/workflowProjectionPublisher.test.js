@@ -5,6 +5,7 @@ import path from "node:path";
 import test from "node:test";
 import {
   buildWorkflowPublicationReceipt,
+  readDurableWorkflowPublicationReceipts,
   WorkflowProjectionPublisher
 } from "../src/workflowProjectionPublisher.js";
 import {
@@ -82,6 +83,11 @@ test("canonical selected, rejected, and deferred decisions are visible before pu
   }), { root });
   const publisher = new WorkflowProjectionPublisher({ root, isSystemIdle: () => false });
   await publisher.enqueue(receipt);
+
+  const durableReceipts = readDurableWorkflowPublicationReceipts({ root, outboxRoot: publisher.outboxRoot, projectId: "project-a" });
+  assert.equal(durableReceipts.length, 1);
+  assert.equal(durableReceipts[0].workflowId, "workflow-a");
+  assert.equal(durableReceipts[0].publicationState, "pending");
 
   const decisions = readCanonicalWorkflowDecisions({ projectId: receipt.projectId, root, terminalOnly: true });
   assert.equal(decisions.length, 1);

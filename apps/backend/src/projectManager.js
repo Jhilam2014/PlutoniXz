@@ -410,13 +410,19 @@ function canAccessProject(project, user = {}) {
   return identities.has(ownerUserId);
 }
 
-async function copyWorkspace(sourceDir, targetDir) {
+async function copyWorkspace(sourceDir, targetDir, { excludePaths = [] } = {}) {
+  const excluded = excludePaths.map((entry) => String(entry || "").split(path.sep).join("/").replace(/^\/+|\/+$/g, "")).filter(Boolean);
+  const isExcluded = (source) => {
+    const relativePath = path.relative(sourceDir, source).split(path.sep).join("/");
+    return excluded.some((entry) => relativePath === entry || relativePath.startsWith(`${entry}/`));
+  };
   await fs.ensureDir(targetDir);
   const entries = await fs.readdir(sourceDir);
   for (const entry of entries) {
     if (ignoredWorkspaceEntries.has(entry)) continue;
     await fs.copy(path.join(sourceDir, entry), path.join(targetDir, entry), {
       filter: async (source) => {
+        if (isExcluded(source)) return false;
         if (source.split(path.sep).some((part) => ignoredWorkspaceEntries.has(part))) return false;
         const stat = await fs.stat(source).catch(() => null);
         if (!stat?.isFile()) return true;
@@ -424,6 +430,42 @@ async function copyWorkspace(sourceDir, targetDir) {
       }
     });
   }
+}
+
+async function writeCleanGeneratedProjectSeed(workspaceDir, projectName) {
+  const generatedDir = path.join(workspaceDir, "src", "generated");
+  await fs.ensureDir(generatedDir);
+  const serializedName = JSON.stringify(String(projectName || "New project"));
+  await fs.writeFile(path.join(generatedDir, "generatedPage.jsx"), [
+    `const projectName = ${serializedName};`,
+    "",
+    "export default function GeneratedPage() {",
+    "  return (",
+    '    <main className="plutomix-generation-pending" data-plutomix-generation-state="pending">',
+    '      <span>PlutoMix project</span>',
+    "      <h1>{projectName}</h1>",
+    "      <p>The initial Gotham build has not completed yet.</p>",
+    "    </main>",
+    "  );",
+    "}",
+    ""
+  ].join("\n"));
+  await fs.writeFile(path.join(generatedDir, "generatedPage.css"), [
+    ":root { font-family: Inter, ui-sans-serif, system-ui, sans-serif; color: #172033; background: #f5f7fb; }",
+    "* { box-sizing: border-box; }",
+    "body { margin: 0; min-width: 320px; min-height: 100vh; }",
+    ".plutomix-generation-pending { min-height: 100vh; display: grid; place-content: center; gap: 12px; padding: 32px; text-align: center; background: linear-gradient(145deg, #eef3ff, #f8fbff); }",
+    ".plutomix-generation-pending span { color: #4274d9; font-size: 12px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }",
+    ".plutomix-generation-pending h1 { margin: 0; color: #293681; font-size: clamp(32px, 7vw, 72px); }",
+    ".plutomix-generation-pending p { margin: 0; color: #526077; }",
+    ""
+  ].join("\n"));
+  await fs.writeJson(path.join(generatedDir, "metadata.json"), {
+    status: "awaiting_initial_generation",
+    projectName: String(projectName || "New project"),
+    generatedAt: null
+  }, { spaces: 2 });
+  await fs.writeFile(path.join(generatedDir, "README.generated.md"), "# Generated project surface\n\nThis clean placeholder is replaced by the first successful Gotham build.\n");
 }
 
 async function ensureFileLines(filePath, requiredLines) {
@@ -1052,7 +1094,11 @@ export async function createProject(name, structuredRequest = null, options = {}
   const id = `${folderName}-${nanoid(6)}`;
   const port = await nextPort(projects);
   try {
-    await copyWorkspace(templateDir(), workspaceDir);
+    // The shared generated-site workspace contains the most recently rendered
+    // app. Reuse its stable Vite shell, but never seed a new project with that
+    // mutable generated surface or its assets.
+    await copyWorkspace(templateDir(), workspaceDir, { excludePaths: ["src/generated"] });
+    await writeCleanGeneratedProjectSeed(workspaceDir, name);
     await ensureProjectFiles(workspaceDir, port);
     await installProjectOrchestratorSeed(workspaceDir, { emit: options.emit });
     await linkTemplateNodeModules(workspaceDir);
@@ -1070,6 +1116,7 @@ export async function createProject(name, structuredRequest = null, options = {}
     port,
     workspaceDir,
     status: "created",
+    initialBuildStatus: "pending",
     provenance: {
       origin: "plutomix_created",
       recordedAt: createdAt,
@@ -1097,18 +1144,43 @@ export async function createProject(name, structuredRequest = null, options = {}
   };
   projects.push(project);
   await writeRegistry(projects);
-  await ensureProjectQAgenticFramework(workspaceDir, project, { source: "plutomix-new-project-generation" });
-  await prepareProjectAgentTopology(
-    publicProject(project),
-    structuredRequest || {
-      objective: `Create and maintain ${name}.`,
-      pageType: "managed_app_project",
-      topic: name,
-      sections: ["project", "runtime", "playground"],
-      media: []
-    }
-  );
+  try {
+    await ensureProjectQAgenticFramework(workspaceDir, project, { source: "plutomix-new-project-generation" });
+    await prepareProjectAgentTopology(
+      publicProject(project),
+      structuredRequest || {
+        objective: `Create and maintain ${name}.`,
+        pageType: "managed_app_project",
+        topic: name,
+        sections: ["project", "runtime", "playground"],
+        media: []
+      }
+    );
+  } catch (error) {
+    // Registration is already durable at this point. Preserve its identity so
+    // the API can scope and expose the failed initial instruction instead of
+    // leaving an unselectable orphan in the project registry.
+    error.project = publicProject(project);
+    throw error;
+  }
   return publicProject(project);
+}
+
+export async function updateProjectInitialBuildStatus(projectId, status) {
+  const normalizedStatus = String(status || "").trim().toLowerCase();
+  if (!projectId || projectId === "default") return null;
+  if (!["pending", "ready", "failed"].includes(normalizedStatus)) throw new Error("Invalid initial project build status.");
+  const projects = await readRegistry();
+  const index = projects.findIndex((row) => row.id === projectId);
+  if (index === -1) return null;
+  projects[index] = {
+    ...projects[index],
+    initialBuildStatus: normalizedStatus,
+    initialBuildCompletedAt: normalizedStatus === "pending" ? null : new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  };
+  await writeRegistry(projects);
+  return publicProject(projects[index]);
 }
 
 export async function importProject(name, archivePath, options = {}) {
